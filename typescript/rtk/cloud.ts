@@ -2,23 +2,23 @@ import { cloudBaseApi as api } from "./api";
 export const addTagTypes = [
   "Academy_API_Academy",
   "Academy_API_other",
-  "badge_Badge",
+  "Badge_Badge",
   "Connection_API_Connections",
-  "design_other",
-  "environment_environments",
-  "events_other",
-  "feature_Features",
-  "invitation_Invitation",
-  "key_users",
-  "key_Key",
-  "keychain_Keychain",
-  "model_other",
+  "Design_other",
+  "Environment_environments",
+  "Events_other",
+  "Feature_Features",
+  "Invitation_Invitation",
+  "Key_users",
+  "Key_Key",
+  "Keychain_Keychain",
+  "Model_other",
   "Organization_other",
-  "plan_Plans",
-  "subscription_subscription",
-  "subscription_other",
-  "team_teams",
-  "workspace_workspaces",
+  "Plan_Plans",
+  "Subscription_subscription",
+  "Subscription_other",
+  "Team_teams",
+  "Workspace_workspaces",
 ] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
@@ -180,15 +180,15 @@ const injectedRtkApi = api
       }),
       deleteBadgeById: build.mutation<DeleteBadgeByIdApiResponse, DeleteBadgeByIdApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["badge_Badge"],
+        invalidatesTags: ["Badge_Badge"],
       }),
       getBadgeById: build.query<GetBadgeByIdApiResponse, GetBadgeByIdApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}` }),
-        providesTags: ["badge_Badge"],
+        providesTags: ["Badge_Badge"],
       }),
       createOrUpdateBadge: build.mutation<CreateOrUpdateBadgeApiResponse, CreateOrUpdateBadgeApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["badge_Badge"],
+        invalidatesTags: ["Badge_Badge"],
       }),
       getConnections: build.query<GetConnectionsApiResponse, GetConnectionsApiArg>({
         query: (queryArg) => ({
@@ -260,11 +260,11 @@ const injectedRtkApi = api
       }),
       importDesign: build.mutation<ImportDesignApiResponse, ImportDesignApiArg>({
         query: (queryArg) => ({ url: `/api/pattern/import`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["design_other"],
+        invalidatesTags: ["Design_other"],
       }),
       createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
         query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["environment_environments"],
+        invalidatesTags: ["Environment_environments"],
       }),
       getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
         query: (queryArg) => ({
@@ -277,45 +277,45 @@ const injectedRtkApi = api
             orgID: queryArg.orgId,
           },
         }),
-        providesTags: ["environment_environments"],
+        providesTags: ["Environment_environments"],
       }),
       deleteEventsById: build.mutation<DeleteEventsByIdApiResponse, DeleteEventsByIdApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       postEvents: build.mutation<PostEventsApiResponse, PostEventsApiArg>({
         query: (queryArg) => ({ url: `/events`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       deleteEvents: build.mutation<DeleteEventsApiResponse, DeleteEventsApiArg>({
         query: (queryArg) => ({ url: `/events`, method: "DELETE", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       putEventsStatus: build.mutation<PutEventsStatusApiResponse, PutEventsStatusApiArg>({
         query: (queryArg) => ({ url: `/events/status`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       putEventsByIdStatus: build.mutation<PutEventsByIdStatusApiResponse, PutEventsByIdStatusApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.id}/status`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       getFeatures: build.query<GetFeaturesApiResponse, GetFeaturesApiArg>({
         query: () => ({ url: `/api/entitlement/features` }),
-        providesTags: ["feature_Features"],
+        providesTags: ["Feature_Features"],
       }),
       getFeaturesByOrganization: build.query<GetFeaturesByOrganizationApiResponse, GetFeaturesByOrganizationApiArg>({
         query: (queryArg) => ({
           url: `/api/entitlement/subscriptions/organizations/${queryArg.organizationId}/features`,
         }),
-        providesTags: ["feature_Features"],
+        providesTags: ["Feature_Features"],
       }),
       getInvitation: build.query<GetInvitationApiResponse, GetInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}` }),
-        providesTags: ["invitation_Invitation"],
+        providesTags: ["Invitation_Invitation"],
       }),
       deleteInvitation: build.mutation<DeleteInvitationApiResponse, DeleteInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}`, method: "DELETE" }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       updateInvitation: build.mutation<UpdateInvitationApiResponse, UpdateInvitationApiArg>({
         query: (queryArg) => ({
@@ -323,26 +323,26 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       getInvitations: build.query<GetInvitationsApiResponse, GetInvitationsApiArg>({
         query: () => ({ url: `/api/organizations/invitations` }),
-        providesTags: ["invitation_Invitation"],
+        providesTags: ["Invitation_Invitation"],
       }),
       createInvitation: build.mutation<CreateInvitationApiResponse, CreateInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       acceptInvitation: build.mutation<AcceptInvitationApiResponse, AcceptInvitationApiArg>({
         query: (queryArg) => ({
           url: `/api/organizations/invitations/${queryArg.invitationId}/accept`,
           method: "POST",
         }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       getUserKeys: build.query<GetUserKeysApiResponse, GetUserKeysApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/users/keys` }),
-        providesTags: ["key_users"],
+        providesTags: ["Key_users"],
       }),
       getKeys: build.query<GetKeysApiResponse, GetKeysApiArg>({
         query: (queryArg) => ({
@@ -354,19 +354,19 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["key_Key"],
+        providesTags: ["Key_Key"],
       }),
       upsertKey: build.mutation<UpsertKeyApiResponse, UpsertKeyApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keys`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["key_Key"],
+        invalidatesTags: ["Key_Key"],
       }),
       getKeyById: build.query<GetKeyByIdApiResponse, GetKeyByIdApiArg>({
         query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}` }),
-        providesTags: ["key_Key"],
+        providesTags: ["Key_Key"],
       }),
       deleteKey: build.mutation<DeleteKeyApiResponse, DeleteKeyApiArg>({
         query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}`, method: "DELETE" }),
-        invalidatesTags: ["key_Key"],
+        invalidatesTags: ["Key_Key"],
       }),
       getKeychains: build.query<GetKeychainsApiResponse, GetKeychainsApiArg>({
         query: (queryArg) => ({
@@ -378,15 +378,15 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       createKeychain: build.mutation<CreateKeychainApiResponse, CreateKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       getKeychainById: build.query<GetKeychainByIdApiResponse, GetKeychainByIdApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}` }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       updateKeychain: build.mutation<UpdateKeychainApiResponse, UpdateKeychainApiArg>({
         query: (queryArg) => ({
@@ -394,22 +394,22 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       deleteKeychain: build.mutation<DeleteKeychainApiResponse, DeleteKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}`, method: "DELETE" }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       addKeyToKeychain: build.mutation<AddKeyToKeychainApiResponse, AddKeyToKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`, method: "POST" }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       removeKeyFromKeychain: build.mutation<RemoveKeyFromKeychainApiResponse, RemoveKeyFromKeychainApiArg>({
         query: (queryArg) => ({
           url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       getKeysOfKeychain: build.query<GetKeysOfKeychainApiResponse, GetKeysOfKeychainApiArg>({
         query: (queryArg) => ({
@@ -421,11 +421,11 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
         query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["model_other"],
+        invalidatesTags: ["Model_other"],
       }),
       getOrgByDomain: build.query<GetOrgByDomainApiResponse, GetOrgByDomainApiArg>({
         query: (queryArg) => ({
@@ -453,7 +453,7 @@ const injectedRtkApi = api
       }),
       getPlans: build.query<GetPlansApiResponse, GetPlansApiArg>({
         query: () => ({ url: `/api/entitlement/plans` }),
-        providesTags: ["plan_Plans"],
+        providesTags: ["Plan_Plans"],
       }),
       getSubscriptions: build.query<GetSubscriptionsApiResponse, GetSubscriptionsApiArg>({
         query: (queryArg) => ({
@@ -465,7 +465,7 @@ const injectedRtkApi = api
             status: queryArg.status,
           },
         }),
-        providesTags: ["subscription_subscription"],
+        providesTags: ["Subscription_subscription"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdCancel: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse,
@@ -475,14 +475,14 @@ const injectedRtkApi = api
           url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/cancel`,
           method: "POST",
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsCreate: build.mutation<
         PostApiEntitlementSubscriptionsCreateApiResponse,
         PostApiEntitlementSubscriptionsCreateApiArg
       >({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/create`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdUpgrade: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse,
@@ -493,7 +493,7 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdUpgradePreview: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiResponse,
@@ -504,14 +504,14 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsWebhooks: build.mutation<
         PostApiEntitlementSubscriptionsWebhooksApiResponse,
         PostApiEntitlementSubscriptionsWebhooksApiArg
       >({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       getTeams: build.query<GetTeamsApiResponse, GetTeamsApiArg>({
         query: (queryArg) => ({
@@ -523,7 +523,7 @@ const injectedRtkApi = api
             pagesize: queryArg.pagesize,
           },
         }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       createTeam: build.mutation<CreateTeamApiResponse, CreateTeamApiArg>({
         query: (queryArg) => ({
@@ -531,11 +531,11 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getTeamById: build.query<GetTeamByIdApiResponse, GetTeamByIdApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}` }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       updateTeam: build.mutation<UpdateTeamApiResponse, UpdateTeamApiArg>({
         query: (queryArg) => ({
@@ -543,14 +543,14 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       deleteTeam: build.mutation<DeleteTeamApiResponse, DeleteTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getTeamUsers: build.query<GetTeamUsersApiResponse, GetTeamUsersApiArg>({
         query: (queryArg) => ({
@@ -562,41 +562,41 @@ const injectedRtkApi = api
             pagesize: queryArg.pagesize,
           },
         }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       addUserToTeam: build.mutation<AddUserToTeamApiResponse, AddUserToTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}/users/${queryArg.userId}`,
           method: "POST",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       removeUserFromTeam: build.mutation<RemoveUserFromTeamApiResponse, RemoveUserFromTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}/users/${queryArg.userId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getApiWorkspaces: build.query<GetApiWorkspacesApiResponse, GetApiWorkspacesApiArg>({
         query: () => ({ url: `/api/workspaces` }),
-        providesTags: ["workspace_workspaces"],
+        providesTags: ["Workspace_workspaces"],
       }),
       postApiWorkspaces: build.mutation<PostApiWorkspacesApiResponse, PostApiWorkspacesApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
       getApiWorkspacesById: build.query<GetApiWorkspacesByIdApiResponse, GetApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}` }),
-        providesTags: ["workspace_workspaces"],
+        providesTags: ["Workspace_workspaces"],
       }),
       putApiWorkspacesById: build.mutation<PutApiWorkspacesByIdApiResponse, PutApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
       deleteApiWorkspacesById: build.mutation<DeleteApiWorkspacesByIdApiResponse, DeleteApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
     }),
     overrideExisting: false,
