@@ -6,9 +6,18 @@
 const BadgeSchema = {
   "openapi": "3.0.0",
   "info": {
-    "title": "badge",
-    "description": "OpenAPI schema for managing badges",
-    "version": "v1beta1"
+    "title": "Badge",
+    "description": "OpenAPI schema for managing badges.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "tags": [
     {

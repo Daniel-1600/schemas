@@ -7,15 +7,21 @@ const ConnectionSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Connection API",
+    "description": "API for managing Meshery connections - managed and unmanaged resources tracked by Meshery.",
     "version": "v1beta1",
-    "description": "API for managing Meshery connections - managed and unmanaged resources tracked by Meshery"
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
     "/api/integrations/connections": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -548,9 +554,6 @@ const ConnectionSchema = {
         }
       },
       "post": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1018,9 +1021,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/{connectionId}": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1401,9 +1401,6 @@ const ConnectionSchema = {
         }
       },
       "put": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1881,9 +1878,6 @@ const ConnectionSchema = {
         }
       },
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1917,9 +1911,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/meshery/{mesheryServerId}": {
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1953,9 +1944,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/kubernetes/{connectionId}/context": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1996,9 +1984,6 @@ const ConnectionSchema = {
     },
     "/api/environments/{environmentId}/connections/{connectionId}": {
       "post": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -2040,9 +2025,6 @@ const ConnectionSchema = {
         }
       },
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],

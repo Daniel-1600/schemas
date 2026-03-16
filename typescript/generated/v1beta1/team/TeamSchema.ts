@@ -6,12 +6,18 @@
 const TeamSchema = {
   "openapi": "3.0.0",
   "info": {
-    "title": "team",
-    "description": "Documentation for Meshery Cloud REST APIs for Teams",
+    "title": "Team",
+    "description": "OpenAPI schema for team management in Meshery Cloud.",
+    "version": "v1beta1",
     "contact": {
-      "email": "maintainers@meshery.io"
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
     },
-    "version": "v1beta1"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {
