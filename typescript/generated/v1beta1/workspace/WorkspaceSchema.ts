@@ -6,12 +6,18 @@
 const WorkspaceSchema = {
   "openapi": "3.0.0",
   "info": {
-    "title": "workspace",
-    "description": "Documentation for meshery Cloud REST APIs",
+    "title": "Workspace",
+    "description": "OpenAPI schema for workspace management in Meshery Cloud.",
+    "version": "v1beta1",
     "contact": {
-      "email": "maintainers@meshery.io"
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
     },
-    "version": "v0.6.394"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {

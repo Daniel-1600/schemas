@@ -6,8 +6,18 @@
 const RelationshipSchema = {
   "openapi": "3.0.0",
   "info": {
-    "title": "relationship",
-    "version": "1.0.0"
+    "title": "Relationship",
+    "description": "OpenAPI schema for relationship definitions between Meshery components.",
+    "version": "v1alpha3",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {},
   "components": {
