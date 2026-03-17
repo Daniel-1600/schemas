@@ -13,6 +13,9 @@ servers:
   - url: http://localhost:9876
     description: Meshery Cloud development server URL
 
+security:
+  - jwt: []
+
 tags:
   - name: designs
     description: Operations related to infrastructure designs (patterns)
