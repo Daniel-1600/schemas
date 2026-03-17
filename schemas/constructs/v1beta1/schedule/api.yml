@@ -189,21 +189,20 @@ components:
           x-oapi-codegen-extra-tags:
             db: "cron_expression"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: Timestamp when the schedule was created.
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
           x-order: 5
-          x-oapi-codegen-extra-tags:
-            db: "created_at"
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: Timestamp when the schedule was last updated.
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
           x-order: 6
-          x-oapi-codegen-extra-tags:
-            db: "updated_at"
 
     SchedulePage:
       type: object
       description: A paginated list of schedules.
+      required:
+        - page
+        - page_size
+        - total_count
+        - schedules
       properties:
         page:
           type: integer

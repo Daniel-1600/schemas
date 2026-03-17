@@ -155,7 +155,7 @@ paths:
       tags:
         - roles
       summary: Get keychains for role
-      operationId: getKeyChains
+      operationId: getKeychains
       description: Returns all keychains assigned to the specified role.
       parameters:
         - $ref: "#/components/parameters/orgID"
@@ -194,7 +194,7 @@ paths:
       tags:
         - roles
       summary: Unassign keychain from role
-      operationId: unAssignKeychainFromRole
+      operationId: unassignKeychainFromRole
       description: Removes the association between a keychain and a role.
       parameters:
         - $ref: "#/components/parameters/orgID"
@@ -272,11 +272,8 @@ components:
       type: object
       description: Role definition for Layer5 Cloud (Meshery).
       required:
-        - id
         - role_name
         - description
-        - created_at
-        - updated_at
       properties:
         id:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
@@ -297,17 +294,11 @@ components:
           x-oapi-codegen-extra-tags:
             db: "description"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: Timestamp when the role was created.
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
           x-order: 4
-          x-oapi-codegen-extra-tags:
-            db: "created_at"
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: Timestamp when the role was last updated.
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
           x-order: 5
-          x-oapi-codegen-extra-tags:
-            db: "updated_at"
         deleted_at:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/nullTime"
           description: Timestamp when the role was soft-deleted.
@@ -371,15 +362,11 @@ components:
           x-oapi-codegen-extra-tags:
             db: "role_id"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
           x-order: 4
-          x-oapi-codegen-extra-tags:
-            db: "created_at"
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
           x-order: 5
-          x-oapi-codegen-extra-tags:
-            db: "updated_at"
         deleted_at:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/nullTime"
           x-order: 6
