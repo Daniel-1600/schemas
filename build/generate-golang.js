@@ -110,7 +110,17 @@ function rewriteGoTypeAlias(goType, importInfo) {
   );
 }
 
-function rewriteExternalRefAliases(filePath) {
+function chooseImportAlias(importPath, preferredAliases, usedAliases) {
+  const preferredAlias = preferredAliases.get(importPath);
+  if (preferredAlias && !usedAliases.has(preferredAlias)) {
+    usedAliases.add(preferredAlias);
+    return preferredAlias;
+  }
+
+  return buildReadableImportAlias(importPath, usedAliases);
+}
+
+function rewriteExternalRefAliases(filePath, inputPath) {
   let content = fs.readFileSync(filePath, "utf-8");
   const importBlockMatch = content.match(/import \(([^]*?)\n\)/m);
   if (!importBlockMatch) {
@@ -120,10 +130,13 @@ function rewriteExternalRefAliases(filePath) {
   const usedAliases = new Set();
   const aliasMappings = [];
   const aliasByImportPath = new Map();
+  const preferredAliases = collectPreferredImportAliases(inputPath);
   const importBlock = importBlockMatch[1].replace(
     /^(\s*)(externalRef\d+)\s+"([^"]+)"$/gm,
     (_, indent, alias, importPath) => {
-      const readableAlias = aliasByImportPath.get(importPath) || buildReadableImportAlias(importPath, usedAliases);
+      const readableAlias =
+        aliasByImportPath.get(importPath) ||
+        chooseImportAlias(importPath, preferredAliases, usedAliases);
       aliasByImportPath.set(importPath, readableAlias);
       aliasMappings.push({ alias, readableAlias });
       return `${indent}${readableAlias} "${importPath}"`;
@@ -169,36 +182,23 @@ function rewriteExternalRefAliases(filePath) {
   fs.writeFileSync(filePath, content, "utf-8");
 }
 
+function setOrReplaceStructTag(rawTags, tagName, tagValue) {
+  const sanitizedValue = String(tagValue).replace(/"/g, '\\"');
+  const nextTag = `${tagName}:"${sanitizedValue}"`;
+  const tagPattern = new RegExp(`(^|\\s)${tagName}:"(?:\\\\.|[^"])*"`);
+
+  if (tagPattern.test(rawTags)) {
+    return rawTags.replace(tagPattern, (match, leadingWhitespace) => `${leadingWhitespace}${nextTag}`);
+  }
+
+  return `${nextTag} ${rawTags}`;
+}
+
 function collectSchemaExtraTags(inputPath) {
   const extraTagsByStruct = new Map();
   const document = loadYamlFile(inputPath) || {};
   const inputDir = path.dirname(inputPath);
   const resolvedSchemaCache = new Map();
-
-  function decodeJsonPointerSegment(segment) {
-    return segment.replace(/~1/g, "/").replace(/~0/g, "~");
-  }
-
-  function getNodeByFragment(targetDocument, fragment, ref) {
-    if (!fragment) {
-      return targetDocument;
-    }
-
-    if (!fragment.startsWith("/")) {
-      throw new Error(`Unsupported JSON pointer fragment '${fragment}' in ref '${ref}'`);
-    }
-
-    let currentNode = targetDocument;
-    for (const segment of fragment.slice(1).split("/").map(decodeJsonPointerSegment)) {
-      if (!currentNode || typeof currentNode !== "object" || !(segment in currentNode)) {
-        throw new Error(`Unable to resolve fragment '#${fragment}' from ref '${ref}'`);
-      }
-
-      currentNode = currentNode[segment];
-    }
-
-    return currentNode;
-  }
 
   function resolveSchemaRef(ref, seenRefs = new Set()) {
     if (seenRefs.has(ref)) {
@@ -228,7 +228,12 @@ function collectSchemaExtraTags(inputPath) {
       targetDocument = loadYamlFile(resolvedRefPath);
     }
 
-    const resolvedNode = getNodeByFragment(targetDocument, fragment, ref);
+    let resolvedNode;
+    try {
+      resolvedNode = getNodeByFragment(targetDocument, fragment, ref);
+    } catch (_err) {
+      return null;
+    }
     resolvedSchemaCache.set(ref, resolvedNode);
     return resolvedNode;
   }
@@ -263,7 +268,9 @@ function collectSchemaExtraTags(inputPath) {
       typeof propertyDefinition["x-go-name"] === "string" &&
       propertyDefinition["x-go-name"].length > 0
         ? propertyDefinition["x-go-name"]
-        : null;
+        : propertyName === "id"
+          ? "ID"
+          : null;
 
     if (Object.keys(normalizedExtraTags).length === 0 && !goName && !goType) {
       return null;
@@ -471,7 +478,7 @@ function addSchemaExtraTags(filePath, inputPath) {
         let updatedTags = rawTags;
 
         for (const [tagName, tagValue] of Object.entries(propertyTags.extraTags)) {
-          updatedTags = mergeTag(updatedTags, tagName, tagValue);
+          updatedTags = setOrReplaceStructTag(updatedTags, tagName, tagValue);
         }
 
         if (updatedTags !== rawTags) {
@@ -516,7 +523,7 @@ function addSchemaExtraTags(filePath, inputPath) {
             }
 
             for (const [tagName, tagValue] of Object.entries(propertyTags.extraTags)) {
-              updatedTags = mergeTag(updatedTags, tagName, tagValue);
+              updatedTags = setOrReplaceStructTag(updatedTags, tagName, tagValue);
             }
 
             if (updatedTags !== rawTags) {
@@ -553,31 +560,32 @@ function addCompatibilityParameterAliases(filePath, inputPath) {
 
   for (const parameterName of parameterNames) {
     const exportedName = exportGoIdentifier(parameterName);
+    if (new RegExp(`^type ${exportedName} = `, "m").test(content)) {
+      continue;
+    }
     const aliasPattern = new RegExp(`(^// .*\\n)?^type (\\w+${exportedName}) = (.+)$`, "m");
     const aliasMatch = content.match(aliasPattern);
     if (!aliasMatch || aliasMatch[2] === exportedName) {
       continue;
     }
 
-    const typeExpression = aliasMatch[3];
-    const directAliasPattern = new RegExp(
-      `(^// ${exportedName} defines model for ${parameterName}\\.\\n)?^type ${exportedName} = .+$`,
-      "m",
-    );
-    const directAlias = `// ${exportedName} defines model for ${parameterName}.\ntype ${exportedName} = ${typeExpression}`;
-
-    if (directAliasPattern.test(content)) {
-      content = content.replace(directAliasPattern, directAlias);
-      content = content.replace(new RegExp(`${aliasMatch[0]}\\n+`, "m"), "");
-      continue;
-    }
-
-    content = content.replace(aliasPattern, directAlias);
+    const insertion = `${aliasMatch[0]}\n\n// ${exportedName} defines model for ${parameterName}.\ntype ${exportedName} = ${aliasMatch[2]}`;
+    content = content.replace(aliasPattern, insertion);
   }
 
   fs.writeFileSync(filePath, content, "utf-8");
 }
 
+function validateReadableImportAliases(filePath) {
+  const content = fs.readFileSync(filePath, "utf-8");
+  const opaqueAliases = [...content.matchAll(/\bexternalRef\d+\b/g)].map((match) => match[0]);
+
+  if (opaqueAliases.length > 0) {
+    throw new Error(
+      `Generated Go file still contains opaque import aliases: ${[...new Set(opaqueAliases)].join(", ")}`,
+    );
+  }
+}
 function validateGeneratedDbTags(filePath, inputPath) {
   const extraTagsByStruct = collectSchemaExtraTags(inputPath);
   const generatedTagsByStruct = collectGeneratedStructTags(filePath);
@@ -638,12 +646,115 @@ function splitRef(ref) {
   };
 }
 
+function decodeJsonPointerSegment(segment) {
+  return segment.replace(/~1/g, "/").replace(/~0/g, "~");
+}
+
+function getNodeByFragment(targetDocument, fragment, ref) {
+  if (!fragment) {
+    return targetDocument;
+  }
+
+  if (!fragment.startsWith("/")) {
+    throw new Error(`Unsupported JSON pointer fragment '${fragment}' in ref '${ref}'`);
+  }
+
+  let currentNode = targetDocument;
+  for (const segment of fragment.slice(1).split("/").map(decodeJsonPointerSegment)) {
+    if (!currentNode || typeof currentNode !== "object" || !(segment in currentNode)) {
+      throw new Error(`Unable to resolve ref '${ref}' while generating Go models`);
+    }
+    currentNode = currentNode[segment];
+  }
+
+  return currentNode;
+}
+
 function loadYamlFile(filePath) {
   try {
     return yaml.load(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
     throw new Error(`Failed to parse schema file ${filePath}: ${err.message}`);
   }
+}
+
+function collectPreferredImportAliases(inputPath) {
+  const preferredAliases = new Map();
+  const document = loadYamlFile(inputPath) || {};
+  const inputDir = path.dirname(inputPath);
+  const resolvedSchemaCache = new Map();
+
+  function resolveSchemaRef(ref, seenRefs = new Set()) {
+    if (seenRefs.has(ref)) {
+      return null;
+    }
+
+    if (resolvedSchemaCache.has(ref)) {
+      return resolvedSchemaCache.get(ref);
+    }
+
+    const { refPath, fragment } = splitRef(ref);
+    let targetDocument = document;
+
+    if (refPath) {
+      if (/^https?:\/\//.test(refPath)) {
+        return null;
+      }
+
+      const resolvedRefPath = path.resolve(inputDir, refPath);
+      if (!fs.existsSync(resolvedRefPath)) {
+        return null;
+      }
+
+      targetDocument = loadYamlFile(resolvedRefPath);
+    }
+
+    let resolvedNode;
+    try {
+      resolvedNode = getNodeByFragment(targetDocument, fragment, ref);
+    } catch (_err) {
+      return null;
+    }
+    resolvedSchemaCache.set(ref, resolvedNode);
+    return resolvedNode;
+  }
+
+  function visitNode(node, seenRefs = new Set()) {
+    if (Array.isArray(node)) {
+      for (const item of node) {
+        visitNode(item, seenRefs);
+      }
+      return;
+    }
+
+    if (!node || typeof node !== "object") {
+      return;
+    }
+
+    if (
+      node["x-go-type-import"] &&
+      typeof node["x-go-type-import"] === "object" &&
+      typeof node["x-go-type-import"].path === "string" &&
+      typeof node["x-go-type-import"].name === "string" &&
+      node["x-go-type-import"].name.length > 0
+    ) {
+      preferredAliases.set(node["x-go-type-import"].path, node["x-go-type-import"].name);
+    }
+
+    if (typeof node.$ref === "string") {
+      const resolved = resolveSchemaRef(node.$ref, seenRefs);
+      if (resolved) {
+        visitNode(resolved, new Set([...seenRefs, node.$ref]));
+      }
+    }
+
+    for (const value of Object.values(node)) {
+      visitNode(value, seenRefs);
+    }
+  }
+
+  visitNode(document);
+  return preferredAliases;
 }
 
 function collectRefs(node, refs = new Set()) {
@@ -1020,7 +1131,8 @@ async function generateGoModels(pkg) {
     // oapi-codegen omits for referenced object fields.
     addYamlTags(outputPath);
     addSchemaExtraTags(outputPath, inputPath);
-    rewriteExternalRefAliases(outputPath);
+    rewriteExternalRefAliases(outputPath, inputPath);
+    validateReadableImportAliases(outputPath);
     addCompatibilityParameterAliases(outputPath, inputPath);
     validateGeneratedDbTags(outputPath, inputPath);
     writeGeneratedHelperFile(pkg, outputDir);

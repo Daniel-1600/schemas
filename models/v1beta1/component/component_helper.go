@@ -30,21 +30,29 @@ func (c *ComponentDefinition) GenerateID() (uuid.UUID, error) {
 }
 
 func (c ComponentDefinition) GetID() uuid.UUID {
-	return c.Id
+	return c.ID
 }
 
 func (c *ComponentDefinition) GetEntityDetail() string {
+	if c.Model == nil {
+		return fmt.Sprintf("type: %s, definition version: %s, name: %s", c.Type(), c.Version, c.DisplayName)
+	}
+
 	return fmt.Sprintf("type: %s, definition version: %s, name: %s, model: %s, version: %s", c.Type(), c.Version, c.DisplayName, c.Model.Name, c.Model.Version)
 }
 
 func (c *ComponentDefinition) Create(db *database.Handler, hostID uuid.UUID) (uuid.UUID, error) {
-	c.Id, _ = c.GenerateID()
+	c.ID, _ = c.GenerateID()
 
 	isAnnotation := c.Metadata.IsAnnotation
 
 	if c.Component.Schema == "" && !isAnnotation { //For components which has an empty schema and is not an annotation, return error
 		// return ErrEmptySchema()
 		return uuid.Nil, nil
+	}
+
+	if c.Model == nil {
+		return uuid.Nil, fmt.Errorf("component model is nil")
 	}
 
 	mid, err := c.Model.Create(db, hostID)
@@ -61,7 +69,7 @@ func (c *ComponentDefinition) Create(db *database.Handler, hostID uuid.UUID) (uu
 
 	c.ModelId = mid
 	err = db.Omit(clause.Associations).Create(&c).Error
-	return c.Id, err
+	return c.ID, err
 }
 
 func (m *ComponentDefinition) UpdateStatus(db *database.Handler, status entity.EntityStatus) error {
