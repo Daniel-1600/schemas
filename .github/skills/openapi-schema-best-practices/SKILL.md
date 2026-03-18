@@ -226,7 +226,8 @@ roleNames:
   items:
     type: string
   x-go-type: "pq.StringArray"
-  x-go-import-path: "github.com/lib/pq"
+  x-go-type-import:
+    path: "github.com/lib/pq"
 ```
 
 ### Internal API marking
