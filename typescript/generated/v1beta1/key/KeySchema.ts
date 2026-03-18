@@ -88,7 +88,6 @@ const KeySchema = {
                     "keys": {
                       "type": "array",
                       "items": {
-                        "x-go-type": "Key",
                         "type": "object",
                         "description": "Represents an authorization key used for access control.",
                         "required": [
@@ -306,7 +305,6 @@ const KeySchema = {
                     "keys": {
                       "type": "array",
                       "items": {
-                        "x-go-type": "Key",
                         "type": "object",
                         "description": "Represents an authorization key used for access control.",
                         "required": [
@@ -1215,7 +1213,6 @@ const KeySchema = {
           "keys": {
             "type": "array",
             "items": {
-              "x-go-type": "Key",
               "type": "object",
               "description": "Represents an authorization key used for access control.",
               "required": [
@@ -1333,6 +1330,6 @@ const KeySchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default KeySchema;

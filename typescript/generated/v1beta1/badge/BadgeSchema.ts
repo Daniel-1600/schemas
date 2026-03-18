@@ -582,6 +582,6 @@ const BadgeSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default BadgeSchema;

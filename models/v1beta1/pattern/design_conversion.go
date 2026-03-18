@@ -35,11 +35,16 @@ func (p *PatternFile) ConvertTo(pattern conversion.Hub) error {
 	patternFile.Version = p.Version
 
 	for _, component := range p.Components {
+		if component == nil {
+			continue
+		}
+
 		service := v1alpha2.Service{}
 
 		service.ApiVersion = component.Component.Version
 		service.Type = component.Component.Kind
-		service.Id = &component.Id
+		componentId := component.Id
+		service.Id = &componentId
 		service.IsAnnotation = component.Metadata.IsAnnotation
 		service.Model = component.Model.Name
 		service.Version = component.Version
@@ -90,7 +95,7 @@ func (p *PatternFile) ConvertFrom(pattern conversion.Hub) error {
 				Kind:    service.Type,
 				Version: service.ApiVersion,
 			},
-			Model: &model.ModelDefinition{
+			Model: model.ModelDefinition{
 				SchemaVersion: v1beta1.ModelSchemaVersion,
 				Name:          service.Model,
 			},

@@ -203,6 +203,6 @@ const CapabilitySchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default CapabilitySchema;

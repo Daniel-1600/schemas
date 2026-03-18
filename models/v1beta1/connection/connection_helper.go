@@ -43,7 +43,7 @@ func (h *Connection) Create(db *database.Handler) (uuid.UUID, error) {
 	// if not exists then create a new host and return the id
 	if err == gorm.ErrRecordNotFound {
 		h.ID = hID
-		err = db.Create(&h).Error
+		err = db.Create(h).Error
 		if err != nil {
 			return uuid.UUID{}, err
 		}
@@ -54,9 +54,26 @@ func (h *Connection) Create(db *database.Handler) (uuid.UUID, error) {
 	return connection.ID, nil
 }
 
-func (c *Connection) EventCategory() string {
-	return "connection"
-}
+// Deprecated aliases for ConnectionStatusValue constants.
+// These preserve the older exported names for downstream callers.
+const (
+	// Deprecated: Use Connected instead.
+	ConnectionStatusValueConnected = Connected
+	// Deprecated: Use Deleted instead.
+	ConnectionStatusValueDeleted = Deleted
+	// Deprecated: Use Disconnected instead.
+	ConnectionStatusValueDisconnected = Disconnected
+	// Deprecated: Use Discovered instead.
+	ConnectionStatusValueDiscovered = Discovered
+	// Deprecated: Use Ignored instead.
+	ConnectionStatusValueIgnored = Ignored
+	// Deprecated: Use Maintenance instead.
+	ConnectionStatusValueMaintenance = Maintenance
+	// Deprecated: Use NotFound instead.
+	ConnectionStatusValueNotFound = NotFound
+	// Deprecated: Use Registered instead.
+	ConnectionStatusValueRegistered = Registered
+)
 
 type MeshsyncDeploymentMode string
 
@@ -98,8 +115,4 @@ func MeshsyncDeploymentModeFromMetadata(metadata core.Map) MeshsyncDeploymentMod
 
 func SetMeshsyncDeploymentModeToMetadata(metadata core.Map, value MeshsyncDeploymentMode) {
 	metadata[MeshsyncDeploymentModeMetadataKey] = value
-}
-
-func (*MesheryInstance) EventCategory() string {
-	return "connection"
 }

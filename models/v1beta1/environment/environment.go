@@ -4,20 +4,18 @@
 package environment
 
 import (
-	"database/sql"
-	"time"
-
 	"github.com/gofrs/uuid"
 	"github.com/meshery/schemas/models/core"
+	corev1alpha1 "github.com/meshery/schemas/models/v1alpha1/core"
 )
 
 // Environment Meshery Environments allow you to logically group related Connections and their associated Credentials.. Learn more at https://docs.meshery.io/concepts/logical/environments
 type Environment struct {
-	// ID ID
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	ID corev1alpha1.Uuid `db:"id" json:"id" yaml:"id"`
 
-	// SchemaVersion Specifies the version of the schema to which the environment conforms.
-	SchemaVersion string `db:"-" gorm:"-" json:"schemaVersion" yaml:"schemaVersion"`
+	// SchemaVersion API version of the object, optionally prefixed with an API group (e.g. "group.example.io/v1beta1" or bare "v1beta1").
+	SchemaVersion corev1alpha1.VersionString `gorm:"-" db:"-" json:"schemaVersion" yaml:"schemaVersion"`
 
 	// Name Environment name
 	Name string `db:"name" json:"name" yaml:"name"`
@@ -25,63 +23,61 @@ type Environment struct {
 	// Description Environment description
 	Description string `db:"description" json:"description" yaml:"description"`
 
-	// OrganizationID Environment organization ID
-	OrganizationID uuid.UUID `db:"organization_id" json:"organization_id" yaml:"organization_id"`
+	// OrganizationId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	OrganizationID corev1alpha1.Uuid `db:"organization_id" json:"organization_id" yaml:"organization_id"`
 
-	// Owner Environment owner
-	Owner     *uuid.UUID    `db:"owner" json:"owner,omitempty" yaml:"owner,omitempty"`
-	CreatedAt time.Time     `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	Metadata  core.Map      `db:"metadata" json:"metadata,omitempty" yaml:"metadata,omitempty"`
-	UpdatedAt time.Time     `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	// Owner A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Owner     *corev1alpha1.Uuid `db:"owner" json:"owner,omitempty" yaml:"owner,omitempty"`
+	CreatedAt corev1alpha1.Time  `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	Metadata  core.Map           `db:"metadata" json:"metadata,omitempty" yaml:"metadata,omitempty"`
+	UpdatedAt corev1alpha1.Time  `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+
+	// DeletedAt SQL null Timestamp to handle null values of time.
+	DeletedAt corev1alpha1.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 }
 
 // EnvironmentConnectionMapping defines model for environmentConnectionMapping.
 type EnvironmentConnectionMapping struct {
-	ID           uuid.UUID `db:"id" json:"id" yaml:"id"`
-	ConnectionId uuid.UUID `db:"connection_id" json:"connection_id" yaml:"connection_id"`
-	CreatedAt    time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	ID           corev1alpha1.GeneralId `db:"id" json:"id" yaml:"id"`
+	ConnectionId uuid.UUID              `db:"connection_id" json:"connection_id" yaml:"connection_id"`
+	CreatedAt    corev1alpha1.Time      `json:"created_at,omitempty" yaml:"created_at,omitempty"`
 
 	// DeletedAt SQL null Timestamp to handle null values of time.
-	DeletedAt     sql.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
-	EnvironmentId uuid.UUID    `db:"environment_id" json:"environment_id" yaml:"environment_id"`
-	UpdatedAt     time.Time    `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+	DeletedAt     corev1alpha1.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	EnvironmentId uuid.UUID             `db:"environment_id" json:"environment_id" yaml:"environment_id"`
+	UpdatedAt     corev1alpha1.Time     `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 }
 
 // EnvironmentPage defines model for environmentPage.
 type EnvironmentPage struct {
-	Environments []Environment `json:"environments,omitempty" yaml:"environments,omitempty"`
-	Page         int           `json:"page,omitempty" yaml:"page,omitempty"`
-	PageSize     int           `json:"page_size,omitempty" yaml:"page_size,omitempty"`
-	TotalCount   int           `json:"total_count,omitempty" yaml:"total_count,omitempty"`
+	Environments []Environment       `json:"environments,omitempty" yaml:"environments,omitempty"`
+	Page         corev1alpha1.Number `json:"page,omitempty" yaml:"page,omitempty"`
+	PageSize     corev1alpha1.Number `json:"page_size,omitempty" yaml:"page_size,omitempty"`
+	TotalCount   corev1alpha1.Number `json:"total_count,omitempty" yaml:"total_count,omitempty"`
 }
 
 // EnvironmentPayload defines model for environmentPayload.
 type EnvironmentPayload struct {
 	// OrgId Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation.
-	OrgId string `json:"organization_id" yaml:"organization_id"`
-
-	// Description An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments).
-	Description string `json:"description,omitempty" yaml:"description,omitempty"`
-
-	// Name An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation.
-	Name string `json:"name" yaml:"name"`
+	OrgId       string            `json:"organization_id" yaml:"organization_id"`
+	Description corev1alpha1.Text `json:"description,omitempty" yaml:"description,omitempty"`
+	Name        corev1alpha1.Text `json:"name" yaml:"name"`
 }
 
 // EnvironmentId defines model for environmentId.
-type EnvironmentId = uuid.UUID
+type EnvironmentId = corev1alpha1.Id
 
-// Order defines model for order.
-type Order = string
+// Corev1alpha1Order defines model for order.
+type Corev1alpha1Order = string
 
 // OrgIDQuery defines model for orgIDQuery.
 type OrgIDQuery = string
 
-// Page defines model for page.
-type Page = string
+// Corev1alpha1Page defines model for page.
+type Corev1alpha1Page = string
 
-// Pagesize defines model for pagesize.
-type Pagesize = string
+// Corev1alpha1Pagesize defines model for pagesize.
+type Corev1alpha1Pagesize = string
 
-// Search defines model for search.
-type Search = string
+// Corev1alpha1Search defines model for search.
+type Corev1alpha1Search = string

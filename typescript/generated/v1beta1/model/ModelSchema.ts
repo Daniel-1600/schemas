@@ -206,7 +206,7 @@ const ModelSchema = {
                 "minLength": 5,
                 "maxLength": 100,
                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
+                "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'."
               }
             ],
             "x-oapi-codegen-extra-tags": {
@@ -264,7 +264,7 @@ const ModelSchema = {
             "minLength": 5,
             "maxLength": 100,
             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-            "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1.",
+            "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'.",
             "x-order": 3,
             "x-oapi-codegen-extra-tags": {
               "yaml": "version",
@@ -495,13 +495,10 @@ const ModelSchema = {
                   "db": "deleted_at",
                   "yaml": "deleted_at"
                 },
-                "x-go-type": "core.NullTime",
-                "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/core"
-                },
                 "x-order": 12,
+                "description": "SQL null Timestamp to handle null values of time.",
+                "x-go-type": "sql.NullTime",
                 "type": "string",
-                "format": "date-time",
                 "x-go-type-skip-optional-pointer": true
               },
               "environments": {
@@ -644,11 +641,10 @@ const ModelSchema = {
                         "db": "deleted_at",
                         "yaml": "deleted_at"
                       },
-                      "x-go-type": "core.NullTime",
-                      "x-go-import": "database/sql",
                       "x-order": 10,
+                      "description": "SQL null Timestamp to handle null values of time.",
+                      "x-go-type": "sql.NullTime",
                       "type": "string",
-                      "format": "date-time",
                       "x-go-type-skip-optional-pointer": true
                     }
                   }
@@ -911,7 +907,7 @@ const ModelSchema = {
                       "minLength": 5,
                       "maxLength": 100,
                       "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                      "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
+                      "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'."
                     },
                     "displayName": {
                       "description": "Name of the capability in human-readible format.",
@@ -1176,7 +1172,7 @@ const ModelSchema = {
                     "minLength": 5,
                     "maxLength": 100,
                     "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
+                    "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'."
                   }
                 ],
                 "x-oapi-codegen-extra-tags": {
@@ -1308,52 +1304,29 @@ const ModelSchema = {
           "name": {
             "type": "string",
             "description": "The unique name for the model within the scope of a registrant.",
-            "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
             "pattern": "^[a-z0-9-]+$",
             "examples": [
               "cert-manager"
-            ],
-            "x-order": 4,
-            "x-oapi-codegen-extra-tags": {
-              "yaml": "name",
-              "json": "name"
-            },
-            "default": "untitled-model"
+            ]
           },
           "version": {
             "type": "string",
             "minLength": 5,
             "maxLength": 100,
             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-            "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1.",
-            "x-order": 3,
-            "x-oapi-codegen-extra-tags": {
-              "yaml": "version",
-              "json": "version"
-            }
+            "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'."
           },
           "displayName": {
+            "type": "string",
             "description": "Human-readable name for the model.",
-            "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
             "minLength": 1,
             "maxLength": 100,
-            "type": "string",
             "pattern": "^[a-zA-Z0-9 ]+$",
             "examples": [
               "Cert Manager"
-            ],
-            "x-order": 5,
-            "x-oapi-codegen-extra-tags": {
-              "yaml": "displayName",
-              "json": "displayName"
-            },
-            "default": "Untitled Model"
+            ]
           },
           "model": {
-            "x-oapi-codegen-extra-tags": {
-              "gorm": "type:bytes;serializer:json"
-            },
-            "x-order": 12,
             "type": "object",
             "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
             "required": [
@@ -1368,7 +1341,7 @@ const ModelSchema = {
                     "minLength": 5,
                     "maxLength": 100,
                     "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
+                    "description": "A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'."
                   }
                 ],
                 "x-oapi-codegen-extra-tags": {
@@ -1634,6 +1607,6 @@ const ModelSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default ModelSchema;
