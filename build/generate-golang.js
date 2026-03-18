@@ -215,24 +215,38 @@ function rewriteExternalRefAliases(filePath, inputPath) {
     return;
   }
 
+  function parseImportEntries(block) {
+    return block
+      .split("\n")
+      .map((line) => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) {
+          return null;
+        }
+
+        const importMatch = trimmedLine.match(/^(?:(\w+)\s+)?"([^"]+)"$/);
+        if (!importMatch) {
+          return null;
+        }
+
+        const [, explicitAlias, importPath] = importMatch;
+        return {
+          explicitAlias,
+          importPath,
+          resolvedAlias: explicitAlias || sanitizeGoIdentifier(path.basename(importPath)),
+        };
+      })
+      .filter(Boolean);
+  }
+
   const usedAliases = new Set();
   const aliasMappings = [];
   const aliasByImportPath = new Map();
   const preferredAliases = collectPreferredImportAliases(inputPath);
   const originalImportBlock = importBlockMatch[1];
+  const originalImportEntries = parseImportEntries(originalImportBlock);
 
-  for (const line of originalImportBlock.split("\n")) {
-    const trimmedLine = line.trim();
-    if (!trimmedLine) {
-      continue;
-    }
-
-    const importMatch = trimmedLine.match(/^(?:(\w+)\s+)?"([^"]+)"$/);
-    if (!importMatch) {
-      continue;
-    }
-
-    const [, explicitAlias, importPath] = importMatch;
+  for (const { explicitAlias, importPath } of originalImportEntries) {
     const reservedAlias = explicitAlias || sanitizeGoIdentifier(path.basename(importPath));
     if (reservedAlias && !/^externalRef\d+$/.test(reservedAlias)) {
       usedAliases.add(reservedAlias);
@@ -278,9 +292,22 @@ function rewriteExternalRefAliases(filePath, inputPath) {
     .replace(/^\n+/, "\n")
     .replace(/\n+$/, "");
 
+  const canonicalAliasByImportPath = new Map(
+    parseImportEntries(normalizedImportBlock).map((entry) => [entry.importPath, entry.resolvedAlias]),
+  );
+
+  for (const { importPath, resolvedAlias } of originalImportEntries) {
+    const canonicalAlias = canonicalAliasByImportPath.get(importPath);
+    if (canonicalAlias && resolvedAlias !== canonicalAlias) {
+      aliasMappings.push({ alias: resolvedAlias, readableAlias: canonicalAlias });
+    }
+  }
+
   content = content.replace(importBlockMatch[0], `import (${normalizedImportBlock}\n)`);
 
-  for (const { alias, readableAlias } of aliasMappings) {
+  const uniqueAliasMappings = [...new Map(aliasMappings.map((entry) => [entry.alias, entry])).values()];
+
+  for (const { alias, readableAlias } of uniqueAliasMappings) {
     content = content.replace(new RegExp(`\\b${alias}\\b`, "g"), readableAlias);
     content = content.replace(
       new RegExp(`\\b${exportGoIdentifier(alias)}(?=[A-Z])`, "g"),
