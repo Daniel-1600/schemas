@@ -4,18 +4,18 @@
 package event
 
 import (
-	"github.com/gofrs/uuid"
+	externalRef0 "github.com/meshery/schemas/models/v1alpha1/core"
 )
 
 // BulkDeleteRequest defines model for BulkDeleteRequest.
 type BulkDeleteRequest struct {
-	Ids []uuid.UUID `json:"ids" yaml:"ids"`
+	Ids []externalRef0.Uuid `json:"ids" yaml:"ids"`
 }
 
 // BulkUpdateStatusRequest defines model for BulkUpdateStatusRequest.
 type BulkUpdateStatusRequest struct {
-	Ids    []uuid.UUID `json:"ids" yaml:"ids"`
-	Status string      `json:"status" yaml:"status"`
+	Ids    []externalRef0.Uuid `json:"ids" yaml:"ids"`
+	Status string              `json:"status" yaml:"status"`
 }
 
 // ErrorResponse defines model for ErrorResponse.

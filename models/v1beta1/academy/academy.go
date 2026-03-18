@@ -6,9 +6,9 @@ package academy
 import (
 	"time"
 
-	"github.com/gofrs/uuid"
 	"github.com/meshery/schemas/models/core"
-	"github.com/meshery/schemas/models/v1beta1/invitation"
+	externalRef0 "github.com/meshery/schemas/models/v1alpha1/core"
+	externalRef1 "github.com/meshery/schemas/models/v1beta1/invitation"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -22,9 +22,9 @@ const (
 
 // Defines values for ContentType.
 const (
-	ContentTypeCertification ContentType = "certification"
-	ContentTypeChallenge     ContentType = "challenge"
-	ContentTypeLearningPath  ContentType = "learning-path"
+	Certification ContentType = "certification"
+	Challenge     ContentType = "challenge"
+	LearningPath  ContentType = "learning-path"
 )
 
 // Defines values for Level.
@@ -40,13 +40,6 @@ const (
 	QuestionTypeMultipleAnswers QuestionType = "multiple-answers"
 	QuestionTypeShortAnswer     QuestionType = "short-answer"
 	QuestionTypeSingleAnswer    QuestionType = "single-answer"
-)
-
-// Defines values for RegisterToAcademyContentRequestContentType.
-const (
-	RegisterToAcademyContentRequestContentTypeCertification RegisterToAcademyContentRequestContentType = "certification"
-	RegisterToAcademyContentRequestContentTypeChallenge     RegisterToAcademyContentRequestContentType = "challenge"
-	RegisterToAcademyContentRequestContentTypeLearningPath  RegisterToAcademyContentRequestContentType = "learning-path"
 )
 
 // Defines values for Status.
@@ -71,23 +64,19 @@ const (
 
 // AcademyCirricula defines model for AcademyCirricula.
 type AcademyCirricula struct {
-	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *uuid.UUID `db:"badge_id" json:"badge_id" yaml:"badge_id"`
-
-	// CreatedAt When the cirricula item was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	// BadgeId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	BadgeId   *externalRef0.Uuid `json:"badge_id,omitempty" yaml:"badge_id,omitempty"`
+	CreatedAt externalRef0.Time  `json:"createdAt" yaml:"createdAt"`
 
 	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
+	DeletedAt externalRef0.DeletedAt `db:"deleted_at" json:"deletedAt" yaml:"deletedAt"`
 
 	// ID Id of the cirricula
 	ID string `db:"id" json:"id" yaml:"id"`
 
-	// InviteId ID of the invite associated with this cirricula
-	InviteId *uuid.UUID `db:"invite_id" json:"invite_id" yaml:"invite_id"`
-
-	// Level Level of the cirricula
-	Level Level `db:"level" json:"level" yaml:"level"`
+	// InviteId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	InviteId *externalRef0.Uuid `json:"invite_id,omitempty" yaml:"invite_id,omitempty"`
+	Level    Level              `json:"level" yaml:"level"`
 
 	// Metadata Additional metadata about the cirricula
 	Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
@@ -96,20 +85,14 @@ type AcademyCirricula struct {
 	OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
 
 	// Slug slug of the cirricula
-	Slug string `json:"slug" yaml:"slug"`
+	Slug       string            `json:"slug" yaml:"slug"`
+	Status     Status            `json:"status" yaml:"status"`
+	Type       ContentType       `json:"type" yaml:"type"`
+	UpdatedAt  externalRef0.Time `json:"updatedAt" yaml:"updatedAt"`
+	Visibility Visibility        `json:"visibility" yaml:"visibility"`
 
-	// Status Status of the cirricula
-	Status Status      `db:"status" json:"status" yaml:"status"`
-	Type   ContentType `db:"type" json:"type" yaml:"type"`
-
-	// UpdatedAt When the cirricula was last updated
-	UpdatedAt core.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
-
-	// Visibility Visibility of the cirricula
-	Visibility Visibility `db:"visibility" json:"visibility" yaml:"visibility"`
-
-	// WorkspaceId ID of the workspace to which this cirricula belongs
-	WorkspaceId *uuid.UUID `db:"workspace_id" json:"workspace_id" yaml:"workspace_id"`
+	// WorkspaceId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	WorkspaceId *externalRef0.Uuid `json:"workspace_id,omitempty" yaml:"workspace_id,omitempty"`
 }
 
 // AcademyCirriculaListResponse defines model for AcademyCirriculaListResponse.
@@ -124,23 +107,19 @@ type AcademyCirriculaListResponse struct {
 type AcademyCurriculaWithMetrics struct {
 	RegistrationCount float32 `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
 
-	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *uuid.UUID `db:"badge_id" json:"badge_id" yaml:"badge_id"`
-
-	// CreatedAt When the cirricula item was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	// BadgeId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	BadgeId   *externalRef0.Uuid `json:"badge_id,omitempty" yaml:"badge_id,omitempty"`
+	CreatedAt externalRef0.Time  `json:"createdAt" yaml:"createdAt"`
 
 	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
+	DeletedAt externalRef0.DeletedAt `db:"deleted_at" json:"deletedAt" yaml:"deletedAt"`
 
 	// ID Id of the cirricula
 	ID string `db:"id" json:"id" yaml:"id"`
 
-	// InviteId ID of the invite associated with this cirricula
-	InviteId *uuid.UUID `db:"invite_id" json:"invite_id" yaml:"invite_id"`
-
-	// Level Level of the cirricula
-	Level Level `db:"level" json:"level" yaml:"level"`
+	// InviteId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	InviteId *externalRef0.Uuid `json:"invite_id,omitempty" yaml:"invite_id,omitempty"`
+	Level    Level              `json:"level" yaml:"level"`
 
 	// Metadata Additional metadata about the cirricula
 	Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
@@ -149,67 +128,19 @@ type AcademyCurriculaWithMetrics struct {
 	OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
 
 	// Slug slug of the cirricula
-	Slug string `json:"slug" yaml:"slug"`
+	Slug       string            `json:"slug" yaml:"slug"`
+	Status     Status            `json:"status" yaml:"status"`
+	Type       ContentType       `json:"type" yaml:"type"`
+	UpdatedAt  externalRef0.Time `json:"updatedAt" yaml:"updatedAt"`
+	Visibility Visibility        `json:"visibility" yaml:"visibility"`
 
-	// Status Status of the cirricula
-	Status Status      `db:"status" json:"status" yaml:"status"`
-	Type   ContentType `db:"type" json:"type" yaml:"type"`
-
-	// UpdatedAt When the cirricula was last updated
-	UpdatedAt core.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
-
-	// Visibility Visibility of the cirricula
-	Visibility Visibility `db:"visibility" json:"visibility" yaml:"visibility"`
-
-	// WorkspaceId ID of the workspace to which this cirricula belongs
-	WorkspaceId *uuid.UUID `db:"workspace_id" json:"workspace_id" yaml:"workspace_id"`
+	// WorkspaceId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	WorkspaceId *externalRef0.Uuid `json:"workspace_id,omitempty" yaml:"workspace_id,omitempty"`
 }
 
 // AcademyCurriculaWithMetricsListResponse defines model for AcademyCurriculaWithMetricsListResponse.
 type AcademyCurriculaWithMetricsListResponse struct {
-	Data []struct {
-		RegistrationCount float32 `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
-
-		// BadgeId ID of the badge to be awarded on completion of this curricula
-		BadgeId *uuid.UUID `db:"badge_id" json:"badge_id" yaml:"badge_id"`
-
-		// CreatedAt When the cirricula item was created
-		CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
-
-		// DeletedAt Timestamp when the resource was deleted.
-		DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
-
-		// ID Id of the cirricula
-		ID string `db:"id" json:"id" yaml:"id"`
-
-		// InviteId ID of the invite associated with this cirricula
-		InviteId *uuid.UUID `db:"invite_id" json:"invite_id" yaml:"invite_id"`
-
-		// Level Level of the cirricula
-		Level Level `db:"level" json:"level" yaml:"level"`
-
-		// Metadata Additional metadata about the cirricula
-		Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
-
-		// OrgId Organization ID that owns this learning path
-		OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
-
-		// Slug slug of the cirricula
-		Slug string `json:"slug" yaml:"slug"`
-
-		// Status Status of the cirricula
-		Status Status      `db:"status" json:"status" yaml:"status"`
-		Type   ContentType `db:"type" json:"type" yaml:"type"`
-
-		// UpdatedAt When the cirricula was last updated
-		UpdatedAt core.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
-
-		// Visibility Visibility of the cirricula
-		Visibility Visibility `db:"visibility" json:"visibility" yaml:"visibility"`
-
-		// WorkspaceId ID of the workspace to which this cirricula belongs
-		WorkspaceId *uuid.UUID `db:"workspace_id" json:"workspace_id" yaml:"workspace_id"`
-	} `json:"data" yaml:"data"`
+	Data []AcademyCurriculaWithMetrics `json:"data" yaml:"data"`
 
 	// Total Total number of cirricula
 	Total int `json:"total" yaml:"total"`
@@ -217,35 +148,30 @@ type AcademyCurriculaWithMetricsListResponse struct {
 
 // AcademyRegistration defines model for AcademyRegistration.
 type AcademyRegistration struct {
-	// Certificate Issued certificate for completing the curricula under registration
-	Certificate core.Map `db:"certificate" json:"certificate" yaml:"certificate"`
+	Certificate Certificate `json:"certificate" yaml:"certificate"`
 
 	// ContentId ID of the course content
-	ContentId string `db:"content_id" json:"content_id" yaml:"content_id"`
-
-	// CreatedAt When the registration was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	ContentId string            `db:"content_id" json:"content_id" yaml:"content_id"`
+	CreatedAt externalRef0.Time `json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	DeletedAt externalRef0.DeletedAt `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 
-	// ID A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id externalRef0.Uuid `json:"id" yaml:"id"`
 
 	// Metadata Additional metadata about the registration
 	Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
 
-	// OrgId ID of the organization
-	OrgId uuid.UUID `db:"org_id" json:"org_id" yaml:"org_id"`
+	// OrgId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	OrgId externalRef0.Uuid `json:"org_id" yaml:"org_id"`
 
 	// Status Status of the user's course registration
-	Status AcademyRegistrationStatus `db:"status" json:"status" yaml:"status"`
+	Status    AcademyRegistrationStatus `db:"status" json:"status" yaml:"status"`
+	UpdatedAt externalRef0.Time         `json:"updated_at" yaml:"updated_at"`
 
-	// UpdatedAt When the registration was updated
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
-
-	// UserId ID of the user (foreign key to User)
-	UserId uuid.UUID `db:"user_id" json:"user_id" yaml:"user_id"`
+	// UserId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	UserId externalRef0.Uuid `json:"user_id" yaml:"user_id"`
 }
 
 // AcademyRegistrationStatus Status of the user's course registration
@@ -282,8 +208,8 @@ type Certificate struct {
 	// IssuingAuthorities List of issuing authorities for the certificate
 	IssuingAuthorities []CertificateIssuingAuthority `json:"issuing_authorities" yaml:"issuing_authorities"`
 
-	// OrgId UUID of the organization that issued the certificate
-	OrgId uuid.UUID `json:"org_id" yaml:"org_id"`
+	// OrgId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	OrgId externalRef0.Uuid `json:"org_id" yaml:"org_id"`
 
 	// RecipientId ID of the recipient (user) who received the certificate
 	RecipientId string `json:"recipient_id" yaml:"recipient_id"`
@@ -328,10 +254,8 @@ type ChildNode struct {
 	Permalink string `json:"permalink" yaml:"permalink"`
 
 	// Title Title of the course
-	Title string `json:"title" yaml:"title"`
-
-	// Type Type of the content (e.g., learning-path, challenge, certification)
-	Type *ContentType `json:"type,omitempty" yaml:"type,omitempty"`
+	Title string       `json:"title" yaml:"title"`
+	Type  *ContentType `json:"type,omitempty" yaml:"type,omitempty"`
 
 	// Weight A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.
 	Weight *float32 `json:"weight,omitempty" yaml:"weight,omitempty"`
@@ -362,32 +286,29 @@ type ContentType string
 
 // CreateAcademyCurriculaRequest defines model for CreateAcademyCurriculaRequest.
 type CreateAcademyCurriculaRequest struct {
-	// AccessExpiresAt Expiry time for curricula access
-	AccessExpiresAt *time.Time `db:"access_expires_at" json:"access_expires_at" yaml:"access_expires_at"`
+	AccessExpiresAt externalRef0.Time `json:"access_expires_at,omitempty" yaml:"access_expires_at,omitempty"`
 
-	// AccessStatus Current access status of the curricula
-	AccessStatus invitation.InvitationStatus `db:"access_status" json:"access_status" yaml:"access_status"`
+	// AccessStatus Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later.
+	AccessStatus externalRef1.InvitationStatus `json:"access_status" yaml:"access_status"`
 
-	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *uuid.UUID `db:"badge_id" json:"badge_id" yaml:"badge_id"`
+	// BadgeId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	BadgeId *externalRef0.Uuid `json:"badge_id,omitempty" yaml:"badge_id,omitempty"`
 
-	// Metadata Additional metadata about the cirricula
+	// Metadata Additional metadata about the curricula
 	Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
 
 	// OrgId Organization ID that owns this curricula
 	OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
 
-	// TeamId ID of the team associated with this curricula
-	TeamId uuid.UUID `db:"team_id" json:"team_id" yaml:"team_id"`
+	// TeamId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	TeamId externalRef0.Uuid `json:"team_id" yaml:"team_id"`
 
 	// Title Title of the curricula
-	Title string `json:"title" yaml:"title"`
+	Title string      `json:"title" yaml:"title"`
+	Type  ContentType `json:"type" yaml:"type"`
 
-	// Type Type of the curricula
-	Type ContentType `json:"type" yaml:"type"`
-
-	// WorkspaceId ID of the workspace to which this cirricula belongs
-	WorkspaceId uuid.UUID `db:"workspace_id" json:"workspace_id" yaml:"workspace_id"`
+	// WorkspaceId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	WorkspaceId externalRef0.Uuid `json:"workspace_id" yaml:"workspace_id"`
 }
 
 // CurriculaMetadata defines model for CurriculaMetadata.
@@ -534,42 +455,35 @@ type QuizSubmission struct {
 	RegistrationId string            `json:"registration_id" yaml:"registration_id"`
 
 	// TestSessionId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	TestSessionId uuid.UUID `json:"test_session_id" yaml:"test_session_id"`
-	UserId        string    `json:"user_id" yaml:"user_id"`
+	TestSessionId externalRef0.Uuid `json:"test_session_id" yaml:"test_session_id"`
+	UserId        string            `json:"user_id" yaml:"user_id"`
 }
 
 // RegisterToAcademyContentRequest defines model for RegisterToAcademyContentRequest.
 type RegisterToAcademyContentRequest struct {
 	// ContentId ID of the academy content to register for
-	ContentId   string                                      `json:"content_id" yaml:"content_id"`
-	ContentType *RegisterToAcademyContentRequestContentType `json:"content_type,omitempty" yaml:"content_type,omitempty"`
+	ContentId   string       `json:"content_id" yaml:"content_id"`
+	ContentType *ContentType `json:"content_type,omitempty" yaml:"content_type,omitempty"`
 }
-
-// RegisterToAcademyContentRequestContentType defines model for RegisterToAcademyContentRequest.ContentType.
-type RegisterToAcademyContentRequestContentType string
 
 // SingleAcademyCurriculaResponse defines model for SingleAcademyCurriculaResponse.
 type SingleAcademyCurriculaResponse struct {
-	Invitation        *invitation.Invitation `json:"Invitation,omitempty" yaml:"Invitation,omitempty"`
-	RegistrationCount float32                `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
+	Invitation        *externalRef1.Invitation `json:"Invitation,omitempty" yaml:"Invitation,omitempty"`
+	RegistrationCount float32                  `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
 
-	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *uuid.UUID `db:"badge_id" json:"badge_id" yaml:"badge_id"`
-
-	// CreatedAt When the cirricula item was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	// BadgeId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	BadgeId   *externalRef0.Uuid `json:"badge_id,omitempty" yaml:"badge_id,omitempty"`
+	CreatedAt externalRef0.Time  `json:"createdAt" yaml:"createdAt"`
 
 	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
+	DeletedAt externalRef0.DeletedAt `db:"deleted_at" json:"deletedAt" yaml:"deletedAt"`
 
 	// ID Id of the cirricula
 	ID string `db:"id" json:"id" yaml:"id"`
 
-	// InviteId ID of the invite associated with this cirricula
-	InviteId *uuid.UUID `db:"invite_id" json:"invite_id" yaml:"invite_id"`
-
-	// Level Level of the cirricula
-	Level Level `db:"level" json:"level" yaml:"level"`
+	// InviteId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	InviteId *externalRef0.Uuid `json:"invite_id,omitempty" yaml:"invite_id,omitempty"`
+	Level    Level              `json:"level" yaml:"level"`
 
 	// Metadata Additional metadata about the cirricula
 	Metadata core.Map `db:"metadata" json:"metadata" yaml:"metadata"`
@@ -578,20 +492,14 @@ type SingleAcademyCurriculaResponse struct {
 	OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
 
 	// Slug slug of the cirricula
-	Slug string `json:"slug" yaml:"slug"`
+	Slug       string            `json:"slug" yaml:"slug"`
+	Status     Status            `json:"status" yaml:"status"`
+	Type       ContentType       `json:"type" yaml:"type"`
+	UpdatedAt  externalRef0.Time `json:"updatedAt" yaml:"updatedAt"`
+	Visibility Visibility        `json:"visibility" yaml:"visibility"`
 
-	// Status Status of the cirricula
-	Status Status      `db:"status" json:"status" yaml:"status"`
-	Type   ContentType `db:"type" json:"type" yaml:"type"`
-
-	// UpdatedAt When the cirricula was last updated
-	UpdatedAt core.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
-
-	// Visibility Visibility of the cirricula
-	Visibility Visibility `db:"visibility" json:"visibility" yaml:"visibility"`
-
-	// WorkspaceId ID of the workspace to which this cirricula belongs
-	WorkspaceId *uuid.UUID `db:"workspace_id" json:"workspace_id" yaml:"workspace_id"`
+	// WorkspaceId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	WorkspaceId *externalRef0.Uuid `json:"workspace_id,omitempty" yaml:"workspace_id,omitempty"`
 }
 
 // StartTestRequest defines model for StartTestRequest.
@@ -616,19 +524,19 @@ type TestSubmission struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	DeletedAt externalRef0.DeletedAt `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 
 	// ExpiresAt Expiry time for the test submission ( based on the time limit of the test )
 	ExpiresAt *time.Time `db:"expires_at" json:"expires_at,omitempty" yaml:"expires_at,omitempty"`
 
-	// ID A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id externalRef0.Uuid `json:"id" yaml:"id"`
 
 	// RegistrationId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	RegistrationId uuid.UUID             `db:"registration_id" json:"registration_id" yaml:"registration_id"`
-	Result         *QuizEvaluationResult `db:"result" json:"result,omitempty" yaml:"result,omitempty"`
+	RegistrationId externalRef0.Uuid     `json:"registration_id" yaml:"registration_id"`
+	Result         *QuizEvaluationResult `json:"result,omitempty" yaml:"result,omitempty"`
 	Status         TestSubmissionStatus  `json:"status" yaml:"status"`
-	SubmissionData *QuizSubmission       `db:"submission_data" json:"submission_data,omitempty" yaml:"submission_data,omitempty"`
+	SubmissionData *QuizSubmission       `json:"submission_data,omitempty" yaml:"submission_data,omitempty"`
 	SubmittedAt    *time.Time            `db:"submitted_at" json:"submitted_at,omitempty" yaml:"submitted_at,omitempty"`
 	Test           Quiz                  `json:"test" yaml:"test"`
 	TestAbsPath    string                `db:"test_abs_path" json:"test_abs_path" yaml:"test_abs_path"`
@@ -637,24 +545,14 @@ type TestSubmission struct {
 	UpdatedAt *time.Time `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
 
 	// UserId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	UserId uuid.UUID `db:"user_id" json:"user_id" yaml:"user_id"`
+	UserId externalRef0.Uuid `json:"user_id" yaml:"user_id"`
 }
 
 // TestSubmissionStatus defines model for TestSubmissionStatus.
 type TestSubmissionStatus string
 
 // TestSubmissions Test submissions made by the user (array of QuizEvaluationResult)
-type TestSubmissions = []struct {
-	AttemptedAt        time.Time       `json:"attempted_at" yaml:"attempted_at"`
-	Attempts           int             `json:"attempts" yaml:"attempts"`
-	CorrectSubmissions map[string]bool `json:"correct_submissions" yaml:"correct_submissions"`
-	PassPercentage     float32         `json:"pass_percentage" yaml:"pass_percentage"`
-	Passed             bool            `json:"passed" yaml:"passed"`
-	PercentageScored   float32         `json:"percentage_scored" yaml:"percentage_scored"`
-	Quiz               Quiz            `json:"quiz" yaml:"quiz"`
-	Score              int             `json:"score" yaml:"score"`
-	TotalMarks         int             `json:"total_marks" yaml:"total_marks"`
-}
+type TestSubmissions = []QuizEvaluationResult
 
 // UpdateCurrentItemRequest defines model for UpdateCurrentItemRequest.
 type UpdateCurrentItemRequest struct {
@@ -671,15 +569,13 @@ type UserRegistration struct {
 	CurriculaPermalink string `db:"curricula_permalink" json:"curricula_permalink" yaml:"curricula_permalink"`
 
 	// CurriculaTitle Title of the curricula
-	CurriculaTitle string `db:"curricula_title" json:"curricula_title" yaml:"curricula_title"`
-
-	// CurriculaType Type of the curricula
-	CurriculaType ContentType `db:"curricula_type" json:"curricula_type" yaml:"curricula_type"`
+	CurriculaTitle string      `db:"curricula_title" json:"curricula_title" yaml:"curricula_title"`
+	CurriculaType  ContentType `json:"curricula_type" yaml:"curricula_type"`
 
 	// RegistrationId Unique ID of the registration
 	RegistrationId openapi_types.UUID `db:"registration_id" json:"registration_id" yaml:"registration_id"`
 
-	// Status Registration status
+	// Status Status of the user's course registration
 	Status AcademyRegistrationStatus `db:"status" json:"status" yaml:"status"`
 
 	// TotalCount Total count for pagination

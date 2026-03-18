@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const TeamSchema = {
+const TeamSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Team",
@@ -2104,6 +2104,6 @@ const TeamSchema = {
       }
     }
   }
-} as const;
+};
 
 export default TeamSchema;

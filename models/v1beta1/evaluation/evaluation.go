@@ -6,7 +6,7 @@ package evaluation
 import (
 	"time"
 
-	"github.com/meshery/schemas/models/v1beta1/pattern"
+	externalRef0 "github.com/meshery/schemas/models/v1beta1/pattern"
 )
 
 // Defines values for ActionOp.
@@ -80,7 +80,7 @@ type ActionOp string
 type AddComponentOp struct {
 	Op    *AddComponentOpOp `json:"op,omitempty" yaml:"op,omitempty"`
 	Value *struct {
-		Item map[string]interface{} `json:"item" yaml:"item"`
+		Item ComponentDeclaration `json:"item" yaml:"item"`
 	} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
@@ -91,7 +91,7 @@ type AddComponentOpOp string
 type AddRelationshipOp struct {
 	Op    *AddRelationshipOpOp `json:"op,omitempty" yaml:"op,omitempty"`
 	Value *struct {
-		Item map[string]interface{} `json:"item" yaml:"item"`
+		Item RelationshipDeclaration `json:"item" yaml:"item"`
 	} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
@@ -126,7 +126,7 @@ type DeleteRelationshipOpOp string
 // EvaluationRequest defines model for EvaluationRequest.
 type EvaluationRequest struct {
 	// Design Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes.
-	Design  pattern.PatternFile `json:"design" yaml:"design"`
+	Design  externalRef0.PatternFile `json:"design" yaml:"design"`
 	Options *struct {
 		// EnableTrace If true, include detailed trace information in the response
 		EnableTrace *bool `json:"enableTrace,omitempty" yaml:"enableTrace,omitempty"`
@@ -140,8 +140,8 @@ type EvaluationRequest struct {
 type EvaluationResponse struct {
 	Actions []interface{} `json:"actions" yaml:"actions"`
 
-	// Design The final evaluated design, including all updated components and relationships. This can be either the complete updated design or only a diff of changes. The version of the design will be automatically incremented if any modifications are made during the evaluation process. This field provides a comprehensive view of the design state after all relationship evaluations and policy applications have been completed.
-	Design pattern.PatternFile `json:"design" yaml:"design"`
+	// Design Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes.
+	Design externalRef0.PatternFile `json:"design" yaml:"design"`
 
 	// EvaluationHash Hash of the input parameters and configuration used for this evaluation. Useful for identifying duplicate evaluations or caching results.
 	EvaluationHash *string `json:"evaluationHash,omitempty" yaml:"evaluationHash,omitempty"`

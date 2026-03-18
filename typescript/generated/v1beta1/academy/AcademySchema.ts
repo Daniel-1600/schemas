@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const AcademySchema = {
+const AcademySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Academy API",
@@ -541,21 +541,21 @@ const AcademySchema = {
                     }
                   },
                   "orgId": {
+                    "type": "string",
                     "description": "Organization ID that owns this curricula",
+                    "example": "layer5",
                     "x-go-name": "OrgId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "org_id",
                       "db": "org_id",
                       "yaml": "org_id"
-                    },
-                    "type": "string",
-                    "example": "layer5"
+                    }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "description": "ID of the workspace to which this curricula belongs",
                     "x-oapi-codegen-extra-tags": {
-                      "db": "workspace_id",
                       "json": "workspace_id",
+                      "db": "workspace_id",
                       "yaml": "workspace_id"
                     },
                     "type": "string",
@@ -568,8 +568,8 @@ const AcademySchema = {
                   "badge_id": {
                     "description": "ID of the badge to be awarded on completion of this curricula",
                     "x-oapi-codegen-extra-tags": {
-                      "db": "badge_id",
                       "json": "badge_id",
+                      "db": "badge_id",
                       "yaml": "badge_id"
                     },
                     "type": "string",
@@ -627,13 +627,13 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
                     "x-oapi-codegen-extra-tags": {
-                      "db": "metadata",
                       "json": "metadata",
+                      "db": "metadata",
                       "yaml": "metadata"
                     },
                     "oneOf": [
@@ -2923,21 +2923,21 @@ const AcademySchema = {
                     }
                   },
                   "orgId": {
+                    "type": "string",
                     "description": "Organization ID that owns this curricula",
+                    "example": "layer5",
                     "x-go-name": "OrgId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "org_id",
                       "db": "org_id",
                       "yaml": "org_id"
-                    },
-                    "type": "string",
-                    "example": "layer5"
+                    }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "description": "ID of the workspace to which this curricula belongs",
                     "x-oapi-codegen-extra-tags": {
-                      "db": "workspace_id",
                       "json": "workspace_id",
+                      "db": "workspace_id",
                       "yaml": "workspace_id"
                     },
                     "type": "string",
@@ -2950,8 +2950,8 @@ const AcademySchema = {
                   "badge_id": {
                     "description": "ID of the badge to be awarded on completion of this curricula",
                     "x-oapi-codegen-extra-tags": {
-                      "db": "badge_id",
                       "json": "badge_id",
+                      "db": "badge_id",
                       "yaml": "badge_id"
                     },
                     "type": "string",
@@ -3009,13 +3009,13 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
                     "x-oapi-codegen-extra-tags": {
-                      "db": "metadata",
                       "json": "metadata",
+                      "db": "metadata",
                       "yaml": "metadata"
                     },
                     "oneOf": [
@@ -8269,21 +8269,21 @@ const AcademySchema = {
             }
           },
           "orgId": {
+            "type": "string",
             "description": "Organization ID that owns this curricula",
+            "example": "layer5",
             "x-go-name": "OrgId",
             "x-oapi-codegen-extra-tags": {
               "json": "org_id",
               "db": "org_id",
               "yaml": "org_id"
-            },
-            "type": "string",
-            "example": "layer5"
+            }
           },
           "workspace_id": {
-            "description": "ID of the workspace to which this cirricula belongs",
+            "description": "ID of the workspace to which this curricula belongs",
             "x-oapi-codegen-extra-tags": {
-              "db": "workspace_id",
               "json": "workspace_id",
+              "db": "workspace_id",
               "yaml": "workspace_id"
             },
             "type": "string",
@@ -8296,8 +8296,8 @@ const AcademySchema = {
           "badge_id": {
             "description": "ID of the badge to be awarded on completion of this curricula",
             "x-oapi-codegen-extra-tags": {
-              "db": "badge_id",
               "json": "badge_id",
+              "db": "badge_id",
               "yaml": "badge_id"
             },
             "type": "string",
@@ -8355,13 +8355,13 @@ const AcademySchema = {
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the cirricula",
+            "description": "Additional metadata about the curricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
-              "db": "metadata",
               "json": "metadata",
+              "db": "metadata",
               "yaml": "metadata"
             },
             "oneOf": [
@@ -14170,6 +14170,6 @@ const AcademySchema = {
       }
     }
   }
-} as const;
+};
 
 export default AcademySchema;

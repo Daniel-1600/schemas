@@ -938,7 +938,7 @@ export interface components {
       orgId: string;
       /**
        * Format: uuid
-       * @description ID of the workspace to which this cirricula belongs
+       * @description ID of the workspace to which this curricula belongs
        */
       workspace_id: string;
       /**
@@ -961,7 +961,7 @@ export interface components {
        * @enum {string}
        */
       access_status: "enabled" | "disabled";
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -3658,7 +3658,7 @@ export interface operations {
           orgId: string;
           /**
            * Format: uuid
-           * @description ID of the workspace to which this cirricula belongs
+           * @description ID of the workspace to which this curricula belongs
            */
           workspace_id: string;
           /**
@@ -3681,7 +3681,7 @@ export interface operations {
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the curricula */
           metadata: {
             /**
              * @description Title of the learning path
@@ -4713,7 +4713,7 @@ export interface operations {
           orgId: string;
           /**
            * Format: uuid
-           * @description ID of the workspace to which this cirricula belongs
+           * @description ID of the workspace to which this curricula belongs
            */
           workspace_id: string;
           /**
@@ -4736,7 +4736,7 @@ export interface operations {
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the curricula */
           metadata: {
             /**
              * @description Title of the learning path

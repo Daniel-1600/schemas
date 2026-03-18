@@ -945,7 +945,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
         id: string;
         /** The unique name for the model within the scope of a registrant. */
         name: string;
-        /** Version of the model definition. */
+        /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
         version: string;
         /** Human-readable name for the model. */
         displayName: string;
@@ -1335,7 +1335,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
         id: string;
         /** The unique name for the model within the scope of a registrant. */
         name: string;
-        /** Version of the model definition. */
+        /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
         version: string;
         /** Human-readable name for the model. */
         displayName: string;
@@ -1389,7 +1389,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
               id: string;
               /** The unique name for the model within the scope of a registrant. */
               name: string;
-              /** Version of the model definition. */
+              /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
               version: string;
               /** Human-readable name for the model. */
               displayName: string;
@@ -1454,7 +1454,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
               id: string;
               /** The unique name for the model within the scope of a registrant. */
               name: string;
-              /** Version of the model definition. */
+              /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
               version: string;
               /** Human-readable name for the model. */
               displayName: string;
@@ -1522,7 +1522,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
               id: string;
               /** The unique name for the model within the scope of a registrant. */
               name: string;
-              /** Version of the model definition. */
+              /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
               version: string;
               /** Human-readable name for the model. */
               displayName: string;
@@ -1587,7 +1587,7 @@ export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
               id: string;
               /** The unique name for the model within the scope of a registrant. */
               name: string;
-              /** Version of the model definition. */
+              /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
               version: string;
               /** Human-readable name for the model. */
               displayName: string;
@@ -1914,7 +1914,7 @@ export type PostEvaluateApiArg = {
           id: string;
           /** The unique name for the model within the scope of a registrant. */
           name: string;
-          /** Version of the model definition. */
+          /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
           version: string;
           /** Human-readable name for the model. */
           displayName: string;
@@ -2304,7 +2304,7 @@ export type PostEvaluateApiArg = {
           id: string;
           /** The unique name for the model within the scope of a registrant. */
           name: string;
-          /** Version of the model definition. */
+          /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
           version: string;
           /** Human-readable name for the model. */
           displayName: string;
@@ -2358,7 +2358,7 @@ export type PostEvaluateApiArg = {
                 id: string;
                 /** The unique name for the model within the scope of a registrant. */
                 name: string;
-                /** Version of the model definition. */
+                /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
                 version: string;
                 /** Human-readable name for the model. */
                 displayName: string;
@@ -2423,7 +2423,7 @@ export type PostEvaluateApiArg = {
                 id: string;
                 /** The unique name for the model within the scope of a registrant. */
                 name: string;
-                /** Version of the model definition. */
+                /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
                 version: string;
                 /** Human-readable name for the model. */
                 displayName: string;
@@ -2491,7 +2491,7 @@ export type PostEvaluateApiArg = {
                 id: string;
                 /** The unique name for the model within the scope of a registrant. */
                 name: string;
-                /** Version of the model definition. */
+                /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
                 version: string;
                 /** Human-readable name for the model. */
                 displayName: string;
@@ -2556,7 +2556,7 @@ export type PostEvaluateApiArg = {
                 id: string;
                 /** The unique name for the model within the scope of a registrant. */
                 name: string;
-                /** Version of the model definition. */
+                /** A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1. */
                 version: string;
                 /** Human-readable name for the model. */
                 displayName: string;

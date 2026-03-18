@@ -4,19 +4,16 @@
 package key
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/gofrs/uuid"
+	externalRef0 "github.com/meshery/schemas/models/v1alpha1/core"
 )
 
 // Key Represents an authorization key used for access control.
 type Key struct {
-	// ID A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id externalRef0.Uuid `json:"id" yaml:"id"`
 
 	// Owner A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	Owner uuid.UUID `db:"owner" json:"owner" yaml:"owner"`
+	Owner externalRef0.Uuid `json:"owner" yaml:"owner"`
 
 	// Function Operation permitted by the key.
 	Function string `db:"function" json:"function" yaml:"function"`
@@ -31,27 +28,54 @@ type Key struct {
 	Description string `db:"description" json:"description" yaml:"description"`
 
 	// CreatedAt Timestamp when the resource was created.
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	CreatedAt externalRef0.CreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
 
 	// UpdatedAt Timestamp when the resource was updated.
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+	UpdatedAt externalRef0.UpdatedAt `db:"updated_at" json:"updated_at" yaml:"updated_at"`
 
 	// DeletedAt SQL null Timestamp to handle null values of time.
-	DeletedAt sql.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	DeletedAt externalRef0.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 }
 
 // KeyPage defines model for KeyPage.
 type KeyPage struct {
-	Page       int   `json:"page" yaml:"page"`
-	PageSize   int   `json:"page_size" yaml:"page_size"`
-	TotalCount int   `json:"total_count" yaml:"total_count"`
-	Keys       []Key `json:"keys" yaml:"keys"`
+	Page       externalRef0.Number `json:"page" yaml:"page"`
+	PageSize   externalRef0.Number `json:"page_size" yaml:"page_size"`
+	TotalCount externalRef0.Number `json:"total_count" yaml:"total_count"`
+	Keys       []struct {
+		// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		Id externalRef0.Uuid `json:"id" yaml:"id"`
+
+		// Owner A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		Owner externalRef0.Uuid `json:"owner" yaml:"owner"`
+
+		// Function Operation permitted by the key.
+		Function string `db:"function" json:"function" yaml:"function"`
+
+		// Category Category for the key.
+		Category string `db:"category" json:"category" yaml:"category"`
+
+		// Subcategory Subcategory for the key.
+		Subcategory string `db:"subcategory" json:"subcategory" yaml:"subcategory"`
+
+		// Description Human readable description of the key.
+		Description string `db:"description" json:"description" yaml:"description"`
+
+		// CreatedAt Timestamp when the resource was created.
+		CreatedAt externalRef0.CreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
+
+		// UpdatedAt Timestamp when the resource was updated.
+		UpdatedAt externalRef0.UpdatedAt `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+
+		// DeletedAt SQL null Timestamp to handle null values of time.
+		DeletedAt externalRef0.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	} `json:"keys" yaml:"keys"`
 }
 
 // KeyPayload Payload for creating or updating a key.
 type KeyPayload struct {
 	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	Id *uuid.UUID `json:"id,omitempty" yaml:"id,omitempty"`
+	Id *externalRef0.Uuid `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// Function Operation permitted by the key.
 	Function *string `json:"function,omitempty" yaml:"function,omitempty"`
@@ -67,19 +91,19 @@ type KeyPayload struct {
 }
 
 // KeyId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type KeyId = uuid.UUID
+type KeyId = externalRef0.Uuid
 
-// Order defines model for order.
-type Order = string
+// ExternalRef0Order defines model for order.
+type ExternalRef0Order = string
 
 // OrgID A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type OrgID = uuid.UUID
+type OrgID = externalRef0.Uuid
 
-// Page defines model for page.
-type Page = string
+// ExternalRef0Page defines model for page.
+type ExternalRef0Page = string
 
-// Pagesize defines model for pagesize.
-type Pagesize = string
+// ExternalRef0Pagesize defines model for pagesize.
+type ExternalRef0Pagesize = string
 
-// Search defines model for search.
-type Search = string
+// ExternalRef0Search defines model for search.
+type ExternalRef0Search = string

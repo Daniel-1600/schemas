@@ -7,7 +7,6 @@ export interface paths {}
 
 export interface components {
   schemas: {
-    /** @description Relationships define the nature of interaction between interconnected components in Meshery. The combination of relationship properties kind, type, and subtype characterize various genealogical relations among and between components. Relationships have selectors, selector sets, metadata, and optional parameters. Learn more at https://docs.meshery.io/concepts/logical/relationships. */
     RelationshipDefinition: {
       /**
        * Format: uuid
@@ -224,17 +223,11 @@ export interface components {
          * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         id: string;
-        /**
-         * @description The unique name for the model within the scope of a registrant.
-         * @default untitled-model
-         */
+        /** @description The unique name for the model within the scope of a registrant. */
         name: string;
         /** @description Version of the model definition. */
         version: string;
-        /**
-         * @description Human-readable name for the model.
-         * @default Untitled Model
-         */
+        /** @description Human-readable name for the model. */
         displayName: string;
         /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
         model: {
@@ -299,17 +292,11 @@ export interface components {
                * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
-              /**
-               * @description The unique name for the model within the scope of a registrant.
-               * @default untitled-model
-               */
+              /** @description The unique name for the model within the scope of a registrant. */
               name: string;
               /** @description Version of the model definition. */
               version: string;
-              /**
-               * @description Human-readable name for the model.
-               * @default Untitled Model
-               */
+              /** @description Human-readable name for the model. */
               displayName: string;
               /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
               model: {
@@ -392,17 +379,11 @@ export interface components {
                * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
-              /**
-               * @description The unique name for the model within the scope of a registrant.
-               * @default untitled-model
-               */
+              /** @description The unique name for the model within the scope of a registrant. */
               name: string;
               /** @description Version of the model definition. */
               version: string;
-              /**
-               * @description Human-readable name for the model.
-               * @default Untitled Model
-               */
+              /** @description Human-readable name for the model. */
               displayName: string;
               /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
               model: {
@@ -488,17 +469,11 @@ export interface components {
                * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
-              /**
-               * @description The unique name for the model within the scope of a registrant.
-               * @default untitled-model
-               */
+              /** @description The unique name for the model within the scope of a registrant. */
               name: string;
               /** @description Version of the model definition. */
               version: string;
-              /**
-               * @description Human-readable name for the model.
-               * @default Untitled Model
-               */
+              /** @description Human-readable name for the model. */
               displayName: string;
               /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
               model: {
@@ -581,17 +556,11 @@ export interface components {
                * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
-              /**
-               * @description The unique name for the model within the scope of a registrant.
-               * @default untitled-model
-               */
+              /** @description The unique name for the model within the scope of a registrant. */
               name: string;
               /** @description Version of the model definition. */
               version: string;
-              /**
-               * @description Human-readable name for the model.
-               * @default Untitled Model
-               */
+              /** @description Human-readable name for the model. */
               displayName: string;
               /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
               model: {
@@ -634,7 +603,6 @@ export interface components {
         };
       }[];
     };
-    /** @description Match selector item for binding between nodes */
     MatchSelectorItem: {
       /**
        * Format: uuid
@@ -646,7 +614,6 @@ export interface components {
       mutatorRef?: string[][];
       mutatedRef?: string[][];
     };
-    /** @description Match configuration for selector */
     MatchSelector: {
       refs?: string[][];
       from?: {
@@ -672,7 +639,6 @@ export interface components {
         mutatedRef?: string[][];
       }[];
     };
-    /** @description Patch configuration for the selector */
     RelationshipDefinition_Selectors_Patch: {
       /**
        * @description patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
@@ -700,7 +666,6 @@ export interface components {
       mutatorRef?: string[][];
       mutatedRef?: string[][];
     };
-    /** @description Optional fields that are a part of the selector. Absence of a field has an implied * meaning. */
     SelectorItem: {
       /**
        * Format: uuid
@@ -743,17 +708,11 @@ export interface components {
          * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         id: string;
-        /**
-         * @description The unique name for the model within the scope of a registrant.
-         * @default untitled-model
-         */
+        /** @description The unique name for the model within the scope of a registrant. */
         name: string;
         /** @description Version of the model definition. */
         version: string;
-        /**
-         * @description Human-readable name for the model.
-         * @default Untitled Model
-         */
+        /** @description Human-readable name for the model. */
         displayName: string;
         /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
         model: {
@@ -793,7 +752,6 @@ export interface components {
         mutatedRef?: string[][];
       };
     };
-    /** @description Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
     Selector: {
       /** @description Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
       from: {
@@ -838,17 +796,11 @@ export interface components {
            * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           id: string;
-          /**
-           * @description The unique name for the model within the scope of a registrant.
-           * @default untitled-model
-           */
+          /** @description The unique name for the model within the scope of a registrant. */
           name: string;
           /** @description Version of the model definition. */
           version: string;
-          /**
-           * @description Human-readable name for the model.
-           * @default Untitled Model
-           */
+          /** @description Human-readable name for the model. */
           displayName: string;
           /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
           model: {
@@ -931,17 +883,11 @@ export interface components {
            * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           id: string;
-          /**
-           * @description The unique name for the model within the scope of a registrant.
-           * @default untitled-model
-           */
+          /** @description The unique name for the model within the scope of a registrant. */
           name: string;
           /** @description Version of the model definition. */
           version: string;
-          /**
-           * @description Human-readable name for the model.
-           * @default Untitled Model
-           */
+          /** @description Human-readable name for the model. */
           displayName: string;
           /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
           model: {
@@ -982,7 +928,6 @@ export interface components {
         };
       }[];
     };
-    /** @description Optional selectors used to match Components. Absence of a selector means that it is applied to all Components. */
     SelectorSetItem: {
       /** @description Selectors used to define relationships which are allowed. */
       allow: {
@@ -1029,17 +974,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1122,17 +1061,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1218,17 +1151,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1311,17 +1238,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1363,7 +1284,6 @@ export interface components {
         }[];
       };
     };
-    /** @description Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
     SelectorSet: {
       /** @description Selectors used to define relationships which are allowed. */
       allow: {
@@ -1410,17 +1330,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1503,17 +1417,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1599,17 +1507,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1692,17 +1594,11 @@ export interface components {
              * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             id: string;
-            /**
-             * @description The unique name for the model within the scope of a registrant.
-             * @default untitled-model
-             */
+            /** @description The unique name for the model within the scope of a registrant. */
             name: string;
             /** @description Version of the model definition. */
             version: string;
-            /**
-             * @description Human-readable name for the model.
-             * @default Untitled Model
-             */
+            /** @description Human-readable name for the model. */
             displayName: string;
             /** @description Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
             model: {
@@ -1744,7 +1640,6 @@ export interface components {
         }[];
       };
     }[];
-    /** @description Metadata contains additional information associated with the Relationship. */
     Relationship_Metadata: {
       /** @description Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
       description?: string;
@@ -1880,7 +1775,6 @@ export interface components {
       /** @description Indicates whether the relationship should be treated as a logical representation only */
       isAnnotation?: boolean;
     } & { [key: string]: unknown };
-    /** @description Visualization styles for a relationship */
     RelationshipDefinitionMetadataStyles: {
       /** @description Primary color of the component used for UI representation. */
       primaryColor: string;

@@ -6,8 +6,8 @@ package user
 import (
 	"time"
 
-	"github.com/gofrs/uuid"
 	"github.com/meshery/schemas/models/core"
+	externalRef0 "github.com/meshery/schemas/models/v1alpha1/core"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -44,8 +44,7 @@ type Adapter = map[string]interface{}
 
 // GetUserResponse defines model for GetUserResponse.
 type GetUserResponse struct {
-	// AcceptedTermsAt Timestamp when user accepted terms and conditions
-	AcceptedTermsAt time.Time `db:"accepted_terms_at" json:"accepted_terms_at" yaml:"accepted_terms_at"`
+	AcceptedTermsAt externalRef0.Time `json:"accepted_terms_at,omitempty" yaml:"accepted_terms_at,omitempty"`
 
 	// AvatarUrl URL to user's avatar image
 	AvatarUrl *string `db:"avatar_url" json:"avatar_url" yaml:"avatar_url"`
@@ -54,28 +53,22 @@ type GetUserResponse struct {
 	Bio *string `db:"bio" json:"bio" yaml:"bio"`
 
 	// Country User's country information stored as JSONB
-	Country *core.Map `db:"country" json:"country" yaml:"country"`
-
-	// CreatedAt Timestamp when the user record was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	Country   *core.Map         `db:"country" json:"country" yaml:"country"`
+	CreatedAt externalRef0.Time `json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the user record was soft-deleted (null if not deleted)
 	DeletedAt *core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
 
 	// Email User's email address
-	Email openapi_types.Email `db:"email" json:"email" yaml:"email"`
-
-	// FirstLoginTime Timestamp of user's first login
-	FirstLoginTime time.Time `db:"first_login_time" json:"first_login_time" yaml:"first_login_time"`
+	Email          openapi_types.Email `db:"email" json:"email" yaml:"email"`
+	FirstLoginTime externalRef0.Time   `json:"first_login_time,omitempty" yaml:"first_login_time,omitempty"`
 
 	// FirstName User's first name
 	FirstName string `db:"first_name" json:"first_name" yaml:"first_name"`
 
-	// ID Unique identifier for the user
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
-
-	// LastLoginTime Timestamp of user's most recent login
-	LastLoginTime time.Time `db:"last_login_time" json:"last_login_time" yaml:"last_login_time"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id            externalRef0.Uuid `json:"id" yaml:"id"`
+	LastLoginTime externalRef0.Time `json:"last_login_time" yaml:"last_login_time"`
 
 	// LastName User's last name
 	LastName string `db:"last_name" json:"last_name" yaml:"last_name"`
@@ -85,9 +78,7 @@ type GetUserResponse struct {
 		OrganizationsWithRoles *[]map[string]interface{} `db:"organizations_with_roles" json:"organizations_with_roles" yaml:"organizations_with_roles"`
 		TotalCount             *int                      `db:"total_count" json:"total_count" yaml:"total_count"`
 	} `db:"organizations" json:"organizations" yaml:"organizations"`
-
-	// Preferences User preferences stored as JSONB
-	Preferences *Preference `db:"preferences" json:"preferences" yaml:"preferences"`
+	Preferences *Preference `json:"preferences,omitempty" yaml:"preferences,omitempty"`
 
 	// Provider Authentication provider (e.g., Layer5 Cloud, Twitter, Facebook, Github)
 	Provider string `db:"provider" json:"provider" yaml:"provider"`
@@ -109,9 +100,7 @@ type GetUserResponse struct {
 		TeamsWithRoles *[]map[string]interface{} `db:"teams_with_roles" json:"teams_with_roles" yaml:"teams_with_roles"`
 		TotalCount     *int                      `db:"total_count" json:"total_count" yaml:"total_count"`
 	} `db:"teams" json:"teams" yaml:"teams"`
-
-	// UpdatedAt Timestamp when the user record was last updated
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+	UpdatedAt externalRef0.Time `json:"updated_at" yaml:"updated_at"`
 
 	// UserId User identifier (username or external ID)
 	UserId string `db:"user_id" json:"user_id" yaml:"user_id"`
@@ -125,14 +114,9 @@ type GetUserResponseStatus string
 
 // Grafana defines model for Grafana.
 type Grafana struct {
-	GrafanaAPIKey         *string `json:"grafanaAPIKey,omitempty" yaml:"grafanaAPIKey,omitempty"`
-	GrafanaURL            *string `json:"grafanaURL,omitempty" yaml:"grafanaURL,omitempty"`
-	SelectedBoardsConfigs *[]struct {
-		// Board Placeholder for GrafanaBoard definition (define fields as needed)
-		Board        *map[string]interface{}   `json:"board,omitempty" yaml:"board,omitempty"`
-		Panels       *[]map[string]interface{} `json:"panels,omitempty" yaml:"panels,omitempty"`
-		TemplateVars *[]string                 `json:"templateVars,omitempty" yaml:"templateVars,omitempty"`
-	} `json:"selectedBoardsConfigs,omitempty" yaml:"selectedBoardsConfigs,omitempty"`
+	GrafanaAPIKey         *string                  `json:"grafanaAPIKey,omitempty" yaml:"grafanaAPIKey,omitempty"`
+	GrafanaURL            *string                  `json:"grafanaURL,omitempty" yaml:"grafanaURL,omitempty"`
+	SelectedBoardsConfigs *[]SelectedGrafanaConfig `json:"selectedBoardsConfigs,omitempty" yaml:"selectedBoardsConfigs,omitempty"`
 }
 
 // GrafanaBoard Placeholder for GrafanaBoard definition (define fields as needed)
@@ -174,21 +158,16 @@ type Preference struct {
 
 // Prometheus defines model for Prometheus.
 type Prometheus struct {
-	PrometheusURL                   *string `json:"prometheusURL,omitempty" yaml:"prometheusURL,omitempty"`
-	SelectedPrometheusBoardsConfigs *[]struct {
-		// Board Placeholder for GrafanaBoard definition (define fields as needed)
-		Board        *map[string]interface{}   `json:"board,omitempty" yaml:"board,omitempty"`
-		Panels       *[]map[string]interface{} `json:"panels,omitempty" yaml:"panels,omitempty"`
-		TemplateVars *[]string                 `json:"templateVars,omitempty" yaml:"templateVars,omitempty"`
-	} `json:"selectedPrometheusBoardsConfigs,omitempty" yaml:"selectedPrometheusBoardsConfigs,omitempty"`
+	PrometheusURL                   *string                  `json:"prometheusURL,omitempty" yaml:"prometheusURL,omitempty"`
+	SelectedPrometheusBoardsConfigs *[]SelectedGrafanaConfig `json:"selectedPrometheusBoardsConfigs,omitempty" yaml:"selectedPrometheusBoardsConfigs,omitempty"`
 }
 
 // SelectedGrafanaConfig defines model for SelectedGrafanaConfig.
 type SelectedGrafanaConfig struct {
 	// Board Placeholder for GrafanaBoard definition (define fields as needed)
-	Board        *map[string]interface{}   `json:"board,omitempty" yaml:"board,omitempty"`
-	Panels       *[]map[string]interface{} `json:"panels,omitempty" yaml:"panels,omitempty"`
-	TemplateVars *[]string                 `json:"templateVars,omitempty" yaml:"templateVars,omitempty"`
+	Board        *GrafanaBoard `json:"board,omitempty" yaml:"board,omitempty"`
+	Panels       *[]Panel      `json:"panels,omitempty" yaml:"panels,omitempty"`
+	TemplateVars *[]string     `json:"templateVars,omitempty" yaml:"templateVars,omitempty"`
 }
 
 // Social Various online profiles associated with the user account, like GitHub, LinkedIn, X, and so on.
@@ -199,8 +178,7 @@ type Social struct {
 
 // User Represents a user in Layer5 Cloud (Meshery)
 type User struct {
-	// AcceptedTermsAt Timestamp when user accepted terms and conditions
-	AcceptedTermsAt time.Time `db:"accepted_terms_at" json:"accepted_terms_at" yaml:"accepted_terms_at"`
+	AcceptedTermsAt externalRef0.Time `json:"accepted_terms_at,omitempty" yaml:"accepted_terms_at,omitempty"`
 
 	// AvatarUrl URL to user's avatar image
 	AvatarUrl *string `db:"avatar_url" json:"avatar_url" yaml:"avatar_url"`
@@ -209,34 +187,26 @@ type User struct {
 	Bio *string `db:"bio" json:"bio" yaml:"bio"`
 
 	// Country User's country information stored as JSONB
-	Country *core.Map `db:"country" json:"country" yaml:"country"`
-
-	// CreatedAt Timestamp when the user record was created
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	Country   *core.Map         `db:"country" json:"country" yaml:"country"`
+	CreatedAt externalRef0.Time `json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the user record was soft-deleted (null if not deleted)
 	DeletedAt *core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
 
 	// Email User's email address
-	Email openapi_types.Email `db:"email" json:"email" yaml:"email"`
-
-	// FirstLoginTime Timestamp of user's first login
-	FirstLoginTime time.Time `db:"first_login_time" json:"first_login_time" yaml:"first_login_time"`
+	Email          openapi_types.Email `db:"email" json:"email" yaml:"email"`
+	FirstLoginTime externalRef0.Time   `json:"first_login_time,omitempty" yaml:"first_login_time,omitempty"`
 
 	// FirstName User's first name
 	FirstName string `db:"first_name" json:"first_name" yaml:"first_name"`
 
-	// ID Unique identifier for the user
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
-
-	// LastLoginTime Timestamp of user's most recent login
-	LastLoginTime time.Time `db:"last_login_time" json:"last_login_time" yaml:"last_login_time"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id            externalRef0.Uuid `json:"id" yaml:"id"`
+	LastLoginTime externalRef0.Time `json:"last_login_time" yaml:"last_login_time"`
 
 	// LastName User's last name
-	LastName string `db:"last_name" json:"last_name" yaml:"last_name"`
-
-	// Preferences User preferences stored as JSONB
-	Preferences *Preference `db:"preferences" json:"preferences" yaml:"preferences"`
+	LastName    string      `db:"last_name" json:"last_name" yaml:"last_name"`
+	Preferences *Preference `json:"preferences,omitempty" yaml:"preferences,omitempty"`
 
 	// Provider Authentication provider (e.g., Layer5 Cloud, Twitter, Facebook, Github)
 	Provider string `db:"provider" json:"provider" yaml:"provider"`
@@ -248,10 +218,8 @@ type User struct {
 	Socials *UserSocials `db:"socials" json:"socials" yaml:"socials"`
 
 	// Status User account status
-	Status UserStatus `db:"status" json:"status" yaml:"status"`
-
-	// UpdatedAt Timestamp when the user record was last updated
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+	Status    UserStatus        `db:"status" json:"status" yaml:"status"`
+	UpdatedAt externalRef0.Time `json:"updated_at" yaml:"updated_at"`
 
 	// UserId User identifier (username or external ID)
 	UserId string `db:"user_id" json:"user_id" yaml:"user_id"`

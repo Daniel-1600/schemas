@@ -4,55 +4,70 @@
 package keychain
 
 import (
-	"database/sql"
-	"time"
-
-	"github.com/gofrs/uuid"
+	externalRef0 "github.com/meshery/schemas/models/v1alpha1/core"
 )
 
 // Keychain Represents a collection of keys.
 type Keychain struct {
-	// ID Unique identifier for the keychain.
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id externalRef0.Uuid `json:"id" yaml:"id"`
 
 	// Name Name of the keychain.
 	Name string `db:"name" json:"name" yaml:"name"`
 
-	// Owner Owner of the keychain.
-	Owner uuid.UUID `db:"owner" json:"owner" yaml:"owner"`
+	// Owner A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Owner externalRef0.Uuid `json:"owner" yaml:"owner"`
 
 	// CreatedAt Timestamp when the resource was created.
-	CreatedAt time.Time `db:"created_at" json:"created_at" yaml:"created_at"`
+	CreatedAt externalRef0.CreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
 
 	// UpdatedAt Timestamp when the resource was updated.
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+	UpdatedAt externalRef0.UpdatedAt `db:"updated_at" json:"updated_at" yaml:"updated_at"`
 
 	// DeletedAt SQL null Timestamp to handle null values of time.
-	DeletedAt sql.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	DeletedAt externalRef0.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 }
 
 // KeychainPage defines model for KeychainPage.
 type KeychainPage struct {
-	Page       int        `json:"page" yaml:"page"`
-	PageSize   int        `json:"page_size" yaml:"page_size"`
-	TotalCount int        `json:"total_count" yaml:"total_count"`
-	Keychains  []Keychain `json:"keychains" yaml:"keychains"`
+	Page       externalRef0.Number `json:"page" yaml:"page"`
+	PageSize   externalRef0.Number `json:"page_size" yaml:"page_size"`
+	TotalCount externalRef0.Number `json:"total_count" yaml:"total_count"`
+	Keychains  []struct {
+		// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		Id externalRef0.Uuid `json:"id" yaml:"id"`
+
+		// Name Name of the keychain.
+		Name string `db:"name" json:"name" yaml:"name"`
+
+		// Owner A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		Owner externalRef0.Uuid `json:"owner" yaml:"owner"`
+
+		// CreatedAt Timestamp when the resource was created.
+		CreatedAt externalRef0.CreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
+
+		// UpdatedAt Timestamp when the resource was updated.
+		UpdatedAt externalRef0.UpdatedAt `db:"updated_at" json:"updated_at" yaml:"updated_at"`
+
+		// DeletedAt SQL null Timestamp to handle null values of time.
+		DeletedAt externalRef0.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	} `json:"keychains" yaml:"keychains"`
 }
 
 // KeyId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type KeyId = uuid.UUID
+type KeyId = externalRef0.Uuid
 
 // KeychainId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type KeychainId = uuid.UUID
+type KeychainId = externalRef0.Uuid
 
-// Order defines model for order.
-type Order = string
+// ExternalRef0Order defines model for order.
+type ExternalRef0Order = string
 
-// Page defines model for page.
-type Page = string
+// ExternalRef0Page defines model for page.
+type ExternalRef0Page = string
 
-// Pagesize defines model for pagesize.
-type Pagesize = string
+// ExternalRef0Pagesize defines model for pagesize.
+type ExternalRef0Pagesize = string
 
-// Search defines model for search.
-type Search = string
+// ExternalRef0Search defines model for search.
+type ExternalRef0Search = string

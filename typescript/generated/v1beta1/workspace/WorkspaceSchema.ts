@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const WorkspaceSchema = {
+const WorkspaceSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Workspace",
@@ -1005,6 +1005,6 @@ const WorkspaceSchema = {
       }
     }
   }
-} as const;
+};
 
 export default WorkspaceSchema;

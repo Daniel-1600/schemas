@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const ConnectionSchema = {
+const ConnectionSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Connection API",
@@ -3308,6 +3308,6 @@ const ConnectionSchema = {
       }
     }
   }
-} as const;
+};
 
 export default ConnectionSchema;
