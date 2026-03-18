@@ -4,11 +4,9 @@
 package connection
 
 import (
-	"time"
-
-	"github.com/gofrs/uuid"
 	"github.com/meshery/schemas/models/core"
-	"github.com/meshery/schemas/models/v1beta1/environment"
+	corev1alpha1 "github.com/meshery/schemas/models/v1alpha1/core"
+	environmentv1beta1 "github.com/meshery/schemas/models/v1beta1/environment"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -24,28 +22,40 @@ const (
 	ConnectionStatusRegistered   ConnectionStatus = "registered"
 )
 
+// Defines values for ConnectionPageConnectionsStatus.
+const (
+	ConnectionPageConnectionsStatusConnected    ConnectionPageConnectionsStatus = "connected"
+	ConnectionPageConnectionsStatusDeleted      ConnectionPageConnectionsStatus = "deleted"
+	ConnectionPageConnectionsStatusDisconnected ConnectionPageConnectionsStatus = "disconnected"
+	ConnectionPageConnectionsStatusDiscovered   ConnectionPageConnectionsStatus = "discovered"
+	ConnectionPageConnectionsStatusIgnored      ConnectionPageConnectionsStatus = "ignored"
+	ConnectionPageConnectionsStatusMaintenance  ConnectionPageConnectionsStatus = "maintenance"
+	ConnectionPageConnectionsStatusNotFound     ConnectionPageConnectionsStatus = "not found"
+	ConnectionPageConnectionsStatusRegistered   ConnectionPageConnectionsStatus = "registered"
+)
+
 // Defines values for ConnectionStatusValue.
 const (
-	ConnectionStatusValueConnected    ConnectionStatusValue = "connected"
-	ConnectionStatusValueDeleted      ConnectionStatusValue = "deleted"
-	ConnectionStatusValueDisconnected ConnectionStatusValue = "disconnected"
-	ConnectionStatusValueDiscovered   ConnectionStatusValue = "discovered"
-	ConnectionStatusValueIgnored      ConnectionStatusValue = "ignored"
-	ConnectionStatusValueMaintenance  ConnectionStatusValue = "maintenance"
-	ConnectionStatusValueNotFound     ConnectionStatusValue = "not found"
-	ConnectionStatusValueRegistered   ConnectionStatusValue = "registered"
+	Connected    ConnectionStatusValue = "connected"
+	Deleted      ConnectionStatusValue = "deleted"
+	Disconnected ConnectionStatusValue = "disconnected"
+	Discovered   ConnectionStatusValue = "discovered"
+	Ignored      ConnectionStatusValue = "ignored"
+	Maintenance  ConnectionStatusValue = "maintenance"
+	NotFound     ConnectionStatusValue = "not found"
+	Registered   ConnectionStatusValue = "registered"
 )
 
 // Connection Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections
 type Connection struct {
-	// ID Connection ID
-	ID uuid.UUID `db:"id" json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	ID corev1alpha1.Uuid `db:"id" json:"id" yaml:"id"`
 
 	// Name Connection Name
 	Name string `db:"name" json:"name" yaml:"name"`
 
-	// CredentialID Associated Credential ID
-	CredentialID *uuid.UUID `db:"credential_id" json:"credential_id,omitempty" yaml:"credential_id,omitempty"`
+	// CredentialId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	CredentialID *corev1alpha1.Uuid `db:"credential_id" json:"credential_id,omitempty" yaml:"credential_id,omitempty"`
 
 	// Type Connection Type (platform, telemetry, collaboration)
 	Type string `db:"type" json:"type" yaml:"type"`
@@ -62,17 +72,19 @@ type Connection struct {
 	// Status Connection Status
 	Status ConnectionStatus `db:"status" json:"status" yaml:"status"`
 
-	// UserID User ID who owns this connection
-	UserID    *uuid.UUID    `db:"user_id" json:"user_id,omitempty" yaml:"user_id,omitempty"`
-	CreatedAt time.Time     `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
-	UpdatedAt time.Time     `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	// UserId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	UserID    *corev1alpha1.Uuid `db:"user_id" json:"user_id,omitempty" yaml:"user_id,omitempty"`
+	CreatedAt corev1alpha1.Time  `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
+	UpdatedAt corev1alpha1.Time  `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+
+	// DeletedAt SQL null Timestamp to handle null values of time.
+	DeletedAt corev1alpha1.NullTime `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 
 	// Environments Associated environments for this connection
-	Environments []*environment.Environment `db:"-" gorm:"-" json:"environments,omitempty" yaml:"environments,omitempty"`
+	Environments []environmentv1beta1.Environment `db:"-" gorm:"-" json:"environments,omitempty" yaml:"environments,omitempty"`
 
-	// SchemaVersion Specifies the version of the schema used for the definition.
-	SchemaVersion string `db:"-" gorm:"-" json:"schemaVersion" yaml:"schemaVersion"`
+	// SchemaVersion API version of the object, optionally prefixed with an API group (e.g. "group.example.io/v1beta1" or bare "v1beta1").
+	SchemaVersion corev1alpha1.VersionString `gorm:"-" db:"-" json:"schemaVersion" yaml:"schemaVersion"`
 }
 
 // ConnectionStatus Connection Status
@@ -81,7 +93,45 @@ type ConnectionStatus string
 // ConnectionPage Represents a page of connections with meta information about connections count
 type ConnectionPage struct {
 	// Connections List of connections on this page
-	Connections []*Connection `json:"connections" yaml:"connections"`
+	Connections []struct {
+		// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		Id corev1alpha1.Uuid `json:"id" yaml:"id"`
+
+		// Name Connection Name
+		Name string `db:"name" json:"name" yaml:"name"`
+
+		// CredentialId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		CredentialId *corev1alpha1.Uuid `json:"credential_id,omitempty" yaml:"credential_id,omitempty"`
+
+		// Type Connection Type (platform, telemetry, collaboration)
+		Type string `db:"type" json:"type" yaml:"type"`
+
+		// SubType Connection Subtype (cloud, identity, metrics, chat, git, orchestration)
+		SubType string `db:"sub_type" json:"sub_type" yaml:"sub_type"`
+
+		// Kind Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github)
+		Kind string `db:"kind" json:"kind" yaml:"kind"`
+
+		// Metadata Additional connection metadata
+		Metadata core.Map `db:"metadata" json:"metadata,omitempty" yaml:"metadata,omitempty"`
+
+		// Status Connection Status
+		Status ConnectionPageConnectionsStatus `db:"status" json:"status" yaml:"status"`
+
+		// UserId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+		UserId    *corev1alpha1.Uuid `json:"user_id,omitempty" yaml:"user_id,omitempty"`
+		CreatedAt corev1alpha1.Time  `json:"created_at,omitempty" yaml:"created_at,omitempty"`
+		UpdatedAt corev1alpha1.Time  `json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
+
+		// DeletedAt SQL null Timestamp to handle null values of time.
+		DeletedAt corev1alpha1.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+
+		// Environments Associated environments for this connection
+		Environments []environmentv1beta1.Environment `db:"-" gorm:"-" json:"environments,omitempty" yaml:"environments,omitempty"`
+
+		// SchemaVersion API version of the object, optionally prefixed with an API group (e.g. "group.example.io/v1beta1" or bare "v1beta1").
+		SchemaVersion corev1alpha1.VersionString `json:"schemaVersion" yaml:"schemaVersion"`
+	} `json:"connections" yaml:"connections"`
 
 	// TotalCount Total number of connections on all pages
 	TotalCount int `json:"total_count" yaml:"total_count"`
@@ -95,6 +145,9 @@ type ConnectionPage struct {
 	// StatusSummary Aggregate count of connections grouped by status
 	StatusSummary *map[ConnectionStatus]int `json:"status_summary,omitempty" yaml:"status_summary,omitempty"`
 }
+
+// ConnectionPageConnectionsStatus Connection Status
+type ConnectionPageConnectionsStatus string
 
 // ConnectionPayload Payload for creating or updating a connection
 type ConnectionPayload struct {
@@ -141,13 +194,7 @@ type ConnectionStatusValue string
 // ConnectionsStatusPage Paginated list of connection status counts
 type ConnectionsStatusPage struct {
 	// ConnectionsStatus List of status counts
-	ConnectionsStatus []struct {
-		// Count Number of connections with this status
-		Count int `db:"count" json:"count" yaml:"count"`
-
-		// Status Status value
-		Status string `db:"status" json:"status" yaml:"status"`
-	} `json:"connections_status" yaml:"connections_status"`
+	ConnectionsStatus []ConnectionStatusInfo `json:"connections_status" yaml:"connections_status"`
 
 	// Page Current page number
 	Page int `json:"page" yaml:"page"`
@@ -201,34 +248,7 @@ type MesheryInstance struct {
 // MesheryInstancePage Paginated list of Meshery instances
 type MesheryInstancePage struct {
 	// MesheryInstances List of Meshery instances
-	MesheryInstances []struct {
-		// CreatedAt Creation timestamp
-		CreatedAt *string `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
-
-		// DeletedAt Deletion timestamp
-		DeletedAt *string `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
-
-		// Id Instance ID
-		Id *string `db:"id" json:"id,omitempty" yaml:"id,omitempty"`
-
-		// Name Instance name
-		Name *string `db:"name" json:"name,omitempty" yaml:"name,omitempty"`
-
-		// ServerBuildSHA Server build SHA
-		ServerBuildSHA *string `db:"server_build_sha" json:"server_build_sha,omitempty" yaml:"server_build_sha,omitempty"`
-
-		// ServerID Server ID
-		ServerID *string `db:"server_id" json:"server_id,omitempty" yaml:"server_id,omitempty"`
-
-		// ServerLocation Server location URL
-		ServerLocation *string `db:"server_location" json:"server_location,omitempty" yaml:"server_location,omitempty"`
-
-		// ServerVersion Meshery server version
-		ServerVersion *string `db:"server_version" json:"server_version,omitempty" yaml:"server_version,omitempty"`
-
-		// UpdatedAt Last update timestamp
-		UpdatedAt *string `db:"updated_at" json:"updated_at,omitempty" yaml:"updated_at,omitempty"`
-	} `json:"meshery_instances" yaml:"meshery_instances"`
+	MesheryInstances []MesheryInstance `json:"meshery_instances" yaml:"meshery_instances"`
 
 	// Page Current page number
 	Page int `json:"page" yaml:"page"`

@@ -54,10 +54,11 @@ properties:
       yaml: format
       json: format
   model:
-    $ref: ../model/model.yaml
-    x-go-type: model.ModelDefinition
+    $ref: ../model/api.yml#/components/schemas/ModelDefinition
+    x-go-type: modelv1beta1.ModelDefinition
     x-go-type-import:
       path: github.com/meshery/schemas/models/v1beta1/model
+      name: modelv1beta1
     x-order: 7
     description: Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models
     x-oapi-codegen-extra-tags:
@@ -66,9 +67,10 @@ properties:
       yaml: model,omitempty
   modelReference:
     $ref: ../model/api.yml#/components/schemas/ModelReference
-    x-go-type: model.ModelReference
+    x-go-type: modelv1beta1.ModelReference
     x-go-type-import:
       path: github.com/meshery/schemas/models/v1beta1/model
+      name: modelv1beta1
     x-order: 8
     description: Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models
     x-oapi-codegen-extra-tags:
@@ -86,19 +88,21 @@ properties:
       gorm: type:bytes;serializer:json
       yaml: styles
       json: styles
-    x-go-type: core.ComponentStyles
+    x-go-type: corev1alpha1.ComponentStyles
     x-go-type-import:
       path: github.com/meshery/schemas/models/v1alpha1/core
+      name: corev1alpha1
     x-order: 8
   capabilities:
     x-order: 9
     type: array
     description: Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management.
     items:
-      $ref: ../../v1alpha1/capability/capability.yaml
-      x-go-type: capability.Capability
+      $ref: ../../v1alpha1/capability/api.yml#/components/schemas/Capability
+      x-go-type: capabilityv1alpha1.Capability
       x-go-type-import:
         path: github.com/meshery/schemas/models/v1alpha1/capability
+        name: capabilityv1alpha1
     x-oapi-codegen-extra-tags:
       gorm: type:bytes;serializer:json
       yaml: capabilities

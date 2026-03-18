@@ -86,6 +86,6 @@ const CategorySchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default CategorySchema;

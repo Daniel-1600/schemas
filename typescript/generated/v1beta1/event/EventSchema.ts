@@ -384,6 +384,6 @@ const EventSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default EventSchema;

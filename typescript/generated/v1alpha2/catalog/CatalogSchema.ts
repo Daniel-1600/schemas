@@ -106,6 +106,6 @@ const CatalogSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default CatalogSchema;

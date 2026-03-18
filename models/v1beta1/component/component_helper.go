@@ -11,10 +11,11 @@ import (
 	"github.com/meshery/meshkit/database"
 	"github.com/meshery/meshkit/models/meshmodel/entity"
 	"github.com/meshery/meshkit/utils"
+	core "github.com/meshery/schemas/models/v1alpha1/core"
 	"gorm.io/gorm/clause"
 )
 
-type Styles = ComponentDefinition_Styles
+type Styles = core.ComponentStyles
 
 func (c ComponentDefinition) TableName() string {
 	return "component_definition_dbs"
@@ -86,19 +87,23 @@ func (c ComponentDefinition) WriteComponentDefinition(componentDirPath string, f
 func (c *ComponentDefinition) ReplaceSVGData(baseDir string) error {
 
 	compStyle := c.Styles
-	if compStyle != nil {
+	if compStyle.SvgColor != "" {
 		svgColor, err := utils.ReadSVGData(baseDir, compStyle.SvgColor)
 		if err == nil {
 			compStyle.SvgColor = svgColor
 		} else {
 			return err
 		}
+	}
+	if compStyle.SvgWhite != "" {
 		svgWhite, err := utils.ReadSVGData(baseDir, compStyle.SvgWhite)
 		if err == nil {
 			compStyle.SvgWhite = svgWhite
 		} else {
 			return err
 		}
+	}
+	if compStyle.SvgComplete != "" {
 		svgComplete, err := utils.ReadSVGData(baseDir, compStyle.SvgComplete)
 		if err == nil {
 			compStyle.SvgComplete = svgComplete

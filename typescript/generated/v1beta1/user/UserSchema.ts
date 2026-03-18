@@ -1218,6 +1218,6 @@ const UserSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default UserSchema;

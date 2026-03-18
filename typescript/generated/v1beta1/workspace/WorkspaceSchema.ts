@@ -1005,6 +1005,6 @@ const WorkspaceSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default WorkspaceSchema;

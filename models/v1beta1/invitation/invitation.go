@@ -6,9 +6,9 @@ package invitation
 import (
 	"time"
 
-	"github.com/gofrs/uuid"
 	"github.com/lib/pq"
 	"github.com/meshery/schemas/models/core"
+	corev1alpha1 "github.com/meshery/schemas/models/v1alpha1/core"
 )
 
 // Defines values for InvitationStatus.
@@ -35,8 +35,8 @@ type Invitation struct {
 	// ExpiresAt Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire
 	ExpiresAt *time.Time `db:"expires_at" json:"expires_at" yaml:"expires_at"`
 
-	// ID Unique identifier for the invitation , is also used as the invitation code
-	ID uuid.UUID `json:"id" yaml:"id"`
+	// Id A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	Id corev1alpha1.Uuid `json:"id" yaml:"id"`
 
 	// IsDefault Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation
 	IsDefault *bool `db:"is_default" json:"is_default" yaml:"is_default"`
@@ -47,8 +47,8 @@ type Invitation struct {
 	// OrgId ID of the organization to which the user is invited
 	OrgId string `db:"org_id" json:"org_id" yaml:"org_id"`
 
-	// OwnerId ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes
-	OwnerId uuid.UUID `db:"owner_id" json:"owner_id" yaml:"owner_id"`
+	// OwnerId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+	OwnerId corev1alpha1.Uuid `db:"owner_id" json:"owner_id" yaml:"owner_id"`
 
 	// Quota Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota
 	Quota *int           `json:"quota,omitempty" yaml:"quota,omitempty"`
@@ -75,7 +75,7 @@ type InvitationsPage struct {
 }
 
 // Uuid A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type Uuid = uuid.UUID
+type Uuid = corev1alpha1.Uuid
 
 // InvitationId defines model for invitation_id.
 type InvitationId = string

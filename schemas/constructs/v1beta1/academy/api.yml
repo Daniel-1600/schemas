@@ -685,6 +685,94 @@ components:
         type: string
 
   schemas:
+    AcademyCirriculaOrgId:
+      type: string
+      description: Organization ID that owns this learning path
+      example: layer5
+      x-oapi-codegen-extra-tags:
+        db: "org_id"
+        json: "org_id"
+        yaml: "org_id"
+
+    AcademyCirriculaBadgeId:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+      description: ID of the badge to be awarded on completion of this curricula
+      x-oapi-codegen-extra-tags:
+        db: "badge_id"
+        json: "badge_id"
+        yaml: "badge_id"
+
+    AcademyCirriculaInviteId:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+      description: ID of the invite associated with this cirricula
+      x-oapi-codegen-extra-tags:
+        db: "invite_id"
+        json: "invite_id"
+        yaml: "invite_id"
+
+    AcademyCirriculaWorkspaceId:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+      description: ID of the workspace to which this cirricula belongs
+      x-oapi-codegen-extra-tags:
+        db: "workspace_id"
+        json: "workspace_id"
+        yaml: "workspace_id"
+
+    AcademyCirriculaCreatedAt:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+      description: When the cirricula item was created
+      x-oapi-codegen-extra-tags:
+        db: "created_at"
+        json: "created_at"
+        yaml: "created_at"
+
+    AcademyCirriculaUpdatedAt:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+      description: When the cirricula was last updated
+      x-go-type: "core.Time"
+      x-oapi-codegen-extra-tags:
+        db: "updated_at"
+        json: "updated_at"
+        yaml: "updated_at"
+
+    AcademyCirriculaDeletedAt:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/deleted_at"
+      x-go-type: "core.NullTime"
+      x-oapi-codegen-extra-tags:
+        db: "deleted_at"
+        json: "deleted_at"
+        yaml: "deleted_at"
+
+    AcademyCirriculaMetadata:
+      type: object
+      description: Additional metadata about the cirricula
+      additionalProperties: true
+      x-go-type: "core.Map"
+      x-go-type-skip-optional-pointer: true
+      x-oapi-codegen-extra-tags:
+        db: "metadata"
+        json: "metadata"
+        yaml: "metadata"
+      oneOf:
+        - $ref: "#/components/schemas/CurriculaMetadata"
+          x-go-type: "CurriculaMetadata"
+
+    AcademyCurriculaAccessExpiresAt:
+      allOf:
+        - $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+      description: Expiry time for curricula access
+      x-go-type: "*time.Time"
+      x-oapi-codegen-extra-tags:
+        json: "access_expires_at"
+        db: "access_expires_at"
+        yaml: "access_expires_at"
+
     RegisterToAcademyContentRequest:
       type: object
       required:
@@ -742,13 +830,7 @@ components:
           x-oapi-codegen-extra-tags:
             db: "type"
         orgId:
-          type: string
-          description: Organization ID that owns this learning path
-          example: layer5
-          x-oapi-codegen-extra-tags:
-            db: "org_id"
-            json: "org_id"
-            yaml: "org_id"
+          $ref: "#/components/schemas/AcademyCirriculaOrgId"
         visibility:
           $ref: "#/components/schemas/Visibility"
           description: Visibility of the cirricula
@@ -782,65 +864,23 @@ components:
             yaml: "level"
 
         badge_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
-          description: ID of the badge to be awarded on completion of this curricula
-          x-oapi-codegen-extra-tags:
-            db: "badge_id"
-            json: "badge_id"
-            yaml: "badge_id"
+          $ref: "#/components/schemas/AcademyCirriculaBadgeId"
 
         invite_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
-          description: ID of the invite associated with this cirricula
-          x-oapi-codegen-extra-tags:
-            db: "invite_id"
-            json: "invite_id"
-            yaml: "invite_id"
+          $ref: "#/components/schemas/AcademyCirriculaInviteId"
 
         workspace_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
-          description: ID of the workspace to which this cirricula belongs
-          x-oapi-codegen-extra-tags:
-            db: "workspace_id"
-            json: "workspace_id"
-            yaml: "workspace_id"
+          $ref: "#/components/schemas/AcademyCirriculaWorkspaceId"
 
         createdAt:
-          description: When the cirricula item was created
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          x-oapi-codegen-extra-tags:
-            db: "created_at"
-            json: "created_at"
-            yaml: "created_at"
+          $ref: "#/components/schemas/AcademyCirriculaCreatedAt"
 
         updatedAt:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: When the cirricula was last updated
-          x-go-type: "core.Time"
-          x-oapi-codegen-extra-tags:
-            db: "updated_at"
-            json: "updated_at"
-            yaml: "updated_at"
+          $ref: "#/components/schemas/AcademyCirriculaUpdatedAt"
         deletedAt:
-          x-go-type: "core.NullTime"
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/deleted_at"
-          x-oapi-codegen-extra-tags:
-            db: "deleted_at"
-            json: "deleted_at"
-            yaml: "deleted_at"
+          $ref: "#/components/schemas/AcademyCirriculaDeletedAt"
         metadata:
-          type: object
-          description: Additional metadata about the cirricula
-          additionalProperties: true
-          x-go-type: "core.Map"
-          x-go-type-skip-optional-pointer: true
-          x-oapi-codegen-extra-tags:
-            db: "metadata"
-            json: "metadata"
-            yaml: "metadata"
-          oneOf:
-            - $ref: "#/components/schemas/CurriculaMetadata"
-              x-go-type: "CurriculaMetadata"
+          $ref: "#/components/schemas/AcademyCirriculaMetadata"
 
       required:
         - id
@@ -871,9 +911,10 @@ components:
                 yaml: "registration_count,omitempty"
             Invitation:
               $ref: "../invitation/api.yml#/components/schemas/Invitation"
-              x-go-type: "invitation.Invitation"
+              x-go-type: "invitationv1beta1.Invitation"
               x-go-type-import:
                 path: "github.com/meshery/schemas/models/v1beta1/invitation"
+                name: invitationv1beta1
 
     CreateAcademyCurriculaRequest:
       type: object
@@ -895,19 +936,13 @@ components:
             json: "title"
 
         orgId:
-          $ref: "#/components/schemas/AcademyCirricula/properties/orgId"
-          description: Organization ID that owns this curricula
-          x-go-name: OrgId
-          x-oapi-codegen-extra-tags:
-            json: "org_id"
-            db: "org_id"
-            yaml: "org_id"
+          $ref: "#/components/schemas/AcademyCirriculaOrgId"
 
         workspace_id:
-          $ref: "#/components/schemas/AcademyCirricula/properties/workspace_id"
+          $ref: "#/components/schemas/AcademyCirriculaWorkspaceId"
 
         badge_id:
-          $ref: "#/components/schemas/AcademyCirricula/properties/badge_id"
+          $ref: "#/components/schemas/AcademyCirriculaBadgeId"
 
         team_id:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
@@ -919,29 +954,23 @@ components:
             yaml: "team_id"
 
         access_expires_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
-          description: Expiry time for curricula access
-          x-go-name: AccessExpiresAt
-          x-go-type: "*time.Time"
-          x-oapi-codegen-extra-tags:
-            json: "access_expires_at"
-            db: "access_expires_at"
-            yaml: "access_expires_at"
+          $ref: "#/components/schemas/AcademyCurriculaAccessExpiresAt"
 
         access_status:
           $ref: "../invitation/api.yml#/components/schemas/InvitationStatus"
           description: Current access status of the curricula
           x-go-name: AccessStatus
-          x-go-type: "invitation.InvitationStatus"
+          x-go-type: "invitationv1beta1.InvitationStatus"
           x-go-type-import:
             path: "github.com/meshery/schemas/models/v1beta1/invitation"
+            name: invitationv1beta1
           x-oapi-codegen-extra-tags:
             json: "access_status"
             db: "access_status"
             yaml: "access_status"
 
         metadata:
-          $ref: "#/components/schemas/AcademyCirricula/properties/metadata"
+          $ref: "#/components/schemas/AcademyCirriculaMetadata"
 
       required:
         - type

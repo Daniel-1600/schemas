@@ -933,6 +933,6 @@ const FeatureSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default FeatureSchema;

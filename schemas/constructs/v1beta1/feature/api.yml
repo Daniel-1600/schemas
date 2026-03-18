@@ -113,9 +113,10 @@ components:
             db: "plan_id"
         plan:
           $ref: "../plan/api.yml#/components/schemas/Plan"
-          x-go-type: plan.Plan
+          x-go-type: planv1beta1.Plan
           x-go-type-import:
             path: github.com/meshery/schemas/models/v1beta1/plan
+            name: planv1beta1
           x-oapi-codegen-extra-tags:
             belongs_to: "plans"
             fk_id: "PlanId"

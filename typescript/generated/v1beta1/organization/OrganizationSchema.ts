@@ -1673,6 +1673,6 @@ const OrganizationSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default OrganizationSchema;

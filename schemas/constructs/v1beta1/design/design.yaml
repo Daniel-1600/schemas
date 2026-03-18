@@ -40,11 +40,13 @@ properties:
     minItems: 0
     x-order: 6
     type: array
+    x-go-type: "[]*component.ComponentDefinition"
+    x-go-type-import:
+      path: github.com/meshery/schemas/models/v1beta1/component
+      name: component
     items:
-      $ref: ../component/component.yaml
-      x-go-type: "*component.ComponentDefinition"
-      x-go-type-import:
-        path: github.com/meshery/schemas/models/v1beta1/component
+      allOf:
+        - $ref: ../component/api.yml#/components/schemas/ComponentDefinition
   preferences:
     $ref: ./api.yml#/components/schemas/DesignPreferences
     x-go-type: DesignPreferences
@@ -52,11 +54,13 @@ properties:
     description: List of relationships between components
     type: array
     x-order: 8
+    x-go-type: "[]*relationship.RelationshipDefinition"
+    x-go-type-import:
+      path: github.com/meshery/schemas/models/v1alpha3/relationship
+      name: relationship
     items:
-      $ref: ../../v1alpha3/relationship/api.yml#/components/schemas/RelationshipDefinition
-      x-go-type: "*relationship.RelationshipDefinition"
-      x-go-type-import:
-        path: github.com/meshery/schemas/models/v1alpha3/relationship
+      allOf:
+        - $ref: ../../v1alpha3/relationship/api.yml#/components/schemas/RelationshipDefinition
 required:
   - id
   - name

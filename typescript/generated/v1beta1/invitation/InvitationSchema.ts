@@ -1853,6 +1853,6 @@ const InvitationSchema = {
       }
     }
   }
-} as const;
+} satisfies Record<string, unknown>;
 
 export default InvitationSchema;
