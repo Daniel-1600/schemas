@@ -6,9 +6,18 @@
 const FeatureSchema = {
   "openapi": "3.0.0",
   "info": {
-    "title": "feature",
-    "description": "OpenAPI schema for the Features construct with entitlement-related properties",
-    "version": "v1beta1"
+    "title": "Feature",
+    "description": "OpenAPI schema for the Features construct with entitlement-related properties.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "tags": [
     {

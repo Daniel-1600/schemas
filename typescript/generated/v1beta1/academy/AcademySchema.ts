@@ -7,7 +7,17 @@ const AcademySchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Academy API",
-    "version": "1.0.0"
+    "description": "OpenAPI schema for Meshery Academy content and curriculum management.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
     "/api/academy/cirricula/registered": {

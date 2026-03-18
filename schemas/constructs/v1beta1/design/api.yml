@@ -1,25 +1,15 @@
 openapi: 3.0.0
 info:
-  title: design
-  description: Documentation for Meshery Cloud REST APIs for Designs (Patterns)
-  contact:
-    email: maintainers@meshery.io
+  title: Design
+  description: OpenAPI schema for managing Meshery designs and infrastructure patterns.
   version: v1beta1
-servers:
-  - url: https://cloud.layer5.io
-    description: Meshery Cloud production server URL
-  - url: https://staging-cloud.layer5.io
-    description: Meshery Cloud staging server URL
-  - url: http://localhost:9876
-    description: Meshery Cloud development server URL
-
-security:
-  - jwt: []
-
-tags:
-  - name: designs
-    description: Operations related to infrastructure designs (patterns)
-
+  contact:
+    name: Meshery Maintainers
+    email: maintainers@meshery.io
+    url: https://meshery.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 paths:
   /api/content/patterns:
     get:
