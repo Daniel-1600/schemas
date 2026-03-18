@@ -39,7 +39,8 @@ func (p *PatternFile) ConvertTo(pattern conversion.Hub) error {
 
 		service.ApiVersion = component.Component.Version
 		service.Type = component.Component.Kind
-		service.Id = &component.Id
+		componentId := component.Id
+		service.Id = &componentId
 		service.IsAnnotation = component.Metadata.IsAnnotation
 		service.Model = component.Model.Name
 		service.Version = component.Version
