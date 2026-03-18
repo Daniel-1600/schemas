@@ -27,8 +27,8 @@ type Feature struct {
 	ID corev1alpha1.Uuid `db:"id" json:"id" yaml:"id"`
 
 	// Name Enumeration of possible feature types
-	Name FeatureName       `db:"name" json:"name,omitempty" yaml:"name,omitempty"`
-	Plan planv1beta1.Plan `fk_id:"PlanId" belongs_to:"plans" json:"plan,omitempty" yaml:"plan,omitempty"`
+	Name *FeatureName       `db:"name" json:"name,omitempty" yaml:"name,omitempty"`
+	Plan *planv1beta1.Plan `fk_id:"PlanId" belongs_to:"plans" json:"plan,omitempty" yaml:"plan,omitempty"`
 
 	// PlanId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
 	PlanId corev1alpha1.Uuid `db:"plan_id" json:"plan_id" yaml:"plan_id"`

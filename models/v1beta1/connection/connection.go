@@ -143,7 +143,7 @@ type ConnectionPage struct {
 	PageSize int `json:"page_size" yaml:"page_size"`
 
 	// StatusSummary Aggregate count of connections grouped by status
-	StatusSummary map[ConnectionStatus]int `json:"status_summary,omitempty" yaml:"status_summary,omitempty"`
+	StatusSummary *map[ConnectionStatus]int `json:"status_summary,omitempty" yaml:"status_summary,omitempty"`
 }
 
 // ConnectionPageConnectionsStatus Connection Status

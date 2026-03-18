@@ -807,7 +807,7 @@ type ViewId = uuid.UUID
 type WorkspaceId = uuid.UUID
 
 // All defines model for all.
-type All = string
+type All = bool
 
 // Class defines model for class.
 type Class = string

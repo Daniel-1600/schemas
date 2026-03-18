@@ -53,11 +53,11 @@ type GetUserResponse struct {
 	Bio *string `db:"bio" json:"bio" yaml:"bio"`
 
 	// Country User's country information stored as JSONB
-	Country   core.Map         `db:"country" json:"country" yaml:"country"`
+	Country   *core.Map         `db:"country" json:"country" yaml:"country"`
 	CreatedAt corev1alpha1.Time `db:"created_at" json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the user record was soft-deleted (null if not deleted)
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
+	DeletedAt *core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
 
 	// Email User's email address
 	Email          openapi_types.Email `db:"email" json:"email" yaml:"email"`
@@ -78,19 +78,19 @@ type GetUserResponse struct {
 		OrganizationsWithRoles *[]map[string]interface{} `db:"organizations_with_roles" json:"organizations_with_roles" yaml:"organizations_with_roles"`
 		TotalCount             *int                      `db:"total_count" json:"total_count" yaml:"total_count"`
 	} `db:"organizations" json:"organizations" yaml:"organizations"`
-	Preferences Preference `db:"preferences" json:"preferences" yaml:"preferences"`
+	Preferences *Preference `db:"preferences" json:"preferences" yaml:"preferences"`
 
 	// Provider Authentication provider (e.g., Layer5 Cloud, Twitter, Facebook, Github)
 	Provider string `db:"provider" json:"provider" yaml:"provider"`
 
 	// Region User's region information stored as JSONB
-	Region core.Map `db:"region" json:"region" yaml:"region"`
+	Region *core.Map `db:"region" json:"region" yaml:"region"`
 
 	// RoleNames List of global roles assigned to the user
 	RoleNames *[]GetUserResponseRoleNames `db:"role_names" json:"role_names" yaml:"role_names"`
 
 	// Socials Various online profiles associated with the user account
-	Socials UserSocials `db:"socials" json:"socials" yaml:"socials"`
+	Socials *UserSocials `db:"socials" json:"socials" yaml:"socials"`
 
 	// Status User account status
 	Status GetUserResponseStatus `db:"status" json:"status" yaml:"status"`
@@ -145,10 +145,10 @@ type Preference struct {
 	AnonymousPerfResults              bool                    `json:"anonymousPerfResults" yaml:"anonymousPerfResults"`
 	AnonymousUsageStats               bool                    `json:"anonymousUsageStats" yaml:"anonymousUsageStats"`
 	DashboardPreferences              map[string]interface{}  `json:"dashboardPreferences" yaml:"dashboardPreferences"`
-	Grafana                           Grafana                `json:"grafana,omitempty" yaml:"grafana,omitempty"`
-	LoadTestPrefs                     LoadTestPreferences    `json:"loadTestPrefs,omitempty" yaml:"loadTestPrefs,omitempty"`
-	MeshAdapters                      []Adapter              `json:"meshAdapters,omitempty" yaml:"meshAdapters,omitempty"`
-	Prometheus                        Prometheus             `json:"prometheus,omitempty" yaml:"prometheus,omitempty"`
+	Grafana                           *Grafana                `json:"grafana,omitempty" yaml:"grafana,omitempty"`
+	LoadTestPrefs                     *LoadTestPreferences    `json:"loadTestPrefs,omitempty" yaml:"loadTestPrefs,omitempty"`
+	MeshAdapters                      *[]Adapter              `json:"meshAdapters,omitempty" yaml:"meshAdapters,omitempty"`
+	Prometheus                        *Prometheus             `json:"prometheus,omitempty" yaml:"prometheus,omitempty"`
 	RemoteProviderPreferences         *map[string]interface{} `json:"remoteProviderPreferences,omitempty" yaml:"remoteProviderPreferences,omitempty"`
 	SelectedOrganizationID            string                  `json:"selectedOrganizationID" yaml:"selectedOrganizationID"`
 	SelectedWorkspaceForOrganizations map[string]string       `json:"selectedWorkspaceForOrganizations" yaml:"selectedWorkspaceForOrganizations"`
@@ -187,11 +187,11 @@ type User struct {
 	Bio *string `db:"bio" json:"bio" yaml:"bio"`
 
 	// Country User's country information stored as JSONB
-	Country   core.Map         `db:"country" json:"country" yaml:"country"`
+	Country   *core.Map         `db:"country" json:"country" yaml:"country"`
 	CreatedAt corev1alpha1.Time `db:"created_at" json:"created_at" yaml:"created_at"`
 
 	// DeletedAt Timestamp when the user record was soft-deleted (null if not deleted)
-	DeletedAt core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
+	DeletedAt *core.NullTime `db:"deleted_at" json:"deleted_at" yaml:"deleted_at"`
 
 	// Email User's email address
 	Email          openapi_types.Email `db:"email" json:"email" yaml:"email"`
@@ -206,16 +206,16 @@ type User struct {
 
 	// LastName User's last name
 	LastName    string      `db:"last_name" json:"last_name" yaml:"last_name"`
-	Preferences Preference `db:"preferences" json:"preferences" yaml:"preferences"`
+	Preferences *Preference `db:"preferences" json:"preferences" yaml:"preferences"`
 
 	// Provider Authentication provider (e.g., Layer5 Cloud, Twitter, Facebook, Github)
 	Provider string `db:"provider" json:"provider" yaml:"provider"`
 
 	// Region User's region information stored as JSONB
-	Region core.Map `db:"region" json:"region" yaml:"region"`
+	Region *core.Map `db:"region" json:"region" yaml:"region"`
 
 	// Socials Various online profiles associated with the user account
-	Socials UserSocials `db:"socials" json:"socials" yaml:"socials"`
+	Socials *UserSocials `db:"socials" json:"socials" yaml:"socials"`
 
 	// Status User account status
 	Status    UserStatus        `db:"status" json:"status" yaml:"status"`
