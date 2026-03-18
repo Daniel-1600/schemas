@@ -123,7 +123,6 @@ const ScheduleSchema = {
                     "schedules": {
                       "type": "array",
                       "items": {
-                        "x-go-type": "Schedule",
                         "type": "object",
                         "description": "A schedule defines a recurring cron-based trigger for performance tests or other automated tasks.\n",
                         "required": [
@@ -866,7 +865,6 @@ const ScheduleSchema = {
           "schedules": {
             "type": "array",
             "items": {
-              "x-go-type": "Schedule",
               "type": "object",
               "description": "A schedule defines a recurring cron-based trigger for performance tests or other automated tasks.\n",
               "required": [

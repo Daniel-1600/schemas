@@ -222,5 +222,4 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Schedule"
-            x-go-type: Schedule
           x-order: 4

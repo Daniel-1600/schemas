@@ -3,7 +3,6 @@ export const addTagTypes = [
   "Academy_API_Academy",
   "Academy_API_other",
   "Badge_Badge",
-  "capability_capabilities",
   "Connection_API_Connections",
   "credential_credentials",
   "Design_designs",
@@ -194,14 +193,6 @@ const injectedRtkApi = api
       createOrUpdateBadge: build.mutation<CreateOrUpdateBadgeApiResponse, CreateOrUpdateBadgeApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Badge_Badge"],
-      }),
-      getCapabilitiesDeprecated: build.query<GetCapabilitiesDeprecatedApiResponse, GetCapabilitiesDeprecatedApiArg>({
-        query: () => ({ url: `/capabilities` }),
-        providesTags: ["capability_capabilities"],
-      }),
-      getCapabilities: build.query<GetCapabilitiesApiResponse, GetCapabilitiesApiArg>({
-        query: (queryArg) => ({ url: `/${queryArg.mesheryVersion}/capabilities` }),
-        providesTags: ["capability_capabilities"],
       }),
       getConnections: build.query<GetConnectionsApiResponse, GetConnectionsApiArg>({
         query: (queryArg) => ({
@@ -824,7 +815,6 @@ export type CreateAcademyCurriculaApiResponse = /** status 201 created the curri
   createdAt: string;
   /** When the cirricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
   /** Additional metadata about the cirricula */
   metadata: {
@@ -841,7 +831,7 @@ export type CreateAcademyCurriculaApiResponse = /** status 201 created the curri
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -895,19 +885,19 @@ export type CreateAcademyCurriculaApiArg = {
     type: "learning-path" | "challenge" | "certification";
     /** Title of the curricula */
     title: string;
-    /** Organization ID that owns this curricula */
+    /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this curricula belongs */
+    /** ID of the workspace to which this cirricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
-    /** ID of the team associated with this curricula */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     team_id: string;
     /** Expiry time for curricula access */
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the curricula */
+    /** Additional metadata about the cirricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -922,7 +912,7 @@ export type CreateAcademyCurriculaApiArg = {
       certificate?: {
         /** Unique identifier for the certificate */
         id: string;
-        /** UUID of the organization that issued the certificate */
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
         org_id: string;
         /** ID of the recipient (user) who received the certificate */
         recipient_id: string;
@@ -1020,7 +1010,6 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single
   createdAt: string;
   /** When the cirricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
   /** Additional metadata about the cirricula */
   metadata: {
@@ -1037,7 +1026,7 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1093,11 +1082,11 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiArg = {
 export type RegisterToAcademyContentApiResponse = /** status 200 registered content */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
-  /** ID of the organization */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the course content */
   content_id: string;
-  /** ID of the user (foreign key to User) */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   user_id: string;
   /** Status of the user's course registration */
   status: "registered" | "completed" | "failed" | "withdrawn";
@@ -1111,7 +1100,7 @@ export type RegisterToAcademyContentApiResponse = /** status 200 registered cont
   certificate: {
     /** Unique identifier for the certificate */
     id: string;
-    /** UUID of the organization that issued the certificate */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the recipient (user) who received the certificate */
     recipient_id: string;
@@ -1152,11 +1141,11 @@ export type RegisterToAcademyContentApiArg = {
 export type WithdrawFromAcademyContentApiResponse = /** status 200 registered content */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
-  /** ID of the organization */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the course content */
   content_id: string;
-  /** ID of the user (foreign key to User) */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   user_id: string;
   /** Status of the user's course registration */
   status: "registered" | "completed" | "failed" | "withdrawn";
@@ -1170,7 +1159,7 @@ export type WithdrawFromAcademyContentApiResponse = /** status 200 registered co
   certificate: {
     /** Unique identifier for the certificate */
     id: string;
-    /** UUID of the organization that issued the certificate */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the recipient (user) who received the certificate */
     recipient_id: string;
@@ -1229,7 +1218,6 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
   createdAt: string;
   /** When the cirricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
   /** Additional metadata about the cirricula */
   metadata: {
@@ -1246,7 +1234,7 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1296,9 +1284,9 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
 } & {
   RegistrationCount: number;
   Invitation?: {
-    /** Unique identifier for the invitation , is also used as the invitation code */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     owner_id: string;
     /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
     is_default?: boolean;
@@ -1335,19 +1323,19 @@ export type UpdateAcademyCurriculaByIdApiArg = {
     type: "learning-path" | "challenge" | "certification";
     /** Title of the curricula */
     title: string;
-    /** Organization ID that owns this curricula */
+    /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this curricula belongs */
+    /** ID of the workspace to which this cirricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
-    /** ID of the team associated with this curricula */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     team_id: string;
     /** Expiry time for curricula access */
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the curricula */
+    /** Additional metadata about the cirricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -1362,7 +1350,7 @@ export type UpdateAcademyCurriculaByIdApiArg = {
       certificate?: {
         /** Unique identifier for the certificate */
         id: string;
-        /** UUID of the organization that issued the certificate */
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
         org_id: string;
         /** ID of the recipient (user) who received the certificate */
         recipient_id: string;
@@ -1440,7 +1428,6 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
   createdAt: string;
   /** When the cirricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
   /** Additional metadata about the cirricula */
   metadata: {
@@ -1457,7 +1444,7 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1507,9 +1494,9 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
 } & {
   RegistrationCount: number;
   Invitation?: {
-    /** Unique identifier for the invitation , is also used as the invitation code */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     owner_id: string;
     /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
     is_default?: boolean;
@@ -1546,11 +1533,11 @@ export type GetApiAcademyRegistrationsByContentIdApiResponse =
   /** status 200 Registration data for the specified content */ {
     /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the organization */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the course content */
     content_id: string;
-    /** ID of the user (foreign key to User) */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     user_id: string;
     /** Status of the user's course registration */
     status: "registered" | "completed" | "failed" | "withdrawn";
@@ -1564,7 +1551,7 @@ export type GetApiAcademyRegistrationsByContentIdApiResponse =
     certificate: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -2062,7 +2049,7 @@ export type GetAcademyAdminRegistrationsApiArg = {
 export type GetCertificateByIdApiResponse = /** status 200 A single certificate */ {
   /** Unique identifier for the certificate */
   id: string;
-  /** UUID of the organization that issued the certificate */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the recipient (user) who received the certificate */
   recipient_id: string;
@@ -2162,199 +2149,6 @@ export type CreateOrUpdateBadgeApiArg = {
     /** Timestamp when the resource was deleted, if applicable */
     deleted_at: string;
   };
-};
-export type GetCapabilitiesDeprecatedApiResponse = /** status 200 Capabilities fetched successfully */ {
-  /** Type of the provider (e.g. "remote"). */
-  providerType?: string;
-  /** Version of the provider package. */
-  packageVersion?: string;
-  /** URL from which the provider package can be downloaded. */
-  packageUrl?: string;
-  /** Display name of the provider. */
-  providerName?: string;
-  /** List of human-readable description lines for the provider. */
-  providerDescription?: string[];
-  /** Extension points for the Meshery UI and backend. */
-  extensions?: {
-    navigator?: {
-      title?: string;
-      onClickCallback?: number;
-      /** Href configuration for navigator extensions. */
-      href?: {
-        uri?: string;
-        external?: boolean;
-      };
-      component?: string;
-      icon?: string;
-      link?: boolean;
-      show?: boolean;
-      type?: string;
-      allowedTo?: object;
-      isBeta?: boolean;
-    }[];
-    userPrefs?: {
-      component?: string;
-      type?: string;
-    }[];
-    graphql?: {
-      component?: string;
-      path?: string;
-      type?: string;
-    }[];
-    account?: {
-      title?: string;
-      onClickCallback?: number;
-      /** Href configuration for account extensions. */
-      href?: {
-        uri?: string;
-        external?: boolean;
-      };
-      component?: string;
-      link?: boolean;
-      show?: boolean;
-      type?: string;
-    }[];
-    collaborator?: {
-      component?: string;
-      type?: string;
-    }[];
-  };
-  /** List of general feature capabilities. */
-  capabilities?: {
-    /** Feature identifier. */
-    feature?: string;
-    /** API endpoint for the feature. */
-    endpoint?: string;
-  }[];
-  /** Restricted access configuration for the Meshery UI. */
-  restrictedAccess?: {
-    isMesheryUIRestricted?: boolean;
-    /** Meshery UI component capability. */
-    allowedComponents?: {
-      /** Navigator component visibility settings. */
-      navigator?: {
-        dashboard?: boolean;
-        performance?: boolean;
-        conformance?: boolean;
-        extensions?: boolean;
-        toggler?: boolean;
-        help?: boolean;
-        lifecycle?: object;
-        /** Configuration component visibility settings. */
-        configuration?: {
-          designs?: boolean;
-          applications?: boolean;
-          filters?: boolean;
-        };
-      };
-      /** Header component visibility settings. */
-      header?: {
-        contextSwitcher?: boolean;
-        settings?: boolean;
-        notifications?: boolean;
-        profile?: boolean;
-      };
-    };
-  };
-};
-export type GetCapabilitiesDeprecatedApiArg = void;
-export type GetCapabilitiesApiResponse = /** status 200 Capabilities fetched successfully */ {
-  /** Type of the provider (e.g. "remote"). */
-  providerType?: string;
-  /** Version of the provider package. */
-  packageVersion?: string;
-  /** URL from which the provider package can be downloaded. */
-  packageUrl?: string;
-  /** Display name of the provider. */
-  providerName?: string;
-  /** List of human-readable description lines for the provider. */
-  providerDescription?: string[];
-  /** Extension points for the Meshery UI and backend. */
-  extensions?: {
-    navigator?: {
-      title?: string;
-      onClickCallback?: number;
-      /** Href configuration for navigator extensions. */
-      href?: {
-        uri?: string;
-        external?: boolean;
-      };
-      component?: string;
-      icon?: string;
-      link?: boolean;
-      show?: boolean;
-      type?: string;
-      allowedTo?: object;
-      isBeta?: boolean;
-    }[];
-    userPrefs?: {
-      component?: string;
-      type?: string;
-    }[];
-    graphql?: {
-      component?: string;
-      path?: string;
-      type?: string;
-    }[];
-    account?: {
-      title?: string;
-      onClickCallback?: number;
-      /** Href configuration for account extensions. */
-      href?: {
-        uri?: string;
-        external?: boolean;
-      };
-      component?: string;
-      link?: boolean;
-      show?: boolean;
-      type?: string;
-    }[];
-    collaborator?: {
-      component?: string;
-      type?: string;
-    }[];
-  };
-  /** List of general feature capabilities. */
-  capabilities?: {
-    /** Feature identifier. */
-    feature?: string;
-    /** API endpoint for the feature. */
-    endpoint?: string;
-  }[];
-  /** Restricted access configuration for the Meshery UI. */
-  restrictedAccess?: {
-    isMesheryUIRestricted?: boolean;
-    /** Meshery UI component capability. */
-    allowedComponents?: {
-      /** Navigator component visibility settings. */
-      navigator?: {
-        dashboard?: boolean;
-        performance?: boolean;
-        conformance?: boolean;
-        extensions?: boolean;
-        toggler?: boolean;
-        help?: boolean;
-        lifecycle?: object;
-        /** Configuration component visibility settings. */
-        configuration?: {
-          designs?: boolean;
-          applications?: boolean;
-          filters?: boolean;
-        };
-      };
-      /** Header component visibility settings. */
-      header?: {
-        contextSwitcher?: boolean;
-        settings?: boolean;
-        notifications?: boolean;
-        profile?: boolean;
-      };
-    };
-  };
-};
-export type GetCapabilitiesApiArg = {
-  /** Meshery server version string (e.g. v0.8.0) */
-  mesheryVersion: string;
 };
 export type GetConnectionsApiResponse = /** status 200 Paginated list of connections with summary information */ {
   /** List of connections on this page */
@@ -9466,8 +9260,6 @@ export const {
   useDeleteBadgeByIdMutation,
   useGetBadgeByIdQuery,
   useCreateOrUpdateBadgeMutation,
-  useGetCapabilitiesDeprecatedQuery,
-  useGetCapabilitiesQuery,
   useGetConnectionsQuery,
   useRegisterConnectionMutation,
   useGetConnectionByIdQuery,

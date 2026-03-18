@@ -165,82 +165,114 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the badge to be awarded on completion of this curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
                             "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "invite_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the invite associated with this cirricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
                             "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "workspace_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the workspace to which this cirricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
                             "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "createdAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
                             "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "updatedAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
                             "json": "updated_at",
                             "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "deletedAt": {
+                          "allOf": [
+                            {
+                              "description": "Timestamp when the resource was deleted.",
+                              "x-go-type": "time.Time",
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-name": "DeletedAt",
+                              "x-oapi-codegen-extra-tags": {
+                                "db": "deleted_at",
+                                "yaml": "deleted_at"
+                              },
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "x-go-type": "core.NullTime",
                           "x-oapi-codegen-extra-tags": {
                             "db": "deleted_at",
                             "json": "deleted_at",
                             "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "metadata": {
                           "type": "object",
@@ -307,9 +339,9 @@ const AcademySchema = {
                                       "x-go-name": "ID"
                                     },
                                     "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
                                       "type": "string",
                                       "format": "uuid",
+                                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                       "x-go-type": "uuid.UUID",
                                       "x-go-type-import": {
                                         "path": "github.com/gofrs/uuid"
@@ -542,70 +574,82 @@ const AcademySchema = {
                   },
                   "orgId": {
                     "type": "string",
-                    "description": "Organization ID that owns this curricula",
+                    "description": "Organization ID that owns this learning path",
                     "example": "layer5",
-                    "x-go-name": "OrgId",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "org_id",
                       "db": "org_id",
+                      "json": "org_id",
                       "yaml": "org_id"
                     }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this curricula belongs",
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
+                    "description": "ID of the workspace to which this cirricula belongs",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "workspace_id",
                       "db": "workspace_id",
+                      "json": "workspace_id",
                       "yaml": "workspace_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "badge_id": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
                     "description": "ID of the badge to be awarded on completion of this curricula",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "badge_id",
                       "db": "badge_id",
+                      "json": "badge_id",
                       "yaml": "badge_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "team_id": {
-                    "description": "ID of the team associated with this curricula",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-go-name": "TeamId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "team_id",
                       "db": "team_id",
                       "yaml": "team_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "access_expires_at": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-go-type-skip-optional-pointer": true
+                      }
+                    ],
                     "description": "Expiry time for curricula access",
-                    "x-go-name": "AccessExpiresAt",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_expires_at",
                       "db": "access_expires_at",
                       "yaml": "access_expires_at"
-                    },
-                    "type": "string",
-                    "format": "date-time",
-                    "x-go-type-skip-optional-pointer": true
+                    }
                   },
                   "access_status": {
                     "description": "Current access status of the curricula",
@@ -627,13 +671,13 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the curricula",
+                    "description": "Additional metadata about the cirricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
                     "x-oapi-codegen-extra-tags": {
-                      "json": "metadata",
                       "db": "metadata",
+                      "json": "metadata",
                       "yaml": "metadata"
                     },
                     "oneOf": [
@@ -690,9 +734,9 @@ const AcademySchema = {
                                 "x-go-name": "ID"
                               },
                               "org_id": {
-                                "description": "UUID of the organization that issued the certificate",
                                 "type": "string",
                                 "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
@@ -955,82 +999,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the badge to be awarded on completion of this curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the invite associated with this cirricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the workspace to which this cirricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
@@ -1097,9 +1173,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -1536,82 +1612,114 @@ const AcademySchema = {
                               ]
                             },
                             "badge_id": {
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                  "x-go-type": "uuid.UUID",
+                                  "x-go-type-import": {
+                                    "path": "github.com/gofrs/uuid"
+                                  }
+                                }
+                              ],
                               "description": "ID of the badge to be awarded on completion of this curricula",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "badge_id",
                                 "json": "badge_id",
                                 "yaml": "badge_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "invite_id": {
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                  "x-go-type": "uuid.UUID",
+                                  "x-go-type-import": {
+                                    "path": "github.com/gofrs/uuid"
+                                  }
+                                }
+                              ],
                               "description": "ID of the invite associated with this cirricula",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "invite_id",
                                 "json": "invite_id",
                                 "yaml": "invite_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "workspace_id": {
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                  "x-go-type": "uuid.UUID",
+                                  "x-go-type-import": {
+                                    "path": "github.com/gofrs/uuid"
+                                  }
+                                }
+                              ],
                               "description": "ID of the workspace to which this cirricula belongs",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "workspace_id",
                                 "json": "workspace_id",
                                 "yaml": "workspace_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "createdAt": {
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "x-go-type-skip-optional-pointer": true
+                                }
+                              ],
                               "description": "When the cirricula item was created",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "created_at",
                                 "json": "created_at",
                                 "yaml": "created_at"
-                              },
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-type-skip-optional-pointer": true
+                              }
                             },
                             "updatedAt": {
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "x-go-type-skip-optional-pointer": true
+                                }
+                              ],
                               "description": "When the cirricula was last updated",
                               "x-go-type": "core.Time",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "updated_at",
                                 "json": "updated_at",
                                 "yaml": "updated_at"
-                              },
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-type-skip-optional-pointer": true
+                              }
                             },
                             "deletedAt": {
+                              "allOf": [
+                                {
+                                  "description": "Timestamp when the resource was deleted.",
+                                  "x-go-type": "time.Time",
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "x-go-name": "DeletedAt",
+                                  "x-oapi-codegen-extra-tags": {
+                                    "db": "deleted_at",
+                                    "yaml": "deleted_at"
+                                  },
+                                  "x-go-type-skip-optional-pointer": true
+                                }
+                              ],
                               "x-go-type": "core.NullTime",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "deleted_at",
                                 "json": "deleted_at",
                                 "yaml": "deleted_at"
-                              },
-                              "description": "Timestamp when the resource was deleted.",
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-name": "DeletedAt",
-                              "x-go-type-skip-optional-pointer": true
+                              }
                             },
                             "metadata": {
                               "type": "object",
@@ -1678,9 +1786,9 @@ const AcademySchema = {
                                           "x-go-name": "ID"
                                         },
                                         "org_id": {
-                                          "description": "UUID of the organization that issued the certificate",
                                           "type": "string",
                                           "format": "uuid",
+                                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                           "x-go-type": "uuid.UUID",
                                           "x-go-type-import": {
                                             "path": "github.com/gofrs/uuid"
@@ -2013,82 +2121,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the badge to be awarded on completion of this curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the invite associated with this cirricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the workspace to which this cirricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
@@ -2155,9 +2295,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -2400,30 +2540,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -2434,15 +2574,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -2460,32 +2600,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -2513,9 +2654,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -2656,30 +2797,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -2690,15 +2831,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -2716,32 +2857,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -2769,9 +2911,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -2924,70 +3066,82 @@ const AcademySchema = {
                   },
                   "orgId": {
                     "type": "string",
-                    "description": "Organization ID that owns this curricula",
+                    "description": "Organization ID that owns this learning path",
                     "example": "layer5",
-                    "x-go-name": "OrgId",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "org_id",
                       "db": "org_id",
+                      "json": "org_id",
                       "yaml": "org_id"
                     }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this curricula belongs",
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
+                    "description": "ID of the workspace to which this cirricula belongs",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "workspace_id",
                       "db": "workspace_id",
+                      "json": "workspace_id",
                       "yaml": "workspace_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "badge_id": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
                     "description": "ID of the badge to be awarded on completion of this curricula",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "badge_id",
                       "db": "badge_id",
+                      "json": "badge_id",
                       "yaml": "badge_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "team_id": {
-                    "description": "ID of the team associated with this curricula",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-go-name": "TeamId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "team_id",
                       "db": "team_id",
                       "yaml": "team_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "access_expires_at": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-go-type-skip-optional-pointer": true
+                      }
+                    ],
                     "description": "Expiry time for curricula access",
-                    "x-go-name": "AccessExpiresAt",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_expires_at",
                       "db": "access_expires_at",
                       "yaml": "access_expires_at"
-                    },
-                    "type": "string",
-                    "format": "date-time",
-                    "x-go-type-skip-optional-pointer": true
+                    }
                   },
                   "access_status": {
                     "description": "Current access status of the curricula",
@@ -3009,13 +3163,13 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the curricula",
+                    "description": "Additional metadata about the cirricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
                     "x-oapi-codegen-extra-tags": {
-                      "json": "metadata",
                       "db": "metadata",
+                      "json": "metadata",
                       "yaml": "metadata"
                     },
                     "oneOf": [
@@ -3072,9 +3226,9 @@ const AcademySchema = {
                                 "x-go-name": "ID"
                               },
                               "org_id": {
-                                "description": "UUID of the organization that issued the certificate",
                                 "type": "string",
                                 "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
@@ -3340,82 +3494,114 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the badge to be awarded on completion of this curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
                             "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "invite_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the invite associated with this cirricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
                             "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "workspace_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the workspace to which this cirricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
                             "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "createdAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
                             "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "updatedAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
                             "json": "updated_at",
                             "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "deletedAt": {
+                          "allOf": [
+                            {
+                              "description": "Timestamp when the resource was deleted.",
+                              "x-go-type": "time.Time",
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-name": "DeletedAt",
+                              "x-oapi-codegen-extra-tags": {
+                                "db": "deleted_at",
+                                "yaml": "deleted_at"
+                              },
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "x-go-type": "core.NullTime",
                           "x-oapi-codegen-extra-tags": {
                             "db": "deleted_at",
                             "json": "deleted_at",
                             "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "metadata": {
                           "type": "object",
@@ -3482,9 +3668,9 @@ const AcademySchema = {
                                       "x-go-name": "ID"
                                     },
                                     "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
                                       "type": "string",
                                       "format": "uuid",
+                                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                       "x-go-type": "uuid.UUID",
                                       "x-go-type-import": {
                                         "path": "github.com/gofrs/uuid"
@@ -3693,26 +3879,26 @@ const AcademySchema = {
                           ],
                           "properties": {
                             "id": {
-                              "x-go-name": "ID",
-                              "description": "Unique identifier for the invitation , is also used as the invitation code",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
-                              }
+                              },
+                              "x-go-name": "ID"
                             },
                             "owner_id": {
-                              "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "owner_id",
                                 "json": "owner_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "is_default": {
@@ -4011,82 +4197,114 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the badge to be awarded on completion of this curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
                             "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "invite_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the invite associated with this cirricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
                             "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "workspace_id": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
                           "description": "ID of the workspace to which this cirricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
                             "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "createdAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
                             "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "updatedAt": {
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "description": "When the cirricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
                             "json": "updated_at",
                             "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "deletedAt": {
+                          "allOf": [
+                            {
+                              "description": "Timestamp when the resource was deleted.",
+                              "x-go-type": "time.Time",
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-name": "DeletedAt",
+                              "x-oapi-codegen-extra-tags": {
+                                "db": "deleted_at",
+                                "yaml": "deleted_at"
+                              },
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "x-go-type": "core.NullTime",
                           "x-oapi-codegen-extra-tags": {
                             "db": "deleted_at",
                             "json": "deleted_at",
                             "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "metadata": {
                           "type": "object",
@@ -4153,9 +4371,9 @@ const AcademySchema = {
                                       "x-go-name": "ID"
                                     },
                                     "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
                                       "type": "string",
                                       "format": "uuid",
+                                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                       "x-go-type": "uuid.UUID",
                                       "x-go-type-import": {
                                         "path": "github.com/gofrs/uuid"
@@ -4364,26 +4582,26 @@ const AcademySchema = {
                           ],
                           "properties": {
                             "id": {
-                              "x-go-name": "ID",
-                              "description": "Unique identifier for the invitation , is also used as the invitation code",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
-                              }
+                              },
+                              "x-go-name": "ID"
                             },
                             "owner_id": {
-                              "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "owner_id",
                                 "json": "owner_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "is_default": {
@@ -4582,30 +4800,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -4616,15 +4834,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -4642,32 +4860,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -4695,9 +4914,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -7086,9 +7305,9 @@ const AcademySchema = {
                       "x-go-name": "ID"
                     },
                     "org_id": {
-                      "description": "UUID of the organization that issued the certificate",
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
@@ -7192,6 +7411,366 @@ const AcademySchema = {
       }
     },
     "schemas": {
+      "AcademyCirriculaOrgId": {
+        "type": "string",
+        "description": "Organization ID that owns this learning path",
+        "example": "layer5",
+        "x-oapi-codegen-extra-tags": {
+          "db": "org_id",
+          "json": "org_id",
+          "yaml": "org_id"
+        }
+      },
+      "AcademyCirriculaBadgeId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the badge to be awarded on completion of this curricula",
+        "x-oapi-codegen-extra-tags": {
+          "db": "badge_id",
+          "json": "badge_id",
+          "yaml": "badge_id"
+        }
+      },
+      "AcademyCirriculaInviteId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the invite associated with this cirricula",
+        "x-oapi-codegen-extra-tags": {
+          "db": "invite_id",
+          "json": "invite_id",
+          "yaml": "invite_id"
+        }
+      },
+      "AcademyCirriculaWorkspaceId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the workspace to which this cirricula belongs",
+        "x-oapi-codegen-extra-tags": {
+          "db": "workspace_id",
+          "json": "workspace_id",
+          "yaml": "workspace_id"
+        }
+      },
+      "AcademyCirriculaCreatedAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "When the cirricula item was created",
+        "x-oapi-codegen-extra-tags": {
+          "db": "created_at",
+          "json": "created_at",
+          "yaml": "created_at"
+        }
+      },
+      "AcademyCirriculaUpdatedAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "When the cirricula was last updated",
+        "x-go-type": "core.Time",
+        "x-oapi-codegen-extra-tags": {
+          "db": "updated_at",
+          "json": "updated_at",
+          "yaml": "updated_at"
+        }
+      },
+      "AcademyCirriculaDeletedAt": {
+        "allOf": [
+          {
+            "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "x-go-type": "core.NullTime",
+        "x-oapi-codegen-extra-tags": {
+          "db": "deleted_at",
+          "json": "deleted_at",
+          "yaml": "deleted_at"
+        }
+      },
+      "AcademyCirriculaMetadata": {
+        "type": "object",
+        "description": "Additional metadata about the cirricula",
+        "additionalProperties": true,
+        "x-go-type": "core.Map",
+        "x-go-type-skip-optional-pointer": true,
+        "x-oapi-codegen-extra-tags": {
+          "db": "metadata",
+          "json": "metadata",
+          "yaml": "metadata"
+        },
+        "oneOf": [
+          {
+            "x-go-type": "CurriculaMetadata",
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the learning path",
+                "example": "Mastering Kubernetes for Engineers"
+              },
+              "description": {
+                "type": "string",
+                "description": "Short description of the curricula",
+                "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
+              },
+              "detailed_description": {
+                "type": "string",
+                "description": "Detailed description of the curricula",
+                "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
+              },
+              "banner": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true,
+                "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                "example": "kubernetes-icon.svg"
+              },
+              "permalink": {
+                "type": "string",
+                "format": "uri",
+                "description": "Canonical URL for the learning path",
+                "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
+              },
+              "certificate": {
+                "x-go-type": "Certificate",
+                "type": "object",
+                "required": [
+                  "id",
+                  "org_id",
+                  "title",
+                  "description",
+                  "issuing_authorities",
+                  "issued_date",
+                  "recipient_id",
+                  "recipient_name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the certificate",
+                    "example": "1234567890abcdef",
+                    "x-go-name": "ID"
+                  },
+                  "org_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  },
+                  "recipient_id": {
+                    "type": "string",
+                    "description": "ID of the recipient (user) who received the certificate",
+                    "example": "1234567890abcdef"
+                  },
+                  "recipient_name": {
+                    "type": "string",
+                    "description": "Name of the recipient (user) who received the certificate",
+                    "example": "John Doe"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the certificate",
+                    "example": "Kubernetes Expert Certification"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the certificate",
+                    "example": "Awarded for successfully completing the Kubernetes Expert course"
+                  },
+                  "issuing_authorities": {
+                    "type": "array",
+                    "items": {
+                      "x-go-type": "CertificateIssuingAuthority",
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "url"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the issuing authority",
+                          "example": "Cloud Native Foundation"
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Role of the issuing authority",
+                          "example": "COO"
+                        },
+                        "signature_url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
+                          "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
+                        }
+                      }
+                    },
+                    "description": "List of issuing authorities for the certificate"
+                  },
+                  "issued_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date when the certificate was issued",
+                    "example": "2023-10-01T12:00:00Z"
+                  },
+                  "expiration_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date when the certificate expires (optional)",
+                    "example": "2025-10-01T12:00:00Z"
+                  },
+                  "expires_in": {
+                    "type": "integer",
+                    "description": "Number of months after which the certificate expires",
+                    "example": 24
+                  }
+                }
+              },
+              "children": {
+                "type": "array",
+                "description": "List of children items in the top-level curricula",
+                "items": {
+                  "x-go-type": "ChildNode",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier for the course",
+                      "example": "1234567890abcdef",
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
+                      }
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title of the course",
+                      "example": "Kubernetes Basics"
+                    },
+                    "permalink": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to the course content",
+                      "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Course description",
+                      "example": "Learn the basics of Kubernetes"
+                    },
+                    "weight": {
+                      "type": "number",
+                      "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
+                      "example": "eg 1 , 2"
+                    },
+                    "banner": {
+                      "type": "string",
+                      "format": "uri",
+                      "nullable": true,
+                      "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                      "example": "kubernetes-icon.svg"
+                    },
+                    "type": {
+                      "x-go-type": "ContentType",
+                      "description": "Type of the content (e.g., learning-path, challenge, certification)",
+                      "type": "string",
+                      "enum": [
+                        "learning-path",
+                        "challenge",
+                        "certification"
+                      ]
+                    },
+                    "children": {
+                      "type": "array",
+                      "description": "List of child nodes (sub-courses or modules)",
+                      "items": {
+                        "type": "object",
+                        "x-go-type": "ChildNode"
+                      }
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "description",
+                    "id",
+                    "permalink"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "title",
+              "description",
+              "permalink"
+            ]
+          }
+        ]
+      },
+      "AcademyCurriculaAccessExpiresAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "Expiry time for curricula access",
+        "x-go-type": "*time.Time",
+        "x-oapi-codegen-extra-tags": {
+          "json": "access_expires_at",
+          "db": "access_expires_at",
+          "yaml": "access_expires_at"
+        }
+      },
       "RegisterToAcademyContentRequest": {
         "type": "object",
         "required": [
@@ -7331,82 +7910,114 @@ const AcademySchema = {
             ]
           },
           "badge_id": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
             "description": "ID of the badge to be awarded on completion of this curricula",
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
               "yaml": "badge_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "invite_id": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
             "description": "ID of the invite associated with this cirricula",
             "x-oapi-codegen-extra-tags": {
               "db": "invite_id",
               "json": "invite_id",
               "yaml": "invite_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "workspace_id": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
             "description": "ID of the workspace to which this cirricula belongs",
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
               "json": "workspace_id",
               "yaml": "workspace_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "createdAt": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "description": "When the cirricula item was created",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
               "json": "created_at",
               "yaml": "created_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "updatedAt": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "description": "When the cirricula was last updated",
             "x-go-type": "core.Time",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
               "json": "updated_at",
               "yaml": "updated_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "deletedAt": {
+            "allOf": [
+              {
+                "description": "Timestamp when the resource was deleted.",
+                "x-go-type": "time.Time",
+                "type": "string",
+                "format": "date-time",
+                "x-go-name": "DeletedAt",
+                "x-oapi-codegen-extra-tags": {
+                  "db": "deleted_at",
+                  "yaml": "deleted_at"
+                },
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "x-go-type": "core.NullTime",
             "x-oapi-codegen-extra-tags": {
               "db": "deleted_at",
               "json": "deleted_at",
               "yaml": "deleted_at"
-            },
-            "description": "Timestamp when the resource was deleted.",
-            "type": "string",
-            "format": "date-time",
-            "x-go-name": "DeletedAt",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "metadata": {
             "type": "object",
@@ -7473,9 +8084,9 @@ const AcademySchema = {
                         "x-go-name": "ID"
                       },
                       "org_id": {
-                        "description": "UUID of the organization that issued the certificate",
                         "type": "string",
                         "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                         "x-go-type": "uuid.UUID",
                         "x-go-type-import": {
                           "path": "github.com/gofrs/uuid"
@@ -7737,82 +8348,114 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the badge to be awarded on completion of this curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
                   "yaml": "badge_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "invite_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the invite associated with this cirricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
                   "yaml": "invite_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "workspace_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the workspace to which this cirricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
                   "yaml": "workspace_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "createdAt": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "description": "When the cirricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
                   "yaml": "created_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "updatedAt": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "description": "When the cirricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
                   "json": "updated_at",
                   "yaml": "updated_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "deletedAt": {
+                "allOf": [
+                  {
+                    "description": "Timestamp when the resource was deleted.",
+                    "x-go-type": "time.Time",
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-name": "DeletedAt",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "deleted_at",
+                      "yaml": "deleted_at"
+                    },
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "x-go-type": "core.NullTime",
                 "x-oapi-codegen-extra-tags": {
                   "db": "deleted_at",
                   "json": "deleted_at",
                   "yaml": "deleted_at"
-                },
-                "description": "Timestamp when the resource was deleted.",
-                "type": "string",
-                "format": "date-time",
-                "x-go-name": "DeletedAt",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "metadata": {
                 "type": "object",
@@ -7879,9 +8522,9 @@ const AcademySchema = {
                             "x-go-name": "ID"
                           },
                           "org_id": {
-                            "description": "UUID of the organization that issued the certificate",
                             "type": "string",
                             "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
@@ -8090,26 +8733,26 @@ const AcademySchema = {
                 ],
                 "properties": {
                   "id": {
-                    "x-go-name": "ID",
-                    "description": "Unique identifier for the invitation , is also used as the invitation code",
                     "type": "string",
                     "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                     "x-go-type": "uuid.UUID",
                     "x-go-type-import": {
                       "path": "github.com/gofrs/uuid"
-                    }
+                    },
+                    "x-go-name": "ID"
                   },
                   "owner_id": {
-                    "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "owner_id",
                       "json": "owner_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "is_default": {
@@ -8270,70 +8913,82 @@ const AcademySchema = {
           },
           "orgId": {
             "type": "string",
-            "description": "Organization ID that owns this curricula",
+            "description": "Organization ID that owns this learning path",
             "example": "layer5",
-            "x-go-name": "OrgId",
             "x-oapi-codegen-extra-tags": {
-              "json": "org_id",
               "db": "org_id",
+              "json": "org_id",
               "yaml": "org_id"
             }
           },
           "workspace_id": {
-            "description": "ID of the workspace to which this curricula belongs",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
+            "description": "ID of the workspace to which this cirricula belongs",
             "x-oapi-codegen-extra-tags": {
-              "json": "workspace_id",
               "db": "workspace_id",
+              "json": "workspace_id",
               "yaml": "workspace_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "badge_id": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
             "description": "ID of the badge to be awarded on completion of this curricula",
             "x-oapi-codegen-extra-tags": {
-              "json": "badge_id",
               "db": "badge_id",
+              "json": "badge_id",
               "yaml": "badge_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "team_id": {
-            "description": "ID of the team associated with this curricula",
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            },
             "x-go-name": "TeamId",
             "x-oapi-codegen-extra-tags": {
               "json": "team_id",
               "db": "team_id",
               "yaml": "team_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "access_expires_at": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "description": "Expiry time for curricula access",
-            "x-go-name": "AccessExpiresAt",
             "x-go-type": "*time.Time",
             "x-oapi-codegen-extra-tags": {
               "json": "access_expires_at",
               "db": "access_expires_at",
               "yaml": "access_expires_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "access_status": {
             "description": "Current access status of the curricula",
@@ -8355,13 +9010,13 @@ const AcademySchema = {
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the curricula",
+            "description": "Additional metadata about the cirricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
-              "json": "metadata",
               "db": "metadata",
+              "json": "metadata",
               "yaml": "metadata"
             },
             "oneOf": [
@@ -8418,9 +9073,9 @@ const AcademySchema = {
                         "x-go-name": "ID"
                       },
                       "org_id": {
-                        "description": "UUID of the organization that issued the certificate",
                         "type": "string",
                         "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                         "x-go-type": "uuid.UUID",
                         "x-go-type-import": {
                           "path": "github.com/gofrs/uuid"
@@ -8677,82 +9332,114 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the badge to be awarded on completion of this curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
                   "yaml": "badge_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "invite_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the invite associated with this cirricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
                   "yaml": "invite_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "workspace_id": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
                 "description": "ID of the workspace to which this cirricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
                   "yaml": "workspace_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "createdAt": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "description": "When the cirricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
                   "yaml": "created_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "updatedAt": {
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "description": "When the cirricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
                   "json": "updated_at",
                   "yaml": "updated_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "deletedAt": {
+                "allOf": [
+                  {
+                    "description": "Timestamp when the resource was deleted.",
+                    "x-go-type": "time.Time",
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-name": "DeletedAt",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "deleted_at",
+                      "yaml": "deleted_at"
+                    },
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "x-go-type": "core.NullTime",
                 "x-oapi-codegen-extra-tags": {
                   "db": "deleted_at",
                   "json": "deleted_at",
                   "yaml": "deleted_at"
-                },
-                "description": "Timestamp when the resource was deleted.",
-                "type": "string",
-                "format": "date-time",
-                "x-go-name": "DeletedAt",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "metadata": {
                 "type": "object",
@@ -8819,9 +9506,9 @@ const AcademySchema = {
                             "x-go-name": "ID"
                           },
                           "org_id": {
-                            "description": "UUID of the organization that issued the certificate",
                             "type": "string",
                             "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
@@ -9109,82 +9796,114 @@ const AcademySchema = {
                   ]
                 },
                 "badge_id": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    }
+                  ],
                   "description": "ID of the badge to be awarded on completion of this curricula",
                   "x-oapi-codegen-extra-tags": {
                     "db": "badge_id",
                     "json": "badge_id",
                     "yaml": "badge_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "invite_id": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    }
+                  ],
                   "description": "ID of the invite associated with this cirricula",
                   "x-oapi-codegen-extra-tags": {
                     "db": "invite_id",
                     "json": "invite_id",
                     "yaml": "invite_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "workspace_id": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    }
+                  ],
                   "description": "ID of the workspace to which this cirricula belongs",
                   "x-oapi-codegen-extra-tags": {
                     "db": "workspace_id",
                     "json": "workspace_id",
                     "yaml": "workspace_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "createdAt": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
                   "description": "When the cirricula item was created",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
                     "json": "created_at",
                     "yaml": "created_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "updatedAt": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
                   "description": "When the cirricula was last updated",
                   "x-go-type": "core.Time",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
                     "json": "updated_at",
                     "yaml": "updated_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "deletedAt": {
+                  "allOf": [
+                    {
+                      "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
                   "x-go-type": "core.NullTime",
                   "x-oapi-codegen-extra-tags": {
                     "db": "deleted_at",
                     "json": "deleted_at",
                     "yaml": "deleted_at"
-                  },
-                  "description": "Timestamp when the resource was deleted.",
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-name": "DeletedAt",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "metadata": {
                   "type": "object",
@@ -9251,9 +9970,9 @@ const AcademySchema = {
                               "x-go-name": "ID"
                             },
                             "org_id": {
-                              "description": "UUID of the organization that issued the certificate",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
@@ -9533,82 +10252,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the badge to be awarded on completion of this curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the invite associated with this cirricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
                       "description": "ID of the workspace to which this cirricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "description": "When the cirricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
@@ -9675,9 +10426,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -9927,9 +10678,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10137,9 +10888,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10339,9 +11090,9 @@ const AcademySchema = {
             "x-go-name": "ID"
           },
           "org_id": {
-            "description": "UUID of the organization that issued the certificate",
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
@@ -10468,9 +11219,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10654,30 +11405,30 @@ const AcademySchema = {
         ],
         "properties": {
           "id": {
-            "x-go-name": "ID",
-            "x-oapi-codegen-extra-tags": {
-              "db": "id",
-              "json": "id",
-              "yaml": "id"
-            },
             "type": "string",
             "format": "uuid",
             "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "ID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "id",
+              "json": "id",
+              "yaml": "id"
             }
           },
           "org_id": {
-            "description": "ID of the organization",
-            "x-oapi-codegen-extra-tags": {
-              "db": "org_id"
-            },
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "org_id"
             }
           },
           "content_id": {
@@ -10688,15 +11439,15 @@ const AcademySchema = {
             }
           },
           "user_id": {
-            "description": "ID of the user (foreign key to User)",
-            "x-oapi-codegen-extra-tags": {
-              "db": "user_id"
-            },
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "user_id"
             }
           },
           "status": {
@@ -10714,32 +11465,33 @@ const AcademySchema = {
             ]
           },
           "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true,
             "description": "When the registration was updated",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true,
             "description": "When the registration was created",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "deleted_at": {
-            "x-go-type": "core.NullTime",
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
             "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
             "type": "string",
             "format": "date-time",
             "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
             "x-go-type-skip-optional-pointer": true
           },
           "certificate": {
@@ -10767,9 +11519,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -11581,30 +12333,30 @@ const AcademySchema = {
               ],
               "properties": {
                 "id": {
-                  "x-go-name": "ID",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "id",
-                    "json": "id",
-                    "yaml": "id"
-                  },
                   "type": "string",
                   "format": "uuid",
                   "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-go-name": "ID",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "id",
+                    "json": "id",
+                    "yaml": "id"
                   }
                 },
                 "org_id": {
-                  "description": "ID of the organization",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "org_id"
-                  },
                   "type": "string",
                   "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "org_id"
                   }
                 },
                 "content_id": {
@@ -11615,15 +12367,15 @@ const AcademySchema = {
                   }
                 },
                 "user_id": {
-                  "description": "ID of the user (foreign key to User)",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "user_id"
-                  },
                   "type": "string",
                   "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "user_id"
                   }
                 },
                 "status": {
@@ -11641,32 +12393,33 @@ const AcademySchema = {
                   ]
                 },
                 "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true,
                   "description": "When the registration was updated",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true,
                   "description": "When the registration was created",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "deleted_at": {
-                  "x-go-type": "core.NullTime",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "deleted_at"
-                  },
                   "description": "Timestamp when the resource was deleted.",
+                  "x-go-type": "time.Time",
                   "type": "string",
                   "format": "date-time",
                   "x-go-name": "DeletedAt",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "yaml": "deleted_at"
+                  },
                   "x-go-type-skip-optional-pointer": true
                 },
                 "certificate": {
@@ -11694,9 +12447,9 @@ const AcademySchema = {
                       "x-go-name": "ID"
                     },
                     "org_id": {
-                      "description": "UUID of the organization that issued the certificate",
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
@@ -12886,14 +13639,15 @@ const AcademySchema = {
             }
           },
           "deleted_at": {
-            "x-go-type": "core.NullTime",
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
             "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
             "type": "string",
             "format": "date-time",
             "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
             "x-go-type-skip-optional-pointer": true
           },
           "submitted_at": {
