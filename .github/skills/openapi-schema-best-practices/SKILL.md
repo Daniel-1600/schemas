@@ -74,7 +74,7 @@ The `api.yml` is the entry point. It references subschemas via `$ref` and define
 
 ## Naming conventions
 
-These conventions apply to all new fields for consistency across APIs. Some legacy and DB-mirrored fields are explicit exceptions, as noted below:
+These conventions apply to all new additions (fields, paths, operationIds, etc.) for consistency across APIs. Some legacy and DB-mirrored elements are explicit exceptions, as noted below:
 
 | Element | Convention | Examples |
 |---------|-----------|----------|
@@ -85,9 +85,11 @@ These conventions apply to all new fields for consistency across APIs. Some lega
 | File/folder names | lowercase, underscores OK | `model.yaml`, `model_core.yml`, `api.yml` |
 | API paths | `/api` prefix, kebab-case, plural nouns | `/api/workspaces`, `/api/environments` |
 | Path parameters | camelCase | `{subscriptionId}`, `{connectionId}` |
-| operationId | camelCase VerbNoun | `registerMeshmodels`, `getAllRoles` |
+| operationId | lower camelCase verbNoun | `getAllRoles`, `listUsers` |
 | Version strings | k8s-style | `v1alpha1`, `v1beta1` |
 | schemaVersion | group/version | `models.meshery.io/v1beta1` |
+
+Note: Some existing `operationId` values use PascalCase (for example, `RegisterMeshmodels`) and are treated as legacy. Do not rename these in existing schemas, but ensure any new `operationId` you add follows the lower camelCase convention above.
 
 **Exceptions for DB-mirrored/system fields**
 
