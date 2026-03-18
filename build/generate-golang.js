@@ -67,7 +67,7 @@ function collectSchemaExtraTags(inputPath) {
       continue;
     }
 
-    const propertyTags = new Map();
+    const propertyTags = [];
 
     for (const [propertyName, propertyDefinition] of Object.entries(
       schemaDefinition.properties,
@@ -81,15 +81,71 @@ function collectSchemaExtraTags(inputPath) {
         continue;
       }
 
-      propertyTags.set(propertyName, { ...extraTags });
+      const candidateJsonNames = new Set([propertyName]);
+      if (typeof extraTags.json === "string" && extraTags.json.length > 0) {
+        candidateJsonNames.add(extraTags.json);
+      }
+
+      propertyTags.push({
+        propertyName,
+        candidateJsonNames: [...candidateJsonNames],
+        extraTags: { ...extraTags },
+      });
     }
 
-    if (propertyTags.size > 0) {
+    if (propertyTags.length > 0) {
       extraTagsByStruct.set(schemaName, propertyTags);
     }
   }
 
   return extraTagsByStruct;
+}
+
+function collectGeneratedStructTags(filePath) {
+  const lines = fs.readFileSync(filePath, "utf-8").split("\n");
+  const generatedTagsByStruct = new Map();
+  let currentStructName = null;
+  let structDepth = 0;
+
+  for (const line of lines) {
+    const structMatch = line.match(/^type\s+(\w+)\s+struct\s*\{$/);
+    if (structMatch) {
+      currentStructName = structMatch[1];
+      structDepth = 1;
+      if (!generatedTagsByStruct.has(currentStructName)) {
+        generatedTagsByStruct.set(currentStructName, new Map());
+      }
+      continue;
+    }
+
+    if (!currentStructName) {
+      continue;
+    }
+
+    if (structDepth === 1) {
+      const fieldMatch = line.match(/^\s*\w+[^`]*`([^`]*)`/);
+      if (fieldMatch) {
+        const rawTags = fieldMatch[1];
+        const jsonMatch = rawTags.match(/json:"([^",]+)(?:,[^"]*)?"/);
+        if (jsonMatch) {
+          generatedTagsByStruct
+            .get(currentStructName)
+            .set(jsonMatch[1], rawTags);
+        }
+      }
+    }
+
+    const opens = (line.match(/struct\s*\{/g) || []).length;
+    const closes = (line.match(/}/g) || []).length;
+    structDepth += opens - closes;
+
+    if (structDepth <= 0) {
+      currentStructName = null;
+      structDepth = 0;
+    }
+  }
+
+  return generatedTagsByStruct;
 }
 
 function addSchemaExtraTags(filePath, inputPath) {
@@ -121,15 +177,14 @@ function addSchemaExtraTags(filePath, inputPath) {
         const rawTags = fieldMatch[1];
         const jsonMatch = rawTags.match(/json:"([^",]+)(?:,[^"]*)?"/);
         if (jsonMatch) {
-          const propertyName = jsonMatch[1];
           const propertyTags = extraTagsByStruct
             .get(currentStructName)
-            ?.get(propertyName);
+            ?.find((entry) => entry.candidateJsonNames.includes(jsonMatch[1]));
 
           if (propertyTags) {
             let updatedTags = rawTags;
 
-            for (const [tagName, tagValue] of Object.entries(propertyTags)) {
+            for (const [tagName, tagValue] of Object.entries(propertyTags.extraTags)) {
               if (updatedTags.includes(`${tagName}:"`)) {
                 continue;
               }
@@ -157,6 +212,44 @@ function addSchemaExtraTags(filePath, inputPath) {
   }
 
   fs.writeFileSync(filePath, lines.join("\n"), "utf-8");
+}
+
+function validateGeneratedDbTags(filePath, inputPath) {
+  const extraTagsByStruct = collectSchemaExtraTags(inputPath);
+  const generatedTagsByStruct = collectGeneratedStructTags(filePath);
+  const failures = [];
+
+  for (const [structName, propertyTags] of extraTagsByStruct.entries()) {
+    const generatedPropertyTags = generatedTagsByStruct.get(structName);
+    if (!generatedPropertyTags) {
+      continue;
+    }
+
+    for (const entry of propertyTags) {
+      const { propertyName, candidateJsonNames, extraTags } = entry;
+      if (!Object.prototype.hasOwnProperty.call(extraTags, "db")) {
+        continue;
+      }
+
+      const expectedDbTag = `db:"${String(extraTags.db).replace(/"/g, '\\"')}"`;
+      const generatedTags = candidateJsonNames
+        .map((candidateName) => generatedPropertyTags.get(candidateName))
+        .find(Boolean);
+
+      if (!generatedTags || !generatedTags.includes(expectedDbTag)) {
+        failures.push(
+          `${structName}.${propertyName} expected ${expectedDbTag} in generated tags`,
+        );
+      }
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(
+      "Generated Go structs are missing schema-declared db tags:\n" +
+        failures.map((failure) => `  - ${failure}`).join("\n"),
+    );
+  }
 }
 
 function toPosixPath(filePath) {
@@ -556,6 +649,7 @@ async function generateGoModels(pkg) {
     // oapi-codegen omits for referenced object fields.
     addYamlTags(outputPath);
     addSchemaExtraTags(outputPath, inputPath);
+    validateGeneratedDbTags(outputPath, inputPath);
 
     logger.success(`Generated: ${paths.relativePath(outputPath)}`);
   } catch (err) {
