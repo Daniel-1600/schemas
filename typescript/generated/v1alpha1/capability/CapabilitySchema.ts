@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const CapabilitySchema = {
+const CapabilitySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "Model API",
-    "version": "1.0.0"
+    "title": "Capability",
+    "description": "OpenAPI schema for Meshery capability definitions.",
+    "version": "v1alpha1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {},
   "components": {
@@ -193,6 +203,6 @@ const CapabilitySchema = {
       }
     }
   }
-} as const;
+};
 
 export default CapabilitySchema;

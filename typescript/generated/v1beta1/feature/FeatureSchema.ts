@@ -3,12 +3,21 @@
  * Do not manually modify this file.
  */
 
-const FeatureSchema = {
+const FeatureSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "feature",
-    "description": "OpenAPI schema for the Features construct with entitlement-related properties",
-    "version": "v1beta1"
+    "title": "Feature",
+    "description": "OpenAPI schema for the Features construct with entitlement-related properties.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "tags": [
     {
@@ -69,9 +78,10 @@ const FeatureSchema = {
                         }
                       },
                       "plan": {
-                        "x-go-type": "plan.Plan",
+                        "x-go-type": "planv1beta1.Plan",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                          "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                          "name": "planv1beta1"
                         },
                         "x-oapi-codegen-extra-tags": {
                           "belongs_to": "plans",
@@ -326,9 +336,10 @@ const FeatureSchema = {
                         }
                       },
                       "plan": {
-                        "x-go-type": "plan.Plan",
+                        "x-go-type": "planv1beta1.Plan",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                          "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                          "name": "planv1beta1"
                         },
                         "x-oapi-codegen-extra-tags": {
                           "belongs_to": "plans",
@@ -571,9 +582,10 @@ const FeatureSchema = {
               }
             },
             "plan": {
-              "x-go-type": "plan.Plan",
+              "x-go-type": "planv1beta1.Plan",
               "x-go-type-import": {
-                "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                "name": "planv1beta1"
               },
               "x-oapi-codegen-extra-tags": {
                 "belongs_to": "plans",
@@ -770,9 +782,10 @@ const FeatureSchema = {
             }
           },
           "plan": {
-            "x-go-type": "plan.Plan",
+            "x-go-type": "planv1beta1.Plan",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/plan"
+              "path": "github.com/meshery/schemas/models/v1beta1/plan",
+              "name": "planv1beta1"
             },
             "x-oapi-codegen-extra-tags": {
               "belongs_to": "plans",
@@ -924,6 +937,6 @@ const FeatureSchema = {
       }
     }
   }
-} as const;
+};
 
 export default FeatureSchema;

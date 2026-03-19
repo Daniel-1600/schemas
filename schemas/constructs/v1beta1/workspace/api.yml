@@ -1,10 +1,15 @@
 openapi: 3.0.0
 info:
-  title: workspace
-  description: Documentation for meshery Cloud REST APIs
+  title: Workspace
+  description: OpenAPI schema for workspace management in Meshery Cloud.
+  version: v1beta1
   contact:
+    name: Meshery Maintainers
     email: maintainers@meshery.io
-  version: v0.6.394
+    url: https://meshery.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: https://cloud.meshery.io
     description: Meshery Cloud production server URL
@@ -97,7 +102,7 @@ components:
   securitySchemes:
     jwt:
       type: http
-      scheme: Bearer
+      scheme: bearer
       bearerFormat: JWT
   schemas:
     workspace:
@@ -172,7 +177,16 @@ components:
         ID:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/general_id"
         design_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/design_id"
+          type: string
+          format: uuid
+          x-go-type: corev1alpha1.Uuid
+          x-go-type-import:
+            path: github.com/meshery/schemas/models/v1alpha1/core
+            name: corev1alpha1
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            db: design_id
+            json: design_id
         workspace_id:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/workspace_id"
         created_at:

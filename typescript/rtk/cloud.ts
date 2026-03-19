@@ -2,23 +2,27 @@ import { cloudBaseApi as api } from "./api";
 export const addTagTypes = [
   "Academy_API_Academy",
   "Academy_API_other",
-  "badge_Badge",
+  "Badge_Badge",
   "Connection_API_Connections",
-  "design_other",
-  "environment_environments",
-  "events_other",
-  "feature_Features",
-  "invitation_Invitation",
-  "key_users",
-  "key_Key",
-  "keychain_Keychain",
-  "model_other",
+  "credential_credentials",
+  "Design_designs",
+  "Design_other",
+  "Environment_environments",
+  "Events_other",
+  "Feature_Features",
+  "Invitation_Invitation",
+  "Key_users",
+  "Key_Key",
+  "Keychain_Keychain",
+  "Model_other",
   "Organization_other",
-  "plan_Plans",
-  "subscription_subscription",
-  "subscription_other",
-  "team_teams",
-  "workspace_workspaces",
+  "Plan_Plans",
+  "role_roles",
+  "schedule_scheduler",
+  "Subscription_subscription",
+  "Subscription_other",
+  "Team_teams",
+  "Workspace_workspaces",
 ] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
@@ -26,9 +30,9 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getMyAcademyCirricula: build.query<GetMyAcademyCirriculaApiResponse, GetMyAcademyCirriculaApiArg>({
+      getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/cirricula/registered`,
+          url: `/api/academy/Curricula/registered`,
           params: {
             contentType: queryArg.contentType,
             orgId: queryArg.orgId,
@@ -40,9 +44,9 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/academy/curricula`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Academy_API_Academy"],
       }),
-      getAcademyCirricula: build.query<GetAcademyCirriculaApiResponse, GetAcademyCirriculaApiArg>({
+      getAcademyCurricula: build.query<GetAcademyCurriculaApiResponse, GetAcademyCurriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/cirricula`,
+          url: `/api/academy/Curricula`,
           params: {
             contentType: queryArg.contentType,
             visibility: queryArg.visibility,
@@ -180,15 +184,15 @@ const injectedRtkApi = api
       }),
       deleteBadgeById: build.mutation<DeleteBadgeByIdApiResponse, DeleteBadgeByIdApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["badge_Badge"],
+        invalidatesTags: ["Badge_Badge"],
       }),
       getBadgeById: build.query<GetBadgeByIdApiResponse, GetBadgeByIdApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}` }),
-        providesTags: ["badge_Badge"],
+        providesTags: ["Badge_Badge"],
       }),
       createOrUpdateBadge: build.mutation<CreateOrUpdateBadgeApiResponse, CreateOrUpdateBadgeApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/badges`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["badge_Badge"],
+        invalidatesTags: ["Badge_Badge"],
       }),
       getConnections: build.query<GetConnectionsApiResponse, GetConnectionsApiArg>({
         query: (queryArg) => ({
@@ -258,13 +262,113 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Connection_API_Connections"],
       }),
+      getUserCredentials: build.query<GetUserCredentialsApiResponse, GetUserCredentialsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/integrations/credentials`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["credential_credentials"],
+      }),
+      saveUserCredential: build.mutation<SaveUserCredentialApiResponse, SaveUserCredentialApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/credentials`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["credential_credentials"],
+      }),
+      updateUserCredential: build.mutation<UpdateUserCredentialApiResponse, UpdateUserCredentialApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/credentials`, method: "PUT", body: queryArg.body }),
+        invalidatesTags: ["credential_credentials"],
+      }),
+      getCredentialById: build.query<GetCredentialByIdApiResponse, GetCredentialByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/credentials/${queryArg.id}` }),
+        providesTags: ["credential_credentials"],
+      }),
+      deleteUserCredential: build.mutation<DeleteUserCredentialApiResponse, DeleteUserCredentialApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/credentials/${queryArg.id}`, method: "DELETE" }),
+        invalidatesTags: ["credential_credentials"],
+      }),
+      getPatterns: build.query<GetPatternsApiResponse, GetPatternsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/content/patterns`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+            visibility: queryArg.visibility,
+          },
+        }),
+        providesTags: ["Design_designs"],
+      }),
+      upsertPattern: build.mutation<UpsertPatternApiResponse, UpsertPatternApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      deletePatterns: build.mutation<DeletePatternsApiResponse, DeletePatternsApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns`, method: "DELETE", body: queryArg.body }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      getPatternResources: build.query<GetPatternResourcesApiResponse, GetPatternResourcesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/content/patterns/resource`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["Design_designs"],
+      }),
+      upsertPatternResource: build.mutation<UpsertPatternResourceApiResponse, UpsertPatternResourceApiArg>({
+        query: () => ({ url: `/api/content/patterns/resource`, method: "POST" }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      getPatternResource: build.query<GetPatternResourceApiResponse, GetPatternResourceApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/resource/${queryArg.id}` }),
+        providesTags: ["Design_designs"],
+      }),
+      deletePatternResource: build.mutation<DeletePatternResourceApiResponse, DeletePatternResourceApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/resource/${queryArg.id}`, method: "DELETE" }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      getPattern: build.query<GetPatternApiResponse, GetPatternApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/${queryArg.id}` }),
+        providesTags: ["Design_designs"],
+      }),
+      deletePattern: build.mutation<DeletePatternApiResponse, DeletePatternApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/${queryArg.id}`, method: "DELETE" }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      clonePattern: build.mutation<ClonePatternApiResponse, ClonePatternApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/clone/${queryArg.id}`, method: "POST" }),
+        invalidatesTags: ["Design_designs"],
+      }),
+      getDesignPatternFile: build.query<GetDesignPatternFileApiResponse, GetDesignPatternFileApiArg>({
+        query: (queryArg) => ({ url: `/api/content/patterns/download/${queryArg.id}` }),
+        providesTags: ["Design_designs"],
+      }),
+      upsertPatternSourceContent: build.mutation<
+        UpsertPatternSourceContentApiResponse,
+        UpsertPatternSourceContentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/content/patterns/upload/${queryArg.id}`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Design_designs"],
+      }),
       importDesign: build.mutation<ImportDesignApiResponse, ImportDesignApiArg>({
         query: (queryArg) => ({ url: `/api/pattern/import`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["design_other"],
+        invalidatesTags: ["Design_other"],
       }),
       createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
         query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["environment_environments"],
+        invalidatesTags: ["Environment_environments"],
       }),
       getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
         query: (queryArg) => ({
@@ -277,45 +381,45 @@ const injectedRtkApi = api
             orgID: queryArg.orgId,
           },
         }),
-        providesTags: ["environment_environments"],
+        providesTags: ["Environment_environments"],
       }),
       deleteEventsById: build.mutation<DeleteEventsByIdApiResponse, DeleteEventsByIdApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       postEvents: build.mutation<PostEventsApiResponse, PostEventsApiArg>({
         query: (queryArg) => ({ url: `/events`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       deleteEvents: build.mutation<DeleteEventsApiResponse, DeleteEventsApiArg>({
         query: (queryArg) => ({ url: `/events`, method: "DELETE", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       putEventsStatus: build.mutation<PutEventsStatusApiResponse, PutEventsStatusApiArg>({
         query: (queryArg) => ({ url: `/events/status`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       putEventsByIdStatus: build.mutation<PutEventsByIdStatusApiResponse, PutEventsByIdStatusApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.id}/status`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["events_other"],
+        invalidatesTags: ["Events_other"],
       }),
       getFeatures: build.query<GetFeaturesApiResponse, GetFeaturesApiArg>({
         query: () => ({ url: `/api/entitlement/features` }),
-        providesTags: ["feature_Features"],
+        providesTags: ["Feature_Features"],
       }),
       getFeaturesByOrganization: build.query<GetFeaturesByOrganizationApiResponse, GetFeaturesByOrganizationApiArg>({
         query: (queryArg) => ({
           url: `/api/entitlement/subscriptions/organizations/${queryArg.organizationId}/features`,
         }),
-        providesTags: ["feature_Features"],
+        providesTags: ["Feature_Features"],
       }),
       getInvitation: build.query<GetInvitationApiResponse, GetInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}` }),
-        providesTags: ["invitation_Invitation"],
+        providesTags: ["Invitation_Invitation"],
       }),
       deleteInvitation: build.mutation<DeleteInvitationApiResponse, DeleteInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}`, method: "DELETE" }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       updateInvitation: build.mutation<UpdateInvitationApiResponse, UpdateInvitationApiArg>({
         query: (queryArg) => ({
@@ -323,26 +427,26 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       getInvitations: build.query<GetInvitationsApiResponse, GetInvitationsApiArg>({
         query: () => ({ url: `/api/organizations/invitations` }),
-        providesTags: ["invitation_Invitation"],
+        providesTags: ["Invitation_Invitation"],
       }),
       createInvitation: build.mutation<CreateInvitationApiResponse, CreateInvitationApiArg>({
         query: (queryArg) => ({ url: `/api/organizations/invitations`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       acceptInvitation: build.mutation<AcceptInvitationApiResponse, AcceptInvitationApiArg>({
         query: (queryArg) => ({
           url: `/api/organizations/invitations/${queryArg.invitationId}/accept`,
           method: "POST",
         }),
-        invalidatesTags: ["invitation_Invitation"],
+        invalidatesTags: ["Invitation_Invitation"],
       }),
       getUserKeys: build.query<GetUserKeysApiResponse, GetUserKeysApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/users/keys` }),
-        providesTags: ["key_users"],
+        providesTags: ["Key_users"],
       }),
       getKeys: build.query<GetKeysApiResponse, GetKeysApiArg>({
         query: (queryArg) => ({
@@ -354,19 +458,19 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["key_Key"],
+        providesTags: ["Key_Key"],
       }),
       upsertKey: build.mutation<UpsertKeyApiResponse, UpsertKeyApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keys`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["key_Key"],
+        invalidatesTags: ["Key_Key"],
       }),
       getKeyById: build.query<GetKeyByIdApiResponse, GetKeyByIdApiArg>({
         query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}` }),
-        providesTags: ["key_Key"],
+        providesTags: ["Key_Key"],
       }),
       deleteKey: build.mutation<DeleteKeyApiResponse, DeleteKeyApiArg>({
         query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}`, method: "DELETE" }),
-        invalidatesTags: ["key_Key"],
+        invalidatesTags: ["Key_Key"],
       }),
       getKeychains: build.query<GetKeychainsApiResponse, GetKeychainsApiArg>({
         query: (queryArg) => ({
@@ -378,15 +482,15 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       createKeychain: build.mutation<CreateKeychainApiResponse, CreateKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       getKeychainById: build.query<GetKeychainByIdApiResponse, GetKeychainByIdApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}` }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       updateKeychain: build.mutation<UpdateKeychainApiResponse, UpdateKeychainApiArg>({
         query: (queryArg) => ({
@@ -394,22 +498,22 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       deleteKeychain: build.mutation<DeleteKeychainApiResponse, DeleteKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}`, method: "DELETE" }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       addKeyToKeychain: build.mutation<AddKeyToKeychainApiResponse, AddKeyToKeychainApiArg>({
         query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`, method: "POST" }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       removeKeyFromKeychain: build.mutation<RemoveKeyFromKeychainApiResponse, RemoveKeyFromKeychainApiArg>({
         query: (queryArg) => ({
           url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["keychain_Keychain"],
+        invalidatesTags: ["Keychain_Keychain"],
       }),
       getKeysOfKeychain: build.query<GetKeysOfKeychainApiResponse, GetKeysOfKeychainApiArg>({
         query: (queryArg) => ({
@@ -421,11 +525,11 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["keychain_Keychain"],
+        providesTags: ["Keychain_Keychain"],
       }),
       registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
         query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["model_other"],
+        invalidatesTags: ["Model_other"],
       }),
       getOrgByDomain: build.query<GetOrgByDomainApiResponse, GetOrgByDomainApiArg>({
         query: (queryArg) => ({
@@ -453,7 +557,85 @@ const injectedRtkApi = api
       }),
       getPlans: build.query<GetPlansApiResponse, GetPlansApiArg>({
         query: () => ({ url: `/api/entitlement/plans` }),
-        providesTags: ["plan_Plans"],
+        providesTags: ["Plan_Plans"],
+      }),
+      addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["role_roles"],
+      }),
+      deleteRole: build.mutation<DeleteRoleApiResponse, DeleteRoleApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/roles/${queryArg.id}`, method: "DELETE" }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getAllRoles: build.query<GetAllRolesApiResponse, GetAllRolesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["role_roles"],
+      }),
+      upsertRoles: build.mutation<UpsertRolesApiResponse, UpsertRolesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      bulkEditRoleHolder: build.mutation<BulkEditRoleHolderApiResponse, BulkEditRoleHolderApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getRoleKeychains: build.query<GetRoleKeychainsApiResponse, GetRoleKeychainsApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains` }),
+        providesTags: ["role_roles"],
+      }),
+      assignKeychainToRole: build.mutation<AssignKeychainToRoleApiResponse, AssignKeychainToRoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
+          method: "POST",
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      unassignKeychainFromRole: build.mutation<UnassignKeychainFromRoleApiResponse, UnassignKeychainFromRoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getSchedules: build.query<GetSchedulesApiResponse, GetSchedulesApiArg>({
+        query: (queryArg) => ({
+          url: `/user/schedules`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["schedule_scheduler"],
+      }),
+      upsertSchedule: build.mutation<UpsertScheduleApiResponse, UpsertScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["schedule_scheduler"],
+      }),
+      getSchedule: build.query<GetScheduleApiResponse, GetScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules/${queryArg.id}` }),
+        providesTags: ["schedule_scheduler"],
+      }),
+      deleteSchedule: build.mutation<DeleteScheduleApiResponse, DeleteScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules/${queryArg.id}`, method: "DELETE" }),
+        invalidatesTags: ["schedule_scheduler"],
       }),
       getSubscriptions: build.query<GetSubscriptionsApiResponse, GetSubscriptionsApiArg>({
         query: (queryArg) => ({
@@ -465,7 +647,7 @@ const injectedRtkApi = api
             status: queryArg.status,
           },
         }),
-        providesTags: ["subscription_subscription"],
+        providesTags: ["Subscription_subscription"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdCancel: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse,
@@ -475,14 +657,14 @@ const injectedRtkApi = api
           url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/cancel`,
           method: "POST",
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsCreate: build.mutation<
         PostApiEntitlementSubscriptionsCreateApiResponse,
         PostApiEntitlementSubscriptionsCreateApiArg
       >({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/create`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdUpgrade: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse,
@@ -493,7 +675,7 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsBySubscriptionIdUpgradePreview: build.mutation<
         PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiResponse,
@@ -504,14 +686,14 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       postApiEntitlementSubscriptionsWebhooks: build.mutation<
         PostApiEntitlementSubscriptionsWebhooksApiResponse,
         PostApiEntitlementSubscriptionsWebhooksApiArg
       >({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["subscription_other"],
+        invalidatesTags: ["Subscription_other"],
       }),
       getTeams: build.query<GetTeamsApiResponse, GetTeamsApiArg>({
         query: (queryArg) => ({
@@ -523,7 +705,7 @@ const injectedRtkApi = api
             pagesize: queryArg.pagesize,
           },
         }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       createTeam: build.mutation<CreateTeamApiResponse, CreateTeamApiArg>({
         query: (queryArg) => ({
@@ -531,11 +713,11 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getTeamById: build.query<GetTeamByIdApiResponse, GetTeamByIdApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}` }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       updateTeam: build.mutation<UpdateTeamApiResponse, UpdateTeamApiArg>({
         query: (queryArg) => ({
@@ -543,14 +725,14 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.body,
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       deleteTeam: build.mutation<DeleteTeamApiResponse, DeleteTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getTeamUsers: build.query<GetTeamUsersApiResponse, GetTeamUsersApiArg>({
         query: (queryArg) => ({
@@ -562,80 +744,170 @@ const injectedRtkApi = api
             pagesize: queryArg.pagesize,
           },
         }),
-        providesTags: ["team_teams"],
+        providesTags: ["Team_teams"],
       }),
       addUserToTeam: build.mutation<AddUserToTeamApiResponse, AddUserToTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}/users/${queryArg.userId}`,
           method: "POST",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       removeUserFromTeam: build.mutation<RemoveUserFromTeamApiResponse, RemoveUserFromTeamApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}/users/${queryArg.userId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["team_teams"],
+        invalidatesTags: ["Team_teams"],
       }),
       getApiWorkspaces: build.query<GetApiWorkspacesApiResponse, GetApiWorkspacesApiArg>({
         query: () => ({ url: `/api/workspaces` }),
-        providesTags: ["workspace_workspaces"],
+        providesTags: ["Workspace_workspaces"],
       }),
       postApiWorkspaces: build.mutation<PostApiWorkspacesApiResponse, PostApiWorkspacesApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
       getApiWorkspacesById: build.query<GetApiWorkspacesByIdApiResponse, GetApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}` }),
-        providesTags: ["workspace_workspaces"],
+        providesTags: ["Workspace_workspaces"],
       }),
       putApiWorkspacesById: build.mutation<PutApiWorkspacesByIdApiResponse, PutApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
       deleteApiWorkspacesById: build.mutation<DeleteApiWorkspacesByIdApiResponse, DeleteApiWorkspacesByIdApiArg>({
         query: (queryArg) => ({ url: `/api/workspaces/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["workspace_workspaces"],
+        invalidatesTags: ["Workspace_workspaces"],
       }),
     }),
     overrideExisting: false,
   });
 export { injectedRtkApi as cloudApi };
-export type GetMyAcademyCirriculaApiResponse = unknown;
-export type GetMyAcademyCirriculaApiArg = {
+export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
+  /** Total number of Curricula */
+  total: number;
+  data: {
+    /** Id of the Curricula */
+    id: string;
+    type: "learning-path" | "challenge" | "certification";
+    /** Organization ID that owns this learning path */
+    orgId: string;
+    /** Visibility of the Curricula */
+    visibility: "public" | "private";
+    /** Status of the Curricula */
+    status: "ready" | "archived" | "not_ready";
+    /** slug of the Curricula */
+    slug: string;
+    /** Level of the Curricula */
+    level: "beginner" | "intermediate" | "advanced";
+    /** ID of the badge to be awarded on completion of this curricula */
+    badge_id?: string;
+    /** ID of the invite associated with this Curricula */
+    invite_id?: string;
+    /** ID of the workspace to which this Curricula belongs */
+    workspace_id?: string;
+    /** When the Curricula item was created */
+    createdAt: string;
+    /** When the Curricula was last updated */
+    updatedAt: string;
+    deletedAt: string;
+    /** Additional metadata about the Curricula */
+    metadata: {
+      /** Title of the learning path */
+      title: string;
+      /** Short description of the curricula */
+      description: string;
+      /** Detailed description of the curricula */
+      detailed_description?: string;
+      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+      banner?: string | null;
+      /** Canonical URL for the learning path */
+      permalink: string;
+      certificate?: {
+        /** Unique identifier for the certificate */
+        id: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        org_id: string;
+        /** ID of the recipient (user) who received the certificate */
+        recipient_id: string;
+        /** Name of the recipient (user) who received the certificate */
+        recipient_name: string;
+        /** Title of the certificate */
+        title: string;
+        /** Description of the certificate */
+        description: string;
+        /** List of issuing authorities for the certificate */
+        issuing_authorities: {
+          /** Name of the issuing authority */
+          name: string;
+          /** Role of the issuing authority */
+          role?: string;
+          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
+          signature_url?: string;
+        }[];
+        /** Date when the certificate was issued */
+        issued_date: string;
+        /** Date when the certificate expires (optional) */
+        expiration_date?: string;
+        /** Number of months after which the certificate expires */
+        expires_in?: number;
+      };
+      /** List of children items in the top-level curricula */
+      children?: {
+        /** Unique identifier for the course */
+        id: string;
+        /** Title of the course */
+        title: string;
+        /** URL to the course content */
+        permalink: string;
+        /** Course description */
+        description: string;
+        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
+        weight?: number;
+        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+        banner?: string | null;
+        /** Type of the content (e.g., learning-path, challenge, certification) */
+        type?: "learning-path" | "challenge" | "certification";
+        /** List of child nodes (sub-courses or modules) */
+        children?: object[];
+      }[];
+      [key: string]: any;
+    };
+  }[];
+};
+export type GetMyAcademyCurriculaApiArg = {
   /** Filter content by content types */
   contentType?: string[];
   /** Filter content by organization IDs */
   orgId?: string[];
 };
 export type CreateAcademyCurriculaApiResponse = /** status 201 created the curricula */ {
-  /** Id of the cirricula */
+  /** Id of the Curricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the cirricula */
+  /** Visibility of the Curricula */
   visibility: "public" | "private";
-  /** Status of the cirricula */
+  /** Status of the Curricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the cirricula */
+  /** slug of the Curricula */
   slug: string;
-  /** Level of the cirricula */
+  /** Level of the Curricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this cirricula */
+  /** ID of the invite associated with this Curricula */
   invite_id?: string;
-  /** ID of the workspace to which this cirricula belongs */
+  /** ID of the workspace to which this Curricula belongs */
   workspace_id?: string;
-  /** When the cirricula item was created */
+  /** When the Curricula item was created */
   createdAt: string;
-  /** When the cirricula was last updated */
+  /** When the Curricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
-  /** Additional metadata about the cirricula */
+  /** Additional metadata about the Curricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -650,7 +922,7 @@ export type CreateAcademyCurriculaApiResponse = /** status 201 created the curri
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -704,19 +976,19 @@ export type CreateAcademyCurriculaApiArg = {
     type: "learning-path" | "challenge" | "certification";
     /** Title of the curricula */
     title: string;
-    /** Organization ID that owns this curricula */
+    /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this cirricula belongs */
+    /** ID of the workspace to which this Curricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
-    /** ID of the team associated with this curricula */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     team_id: string;
     /** Expiry time for curricula access */
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the cirricula */
+    /** Additional metadata about the Curricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -731,7 +1003,7 @@ export type CreateAcademyCurriculaApiArg = {
       certificate?: {
         /** Unique identifier for the certificate */
         id: string;
-        /** UUID of the organization that issued the certificate */
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
         org_id: string;
         /** ID of the recipient (user) who received the certificate */
         recipient_id: string;
@@ -780,8 +1052,101 @@ export type CreateAcademyCurriculaApiArg = {
     };
   };
 };
-export type GetAcademyCirriculaApiResponse = unknown;
-export type GetAcademyCirriculaApiArg = {
+export type GetAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
+  /** Total number of Curricula */
+  total: number;
+  data: ({
+    /** Id of the Curricula */
+    id: string;
+    type: "learning-path" | "challenge" | "certification";
+    /** Organization ID that owns this learning path */
+    orgId: string;
+    /** Visibility of the Curricula */
+    visibility: "public" | "private";
+    /** Status of the Curricula */
+    status: "ready" | "archived" | "not_ready";
+    /** slug of the Curricula */
+    slug: string;
+    /** Level of the Curricula */
+    level: "beginner" | "intermediate" | "advanced";
+    /** ID of the badge to be awarded on completion of this curricula */
+    badge_id?: string;
+    /** ID of the invite associated with this Curricula */
+    invite_id?: string;
+    /** ID of the workspace to which this Curricula belongs */
+    workspace_id?: string;
+    /** When the Curricula item was created */
+    createdAt: string;
+    /** When the Curricula was last updated */
+    updatedAt: string;
+    deletedAt: string;
+    /** Additional metadata about the Curricula */
+    metadata: {
+      /** Title of the learning path */
+      title: string;
+      /** Short description of the curricula */
+      description: string;
+      /** Detailed description of the curricula */
+      detailed_description?: string;
+      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+      banner?: string | null;
+      /** Canonical URL for the learning path */
+      permalink: string;
+      certificate?: {
+        /** Unique identifier for the certificate */
+        id: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        org_id: string;
+        /** ID of the recipient (user) who received the certificate */
+        recipient_id: string;
+        /** Name of the recipient (user) who received the certificate */
+        recipient_name: string;
+        /** Title of the certificate */
+        title: string;
+        /** Description of the certificate */
+        description: string;
+        /** List of issuing authorities for the certificate */
+        issuing_authorities: {
+          /** Name of the issuing authority */
+          name: string;
+          /** Role of the issuing authority */
+          role?: string;
+          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
+          signature_url?: string;
+        }[];
+        /** Date when the certificate was issued */
+        issued_date: string;
+        /** Date when the certificate expires (optional) */
+        expiration_date?: string;
+        /** Number of months after which the certificate expires */
+        expires_in?: number;
+      };
+      /** List of children items in the top-level curricula */
+      children?: {
+        /** Unique identifier for the course */
+        id: string;
+        /** Title of the course */
+        title: string;
+        /** URL to the course content */
+        permalink: string;
+        /** Course description */
+        description: string;
+        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
+        weight?: number;
+        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+        banner?: string | null;
+        /** Type of the content (e.g., learning-path, challenge, certification) */
+        type?: "learning-path" | "challenge" | "certification";
+        /** List of child nodes (sub-courses or modules) */
+        children?: object[];
+      }[];
+      [key: string]: any;
+    };
+  } & {
+    RegistrationCount: number;
+  })[];
+};
+export type GetAcademyCurriculaApiArg = {
   /** Filter content by content types */
   contentType?: string[];
   /** Filter content by visibility (public/private) */
@@ -806,32 +1171,31 @@ export type GetAcademyCirriculaApiArg = {
   page?: number;
 };
 export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single academy content */ {
-  /** Id of the cirricula */
+  /** Id of the Curricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the cirricula */
+  /** Visibility of the Curricula */
   visibility: "public" | "private";
-  /** Status of the cirricula */
+  /** Status of the Curricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the cirricula */
+  /** slug of the Curricula */
   slug: string;
-  /** Level of the cirricula */
+  /** Level of the Curricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this cirricula */
+  /** ID of the invite associated with this Curricula */
   invite_id?: string;
-  /** ID of the workspace to which this cirricula belongs */
+  /** ID of the workspace to which this Curricula belongs */
   workspace_id?: string;
-  /** When the cirricula item was created */
+  /** When the Curricula item was created */
   createdAt: string;
-  /** When the cirricula was last updated */
+  /** When the Curricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
-  /** Additional metadata about the cirricula */
+  /** Additional metadata about the Curricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -846,7 +1210,7 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -902,11 +1266,11 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiArg = {
 export type RegisterToAcademyContentApiResponse = /** status 200 registered content */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
-  /** ID of the organization */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the course content */
   content_id: string;
-  /** ID of the user (foreign key to User) */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   user_id: string;
   /** Status of the user's course registration */
   status: "registered" | "completed" | "failed" | "withdrawn";
@@ -920,7 +1284,7 @@ export type RegisterToAcademyContentApiResponse = /** status 200 registered cont
   certificate: {
     /** Unique identifier for the certificate */
     id: string;
-    /** UUID of the organization that issued the certificate */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the recipient (user) who received the certificate */
     recipient_id: string;
@@ -961,11 +1325,11 @@ export type RegisterToAcademyContentApiArg = {
 export type WithdrawFromAcademyContentApiResponse = /** status 200 registered content */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
-  /** ID of the organization */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the course content */
   content_id: string;
-  /** ID of the user (foreign key to User) */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   user_id: string;
   /** Status of the user's course registration */
   status: "registered" | "completed" | "failed" | "withdrawn";
@@ -979,7 +1343,7 @@ export type WithdrawFromAcademyContentApiResponse = /** status 200 registered co
   certificate: {
     /** Unique identifier for the certificate */
     id: string;
-    /** UUID of the organization that issued the certificate */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the recipient (user) who received the certificate */
     recipient_id: string;
@@ -1015,32 +1379,31 @@ export type WithdrawFromAcademyContentApiArg = {
   id: string;
 };
 export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the curricula */ {
-  /** Id of the cirricula */
+  /** Id of the Curricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the cirricula */
+  /** Visibility of the Curricula */
   visibility: "public" | "private";
-  /** Status of the cirricula */
+  /** Status of the Curricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the cirricula */
+  /** slug of the Curricula */
   slug: string;
-  /** Level of the cirricula */
+  /** Level of the Curricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this cirricula */
+  /** ID of the invite associated with this Curricula */
   invite_id?: string;
-  /** ID of the workspace to which this cirricula belongs */
+  /** ID of the workspace to which this Curricula belongs */
   workspace_id?: string;
-  /** When the cirricula item was created */
+  /** When the Curricula item was created */
   createdAt: string;
-  /** When the cirricula was last updated */
+  /** When the Curricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
-  /** Additional metadata about the cirricula */
+  /** Additional metadata about the Curricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -1055,7 +1418,7 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1105,9 +1468,9 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
 } & {
   RegistrationCount: number;
   Invitation?: {
-    /** Unique identifier for the invitation , is also used as the invitation code */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     owner_id: string;
     /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
     is_default?: boolean;
@@ -1144,19 +1507,19 @@ export type UpdateAcademyCurriculaByIdApiArg = {
     type: "learning-path" | "challenge" | "certification";
     /** Title of the curricula */
     title: string;
-    /** Organization ID that owns this curricula */
+    /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this cirricula belongs */
+    /** ID of the workspace to which this Curricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
-    /** ID of the team associated with this curricula */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     team_id: string;
     /** Expiry time for curricula access */
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the cirricula */
+    /** Additional metadata about the Curricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -1171,7 +1534,7 @@ export type UpdateAcademyCurriculaByIdApiArg = {
       certificate?: {
         /** Unique identifier for the certificate */
         id: string;
-        /** UUID of the organization that issued the certificate */
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
         org_id: string;
         /** ID of the recipient (user) who received the certificate */
         recipient_id: string;
@@ -1226,32 +1589,31 @@ export type DeleteAcademyCurriculaByIdApiArg = {
   id: string;
 };
 export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricula */ {
-  /** Id of the cirricula */
+  /** Id of the Curricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the cirricula */
+  /** Visibility of the Curricula */
   visibility: "public" | "private";
-  /** Status of the cirricula */
+  /** Status of the Curricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the cirricula */
+  /** slug of the Curricula */
   slug: string;
-  /** Level of the cirricula */
+  /** Level of the Curricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this cirricula */
+  /** ID of the invite associated with this Curricula */
   invite_id?: string;
-  /** ID of the workspace to which this cirricula belongs */
+  /** ID of the workspace to which this Curricula belongs */
   workspace_id?: string;
-  /** When the cirricula item was created */
+  /** When the Curricula item was created */
   createdAt: string;
-  /** When the cirricula was last updated */
+  /** When the Curricula was last updated */
   updatedAt: string;
-  /** Timestamp when the resource was deleted. */
   deletedAt: string;
-  /** Additional metadata about the cirricula */
+  /** Additional metadata about the Curricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -1266,7 +1628,7 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
     certificate?: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1316,9 +1678,9 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
 } & {
   RegistrationCount: number;
   Invitation?: {
-    /** Unique identifier for the invitation , is also used as the invitation code */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     owner_id: string;
     /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
     is_default?: boolean;
@@ -1355,11 +1717,11 @@ export type GetApiAcademyRegistrationsByContentIdApiResponse =
   /** status 200 Registration data for the specified content */ {
     /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
-    /** ID of the organization */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     org_id: string;
     /** ID of the course content */
     content_id: string;
-    /** ID of the user (foreign key to User) */
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     user_id: string;
     /** Status of the user's course registration */
     status: "registered" | "completed" | "failed" | "withdrawn";
@@ -1373,7 +1735,7 @@ export type GetApiAcademyRegistrationsByContentIdApiResponse =
     certificate: {
       /** Unique identifier for the certificate */
       id: string;
-      /** UUID of the organization that issued the certificate */
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       org_id: string;
       /** ID of the recipient (user) who received the certificate */
       recipient_id: string;
@@ -1871,7 +2233,7 @@ export type GetAcademyAdminRegistrationsApiArg = {
 export type GetCertificateByIdApiResponse = /** status 200 A single certificate */ {
   /** Unique identifier for the certificate */
   id: string;
-  /** UUID of the organization that issued the certificate */
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   org_id: string;
   /** ID of the recipient (user) who received the certificate */
   recipient_id: string;
@@ -2003,6 +2365,7 @@ export type GetConnectionsApiResponse = /** status 200 Paginated list of connect
     user_id?: string;
     created_at?: string;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
     /** Associated environments for this connection */
     environments?: {
@@ -2021,6 +2384,7 @@ export type GetConnectionsApiResponse = /** status 200 Paginated list of connect
       created_at?: string;
       metadata?: object;
       updated_at?: string;
+      /** SQL null Timestamp to handle null values of time. */
       deleted_at?: string;
     }[];
     /** Specifies the version of the schema used for the definition. */
@@ -2095,6 +2459,7 @@ export type RegisterConnectionApiResponse = /** status 201 Connection registered
   user_id?: string;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
   /** Associated environments for this connection */
   environments?: {
@@ -2113,6 +2478,7 @@ export type RegisterConnectionApiResponse = /** status 201 Connection registered
     created_at?: string;
     metadata?: object;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
   }[];
   /** Specifies the version of the schema used for the definition. */
@@ -2169,6 +2535,7 @@ export type GetConnectionByIdApiResponse = /** status 200 Connection details */ 
   user_id?: string;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
   /** Associated environments for this connection */
   environments?: {
@@ -2187,6 +2554,7 @@ export type GetConnectionByIdApiResponse = /** status 200 Connection details */ 
     created_at?: string;
     metadata?: object;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
   }[];
   /** Specifies the version of the schema used for the definition. */
@@ -2225,6 +2593,7 @@ export type UpdateConnectionApiResponse = /** status 200 Connection updated succ
   user_id?: string;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
   /** Associated environments for this connection */
   environments?: {
@@ -2243,6 +2612,7 @@ export type UpdateConnectionApiResponse = /** status 200 Connection updated succ
     created_at?: string;
     metadata?: object;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
   }[];
   /** Specifies the version of the schema used for the definition. */
@@ -2301,6 +2671,5227 @@ export type RemoveConnectionFromEnvironmentApiArg = {
   /** Connection ID */
   connectionId: string;
 };
+export type GetUserCredentialsApiResponse = /** status 200 Credentials fetched successfully */ {
+  credentials: {
+    /** Unique identifier for the credential. */
+    id?: string;
+    /** Human-readable name for the credential. */
+    name: string;
+    /** UUID of the user who owns this credential. */
+    user_id?: string;
+    /** Credential type (e.g. token, basic, AWS). */
+    type: string;
+    /** Key-value pairs containing the sensitive credential data. */
+    secret?: object;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the credential was soft-deleted. */
+    deleted_at?: string;
+  }[];
+  /** Total number of credentials across all pages. */
+  total_count: number;
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of credentials per page. */
+  page_size: number;
+};
+export type GetUserCredentialsApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type SaveUserCredentialApiResponse = /** status 201 Credential saved successfully */ {
+  /** Unique identifier for the credential. */
+  id?: string;
+  /** Human-readable name for the credential. */
+  name: string;
+  /** UUID of the user who owns this credential. */
+  user_id?: string;
+  /** Credential type (e.g. token, basic, AWS). */
+  type: string;
+  /** Key-value pairs containing the sensitive credential data. */
+  secret?: object;
+  /** Timestamp when the resource was created. */
+  created_at?: string;
+  /** Timestamp when the resource was updated. */
+  updated_at?: string;
+  /** Timestamp when the credential was soft-deleted. */
+  deleted_at?: string;
+};
+export type SaveUserCredentialApiArg = {
+  body: {
+    /** Unique identifier for the credential. */
+    id?: string;
+    /** Human-readable name for the credential. */
+    name: string;
+    /** UUID of the user who owns this credential. */
+    user_id?: string;
+    /** Credential type (e.g. token, basic, AWS). */
+    type: string;
+    /** Key-value pairs containing the sensitive credential data. */
+    secret?: object;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the credential was soft-deleted. */
+    deleted_at?: string;
+  };
+};
+export type UpdateUserCredentialApiResponse = /** status 200 Credential updated successfully */ {
+  /** Unique identifier for the credential. */
+  id?: string;
+  /** Human-readable name for the credential. */
+  name: string;
+  /** UUID of the user who owns this credential. */
+  user_id?: string;
+  /** Credential type (e.g. token, basic, AWS). */
+  type: string;
+  /** Key-value pairs containing the sensitive credential data. */
+  secret?: object;
+  /** Timestamp when the resource was created. */
+  created_at?: string;
+  /** Timestamp when the resource was updated. */
+  updated_at?: string;
+  /** Timestamp when the credential was soft-deleted. */
+  deleted_at?: string;
+};
+export type UpdateUserCredentialApiArg = {
+  body: {
+    /** Unique identifier for the credential. */
+    id?: string;
+    /** Human-readable name for the credential. */
+    name: string;
+    /** UUID of the user who owns this credential. */
+    user_id?: string;
+    /** Credential type (e.g. token, basic, AWS). */
+    type: string;
+    /** Key-value pairs containing the sensitive credential data. */
+    secret?: object;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the credential was soft-deleted. */
+    deleted_at?: string;
+  };
+};
+export type GetCredentialByIdApiResponse = /** status 200 Credential fetched successfully */ {
+  /** Unique identifier for the credential. */
+  id?: string;
+  /** Human-readable name for the credential. */
+  name: string;
+  /** UUID of the user who owns this credential. */
+  user_id?: string;
+  /** Credential type (e.g. token, basic, AWS). */
+  type: string;
+  /** Key-value pairs containing the sensitive credential data. */
+  secret?: object;
+  /** Timestamp when the resource was created. */
+  created_at?: string;
+  /** Timestamp when the resource was updated. */
+  updated_at?: string;
+  /** Timestamp when the credential was soft-deleted. */
+  deleted_at?: string;
+};
+export type GetCredentialByIdApiArg = {
+  /** Credential ID */
+  id: string;
+};
+export type DeleteUserCredentialApiResponse = unknown;
+export type DeleteUserCredentialApiArg = {
+  /** Credential ID */
+  id: string;
+};
+export type GetPatternsApiResponse = /** status 200 Designs fetched successfully */ {
+  page?: number;
+  page_size?: number;
+  patterns?: {
+    catalog_data?: {
+      /** Tracks the specific content version that has been made available in the Catalog. */
+      publishedVersion?: string;
+      /** Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability. */
+      class?: "official" | "verified" | "reference architecture";
+      /** One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential. */
+      compatibility: "kubernetes"[];
+      /** Specific stipulations to consider and known behaviors to be aware of when using this design. */
+      pattern_caveats: string;
+      /** Purpose of the design along with its intended and unintended uses. */
+      pattern_info: string;
+      /** Categorization of the type of design or operational flow depicted in this design. */
+      type:
+        | "Deployment"
+        | "Observability"
+        | "Resiliency"
+        | "Scaling"
+        | "Security"
+        | "Traffic-management"
+        | "Troubleshooting"
+        | "Workloads";
+      /** Contains reference to the dark and light mode snapshots of the design. */
+      snapshotURL?: string[];
+    };
+    created_at?: string;
+    user_id?: string;
+    location?: {
+      [key: string]: string;
+    };
+    name?: string;
+    /** Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes. */
+    pattern_file?: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Name of the design; a descriptive, but concise title for the design document. */
+      name: string;
+      /** Specifies the version of the schema to which the design conforms. */
+      schemaVersion: string;
+      /** Revision of the design as expressed by an auto-incremented, SemVer-compliant version number. May be manually set by a user or third-party system, but will always be required to be of version number higher than the previously defined version number. */
+      version: string;
+      metadata?: {
+        /** Map of resolved aliases present in the design */
+        resolvedAliases?: {
+          [key: string]: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            relationship_id: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            alias_component_id: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            immediate_parent_id: string;
+            immediate_ref_field_path: string[];
+          } & {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            resolved_parent_id: string;
+            resolved_ref_field_path: string[];
+          };
+        };
+        [key: string]: any;
+      };
+      /** A list of one or more component declarations. */
+      components: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Specifies the version of the schema to which the component definition conforms. */
+        schemaVersion: string;
+        /** Version of the component definition. */
+        version: string;
+        /** Name of the component in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the component. */
+        description: string;
+        /** Format specifies the format used in the `component.schema` field. JSON is the default. */
+        format: "JSON" | "CUE";
+        /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+        model: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Specifies the version of the schema used for the definition. */
+          schemaVersion: string;
+          /** Version of the model definition. */
+          version: string;
+          /** The unique name for the model within the scope of a registrant. */
+          name: string;
+          /** Human-readable name for the model. */
+          displayName: string;
+          /** Description of the model. */
+          description: string;
+          /** Status of model, including:
+                    - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                    - maintenance: model is unavailable for a period of time.
+                    - enabled: model is available for use for all users of this Meshery Server.
+                    - ignored: model is unavailable for use for all users of this Meshery Server. */
+          status: "ignored" | "enabled" | "duplicate";
+          /** Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections */
+          registrant: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** Connection Name */
+            name: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            credential_id?: string;
+            /** Connection Type (platform, telemetry, collaboration) */
+            type: string;
+            /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+            sub_type: string;
+            /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+            kind: string;
+            /** Additional connection metadata */
+            metadata?: object;
+            /** Connection Status */
+            status:
+              | "discovered"
+              | "registered"
+              | "connected"
+              | "ignored"
+              | "maintenance"
+              | "disconnected"
+              | "deleted"
+              | "not found";
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            user_id?: string;
+            created_at?: string;
+            updated_at?: string;
+            /** SQL null Timestamp to handle null values of time. */
+            deleted_at?: string;
+            /** Associated environments for this connection */
+            environments?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** Specifies the version of the schema to which the environment conforms. */
+              schemaVersion: string;
+              /** Environment name */
+              name: string;
+              /** Environment description */
+              description: string;
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              organization_id: string;
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              owner?: string;
+              created_at?: string;
+              metadata?: object;
+              updated_at?: string;
+              /** SQL null Timestamp to handle null values of time. */
+              deleted_at?: string;
+            }[];
+            /** Specifies the version of the schema used for the definition. */
+            schemaVersion: string;
+          };
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          registrantId: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          categoryId: string;
+          /** Category of the model. */
+          category: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** The category of the model that determines the main grouping. */
+            name:
+              | "Analytics"
+              | "App Definition and Development"
+              | "Cloud Native Network"
+              | "Cloud Native Storage"
+              | "Database"
+              | "Machine Learning"
+              | "Observability and Analysis"
+              | "Orchestration & Management"
+              | "Platform"
+              | "Provisioning"
+              | "Runtime"
+              | "Security & Compliance"
+              | "Serverless"
+              | "Tools"
+              | "Uncategorized";
+            metadata: object;
+          };
+          /** Sub category of the model determines the secondary grouping. */
+          subCategory:
+            | "API Gateway"
+            | "API Integration"
+            | "Application Definition & Image Build"
+            | "Automation & Configuration"
+            | "Certified Kubernetes - Distribution"
+            | "Chaos Engineering"
+            | "Cloud Native Storage"
+            | "Cloud Provider"
+            | "CNI"
+            | "Compute"
+            | "Container Registry"
+            | "Container Runtime"
+            | "Container Security"
+            | "Container"
+            | "Content Delivery Network"
+            | "Continuous Integration & Delivery"
+            | "Coordination & Service Discovery"
+            | "Database"
+            | "Flowchart"
+            | "Framework"
+            | "Installable Platform"
+            | "Key Management"
+            | "Key Management Service"
+            | "Kubernetes"
+            | "Logging"
+            | "Machine Learning"
+            | "Management Governance"
+            | "Metrics"
+            | "Monitoring"
+            | "Networking Content Delivery"
+            | "Operating System"
+            | "Query"
+            | "Remote Procedure Call"
+            | "Scheduling & Orchestration"
+            | "Secrets Management"
+            | "Security Identity & Compliance"
+            | "Service Mesh"
+            | "Service Proxy"
+            | "Source Version Control"
+            | "Storage"
+            | "Specifications"
+            | "Streaming & Messaging"
+            | "Tools"
+            | "Tracing"
+            | "Uncategorized"
+            | "Video Conferencing";
+          /** Metadata containing additional information associated with the model. */
+          metadata?: {
+            /** Capabilities associated with the model */
+            capabilities?: {
+              /** Specifies the version of the schema to which the capability definition conforms. */
+              schemaVersion: string;
+              /** Version of the capability definition. */
+              version: string;
+              /** Name of the capability in human-readible format. */
+              displayName: string;
+              /** A written representation of the purpose and characteristics of the capability. */
+              description: string;
+              /** Top-level categorization of the capability */
+              kind: "action" | "mutate" | "view" | "interaction";
+              /** Classification of capabilities. Used to group capabilities similar in nature. */
+              type: string;
+              /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+              subType: string;
+              /** Key that backs the capability. */
+              key: string;
+              /** State of the entity in which the capability is applicable. */
+              entityState: ("declaration" | "instance")[];
+              /** Status of the capability */
+              status: "enabled" | "disabled";
+              /** Metadata contains additional information associated with the capability. Extension point. */
+              metadata?: {
+                [key: string]: any;
+              };
+            }[];
+            /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+            isAnnotation?: boolean;
+            /** Primary color associated with the model. */
+            primaryColor?: string;
+            /** Secondary color associated with the model. */
+            secondaryColor?: string;
+            /** SVG representation of the model in white color. */
+            svgWhite: string;
+            /** SVG representation of the model in colored format. */
+            svgColor: string;
+            /** SVG representation of the complete model. */
+            svgComplete?: string;
+            /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+            shape?:
+              | "ellipse"
+              | "triangle"
+              | "round-triangle"
+              | "rectangle"
+              | "round-rectangle"
+              | "bottom-round-rectangle"
+              | "cut-rectangle"
+              | "barrel"
+              | "rhomboid"
+              | "diamond"
+              | "round-diamond"
+              | "pentagon"
+              | "round-pentagon"
+              | "hexagon"
+              | "round-hexagon"
+              | "concave-hexagon"
+              | "heptagon"
+              | "round-heptagon"
+              | "octagon"
+              | "round-octagon"
+              | "star"
+              | "tag"
+              | "round-tag"
+              | "vee"
+              | "polygon";
+            [key: string]: any;
+          };
+          /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+          model: {
+            /** Version of the model as defined by the registrant. */
+            version: string;
+          };
+          relationships: any;
+          components: any;
+          /** Number of components associated with the model. */
+          componentsCount: number;
+          /** Number of relationships associated with the model. */
+          relationshipsCount: number;
+          /** Timestamp when the resource was created. */
+          created_at?: string;
+          /** Timestamp when the resource was updated. */
+          updated_at?: string;
+        };
+        /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+        modelReference: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** The unique name for the model within the scope of a registrant. */
+          name: string;
+          /** Version of the model definition. */
+          version: string;
+          /** Human-readable name for the model. */
+          displayName: string;
+          /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+          model: {
+            /** Version of the model as defined by the registrant. */
+            version: string;
+          };
+          registrant: {
+            kind: string;
+          };
+        };
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        modelId?: string;
+        /** Visualization styles for a component */
+        styles?: {
+          /** Primary color of the component used for UI representation. */
+          primaryColor: string;
+          /** Secondary color of the entity used for UI representation. */
+          secondaryColor?: string;
+          /** White SVG of the entity used for UI representation on dark background. */
+          svgWhite: string;
+          /** Colored SVG of the entity used for UI representation on light background. */
+          svgColor: string;
+          /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+          svgComplete: string;
+          /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+          color?: string;
+          /** The opacity of the label text, including its outline. */
+          "text-opacity"?: number;
+          /** A comma-separated list of font names to use on the label text. */
+          "font-family"?: string;
+          /** The size of the label text. */
+          "font-size"?: string;
+          /** A CSS font style to be applied to the label text. */
+          "font-style"?: string;
+          /** A CSS font weight to be applied to the label text. */
+          "font-weight"?: string;
+          /** A transformation to apply to the label text */
+          "text-transform"?: "none" | "uppercase" | "lowercase";
+          /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children. */
+          opacity?: number;
+          /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+          "z-index"?: number;
+          /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+          label?: string;
+          /** The animation to apply to the element. example ripple,bounce,etc */
+          animation?: object;
+          [key: string]: any;
+        } & {
+          /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+          shape:
+            | "ellipse"
+            | "triangle"
+            | "round-triangle"
+            | "rectangle"
+            | "round-rectangle"
+            | "bottom-round-rectangle"
+            | "cut-rectangle"
+            | "barrel"
+            | "rhomboid"
+            | "diamond"
+            | "round-diamond"
+            | "pentagon"
+            | "round-pentagon"
+            | "hexagon"
+            | "round-hexagon"
+            | "concave-hexagon"
+            | "heptagon"
+            | "round-heptagon"
+            | "octagon"
+            | "round-octagon"
+            | "star"
+            | "tag"
+            | "round-tag"
+            | "vee"
+            | "polygon";
+          /** The position of the node. If the position is set, the node is drawn at that position in the given dimensions. If the position is not set, the node is drawn at a random position. */
+          position?: {
+            /** The x-coordinate of the node. */
+            x: number;
+            /** The y-coordinate of the node. */
+            y: number;
+          };
+          /** The text to display for an element's body. Can give a path, e.g. data(id) will label with the elements id */
+          "body-text"?: string;
+          /** How to wrap the text in the node. Can be 'none', 'wrap', or 'ellipsis'. */
+          "body-text-wrap"?: string;
+          /** The maximum width for wrapping text in the node. */
+          "body-text-max-width"?: string;
+          /** The opacity of the node's body text, including its outline. */
+          "body-text-opacity"?: number;
+          /** The colour of the node's body text background. Colours may be specified by name (e.g. red), hex (e.g. */
+          "body-text-background-color"?: string;
+          /** The size of the node's body text. */
+          "body-text-font-size"?: number;
+          /** The colour of the node's body text. Colours may be specified by name (e.g. red), hex (e.g. */
+          "body-text-color"?: string;
+          /** A CSS font weight to be applied to the node's body text. */
+          "body-text-font-weight"?: string;
+          /** A CSS horizontal alignment to be applied to the node's body text. */
+          "body-text-horizontal-align"?: string;
+          /** A CSS text decoration to be applied to the node's body text. */
+          "body-text-decoration"?: string;
+          /** A CSS vertical alignment to be applied to the node's body text. */
+          "body-text-vertical-align"?: string;
+          /** The width of the node's body or the width of an edge's line. */
+          width?: number;
+          /** The height of the node's body */
+          height?: number;
+          /** The URL that points to the image to show in the node. */
+          "background-image"?: string;
+          /** The colour of the node's body. Colours may be specified by name (e.g. red), hex (e.g. */
+          "background-color"?: string;
+          /** Blackens the node's body for values from 0 to 1; whitens the node's body for values from 0 to -1. */
+          "background-blacken"?: number;
+          /** The opacity level of the node's background colour */
+          "background-opacity"?: number;
+          /** The x position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+          "background-position-x"?: string;
+          /** The y position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+          "background-position-y"?: string;
+          /** The x offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+          "background-offset-x"?: string;
+          /** The y offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+          "background-offset-y"?: string;
+          /** How the background image is fit to the node. Can be 'none', 'contain', or 'cover'. */
+          "background-fit"?: string;
+          /** How the background image is clipped to the node. Can be 'none', 'node', or 'node-border'. */
+          "background-clip"?: string;
+          /** How the background image's width is determined. Can be 'none', 'inner', or 'outer'. */
+          "background-width-relative-to"?: string;
+          /** How the background image's height is determined. Can be 'none', 'inner', or 'outer'. */
+          "background-height-relative-to"?: string;
+          /** The size of the node's border. */
+          "border-width"?: number;
+          /** The style of the node's border */
+          "border-style"?: "solid" | "dotted" | "dashed" | "double";
+          /** The colour of the node's border. Colours may be specified by name (e.g. red), hex (e.g. */
+          "border-color"?: string;
+          /** The opacity of the node's border */
+          "border-opacity"?: number;
+          /** The amount of padding around all sides of the node. */
+          padding?: number;
+          /** The horizontal alignment of a node's label */
+          "text-halign"?: "left" | "center" | "right";
+          /** The vertical alignment of a node's label */
+          "text-valign"?: "top" | "center" | "bottom";
+          /** Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset. */
+          ghost?: "yes" | "no";
+          /** The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+          "active-bg-color"?: string;
+          /** The opacity of the active background indicator. Selector needs to be *core*. */
+          "active-bg-opacity"?: string;
+          /** The opacity of the active background indicator. Selector needs to be *core*. */
+          "active-bg-size"?: string;
+          /** The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+          "selection-box-color"?: string;
+          /** The size of the border on the selection box. Selector needs to be *core* */
+          "selection-box-border-width"?: number;
+          /** The opacity of the selection box. Selector needs to be *core* */
+          "selection-box-opacity"?: number;
+          /** The colour of the area outside the viewport texture when initOptions.textureOnViewport === true. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+          "outside-texture-bg-color"?: string;
+          /** The opacity of the area outside the viewport texture. Selector needs to be *core* */
+          "outside-texture-bg-opacity"?: number;
+          /** An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 ) */
+          "shape-polygon-points"?: string;
+          /** The colour of the background of the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+          "menu-background-color"?: string;
+          /** The opacity of the background of the component menu. */
+          "menu-background-opacity"?: number;
+          /** The colour of the text or icons in the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+          "menu-forground-color"?: string;
+        };
+        /** Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management. */
+        capabilities?: {
+          /** Specifies the version of the schema to which the capability definition conforms. */
+          schemaVersion: string;
+          /** Version of the capability definition. */
+          version: string;
+          /** Name of the capability in human-readible format. */
+          displayName: string;
+          /** A written representation of the purpose and characteristics of the capability. */
+          description: string;
+          /** Top-level categorization of the capability */
+          kind: "action" | "mutate" | "view" | "interaction";
+          /** Classification of capabilities. Used to group capabilities similar in nature. */
+          type: string;
+          /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+          subType: string;
+          /** Key that backs the capability. */
+          key: string;
+          /** State of the entity in which the capability is applicable. */
+          entityState: ("declaration" | "instance")[];
+          /** Status of the capability */
+          status: "enabled" | "disabled";
+          /** Metadata contains additional information associated with the capability. Extension point. */
+          metadata?: {
+            [key: string]: any;
+          };
+        }[];
+        /** Status of component, including:
+                - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                - maintenance: model is unavailable for a period of time.
+                - enabled: model is available for use for all users of this Meshery Server.
+                - ignored: model is unavailable for use for all users of this Meshery Server. */
+        status?: "ignored" | "enabled" | "duplicate" | "resolved" | "open";
+        /** Metadata contains additional information associated with the component. */
+        metadata: {
+          /** Genealogy represents the various representational states of the component. */
+          genealogy: string;
+          /** Identifies whether the component is semantically meaningful or not; identifies whether the component should be treated as deployable entity or is for purposes of logical representation. */
+          isAnnotation: boolean;
+          /** Identifies whether the component is scoped to namespace or clsuter wide. */
+          isNamespaced: boolean;
+          /** 'published' controls whether the component should be registered in Meshery Registry. When the same 'published' property in Models, is set to 'false', the Model property takes precedence with all Entities in the Model not being registered. */
+          published: boolean;
+          /** InstanceDetails contains information about the instance of the component. */
+          instanceDetails: object;
+          /** Defines the UI schema for rendering the component's configuration. For more details, visit: https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ . */
+          configurationUISchema: string;
+          [key: string]: any;
+        };
+        /** The configuration of the component. The configuration is based on the schema defined within the component definition(component.schema). */
+        configuration: object;
+        /** data related to the third party capability that Component Defintion wraps , this is herematicaly sealed an */
+        component: {
+          /** Version of the component produced by the registrant. Example: APIVersion of a Kubernetes Pod. */
+          version: string;
+          /** The unique identifier (name) assigned by the registrant to this component. Example: A Kubernetes Pod is of kind 'Pod'. */
+          kind: string;
+          /** JSON schema of the object as defined by the registrant. */
+          schema: string;
+        };
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+      }[];
+      /** Design-level preferences */
+      preferences?: {
+        /** Map of available layers, where keys are layer names. */
+        layers: object;
+      };
+      /** List of relationships between components */
+      relationships: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Specifies the version of the schema used for the relationship definition. */
+        schemaVersion: string;
+        /** Specifies the version of the relationship definition. */
+        version: string;
+        /** Kind of the Relationship. Learn more about relationships - https://docs.meshery.io/concepts/logical/relationships. */
+        kind: "hierarchical" | "edge" | "sibling";
+        /** Classification of relationships. Used to group relationships similar in nature. */
+        type: string;
+        /** Most granular unit of relationship classification. The combination of Kind, Type and SubType together uniquely identify a Relationship. */
+        subType: string;
+        /** Status of the relationship. */
+        status?: "enabled" | "ignored" | "deleted" | "approved" | "pending";
+        /** Capabilities associated with the relationship. */
+        capabilities?: {
+          /** Specifies the version of the schema to which the capability definition conforms. */
+          schemaVersion: string;
+          /** Version of the capability definition. */
+          version: string;
+          /** Name of the capability in human-readible format. */
+          displayName: string;
+          /** A written representation of the purpose and characteristics of the capability. */
+          description: string;
+          /** Top-level categorization of the capability */
+          kind: "action" | "mutate" | "view" | "interaction";
+          /** Classification of capabilities. Used to group capabilities similar in nature. */
+          type: string;
+          /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+          subType: string;
+          /** Key that backs the capability. */
+          key: string;
+          /** State of the entity in which the capability is applicable. */
+          entityState: ("declaration" | "instance")[];
+          /** Status of the capability */
+          status: "enabled" | "disabled";
+          /** Metadata contains additional information associated with the capability. Extension point. */
+          metadata?: {
+            [key: string]: any;
+          };
+        }[];
+        /** Metadata contains additional information associated with the Relationship. */
+        metadata?: {
+          /** Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
+          description?: string;
+          /** Visualization styles for a relationship */
+          styles?: {
+            /** Primary color of the component used for UI representation. */
+            primaryColor: string;
+            /** Secondary color of the entity used for UI representation. */
+            secondaryColor?: string;
+            /** White SVG of the entity used for UI representation on dark background. */
+            svgWhite: string;
+            /** Colored SVG of the entity used for UI representation on light background. */
+            svgColor: string;
+            /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+            svgComplete?: string;
+            /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+            color?: string;
+            /** The opacity of the label text, including its outline. */
+            "text-opacity"?: number;
+            /** A comma-separated list of font names to use on the label text. */
+            "font-family"?: string;
+            /** The size of the label text. */
+            "font-size"?: string;
+            /** A CSS font style to be applied to the label text. */
+            "font-style"?: string;
+            /** A CSS font weight to be applied to the label text. */
+            "font-weight"?: string;
+            /** A transformation to apply to the label text */
+            "text-transform"?: "none" | "uppercase" | "lowercase";
+            /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.See https://js.cytoscape.org/#style/visibility */
+            opacity?: number;
+            /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+            "z-index"?: number;
+            /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+            label?: string;
+            /** The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc . */
+            "edge-animation"?: string;
+            /** The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges. */
+            "curve-style"?: "haystack" | "straight" | "bezier" | "unbundled-bezier" | "segments" | "taxi";
+            /** The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g. */
+            "line-color"?: string;
+            /** The style of the edge's line. */
+            "line-style"?: "solid" | "dotted" | "dashed";
+            /** The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge. */
+            "line-cap"?: "butt" | "round" | "square";
+            /** The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents. */
+            "line-opacity"?: number;
+            /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+            "target-arrow-color"?: string;
+            /** The shape of the edge's source arrow */
+            "target-arrow-shape"?:
+              | "triangle"
+              | "triangle-tee"
+              | "circle-triangle"
+              | "triangle-cross"
+              | "triangle-backcurve"
+              | "vee"
+              | "tee"
+              | "square"
+              | "circle"
+              | "diamond"
+              | "chevron"
+              | "none";
+            /** The fill state of the edge's source arrow */
+            "target-arrow-fill"?: "filled" | "hollow";
+            /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+            "mid-target-arrow-color"?: string;
+            /** The shape of the edge's source arrow */
+            "mid-target-arrow-shape"?:
+              | "triangle"
+              | "triangle-tee"
+              | "circle-triangle"
+              | "triangle-cross"
+              | "triangle-backcurve"
+              | "vee"
+              | "tee"
+              | "square"
+              | "circle"
+              | "diamond"
+              | "chevron"
+              | "none";
+            /** The fill state of the edge's source arrow */
+            "mid-target-arrow-fill"?: "filled" | "hollow";
+            /** Scaling for the arrow size. */
+            "arrow-scale"?: number;
+            /** The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id */
+            "source-label"?: string;
+            /** The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id */
+            "target-label"?: string;
+          };
+          /** Indicates whether the relationship should be treated as a logical representation only */
+          isAnnotation?: boolean;
+          [key: string]: any;
+        };
+        /** Model Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+        model: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** The unique name for the model within the scope of a registrant. */
+          name: string;
+          /** Version of the model definition. */
+          version: string;
+          /** Human-readable name for the model. */
+          displayName: string;
+          /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+          model: {
+            /** Version of the model as defined by the registrant. */
+            version: string;
+          };
+          registrant: {
+            kind: string;
+          };
+        };
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        modelId?: string;
+        /** Optional. Assigns the policy to be used for the evaluation of the relationship. Deprecation Notice: In the future, this property is either to be removed or to it is to be an array of optional policy $refs. */
+        evaluationQuery?: string;
+        /** Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
+        selectors?: {
+          /** Selectors used to define relationships which are allowed. */
+          allow: {
+            /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+            from: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id?: string;
+              kind?: string;
+              /** Match configuration for selector */
+              match?: {
+                refs?: string[][];
+                from?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+                to?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+              };
+              /** Match strategy matrix for the selector */
+              match_strategy_matrix?: string[][];
+              /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+              model?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id: string;
+                /** The unique name for the model within the scope of a registrant. */
+                name: string;
+                /** Version of the model definition. */
+                version: string;
+                /** Human-readable name for the model. */
+                displayName: string;
+                /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                model: {
+                  /** Version of the model as defined by the registrant. */
+                  version: string;
+                };
+                registrant: {
+                  kind: string;
+                };
+              };
+              /** Patch configuration for the selector */
+              patch?: {
+                /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                
+                                add: Inserts a value into an array or adds a member to an object.
+                                replace: Replaces a value.
+                                merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                remove: Removes a value.
+                                copy: Copies a value from one location to another.
+                                move: Moves a value from one location to another.
+                                test: Tests that a value at the target location is equal to a specified value.
+                                 */
+                patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              };
+            }[];
+            /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+            to: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id?: string;
+              kind?: string;
+              /** Match configuration for selector */
+              match?: {
+                refs?: string[][];
+                from?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+                to?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+              };
+              /** Match strategy matrix for the selector */
+              match_strategy_matrix?: string[][];
+              /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+              model?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id: string;
+                /** The unique name for the model within the scope of a registrant. */
+                name: string;
+                /** Version of the model definition. */
+                version: string;
+                /** Human-readable name for the model. */
+                displayName: string;
+                /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                model: {
+                  /** Version of the model as defined by the registrant. */
+                  version: string;
+                };
+                registrant: {
+                  kind: string;
+                };
+              };
+              /** Patch configuration for the selector */
+              patch?: {
+                /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                
+                                add: Inserts a value into an array or adds a member to an object.
+                                replace: Replaces a value.
+                                merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                remove: Removes a value.
+                                copy: Copies a value from one location to another.
+                                move: Moves a value from one location to another.
+                                test: Tests that a value at the target location is equal to a specified value.
+                                 */
+                patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              };
+            }[];
+          };
+          /** Optional selectors used to define relationships which should not be created / is restricted. */
+          deny?: {
+            /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+            from: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id?: string;
+              kind?: string;
+              /** Match configuration for selector */
+              match?: {
+                refs?: string[][];
+                from?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+                to?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+              };
+              /** Match strategy matrix for the selector */
+              match_strategy_matrix?: string[][];
+              /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+              model?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id: string;
+                /** The unique name for the model within the scope of a registrant. */
+                name: string;
+                /** Version of the model definition. */
+                version: string;
+                /** Human-readable name for the model. */
+                displayName: string;
+                /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                model: {
+                  /** Version of the model as defined by the registrant. */
+                  version: string;
+                };
+                registrant: {
+                  kind: string;
+                };
+              };
+              /** Patch configuration for the selector */
+              patch?: {
+                /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                
+                                add: Inserts a value into an array or adds a member to an object.
+                                replace: Replaces a value.
+                                merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                remove: Removes a value.
+                                copy: Copies a value from one location to another.
+                                move: Moves a value from one location to another.
+                                test: Tests that a value at the target location is equal to a specified value.
+                                 */
+                patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              };
+            }[];
+            /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+            to: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id?: string;
+              kind?: string;
+              /** Match configuration for selector */
+              match?: {
+                refs?: string[][];
+                from?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+                to?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id?: string;
+                  kind: string;
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                }[];
+              };
+              /** Match strategy matrix for the selector */
+              match_strategy_matrix?: string[][];
+              /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+              model?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id: string;
+                /** The unique name for the model within the scope of a registrant. */
+                name: string;
+                /** Version of the model definition. */
+                version: string;
+                /** Human-readable name for the model. */
+                displayName: string;
+                /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                model: {
+                  /** Version of the model as defined by the registrant. */
+                  version: string;
+                };
+                registrant: {
+                  kind: string;
+                };
+              };
+              /** Patch configuration for the selector */
+              patch?: {
+                /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                
+                                add: Inserts a value into an array or adds a member to an object.
+                                replace: Replaces a value.
+                                merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                remove: Removes a value.
+                                copy: Copies a value from one location to another.
+                                move: Moves a value from one location to another.
+                                test: Tests that a value at the target location is equal to a specified value.
+                                 */
+                patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              };
+            }[];
+          };
+        }[];
+      }[];
+    };
+    updated_at?: string;
+    id?: string;
+    visibility?: string;
+  }[];
+  resultType?: string;
+  total_count?: number;
+};
+export type GetPatternsApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Filter by visibility (public, private, published) */
+  visibility?: string;
+};
+export type UpsertPatternApiResponse = /** status 200 Design saved successfully */ {
+  catalog_data?: {
+    /** Tracks the specific content version that has been made available in the Catalog. */
+    publishedVersion?: string;
+    /** Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability. */
+    class?: "official" | "verified" | "reference architecture";
+    /** One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential. */
+    compatibility: "kubernetes"[];
+    /** Specific stipulations to consider and known behaviors to be aware of when using this design. */
+    pattern_caveats: string;
+    /** Purpose of the design along with its intended and unintended uses. */
+    pattern_info: string;
+    /** Categorization of the type of design or operational flow depicted in this design. */
+    type:
+      | "Deployment"
+      | "Observability"
+      | "Resiliency"
+      | "Scaling"
+      | "Security"
+      | "Traffic-management"
+      | "Troubleshooting"
+      | "Workloads";
+    /** Contains reference to the dark and light mode snapshots of the design. */
+    snapshotURL?: string[];
+  };
+  created_at?: string;
+  user_id?: string;
+  location?: {
+    [key: string]: string;
+  };
+  name?: string;
+  /** Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes. */
+  pattern_file?: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** Name of the design; a descriptive, but concise title for the design document. */
+    name: string;
+    /** Specifies the version of the schema to which the design conforms. */
+    schemaVersion: string;
+    /** Revision of the design as expressed by an auto-incremented, SemVer-compliant version number. May be manually set by a user or third-party system, but will always be required to be of version number higher than the previously defined version number. */
+    version: string;
+    metadata?: {
+      /** Map of resolved aliases present in the design */
+      resolvedAliases?: {
+        [key: string]: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          relationship_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          alias_component_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          immediate_parent_id: string;
+          immediate_ref_field_path: string[];
+        } & {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          resolved_parent_id: string;
+          resolved_ref_field_path: string[];
+        };
+      };
+      [key: string]: any;
+    };
+    /** A list of one or more component declarations. */
+    components: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema to which the component definition conforms. */
+      schemaVersion: string;
+      /** Version of the component definition. */
+      version: string;
+      /** Name of the component in human-readible format. */
+      displayName: string;
+      /** A written representation of the purpose and characteristics of the component. */
+      description: string;
+      /** Format specifies the format used in the `component.schema` field. JSON is the default. */
+      format: "JSON" | "CUE";
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Specifies the version of the schema used for the definition. */
+        schemaVersion: string;
+        /** Version of the model definition. */
+        version: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Description of the model. */
+        description: string;
+        /** Status of model, including:
+                - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                - maintenance: model is unavailable for a period of time.
+                - enabled: model is available for use for all users of this Meshery Server.
+                - ignored: model is unavailable for use for all users of this Meshery Server. */
+        status: "ignored" | "enabled" | "duplicate";
+        /** Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections */
+        registrant: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Connection Name */
+          name: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          credential_id?: string;
+          /** Connection Type (platform, telemetry, collaboration) */
+          type: string;
+          /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+          sub_type: string;
+          /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+          kind: string;
+          /** Additional connection metadata */
+          metadata?: object;
+          /** Connection Status */
+          status:
+            | "discovered"
+            | "registered"
+            | "connected"
+            | "ignored"
+            | "maintenance"
+            | "disconnected"
+            | "deleted"
+            | "not found";
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          user_id?: string;
+          created_at?: string;
+          updated_at?: string;
+          /** SQL null Timestamp to handle null values of time. */
+          deleted_at?: string;
+          /** Associated environments for this connection */
+          environments?: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** Specifies the version of the schema to which the environment conforms. */
+            schemaVersion: string;
+            /** Environment name */
+            name: string;
+            /** Environment description */
+            description: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            organization_id: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            owner?: string;
+            created_at?: string;
+            metadata?: object;
+            updated_at?: string;
+            /** SQL null Timestamp to handle null values of time. */
+            deleted_at?: string;
+          }[];
+          /** Specifies the version of the schema used for the definition. */
+          schemaVersion: string;
+        };
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        registrantId: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        categoryId: string;
+        /** Category of the model. */
+        category: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** The category of the model that determines the main grouping. */
+          name:
+            | "Analytics"
+            | "App Definition and Development"
+            | "Cloud Native Network"
+            | "Cloud Native Storage"
+            | "Database"
+            | "Machine Learning"
+            | "Observability and Analysis"
+            | "Orchestration & Management"
+            | "Platform"
+            | "Provisioning"
+            | "Runtime"
+            | "Security & Compliance"
+            | "Serverless"
+            | "Tools"
+            | "Uncategorized";
+          metadata: object;
+        };
+        /** Sub category of the model determines the secondary grouping. */
+        subCategory:
+          | "API Gateway"
+          | "API Integration"
+          | "Application Definition & Image Build"
+          | "Automation & Configuration"
+          | "Certified Kubernetes - Distribution"
+          | "Chaos Engineering"
+          | "Cloud Native Storage"
+          | "Cloud Provider"
+          | "CNI"
+          | "Compute"
+          | "Container Registry"
+          | "Container Runtime"
+          | "Container Security"
+          | "Container"
+          | "Content Delivery Network"
+          | "Continuous Integration & Delivery"
+          | "Coordination & Service Discovery"
+          | "Database"
+          | "Flowchart"
+          | "Framework"
+          | "Installable Platform"
+          | "Key Management"
+          | "Key Management Service"
+          | "Kubernetes"
+          | "Logging"
+          | "Machine Learning"
+          | "Management Governance"
+          | "Metrics"
+          | "Monitoring"
+          | "Networking Content Delivery"
+          | "Operating System"
+          | "Query"
+          | "Remote Procedure Call"
+          | "Scheduling & Orchestration"
+          | "Secrets Management"
+          | "Security Identity & Compliance"
+          | "Service Mesh"
+          | "Service Proxy"
+          | "Source Version Control"
+          | "Storage"
+          | "Specifications"
+          | "Streaming & Messaging"
+          | "Tools"
+          | "Tracing"
+          | "Uncategorized"
+          | "Video Conferencing";
+        /** Metadata containing additional information associated with the model. */
+        metadata?: {
+          /** Capabilities associated with the model */
+          capabilities?: {
+            /** Specifies the version of the schema to which the capability definition conforms. */
+            schemaVersion: string;
+            /** Version of the capability definition. */
+            version: string;
+            /** Name of the capability in human-readible format. */
+            displayName: string;
+            /** A written representation of the purpose and characteristics of the capability. */
+            description: string;
+            /** Top-level categorization of the capability */
+            kind: "action" | "mutate" | "view" | "interaction";
+            /** Classification of capabilities. Used to group capabilities similar in nature. */
+            type: string;
+            /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+            subType: string;
+            /** Key that backs the capability. */
+            key: string;
+            /** State of the entity in which the capability is applicable. */
+            entityState: ("declaration" | "instance")[];
+            /** Status of the capability */
+            status: "enabled" | "disabled";
+            /** Metadata contains additional information associated with the capability. Extension point. */
+            metadata?: {
+              [key: string]: any;
+            };
+          }[];
+          /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+          isAnnotation?: boolean;
+          /** Primary color associated with the model. */
+          primaryColor?: string;
+          /** Secondary color associated with the model. */
+          secondaryColor?: string;
+          /** SVG representation of the model in white color. */
+          svgWhite: string;
+          /** SVG representation of the model in colored format. */
+          svgColor: string;
+          /** SVG representation of the complete model. */
+          svgComplete?: string;
+          /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+          shape?:
+            | "ellipse"
+            | "triangle"
+            | "round-triangle"
+            | "rectangle"
+            | "round-rectangle"
+            | "bottom-round-rectangle"
+            | "cut-rectangle"
+            | "barrel"
+            | "rhomboid"
+            | "diamond"
+            | "round-diamond"
+            | "pentagon"
+            | "round-pentagon"
+            | "hexagon"
+            | "round-hexagon"
+            | "concave-hexagon"
+            | "heptagon"
+            | "round-heptagon"
+            | "octagon"
+            | "round-octagon"
+            | "star"
+            | "tag"
+            | "round-tag"
+            | "vee"
+            | "polygon";
+          [key: string]: any;
+        };
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        relationships: any;
+        components: any;
+        /** Number of components associated with the model. */
+        componentsCount: number;
+        /** Number of relationships associated with the model. */
+        relationshipsCount: number;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+      };
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      modelReference: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Visualization styles for a component */
+      styles?: {
+        /** Primary color of the component used for UI representation. */
+        primaryColor: string;
+        /** Secondary color of the entity used for UI representation. */
+        secondaryColor?: string;
+        /** White SVG of the entity used for UI representation on dark background. */
+        svgWhite: string;
+        /** Colored SVG of the entity used for UI representation on light background. */
+        svgColor: string;
+        /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+        svgComplete: string;
+        /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+        color?: string;
+        /** The opacity of the label text, including its outline. */
+        "text-opacity"?: number;
+        /** A comma-separated list of font names to use on the label text. */
+        "font-family"?: string;
+        /** The size of the label text. */
+        "font-size"?: string;
+        /** A CSS font style to be applied to the label text. */
+        "font-style"?: string;
+        /** A CSS font weight to be applied to the label text. */
+        "font-weight"?: string;
+        /** A transformation to apply to the label text */
+        "text-transform"?: "none" | "uppercase" | "lowercase";
+        /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children. */
+        opacity?: number;
+        /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+        "z-index"?: number;
+        /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+        label?: string;
+        /** The animation to apply to the element. example ripple,bounce,etc */
+        animation?: object;
+        [key: string]: any;
+      } & {
+        /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+        shape:
+          | "ellipse"
+          | "triangle"
+          | "round-triangle"
+          | "rectangle"
+          | "round-rectangle"
+          | "bottom-round-rectangle"
+          | "cut-rectangle"
+          | "barrel"
+          | "rhomboid"
+          | "diamond"
+          | "round-diamond"
+          | "pentagon"
+          | "round-pentagon"
+          | "hexagon"
+          | "round-hexagon"
+          | "concave-hexagon"
+          | "heptagon"
+          | "round-heptagon"
+          | "octagon"
+          | "round-octagon"
+          | "star"
+          | "tag"
+          | "round-tag"
+          | "vee"
+          | "polygon";
+        /** The position of the node. If the position is set, the node is drawn at that position in the given dimensions. If the position is not set, the node is drawn at a random position. */
+        position?: {
+          /** The x-coordinate of the node. */
+          x: number;
+          /** The y-coordinate of the node. */
+          y: number;
+        };
+        /** The text to display for an element's body. Can give a path, e.g. data(id) will label with the elements id */
+        "body-text"?: string;
+        /** How to wrap the text in the node. Can be 'none', 'wrap', or 'ellipsis'. */
+        "body-text-wrap"?: string;
+        /** The maximum width for wrapping text in the node. */
+        "body-text-max-width"?: string;
+        /** The opacity of the node's body text, including its outline. */
+        "body-text-opacity"?: number;
+        /** The colour of the node's body text background. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-background-color"?: string;
+        /** The size of the node's body text. */
+        "body-text-font-size"?: number;
+        /** The colour of the node's body text. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-color"?: string;
+        /** A CSS font weight to be applied to the node's body text. */
+        "body-text-font-weight"?: string;
+        /** A CSS horizontal alignment to be applied to the node's body text. */
+        "body-text-horizontal-align"?: string;
+        /** A CSS text decoration to be applied to the node's body text. */
+        "body-text-decoration"?: string;
+        /** A CSS vertical alignment to be applied to the node's body text. */
+        "body-text-vertical-align"?: string;
+        /** The width of the node's body or the width of an edge's line. */
+        width?: number;
+        /** The height of the node's body */
+        height?: number;
+        /** The URL that points to the image to show in the node. */
+        "background-image"?: string;
+        /** The colour of the node's body. Colours may be specified by name (e.g. red), hex (e.g. */
+        "background-color"?: string;
+        /** Blackens the node's body for values from 0 to 1; whitens the node's body for values from 0 to -1. */
+        "background-blacken"?: number;
+        /** The opacity level of the node's background colour */
+        "background-opacity"?: number;
+        /** The x position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-x"?: string;
+        /** The y position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-y"?: string;
+        /** The x offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-x"?: string;
+        /** The y offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-y"?: string;
+        /** How the background image is fit to the node. Can be 'none', 'contain', or 'cover'. */
+        "background-fit"?: string;
+        /** How the background image is clipped to the node. Can be 'none', 'node', or 'node-border'. */
+        "background-clip"?: string;
+        /** How the background image's width is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-width-relative-to"?: string;
+        /** How the background image's height is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-height-relative-to"?: string;
+        /** The size of the node's border. */
+        "border-width"?: number;
+        /** The style of the node's border */
+        "border-style"?: "solid" | "dotted" | "dashed" | "double";
+        /** The colour of the node's border. Colours may be specified by name (e.g. red), hex (e.g. */
+        "border-color"?: string;
+        /** The opacity of the node's border */
+        "border-opacity"?: number;
+        /** The amount of padding around all sides of the node. */
+        padding?: number;
+        /** The horizontal alignment of a node's label */
+        "text-halign"?: "left" | "center" | "right";
+        /** The vertical alignment of a node's label */
+        "text-valign"?: "top" | "center" | "bottom";
+        /** Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset. */
+        ghost?: "yes" | "no";
+        /** The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "active-bg-color"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-opacity"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-size"?: string;
+        /** The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "selection-box-color"?: string;
+        /** The size of the border on the selection box. Selector needs to be *core* */
+        "selection-box-border-width"?: number;
+        /** The opacity of the selection box. Selector needs to be *core* */
+        "selection-box-opacity"?: number;
+        /** The colour of the area outside the viewport texture when initOptions.textureOnViewport === true. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "outside-texture-bg-color"?: string;
+        /** The opacity of the area outside the viewport texture. Selector needs to be *core* */
+        "outside-texture-bg-opacity"?: number;
+        /** An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 ) */
+        "shape-polygon-points"?: string;
+        /** The colour of the background of the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-background-color"?: string;
+        /** The opacity of the background of the component menu. */
+        "menu-background-opacity"?: number;
+        /** The colour of the text or icons in the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-forground-color"?: string;
+      };
+      /** Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Status of component, including:
+            - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+            - maintenance: model is unavailable for a period of time.
+            - enabled: model is available for use for all users of this Meshery Server.
+            - ignored: model is unavailable for use for all users of this Meshery Server. */
+      status?: "ignored" | "enabled" | "duplicate" | "resolved" | "open";
+      /** Metadata contains additional information associated with the component. */
+      metadata: {
+        /** Genealogy represents the various representational states of the component. */
+        genealogy: string;
+        /** Identifies whether the component is semantically meaningful or not; identifies whether the component should be treated as deployable entity or is for purposes of logical representation. */
+        isAnnotation: boolean;
+        /** Identifies whether the component is scoped to namespace or clsuter wide. */
+        isNamespaced: boolean;
+        /** 'published' controls whether the component should be registered in Meshery Registry. When the same 'published' property in Models, is set to 'false', the Model property takes precedence with all Entities in the Model not being registered. */
+        published: boolean;
+        /** InstanceDetails contains information about the instance of the component. */
+        instanceDetails: object;
+        /** Defines the UI schema for rendering the component's configuration. For more details, visit: https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ . */
+        configurationUISchema: string;
+        [key: string]: any;
+      };
+      /** The configuration of the component. The configuration is based on the schema defined within the component definition(component.schema). */
+      configuration: object;
+      /** data related to the third party capability that Component Defintion wraps , this is herematicaly sealed an */
+      component: {
+        /** Version of the component produced by the registrant. Example: APIVersion of a Kubernetes Pod. */
+        version: string;
+        /** The unique identifier (name) assigned by the registrant to this component. Example: A Kubernetes Pod is of kind 'Pod'. */
+        kind: string;
+        /** JSON schema of the object as defined by the registrant. */
+        schema: string;
+      };
+      /** Timestamp when the resource was created. */
+      created_at?: string;
+      /** Timestamp when the resource was updated. */
+      updated_at?: string;
+    }[];
+    /** Design-level preferences */
+    preferences?: {
+      /** Map of available layers, where keys are layer names. */
+      layers: object;
+    };
+    /** List of relationships between components */
+    relationships: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema used for the relationship definition. */
+      schemaVersion: string;
+      /** Specifies the version of the relationship definition. */
+      version: string;
+      /** Kind of the Relationship. Learn more about relationships - https://docs.meshery.io/concepts/logical/relationships. */
+      kind: "hierarchical" | "edge" | "sibling";
+      /** Classification of relationships. Used to group relationships similar in nature. */
+      type: string;
+      /** Most granular unit of relationship classification. The combination of Kind, Type and SubType together uniquely identify a Relationship. */
+      subType: string;
+      /** Status of the relationship. */
+      status?: "enabled" | "ignored" | "deleted" | "approved" | "pending";
+      /** Capabilities associated with the relationship. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Metadata contains additional information associated with the Relationship. */
+      metadata?: {
+        /** Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
+        description?: string;
+        /** Visualization styles for a relationship */
+        styles?: {
+          /** Primary color of the component used for UI representation. */
+          primaryColor: string;
+          /** Secondary color of the entity used for UI representation. */
+          secondaryColor?: string;
+          /** White SVG of the entity used for UI representation on dark background. */
+          svgWhite: string;
+          /** Colored SVG of the entity used for UI representation on light background. */
+          svgColor: string;
+          /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+          svgComplete?: string;
+          /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+          color?: string;
+          /** The opacity of the label text, including its outline. */
+          "text-opacity"?: number;
+          /** A comma-separated list of font names to use on the label text. */
+          "font-family"?: string;
+          /** The size of the label text. */
+          "font-size"?: string;
+          /** A CSS font style to be applied to the label text. */
+          "font-style"?: string;
+          /** A CSS font weight to be applied to the label text. */
+          "font-weight"?: string;
+          /** A transformation to apply to the label text */
+          "text-transform"?: "none" | "uppercase" | "lowercase";
+          /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.See https://js.cytoscape.org/#style/visibility */
+          opacity?: number;
+          /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+          "z-index"?: number;
+          /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+          label?: string;
+          /** The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc . */
+          "edge-animation"?: string;
+          /** The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges. */
+          "curve-style"?: "haystack" | "straight" | "bezier" | "unbundled-bezier" | "segments" | "taxi";
+          /** The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g. */
+          "line-color"?: string;
+          /** The style of the edge's line. */
+          "line-style"?: "solid" | "dotted" | "dashed";
+          /** The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge. */
+          "line-cap"?: "butt" | "round" | "square";
+          /** The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents. */
+          "line-opacity"?: number;
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "target-arrow-fill"?: "filled" | "hollow";
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "mid-target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "mid-target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "mid-target-arrow-fill"?: "filled" | "hollow";
+          /** Scaling for the arrow size. */
+          "arrow-scale"?: number;
+          /** The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id */
+          "source-label"?: string;
+          /** The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id */
+          "target-label"?: string;
+        };
+        /** Indicates whether the relationship should be treated as a logical representation only */
+        isAnnotation?: boolean;
+        [key: string]: any;
+      };
+      /** Model Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Optional. Assigns the policy to be used for the evaluation of the relationship. Deprecation Notice: In the future, this property is either to be removed or to it is to be an array of optional policy $refs. */
+      evaluationQuery?: string;
+      /** Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
+      selectors?: {
+        /** Selectors used to define relationships which are allowed. */
+        allow: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+        /** Optional selectors used to define relationships which should not be created / is restricted. */
+        deny?: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+      }[];
+    }[];
+  };
+  updated_at?: string;
+  id?: string;
+  visibility?: string;
+};
+export type UpsertPatternApiArg = {
+  body: {
+    path?: string;
+    pattern_data?: {
+      catalog_data?: {
+        /** Tracks the specific content version that has been made available in the Catalog. */
+        publishedVersion?: string;
+        /** Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability. */
+        class?: "official" | "verified" | "reference architecture";
+        /** One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential. */
+        compatibility: "kubernetes"[];
+        /** Specific stipulations to consider and known behaviors to be aware of when using this design. */
+        pattern_caveats: string;
+        /** Purpose of the design along with its intended and unintended uses. */
+        pattern_info: string;
+        /** Categorization of the type of design or operational flow depicted in this design. */
+        type:
+          | "Deployment"
+          | "Observability"
+          | "Resiliency"
+          | "Scaling"
+          | "Security"
+          | "Traffic-management"
+          | "Troubleshooting"
+          | "Workloads";
+        /** Contains reference to the dark and light mode snapshots of the design. */
+        snapshotURL?: string[];
+      };
+      created_at?: string;
+      user_id?: string;
+      location?: {
+        [key: string]: string;
+      };
+      name?: string;
+      /** Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes. */
+      pattern_file?: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Name of the design; a descriptive, but concise title for the design document. */
+        name: string;
+        /** Specifies the version of the schema to which the design conforms. */
+        schemaVersion: string;
+        /** Revision of the design as expressed by an auto-incremented, SemVer-compliant version number. May be manually set by a user or third-party system, but will always be required to be of version number higher than the previously defined version number. */
+        version: string;
+        metadata?: {
+          /** Map of resolved aliases present in the design */
+          resolvedAliases?: {
+            [key: string]: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              relationship_id: string;
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              alias_component_id: string;
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              immediate_parent_id: string;
+              immediate_ref_field_path: string[];
+            } & {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              resolved_parent_id: string;
+              resolved_ref_field_path: string[];
+            };
+          };
+          [key: string]: any;
+        };
+        /** A list of one or more component declarations. */
+        components: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Specifies the version of the schema to which the component definition conforms. */
+          schemaVersion: string;
+          /** Version of the component definition. */
+          version: string;
+          /** Name of the component in human-readible format. */
+          displayName: string;
+          /** A written representation of the purpose and characteristics of the component. */
+          description: string;
+          /** Format specifies the format used in the `component.schema` field. JSON is the default. */
+          format: "JSON" | "CUE";
+          /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+          model: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** Specifies the version of the schema used for the definition. */
+            schemaVersion: string;
+            /** Version of the model definition. */
+            version: string;
+            /** The unique name for the model within the scope of a registrant. */
+            name: string;
+            /** Human-readable name for the model. */
+            displayName: string;
+            /** Description of the model. */
+            description: string;
+            /** Status of model, including:
+                        - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                        - maintenance: model is unavailable for a period of time.
+                        - enabled: model is available for use for all users of this Meshery Server.
+                        - ignored: model is unavailable for use for all users of this Meshery Server. */
+            status: "ignored" | "enabled" | "duplicate";
+            /** Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections */
+            registrant: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** Connection Name */
+              name: string;
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              credential_id?: string;
+              /** Connection Type (platform, telemetry, collaboration) */
+              type: string;
+              /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+              sub_type: string;
+              /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+              kind: string;
+              /** Additional connection metadata */
+              metadata?: object;
+              /** Connection Status */
+              status:
+                | "discovered"
+                | "registered"
+                | "connected"
+                | "ignored"
+                | "maintenance"
+                | "disconnected"
+                | "deleted"
+                | "not found";
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              user_id?: string;
+              created_at?: string;
+              updated_at?: string;
+              /** SQL null Timestamp to handle null values of time. */
+              deleted_at?: string;
+              /** Associated environments for this connection */
+              environments?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id: string;
+                /** Specifies the version of the schema to which the environment conforms. */
+                schemaVersion: string;
+                /** Environment name */
+                name: string;
+                /** Environment description */
+                description: string;
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                organization_id: string;
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                owner?: string;
+                created_at?: string;
+                metadata?: object;
+                updated_at?: string;
+                /** SQL null Timestamp to handle null values of time. */
+                deleted_at?: string;
+              }[];
+              /** Specifies the version of the schema used for the definition. */
+              schemaVersion: string;
+            };
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            registrantId: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            categoryId: string;
+            /** Category of the model. */
+            category: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The category of the model that determines the main grouping. */
+              name:
+                | "Analytics"
+                | "App Definition and Development"
+                | "Cloud Native Network"
+                | "Cloud Native Storage"
+                | "Database"
+                | "Machine Learning"
+                | "Observability and Analysis"
+                | "Orchestration & Management"
+                | "Platform"
+                | "Provisioning"
+                | "Runtime"
+                | "Security & Compliance"
+                | "Serverless"
+                | "Tools"
+                | "Uncategorized";
+              metadata: object;
+            };
+            /** Sub category of the model determines the secondary grouping. */
+            subCategory:
+              | "API Gateway"
+              | "API Integration"
+              | "Application Definition & Image Build"
+              | "Automation & Configuration"
+              | "Certified Kubernetes - Distribution"
+              | "Chaos Engineering"
+              | "Cloud Native Storage"
+              | "Cloud Provider"
+              | "CNI"
+              | "Compute"
+              | "Container Registry"
+              | "Container Runtime"
+              | "Container Security"
+              | "Container"
+              | "Content Delivery Network"
+              | "Continuous Integration & Delivery"
+              | "Coordination & Service Discovery"
+              | "Database"
+              | "Flowchart"
+              | "Framework"
+              | "Installable Platform"
+              | "Key Management"
+              | "Key Management Service"
+              | "Kubernetes"
+              | "Logging"
+              | "Machine Learning"
+              | "Management Governance"
+              | "Metrics"
+              | "Monitoring"
+              | "Networking Content Delivery"
+              | "Operating System"
+              | "Query"
+              | "Remote Procedure Call"
+              | "Scheduling & Orchestration"
+              | "Secrets Management"
+              | "Security Identity & Compliance"
+              | "Service Mesh"
+              | "Service Proxy"
+              | "Source Version Control"
+              | "Storage"
+              | "Specifications"
+              | "Streaming & Messaging"
+              | "Tools"
+              | "Tracing"
+              | "Uncategorized"
+              | "Video Conferencing";
+            /** Metadata containing additional information associated with the model. */
+            metadata?: {
+              /** Capabilities associated with the model */
+              capabilities?: {
+                /** Specifies the version of the schema to which the capability definition conforms. */
+                schemaVersion: string;
+                /** Version of the capability definition. */
+                version: string;
+                /** Name of the capability in human-readible format. */
+                displayName: string;
+                /** A written representation of the purpose and characteristics of the capability. */
+                description: string;
+                /** Top-level categorization of the capability */
+                kind: "action" | "mutate" | "view" | "interaction";
+                /** Classification of capabilities. Used to group capabilities similar in nature. */
+                type: string;
+                /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+                subType: string;
+                /** Key that backs the capability. */
+                key: string;
+                /** State of the entity in which the capability is applicable. */
+                entityState: ("declaration" | "instance")[];
+                /** Status of the capability */
+                status: "enabled" | "disabled";
+                /** Metadata contains additional information associated with the capability. Extension point. */
+                metadata?: {
+                  [key: string]: any;
+                };
+              }[];
+              /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+              isAnnotation?: boolean;
+              /** Primary color associated with the model. */
+              primaryColor?: string;
+              /** Secondary color associated with the model. */
+              secondaryColor?: string;
+              /** SVG representation of the model in white color. */
+              svgWhite: string;
+              /** SVG representation of the model in colored format. */
+              svgColor: string;
+              /** SVG representation of the complete model. */
+              svgComplete?: string;
+              /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+              shape?:
+                | "ellipse"
+                | "triangle"
+                | "round-triangle"
+                | "rectangle"
+                | "round-rectangle"
+                | "bottom-round-rectangle"
+                | "cut-rectangle"
+                | "barrel"
+                | "rhomboid"
+                | "diamond"
+                | "round-diamond"
+                | "pentagon"
+                | "round-pentagon"
+                | "hexagon"
+                | "round-hexagon"
+                | "concave-hexagon"
+                | "heptagon"
+                | "round-heptagon"
+                | "octagon"
+                | "round-octagon"
+                | "star"
+                | "tag"
+                | "round-tag"
+                | "vee"
+                | "polygon";
+              [key: string]: any;
+            };
+            /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+            model: {
+              /** Version of the model as defined by the registrant. */
+              version: string;
+            };
+            relationships: any;
+            components: any;
+            /** Number of components associated with the model. */
+            componentsCount: number;
+            /** Number of relationships associated with the model. */
+            relationshipsCount: number;
+            /** Timestamp when the resource was created. */
+            created_at?: string;
+            /** Timestamp when the resource was updated. */
+            updated_at?: string;
+          };
+          /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+          modelReference: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** The unique name for the model within the scope of a registrant. */
+            name: string;
+            /** Version of the model definition. */
+            version: string;
+            /** Human-readable name for the model. */
+            displayName: string;
+            /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+            model: {
+              /** Version of the model as defined by the registrant. */
+              version: string;
+            };
+            registrant: {
+              kind: string;
+            };
+          };
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          modelId?: string;
+          /** Visualization styles for a component */
+          styles?: {
+            /** Primary color of the component used for UI representation. */
+            primaryColor: string;
+            /** Secondary color of the entity used for UI representation. */
+            secondaryColor?: string;
+            /** White SVG of the entity used for UI representation on dark background. */
+            svgWhite: string;
+            /** Colored SVG of the entity used for UI representation on light background. */
+            svgColor: string;
+            /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+            svgComplete: string;
+            /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+            color?: string;
+            /** The opacity of the label text, including its outline. */
+            "text-opacity"?: number;
+            /** A comma-separated list of font names to use on the label text. */
+            "font-family"?: string;
+            /** The size of the label text. */
+            "font-size"?: string;
+            /** A CSS font style to be applied to the label text. */
+            "font-style"?: string;
+            /** A CSS font weight to be applied to the label text. */
+            "font-weight"?: string;
+            /** A transformation to apply to the label text */
+            "text-transform"?: "none" | "uppercase" | "lowercase";
+            /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children. */
+            opacity?: number;
+            /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+            "z-index"?: number;
+            /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+            label?: string;
+            /** The animation to apply to the element. example ripple,bounce,etc */
+            animation?: object;
+            [key: string]: any;
+          } & {
+            /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+            shape:
+              | "ellipse"
+              | "triangle"
+              | "round-triangle"
+              | "rectangle"
+              | "round-rectangle"
+              | "bottom-round-rectangle"
+              | "cut-rectangle"
+              | "barrel"
+              | "rhomboid"
+              | "diamond"
+              | "round-diamond"
+              | "pentagon"
+              | "round-pentagon"
+              | "hexagon"
+              | "round-hexagon"
+              | "concave-hexagon"
+              | "heptagon"
+              | "round-heptagon"
+              | "octagon"
+              | "round-octagon"
+              | "star"
+              | "tag"
+              | "round-tag"
+              | "vee"
+              | "polygon";
+            /** The position of the node. If the position is set, the node is drawn at that position in the given dimensions. If the position is not set, the node is drawn at a random position. */
+            position?: {
+              /** The x-coordinate of the node. */
+              x: number;
+              /** The y-coordinate of the node. */
+              y: number;
+            };
+            /** The text to display for an element's body. Can give a path, e.g. data(id) will label with the elements id */
+            "body-text"?: string;
+            /** How to wrap the text in the node. Can be 'none', 'wrap', or 'ellipsis'. */
+            "body-text-wrap"?: string;
+            /** The maximum width for wrapping text in the node. */
+            "body-text-max-width"?: string;
+            /** The opacity of the node's body text, including its outline. */
+            "body-text-opacity"?: number;
+            /** The colour of the node's body text background. Colours may be specified by name (e.g. red), hex (e.g. */
+            "body-text-background-color"?: string;
+            /** The size of the node's body text. */
+            "body-text-font-size"?: number;
+            /** The colour of the node's body text. Colours may be specified by name (e.g. red), hex (e.g. */
+            "body-text-color"?: string;
+            /** A CSS font weight to be applied to the node's body text. */
+            "body-text-font-weight"?: string;
+            /** A CSS horizontal alignment to be applied to the node's body text. */
+            "body-text-horizontal-align"?: string;
+            /** A CSS text decoration to be applied to the node's body text. */
+            "body-text-decoration"?: string;
+            /** A CSS vertical alignment to be applied to the node's body text. */
+            "body-text-vertical-align"?: string;
+            /** The width of the node's body or the width of an edge's line. */
+            width?: number;
+            /** The height of the node's body */
+            height?: number;
+            /** The URL that points to the image to show in the node. */
+            "background-image"?: string;
+            /** The colour of the node's body. Colours may be specified by name (e.g. red), hex (e.g. */
+            "background-color"?: string;
+            /** Blackens the node's body for values from 0 to 1; whitens the node's body for values from 0 to -1. */
+            "background-blacken"?: number;
+            /** The opacity level of the node's background colour */
+            "background-opacity"?: number;
+            /** The x position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+            "background-position-x"?: string;
+            /** The y position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+            "background-position-y"?: string;
+            /** The x offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+            "background-offset-x"?: string;
+            /** The y offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+            "background-offset-y"?: string;
+            /** How the background image is fit to the node. Can be 'none', 'contain', or 'cover'. */
+            "background-fit"?: string;
+            /** How the background image is clipped to the node. Can be 'none', 'node', or 'node-border'. */
+            "background-clip"?: string;
+            /** How the background image's width is determined. Can be 'none', 'inner', or 'outer'. */
+            "background-width-relative-to"?: string;
+            /** How the background image's height is determined. Can be 'none', 'inner', or 'outer'. */
+            "background-height-relative-to"?: string;
+            /** The size of the node's border. */
+            "border-width"?: number;
+            /** The style of the node's border */
+            "border-style"?: "solid" | "dotted" | "dashed" | "double";
+            /** The colour of the node's border. Colours may be specified by name (e.g. red), hex (e.g. */
+            "border-color"?: string;
+            /** The opacity of the node's border */
+            "border-opacity"?: number;
+            /** The amount of padding around all sides of the node. */
+            padding?: number;
+            /** The horizontal alignment of a node's label */
+            "text-halign"?: "left" | "center" | "right";
+            /** The vertical alignment of a node's label */
+            "text-valign"?: "top" | "center" | "bottom";
+            /** Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset. */
+            ghost?: "yes" | "no";
+            /** The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+            "active-bg-color"?: string;
+            /** The opacity of the active background indicator. Selector needs to be *core*. */
+            "active-bg-opacity"?: string;
+            /** The opacity of the active background indicator. Selector needs to be *core*. */
+            "active-bg-size"?: string;
+            /** The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+            "selection-box-color"?: string;
+            /** The size of the border on the selection box. Selector needs to be *core* */
+            "selection-box-border-width"?: number;
+            /** The opacity of the selection box. Selector needs to be *core* */
+            "selection-box-opacity"?: number;
+            /** The colour of the area outside the viewport texture when initOptions.textureOnViewport === true. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+            "outside-texture-bg-color"?: string;
+            /** The opacity of the area outside the viewport texture. Selector needs to be *core* */
+            "outside-texture-bg-opacity"?: number;
+            /** An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 ) */
+            "shape-polygon-points"?: string;
+            /** The colour of the background of the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+            "menu-background-color"?: string;
+            /** The opacity of the background of the component menu. */
+            "menu-background-opacity"?: number;
+            /** The colour of the text or icons in the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+            "menu-forground-color"?: string;
+          };
+          /** Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management. */
+          capabilities?: {
+            /** Specifies the version of the schema to which the capability definition conforms. */
+            schemaVersion: string;
+            /** Version of the capability definition. */
+            version: string;
+            /** Name of the capability in human-readible format. */
+            displayName: string;
+            /** A written representation of the purpose and characteristics of the capability. */
+            description: string;
+            /** Top-level categorization of the capability */
+            kind: "action" | "mutate" | "view" | "interaction";
+            /** Classification of capabilities. Used to group capabilities similar in nature. */
+            type: string;
+            /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+            subType: string;
+            /** Key that backs the capability. */
+            key: string;
+            /** State of the entity in which the capability is applicable. */
+            entityState: ("declaration" | "instance")[];
+            /** Status of the capability */
+            status: "enabled" | "disabled";
+            /** Metadata contains additional information associated with the capability. Extension point. */
+            metadata?: {
+              [key: string]: any;
+            };
+          }[];
+          /** Status of component, including:
+                    - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                    - maintenance: model is unavailable for a period of time.
+                    - enabled: model is available for use for all users of this Meshery Server.
+                    - ignored: model is unavailable for use for all users of this Meshery Server. */
+          status?: "ignored" | "enabled" | "duplicate" | "resolved" | "open";
+          /** Metadata contains additional information associated with the component. */
+          metadata: {
+            /** Genealogy represents the various representational states of the component. */
+            genealogy: string;
+            /** Identifies whether the component is semantically meaningful or not; identifies whether the component should be treated as deployable entity or is for purposes of logical representation. */
+            isAnnotation: boolean;
+            /** Identifies whether the component is scoped to namespace or clsuter wide. */
+            isNamespaced: boolean;
+            /** 'published' controls whether the component should be registered in Meshery Registry. When the same 'published' property in Models, is set to 'false', the Model property takes precedence with all Entities in the Model not being registered. */
+            published: boolean;
+            /** InstanceDetails contains information about the instance of the component. */
+            instanceDetails: object;
+            /** Defines the UI schema for rendering the component's configuration. For more details, visit: https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ . */
+            configurationUISchema: string;
+            [key: string]: any;
+          };
+          /** The configuration of the component. The configuration is based on the schema defined within the component definition(component.schema). */
+          configuration: object;
+          /** data related to the third party capability that Component Defintion wraps , this is herematicaly sealed an */
+          component: {
+            /** Version of the component produced by the registrant. Example: APIVersion of a Kubernetes Pod. */
+            version: string;
+            /** The unique identifier (name) assigned by the registrant to this component. Example: A Kubernetes Pod is of kind 'Pod'. */
+            kind: string;
+            /** JSON schema of the object as defined by the registrant. */
+            schema: string;
+          };
+          /** Timestamp when the resource was created. */
+          created_at?: string;
+          /** Timestamp when the resource was updated. */
+          updated_at?: string;
+        }[];
+        /** Design-level preferences */
+        preferences?: {
+          /** Map of available layers, where keys are layer names. */
+          layers: object;
+        };
+        /** List of relationships between components */
+        relationships: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Specifies the version of the schema used for the relationship definition. */
+          schemaVersion: string;
+          /** Specifies the version of the relationship definition. */
+          version: string;
+          /** Kind of the Relationship. Learn more about relationships - https://docs.meshery.io/concepts/logical/relationships. */
+          kind: "hierarchical" | "edge" | "sibling";
+          /** Classification of relationships. Used to group relationships similar in nature. */
+          type: string;
+          /** Most granular unit of relationship classification. The combination of Kind, Type and SubType together uniquely identify a Relationship. */
+          subType: string;
+          /** Status of the relationship. */
+          status?: "enabled" | "ignored" | "deleted" | "approved" | "pending";
+          /** Capabilities associated with the relationship. */
+          capabilities?: {
+            /** Specifies the version of the schema to which the capability definition conforms. */
+            schemaVersion: string;
+            /** Version of the capability definition. */
+            version: string;
+            /** Name of the capability in human-readible format. */
+            displayName: string;
+            /** A written representation of the purpose and characteristics of the capability. */
+            description: string;
+            /** Top-level categorization of the capability */
+            kind: "action" | "mutate" | "view" | "interaction";
+            /** Classification of capabilities. Used to group capabilities similar in nature. */
+            type: string;
+            /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+            subType: string;
+            /** Key that backs the capability. */
+            key: string;
+            /** State of the entity in which the capability is applicable. */
+            entityState: ("declaration" | "instance")[];
+            /** Status of the capability */
+            status: "enabled" | "disabled";
+            /** Metadata contains additional information associated with the capability. Extension point. */
+            metadata?: {
+              [key: string]: any;
+            };
+          }[];
+          /** Metadata contains additional information associated with the Relationship. */
+          metadata?: {
+            /** Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
+            description?: string;
+            /** Visualization styles for a relationship */
+            styles?: {
+              /** Primary color of the component used for UI representation. */
+              primaryColor: string;
+              /** Secondary color of the entity used for UI representation. */
+              secondaryColor?: string;
+              /** White SVG of the entity used for UI representation on dark background. */
+              svgWhite: string;
+              /** Colored SVG of the entity used for UI representation on light background. */
+              svgColor: string;
+              /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+              svgComplete?: string;
+              /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+              color?: string;
+              /** The opacity of the label text, including its outline. */
+              "text-opacity"?: number;
+              /** A comma-separated list of font names to use on the label text. */
+              "font-family"?: string;
+              /** The size of the label text. */
+              "font-size"?: string;
+              /** A CSS font style to be applied to the label text. */
+              "font-style"?: string;
+              /** A CSS font weight to be applied to the label text. */
+              "font-weight"?: string;
+              /** A transformation to apply to the label text */
+              "text-transform"?: "none" | "uppercase" | "lowercase";
+              /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.See https://js.cytoscape.org/#style/visibility */
+              opacity?: number;
+              /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+              "z-index"?: number;
+              /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+              label?: string;
+              /** The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc . */
+              "edge-animation"?: string;
+              /** The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges. */
+              "curve-style"?: "haystack" | "straight" | "bezier" | "unbundled-bezier" | "segments" | "taxi";
+              /** The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g. */
+              "line-color"?: string;
+              /** The style of the edge's line. */
+              "line-style"?: "solid" | "dotted" | "dashed";
+              /** The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge. */
+              "line-cap"?: "butt" | "round" | "square";
+              /** The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents. */
+              "line-opacity"?: number;
+              /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+              "target-arrow-color"?: string;
+              /** The shape of the edge's source arrow */
+              "target-arrow-shape"?:
+                | "triangle"
+                | "triangle-tee"
+                | "circle-triangle"
+                | "triangle-cross"
+                | "triangle-backcurve"
+                | "vee"
+                | "tee"
+                | "square"
+                | "circle"
+                | "diamond"
+                | "chevron"
+                | "none";
+              /** The fill state of the edge's source arrow */
+              "target-arrow-fill"?: "filled" | "hollow";
+              /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+              "mid-target-arrow-color"?: string;
+              /** The shape of the edge's source arrow */
+              "mid-target-arrow-shape"?:
+                | "triangle"
+                | "triangle-tee"
+                | "circle-triangle"
+                | "triangle-cross"
+                | "triangle-backcurve"
+                | "vee"
+                | "tee"
+                | "square"
+                | "circle"
+                | "diamond"
+                | "chevron"
+                | "none";
+              /** The fill state of the edge's source arrow */
+              "mid-target-arrow-fill"?: "filled" | "hollow";
+              /** Scaling for the arrow size. */
+              "arrow-scale"?: number;
+              /** The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id */
+              "source-label"?: string;
+              /** The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id */
+              "target-label"?: string;
+            };
+            /** Indicates whether the relationship should be treated as a logical representation only */
+            isAnnotation?: boolean;
+            [key: string]: any;
+          };
+          /** Model Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+          model: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** The unique name for the model within the scope of a registrant. */
+            name: string;
+            /** Version of the model definition. */
+            version: string;
+            /** Human-readable name for the model. */
+            displayName: string;
+            /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+            model: {
+              /** Version of the model as defined by the registrant. */
+              version: string;
+            };
+            registrant: {
+              kind: string;
+            };
+          };
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          modelId?: string;
+          /** Optional. Assigns the policy to be used for the evaluation of the relationship. Deprecation Notice: In the future, this property is either to be removed or to it is to be an array of optional policy $refs. */
+          evaluationQuery?: string;
+          /** Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
+          selectors?: {
+            /** Selectors used to define relationships which are allowed. */
+            allow: {
+              /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+              from: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind?: string;
+                /** Match configuration for selector */
+                match?: {
+                  refs?: string[][];
+                  from?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                  to?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                };
+                /** Match strategy matrix for the selector */
+                match_strategy_matrix?: string[][];
+                /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+                model?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id: string;
+                  /** The unique name for the model within the scope of a registrant. */
+                  name: string;
+                  /** Version of the model definition. */
+                  version: string;
+                  /** Human-readable name for the model. */
+                  displayName: string;
+                  /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                  model: {
+                    /** Version of the model as defined by the registrant. */
+                    version: string;
+                  };
+                  registrant: {
+                    kind: string;
+                  };
+                };
+                /** Patch configuration for the selector */
+                patch?: {
+                  /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                    
+                                    add: Inserts a value into an array or adds a member to an object.
+                                    replace: Replaces a value.
+                                    merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                    strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                    remove: Removes a value.
+                                    copy: Copies a value from one location to another.
+                                    move: Moves a value from one location to another.
+                                    test: Tests that a value at the target location is equal to a specified value.
+                                     */
+                  patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                };
+              }[];
+              /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+              to: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind?: string;
+                /** Match configuration for selector */
+                match?: {
+                  refs?: string[][];
+                  from?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                  to?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                };
+                /** Match strategy matrix for the selector */
+                match_strategy_matrix?: string[][];
+                /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+                model?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id: string;
+                  /** The unique name for the model within the scope of a registrant. */
+                  name: string;
+                  /** Version of the model definition. */
+                  version: string;
+                  /** Human-readable name for the model. */
+                  displayName: string;
+                  /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                  model: {
+                    /** Version of the model as defined by the registrant. */
+                    version: string;
+                  };
+                  registrant: {
+                    kind: string;
+                  };
+                };
+                /** Patch configuration for the selector */
+                patch?: {
+                  /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                    
+                                    add: Inserts a value into an array or adds a member to an object.
+                                    replace: Replaces a value.
+                                    merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                    strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                    remove: Removes a value.
+                                    copy: Copies a value from one location to another.
+                                    move: Moves a value from one location to another.
+                                    test: Tests that a value at the target location is equal to a specified value.
+                                     */
+                  patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                };
+              }[];
+            };
+            /** Optional selectors used to define relationships which should not be created / is restricted. */
+            deny?: {
+              /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+              from: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind?: string;
+                /** Match configuration for selector */
+                match?: {
+                  refs?: string[][];
+                  from?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                  to?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                };
+                /** Match strategy matrix for the selector */
+                match_strategy_matrix?: string[][];
+                /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+                model?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id: string;
+                  /** The unique name for the model within the scope of a registrant. */
+                  name: string;
+                  /** Version of the model definition. */
+                  version: string;
+                  /** Human-readable name for the model. */
+                  displayName: string;
+                  /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                  model: {
+                    /** Version of the model as defined by the registrant. */
+                    version: string;
+                  };
+                  registrant: {
+                    kind: string;
+                  };
+                };
+                /** Patch configuration for the selector */
+                patch?: {
+                  /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                    
+                                    add: Inserts a value into an array or adds a member to an object.
+                                    replace: Replaces a value.
+                                    merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                    strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                    remove: Removes a value.
+                                    copy: Copies a value from one location to another.
+                                    move: Moves a value from one location to another.
+                                    test: Tests that a value at the target location is equal to a specified value.
+                                     */
+                  patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                };
+              }[];
+              /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+              to: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind?: string;
+                /** Match configuration for selector */
+                match?: {
+                  refs?: string[][];
+                  from?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                  to?: {
+                    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                    id?: string;
+                    kind: string;
+                    /** JSON ref to value from where patch should be applied. */
+                    mutatorRef?: string[][];
+                    mutatedRef?: string[][];
+                  }[];
+                };
+                /** Match strategy matrix for the selector */
+                match_strategy_matrix?: string[][];
+                /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+                model?: {
+                  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                  id: string;
+                  /** The unique name for the model within the scope of a registrant. */
+                  name: string;
+                  /** Version of the model definition. */
+                  version: string;
+                  /** Human-readable name for the model. */
+                  displayName: string;
+                  /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+                  model: {
+                    /** Version of the model as defined by the registrant. */
+                    version: string;
+                  };
+                  registrant: {
+                    kind: string;
+                  };
+                };
+                /** Patch configuration for the selector */
+                patch?: {
+                  /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                                    
+                                    add: Inserts a value into an array or adds a member to an object.
+                                    replace: Replaces a value.
+                                    merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                                    strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                                    remove: Removes a value.
+                                    copy: Copies a value from one location to another.
+                                    move: Moves a value from one location to another.
+                                    test: Tests that a value at the target location is equal to a specified value.
+                                     */
+                  patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+                  /** JSON ref to value from where patch should be applied. */
+                  mutatorRef?: string[][];
+                  mutatedRef?: string[][];
+                };
+              }[];
+            };
+          }[];
+        }[];
+      };
+      updated_at?: string;
+      id?: string;
+      visibility?: string;
+    };
+    save?: boolean;
+    /** endpoint */
+    url?: string;
+    name?: string;
+  };
+};
+export type DeletePatternsApiResponse = unknown;
+export type DeletePatternsApiArg = {
+  body: {
+    patterns?: {
+      id?: string;
+      name?: string;
+    }[];
+  };
+};
+export type GetPatternResourcesApiResponse = unknown;
+export type GetPatternResourcesApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type UpsertPatternResourceApiResponse = unknown;
+export type UpsertPatternResourceApiArg = void;
+export type GetPatternResourceApiResponse = unknown;
+export type GetPatternResourceApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type DeletePatternResourceApiResponse = unknown;
+export type DeletePatternResourceApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type GetPatternApiResponse = /** status 200 Design fetched successfully */ {
+  catalog_data?: {
+    /** Tracks the specific content version that has been made available in the Catalog. */
+    publishedVersion?: string;
+    /** Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability. */
+    class?: "official" | "verified" | "reference architecture";
+    /** One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential. */
+    compatibility: "kubernetes"[];
+    /** Specific stipulations to consider and known behaviors to be aware of when using this design. */
+    pattern_caveats: string;
+    /** Purpose of the design along with its intended and unintended uses. */
+    pattern_info: string;
+    /** Categorization of the type of design or operational flow depicted in this design. */
+    type:
+      | "Deployment"
+      | "Observability"
+      | "Resiliency"
+      | "Scaling"
+      | "Security"
+      | "Traffic-management"
+      | "Troubleshooting"
+      | "Workloads";
+    /** Contains reference to the dark and light mode snapshots of the design. */
+    snapshotURL?: string[];
+  };
+  created_at?: string;
+  user_id?: string;
+  location?: {
+    [key: string]: string;
+  };
+  name?: string;
+  /** Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes. */
+  pattern_file?: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** Name of the design; a descriptive, but concise title for the design document. */
+    name: string;
+    /** Specifies the version of the schema to which the design conforms. */
+    schemaVersion: string;
+    /** Revision of the design as expressed by an auto-incremented, SemVer-compliant version number. May be manually set by a user or third-party system, but will always be required to be of version number higher than the previously defined version number. */
+    version: string;
+    metadata?: {
+      /** Map of resolved aliases present in the design */
+      resolvedAliases?: {
+        [key: string]: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          relationship_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          alias_component_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          immediate_parent_id: string;
+          immediate_ref_field_path: string[];
+        } & {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          resolved_parent_id: string;
+          resolved_ref_field_path: string[];
+        };
+      };
+      [key: string]: any;
+    };
+    /** A list of one or more component declarations. */
+    components: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema to which the component definition conforms. */
+      schemaVersion: string;
+      /** Version of the component definition. */
+      version: string;
+      /** Name of the component in human-readible format. */
+      displayName: string;
+      /** A written representation of the purpose and characteristics of the component. */
+      description: string;
+      /** Format specifies the format used in the `component.schema` field. JSON is the default. */
+      format: "JSON" | "CUE";
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Specifies the version of the schema used for the definition. */
+        schemaVersion: string;
+        /** Version of the model definition. */
+        version: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Description of the model. */
+        description: string;
+        /** Status of model, including:
+                - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                - maintenance: model is unavailable for a period of time.
+                - enabled: model is available for use for all users of this Meshery Server.
+                - ignored: model is unavailable for use for all users of this Meshery Server. */
+        status: "ignored" | "enabled" | "duplicate";
+        /** Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections */
+        registrant: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Connection Name */
+          name: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          credential_id?: string;
+          /** Connection Type (platform, telemetry, collaboration) */
+          type: string;
+          /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+          sub_type: string;
+          /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+          kind: string;
+          /** Additional connection metadata */
+          metadata?: object;
+          /** Connection Status */
+          status:
+            | "discovered"
+            | "registered"
+            | "connected"
+            | "ignored"
+            | "maintenance"
+            | "disconnected"
+            | "deleted"
+            | "not found";
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          user_id?: string;
+          created_at?: string;
+          updated_at?: string;
+          /** SQL null Timestamp to handle null values of time. */
+          deleted_at?: string;
+          /** Associated environments for this connection */
+          environments?: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** Specifies the version of the schema to which the environment conforms. */
+            schemaVersion: string;
+            /** Environment name */
+            name: string;
+            /** Environment description */
+            description: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            organization_id: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            owner?: string;
+            created_at?: string;
+            metadata?: object;
+            updated_at?: string;
+            /** SQL null Timestamp to handle null values of time. */
+            deleted_at?: string;
+          }[];
+          /** Specifies the version of the schema used for the definition. */
+          schemaVersion: string;
+        };
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        registrantId: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        categoryId: string;
+        /** Category of the model. */
+        category: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** The category of the model that determines the main grouping. */
+          name:
+            | "Analytics"
+            | "App Definition and Development"
+            | "Cloud Native Network"
+            | "Cloud Native Storage"
+            | "Database"
+            | "Machine Learning"
+            | "Observability and Analysis"
+            | "Orchestration & Management"
+            | "Platform"
+            | "Provisioning"
+            | "Runtime"
+            | "Security & Compliance"
+            | "Serverless"
+            | "Tools"
+            | "Uncategorized";
+          metadata: object;
+        };
+        /** Sub category of the model determines the secondary grouping. */
+        subCategory:
+          | "API Gateway"
+          | "API Integration"
+          | "Application Definition & Image Build"
+          | "Automation & Configuration"
+          | "Certified Kubernetes - Distribution"
+          | "Chaos Engineering"
+          | "Cloud Native Storage"
+          | "Cloud Provider"
+          | "CNI"
+          | "Compute"
+          | "Container Registry"
+          | "Container Runtime"
+          | "Container Security"
+          | "Container"
+          | "Content Delivery Network"
+          | "Continuous Integration & Delivery"
+          | "Coordination & Service Discovery"
+          | "Database"
+          | "Flowchart"
+          | "Framework"
+          | "Installable Platform"
+          | "Key Management"
+          | "Key Management Service"
+          | "Kubernetes"
+          | "Logging"
+          | "Machine Learning"
+          | "Management Governance"
+          | "Metrics"
+          | "Monitoring"
+          | "Networking Content Delivery"
+          | "Operating System"
+          | "Query"
+          | "Remote Procedure Call"
+          | "Scheduling & Orchestration"
+          | "Secrets Management"
+          | "Security Identity & Compliance"
+          | "Service Mesh"
+          | "Service Proxy"
+          | "Source Version Control"
+          | "Storage"
+          | "Specifications"
+          | "Streaming & Messaging"
+          | "Tools"
+          | "Tracing"
+          | "Uncategorized"
+          | "Video Conferencing";
+        /** Metadata containing additional information associated with the model. */
+        metadata?: {
+          /** Capabilities associated with the model */
+          capabilities?: {
+            /** Specifies the version of the schema to which the capability definition conforms. */
+            schemaVersion: string;
+            /** Version of the capability definition. */
+            version: string;
+            /** Name of the capability in human-readible format. */
+            displayName: string;
+            /** A written representation of the purpose and characteristics of the capability. */
+            description: string;
+            /** Top-level categorization of the capability */
+            kind: "action" | "mutate" | "view" | "interaction";
+            /** Classification of capabilities. Used to group capabilities similar in nature. */
+            type: string;
+            /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+            subType: string;
+            /** Key that backs the capability. */
+            key: string;
+            /** State of the entity in which the capability is applicable. */
+            entityState: ("declaration" | "instance")[];
+            /** Status of the capability */
+            status: "enabled" | "disabled";
+            /** Metadata contains additional information associated with the capability. Extension point. */
+            metadata?: {
+              [key: string]: any;
+            };
+          }[];
+          /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+          isAnnotation?: boolean;
+          /** Primary color associated with the model. */
+          primaryColor?: string;
+          /** Secondary color associated with the model. */
+          secondaryColor?: string;
+          /** SVG representation of the model in white color. */
+          svgWhite: string;
+          /** SVG representation of the model in colored format. */
+          svgColor: string;
+          /** SVG representation of the complete model. */
+          svgComplete?: string;
+          /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+          shape?:
+            | "ellipse"
+            | "triangle"
+            | "round-triangle"
+            | "rectangle"
+            | "round-rectangle"
+            | "bottom-round-rectangle"
+            | "cut-rectangle"
+            | "barrel"
+            | "rhomboid"
+            | "diamond"
+            | "round-diamond"
+            | "pentagon"
+            | "round-pentagon"
+            | "hexagon"
+            | "round-hexagon"
+            | "concave-hexagon"
+            | "heptagon"
+            | "round-heptagon"
+            | "octagon"
+            | "round-octagon"
+            | "star"
+            | "tag"
+            | "round-tag"
+            | "vee"
+            | "polygon";
+          [key: string]: any;
+        };
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        relationships: any;
+        components: any;
+        /** Number of components associated with the model. */
+        componentsCount: number;
+        /** Number of relationships associated with the model. */
+        relationshipsCount: number;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+      };
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      modelReference: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Visualization styles for a component */
+      styles?: {
+        /** Primary color of the component used for UI representation. */
+        primaryColor: string;
+        /** Secondary color of the entity used for UI representation. */
+        secondaryColor?: string;
+        /** White SVG of the entity used for UI representation on dark background. */
+        svgWhite: string;
+        /** Colored SVG of the entity used for UI representation on light background. */
+        svgColor: string;
+        /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+        svgComplete: string;
+        /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+        color?: string;
+        /** The opacity of the label text, including its outline. */
+        "text-opacity"?: number;
+        /** A comma-separated list of font names to use on the label text. */
+        "font-family"?: string;
+        /** The size of the label text. */
+        "font-size"?: string;
+        /** A CSS font style to be applied to the label text. */
+        "font-style"?: string;
+        /** A CSS font weight to be applied to the label text. */
+        "font-weight"?: string;
+        /** A transformation to apply to the label text */
+        "text-transform"?: "none" | "uppercase" | "lowercase";
+        /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children. */
+        opacity?: number;
+        /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+        "z-index"?: number;
+        /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+        label?: string;
+        /** The animation to apply to the element. example ripple,bounce,etc */
+        animation?: object;
+        [key: string]: any;
+      } & {
+        /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+        shape:
+          | "ellipse"
+          | "triangle"
+          | "round-triangle"
+          | "rectangle"
+          | "round-rectangle"
+          | "bottom-round-rectangle"
+          | "cut-rectangle"
+          | "barrel"
+          | "rhomboid"
+          | "diamond"
+          | "round-diamond"
+          | "pentagon"
+          | "round-pentagon"
+          | "hexagon"
+          | "round-hexagon"
+          | "concave-hexagon"
+          | "heptagon"
+          | "round-heptagon"
+          | "octagon"
+          | "round-octagon"
+          | "star"
+          | "tag"
+          | "round-tag"
+          | "vee"
+          | "polygon";
+        /** The position of the node. If the position is set, the node is drawn at that position in the given dimensions. If the position is not set, the node is drawn at a random position. */
+        position?: {
+          /** The x-coordinate of the node. */
+          x: number;
+          /** The y-coordinate of the node. */
+          y: number;
+        };
+        /** The text to display for an element's body. Can give a path, e.g. data(id) will label with the elements id */
+        "body-text"?: string;
+        /** How to wrap the text in the node. Can be 'none', 'wrap', or 'ellipsis'. */
+        "body-text-wrap"?: string;
+        /** The maximum width for wrapping text in the node. */
+        "body-text-max-width"?: string;
+        /** The opacity of the node's body text, including its outline. */
+        "body-text-opacity"?: number;
+        /** The colour of the node's body text background. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-background-color"?: string;
+        /** The size of the node's body text. */
+        "body-text-font-size"?: number;
+        /** The colour of the node's body text. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-color"?: string;
+        /** A CSS font weight to be applied to the node's body text. */
+        "body-text-font-weight"?: string;
+        /** A CSS horizontal alignment to be applied to the node's body text. */
+        "body-text-horizontal-align"?: string;
+        /** A CSS text decoration to be applied to the node's body text. */
+        "body-text-decoration"?: string;
+        /** A CSS vertical alignment to be applied to the node's body text. */
+        "body-text-vertical-align"?: string;
+        /** The width of the node's body or the width of an edge's line. */
+        width?: number;
+        /** The height of the node's body */
+        height?: number;
+        /** The URL that points to the image to show in the node. */
+        "background-image"?: string;
+        /** The colour of the node's body. Colours may be specified by name (e.g. red), hex (e.g. */
+        "background-color"?: string;
+        /** Blackens the node's body for values from 0 to 1; whitens the node's body for values from 0 to -1. */
+        "background-blacken"?: number;
+        /** The opacity level of the node's background colour */
+        "background-opacity"?: number;
+        /** The x position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-x"?: string;
+        /** The y position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-y"?: string;
+        /** The x offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-x"?: string;
+        /** The y offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-y"?: string;
+        /** How the background image is fit to the node. Can be 'none', 'contain', or 'cover'. */
+        "background-fit"?: string;
+        /** How the background image is clipped to the node. Can be 'none', 'node', or 'node-border'. */
+        "background-clip"?: string;
+        /** How the background image's width is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-width-relative-to"?: string;
+        /** How the background image's height is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-height-relative-to"?: string;
+        /** The size of the node's border. */
+        "border-width"?: number;
+        /** The style of the node's border */
+        "border-style"?: "solid" | "dotted" | "dashed" | "double";
+        /** The colour of the node's border. Colours may be specified by name (e.g. red), hex (e.g. */
+        "border-color"?: string;
+        /** The opacity of the node's border */
+        "border-opacity"?: number;
+        /** The amount of padding around all sides of the node. */
+        padding?: number;
+        /** The horizontal alignment of a node's label */
+        "text-halign"?: "left" | "center" | "right";
+        /** The vertical alignment of a node's label */
+        "text-valign"?: "top" | "center" | "bottom";
+        /** Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset. */
+        ghost?: "yes" | "no";
+        /** The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "active-bg-color"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-opacity"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-size"?: string;
+        /** The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "selection-box-color"?: string;
+        /** The size of the border on the selection box. Selector needs to be *core* */
+        "selection-box-border-width"?: number;
+        /** The opacity of the selection box. Selector needs to be *core* */
+        "selection-box-opacity"?: number;
+        /** The colour of the area outside the viewport texture when initOptions.textureOnViewport === true. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "outside-texture-bg-color"?: string;
+        /** The opacity of the area outside the viewport texture. Selector needs to be *core* */
+        "outside-texture-bg-opacity"?: number;
+        /** An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 ) */
+        "shape-polygon-points"?: string;
+        /** The colour of the background of the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-background-color"?: string;
+        /** The opacity of the background of the component menu. */
+        "menu-background-opacity"?: number;
+        /** The colour of the text or icons in the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-forground-color"?: string;
+      };
+      /** Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Status of component, including:
+            - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+            - maintenance: model is unavailable for a period of time.
+            - enabled: model is available for use for all users of this Meshery Server.
+            - ignored: model is unavailable for use for all users of this Meshery Server. */
+      status?: "ignored" | "enabled" | "duplicate" | "resolved" | "open";
+      /** Metadata contains additional information associated with the component. */
+      metadata: {
+        /** Genealogy represents the various representational states of the component. */
+        genealogy: string;
+        /** Identifies whether the component is semantically meaningful or not; identifies whether the component should be treated as deployable entity or is for purposes of logical representation. */
+        isAnnotation: boolean;
+        /** Identifies whether the component is scoped to namespace or clsuter wide. */
+        isNamespaced: boolean;
+        /** 'published' controls whether the component should be registered in Meshery Registry. When the same 'published' property in Models, is set to 'false', the Model property takes precedence with all Entities in the Model not being registered. */
+        published: boolean;
+        /** InstanceDetails contains information about the instance of the component. */
+        instanceDetails: object;
+        /** Defines the UI schema for rendering the component's configuration. For more details, visit: https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ . */
+        configurationUISchema: string;
+        [key: string]: any;
+      };
+      /** The configuration of the component. The configuration is based on the schema defined within the component definition(component.schema). */
+      configuration: object;
+      /** data related to the third party capability that Component Defintion wraps , this is herematicaly sealed an */
+      component: {
+        /** Version of the component produced by the registrant. Example: APIVersion of a Kubernetes Pod. */
+        version: string;
+        /** The unique identifier (name) assigned by the registrant to this component. Example: A Kubernetes Pod is of kind 'Pod'. */
+        kind: string;
+        /** JSON schema of the object as defined by the registrant. */
+        schema: string;
+      };
+      /** Timestamp when the resource was created. */
+      created_at?: string;
+      /** Timestamp when the resource was updated. */
+      updated_at?: string;
+    }[];
+    /** Design-level preferences */
+    preferences?: {
+      /** Map of available layers, where keys are layer names. */
+      layers: object;
+    };
+    /** List of relationships between components */
+    relationships: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema used for the relationship definition. */
+      schemaVersion: string;
+      /** Specifies the version of the relationship definition. */
+      version: string;
+      /** Kind of the Relationship. Learn more about relationships - https://docs.meshery.io/concepts/logical/relationships. */
+      kind: "hierarchical" | "edge" | "sibling";
+      /** Classification of relationships. Used to group relationships similar in nature. */
+      type: string;
+      /** Most granular unit of relationship classification. The combination of Kind, Type and SubType together uniquely identify a Relationship. */
+      subType: string;
+      /** Status of the relationship. */
+      status?: "enabled" | "ignored" | "deleted" | "approved" | "pending";
+      /** Capabilities associated with the relationship. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Metadata contains additional information associated with the Relationship. */
+      metadata?: {
+        /** Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
+        description?: string;
+        /** Visualization styles for a relationship */
+        styles?: {
+          /** Primary color of the component used for UI representation. */
+          primaryColor: string;
+          /** Secondary color of the entity used for UI representation. */
+          secondaryColor?: string;
+          /** White SVG of the entity used for UI representation on dark background. */
+          svgWhite: string;
+          /** Colored SVG of the entity used for UI representation on light background. */
+          svgColor: string;
+          /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+          svgComplete?: string;
+          /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+          color?: string;
+          /** The opacity of the label text, including its outline. */
+          "text-opacity"?: number;
+          /** A comma-separated list of font names to use on the label text. */
+          "font-family"?: string;
+          /** The size of the label text. */
+          "font-size"?: string;
+          /** A CSS font style to be applied to the label text. */
+          "font-style"?: string;
+          /** A CSS font weight to be applied to the label text. */
+          "font-weight"?: string;
+          /** A transformation to apply to the label text */
+          "text-transform"?: "none" | "uppercase" | "lowercase";
+          /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.See https://js.cytoscape.org/#style/visibility */
+          opacity?: number;
+          /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+          "z-index"?: number;
+          /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+          label?: string;
+          /** The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc . */
+          "edge-animation"?: string;
+          /** The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges. */
+          "curve-style"?: "haystack" | "straight" | "bezier" | "unbundled-bezier" | "segments" | "taxi";
+          /** The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g. */
+          "line-color"?: string;
+          /** The style of the edge's line. */
+          "line-style"?: "solid" | "dotted" | "dashed";
+          /** The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge. */
+          "line-cap"?: "butt" | "round" | "square";
+          /** The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents. */
+          "line-opacity"?: number;
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "target-arrow-fill"?: "filled" | "hollow";
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "mid-target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "mid-target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "mid-target-arrow-fill"?: "filled" | "hollow";
+          /** Scaling for the arrow size. */
+          "arrow-scale"?: number;
+          /** The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id */
+          "source-label"?: string;
+          /** The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id */
+          "target-label"?: string;
+        };
+        /** Indicates whether the relationship should be treated as a logical representation only */
+        isAnnotation?: boolean;
+        [key: string]: any;
+      };
+      /** Model Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Optional. Assigns the policy to be used for the evaluation of the relationship. Deprecation Notice: In the future, this property is either to be removed or to it is to be an array of optional policy $refs. */
+      evaluationQuery?: string;
+      /** Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
+      selectors?: {
+        /** Selectors used to define relationships which are allowed. */
+        allow: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+        /** Optional selectors used to define relationships which should not be created / is restricted. */
+        deny?: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+      }[];
+    }[];
+  };
+  updated_at?: string;
+  id?: string;
+  visibility?: string;
+};
+export type GetPatternApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type DeletePatternApiResponse = unknown;
+export type DeletePatternApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type ClonePatternApiResponse = /** status 200 Design cloned successfully */ {
+  catalog_data?: {
+    /** Tracks the specific content version that has been made available in the Catalog. */
+    publishedVersion?: string;
+    /** Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability. */
+    class?: "official" | "verified" | "reference architecture";
+    /** One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential. */
+    compatibility: "kubernetes"[];
+    /** Specific stipulations to consider and known behaviors to be aware of when using this design. */
+    pattern_caveats: string;
+    /** Purpose of the design along with its intended and unintended uses. */
+    pattern_info: string;
+    /** Categorization of the type of design or operational flow depicted in this design. */
+    type:
+      | "Deployment"
+      | "Observability"
+      | "Resiliency"
+      | "Scaling"
+      | "Security"
+      | "Traffic-management"
+      | "Troubleshooting"
+      | "Workloads";
+    /** Contains reference to the dark and light mode snapshots of the design. */
+    snapshotURL?: string[];
+  };
+  created_at?: string;
+  user_id?: string;
+  location?: {
+    [key: string]: string;
+  };
+  name?: string;
+  /** Designs are your primary tool for collaborative authorship of your infrastructure, workflow, and processes. */
+  pattern_file?: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** Name of the design; a descriptive, but concise title for the design document. */
+    name: string;
+    /** Specifies the version of the schema to which the design conforms. */
+    schemaVersion: string;
+    /** Revision of the design as expressed by an auto-incremented, SemVer-compliant version number. May be manually set by a user or third-party system, but will always be required to be of version number higher than the previously defined version number. */
+    version: string;
+    metadata?: {
+      /** Map of resolved aliases present in the design */
+      resolvedAliases?: {
+        [key: string]: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          relationship_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          alias_component_id: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          immediate_parent_id: string;
+          immediate_ref_field_path: string[];
+        } & {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          resolved_parent_id: string;
+          resolved_ref_field_path: string[];
+        };
+      };
+      [key: string]: any;
+    };
+    /** A list of one or more component declarations. */
+    components: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema to which the component definition conforms. */
+      schemaVersion: string;
+      /** Version of the component definition. */
+      version: string;
+      /** Name of the component in human-readible format. */
+      displayName: string;
+      /** A written representation of the purpose and characteristics of the component. */
+      description: string;
+      /** Format specifies the format used in the `component.schema` field. JSON is the default. */
+      format: "JSON" | "CUE";
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** Specifies the version of the schema used for the definition. */
+        schemaVersion: string;
+        /** Version of the model definition. */
+        version: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Description of the model. */
+        description: string;
+        /** Status of model, including:
+                - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+                - maintenance: model is unavailable for a period of time.
+                - enabled: model is available for use for all users of this Meshery Server.
+                - ignored: model is unavailable for use for all users of this Meshery Server. */
+        status: "ignored" | "enabled" | "duplicate";
+        /** Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections */
+        registrant: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** Connection Name */
+          name: string;
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          credential_id?: string;
+          /** Connection Type (platform, telemetry, collaboration) */
+          type: string;
+          /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+          sub_type: string;
+          /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+          kind: string;
+          /** Additional connection metadata */
+          metadata?: object;
+          /** Connection Status */
+          status:
+            | "discovered"
+            | "registered"
+            | "connected"
+            | "ignored"
+            | "maintenance"
+            | "disconnected"
+            | "deleted"
+            | "not found";
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          user_id?: string;
+          created_at?: string;
+          updated_at?: string;
+          /** SQL null Timestamp to handle null values of time. */
+          deleted_at?: string;
+          /** Associated environments for this connection */
+          environments?: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id: string;
+            /** Specifies the version of the schema to which the environment conforms. */
+            schemaVersion: string;
+            /** Environment name */
+            name: string;
+            /** Environment description */
+            description: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            organization_id: string;
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            owner?: string;
+            created_at?: string;
+            metadata?: object;
+            updated_at?: string;
+            /** SQL null Timestamp to handle null values of time. */
+            deleted_at?: string;
+          }[];
+          /** Specifies the version of the schema used for the definition. */
+          schemaVersion: string;
+        };
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        registrantId: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        categoryId: string;
+        /** Category of the model. */
+        category: {
+          /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+          id: string;
+          /** The category of the model that determines the main grouping. */
+          name:
+            | "Analytics"
+            | "App Definition and Development"
+            | "Cloud Native Network"
+            | "Cloud Native Storage"
+            | "Database"
+            | "Machine Learning"
+            | "Observability and Analysis"
+            | "Orchestration & Management"
+            | "Platform"
+            | "Provisioning"
+            | "Runtime"
+            | "Security & Compliance"
+            | "Serverless"
+            | "Tools"
+            | "Uncategorized";
+          metadata: object;
+        };
+        /** Sub category of the model determines the secondary grouping. */
+        subCategory:
+          | "API Gateway"
+          | "API Integration"
+          | "Application Definition & Image Build"
+          | "Automation & Configuration"
+          | "Certified Kubernetes - Distribution"
+          | "Chaos Engineering"
+          | "Cloud Native Storage"
+          | "Cloud Provider"
+          | "CNI"
+          | "Compute"
+          | "Container Registry"
+          | "Container Runtime"
+          | "Container Security"
+          | "Container"
+          | "Content Delivery Network"
+          | "Continuous Integration & Delivery"
+          | "Coordination & Service Discovery"
+          | "Database"
+          | "Flowchart"
+          | "Framework"
+          | "Installable Platform"
+          | "Key Management"
+          | "Key Management Service"
+          | "Kubernetes"
+          | "Logging"
+          | "Machine Learning"
+          | "Management Governance"
+          | "Metrics"
+          | "Monitoring"
+          | "Networking Content Delivery"
+          | "Operating System"
+          | "Query"
+          | "Remote Procedure Call"
+          | "Scheduling & Orchestration"
+          | "Secrets Management"
+          | "Security Identity & Compliance"
+          | "Service Mesh"
+          | "Service Proxy"
+          | "Source Version Control"
+          | "Storage"
+          | "Specifications"
+          | "Streaming & Messaging"
+          | "Tools"
+          | "Tracing"
+          | "Uncategorized"
+          | "Video Conferencing";
+        /** Metadata containing additional information associated with the model. */
+        metadata?: {
+          /** Capabilities associated with the model */
+          capabilities?: {
+            /** Specifies the version of the schema to which the capability definition conforms. */
+            schemaVersion: string;
+            /** Version of the capability definition. */
+            version: string;
+            /** Name of the capability in human-readible format. */
+            displayName: string;
+            /** A written representation of the purpose and characteristics of the capability. */
+            description: string;
+            /** Top-level categorization of the capability */
+            kind: "action" | "mutate" | "view" | "interaction";
+            /** Classification of capabilities. Used to group capabilities similar in nature. */
+            type: string;
+            /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+            subType: string;
+            /** Key that backs the capability. */
+            key: string;
+            /** State of the entity in which the capability is applicable. */
+            entityState: ("declaration" | "instance")[];
+            /** Status of the capability */
+            status: "enabled" | "disabled";
+            /** Metadata contains additional information associated with the capability. Extension point. */
+            metadata?: {
+              [key: string]: any;
+            };
+          }[];
+          /** Indicates whether the model and its entities should be treated as deployable entities or as logical representations. */
+          isAnnotation?: boolean;
+          /** Primary color associated with the model. */
+          primaryColor?: string;
+          /** Secondary color associated with the model. */
+          secondaryColor?: string;
+          /** SVG representation of the model in white color. */
+          svgWhite: string;
+          /** SVG representation of the model in colored format. */
+          svgColor: string;
+          /** SVG representation of the complete model. */
+          svgComplete?: string;
+          /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+          shape?:
+            | "ellipse"
+            | "triangle"
+            | "round-triangle"
+            | "rectangle"
+            | "round-rectangle"
+            | "bottom-round-rectangle"
+            | "cut-rectangle"
+            | "barrel"
+            | "rhomboid"
+            | "diamond"
+            | "round-diamond"
+            | "pentagon"
+            | "round-pentagon"
+            | "hexagon"
+            | "round-hexagon"
+            | "concave-hexagon"
+            | "heptagon"
+            | "round-heptagon"
+            | "octagon"
+            | "round-octagon"
+            | "star"
+            | "tag"
+            | "round-tag"
+            | "vee"
+            | "polygon";
+          [key: string]: any;
+        };
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        relationships: any;
+        components: any;
+        /** Number of components associated with the model. */
+        componentsCount: number;
+        /** Number of relationships associated with the model. */
+        relationshipsCount: number;
+        /** Timestamp when the resource was created. */
+        created_at?: string;
+        /** Timestamp when the resource was updated. */
+        updated_at?: string;
+      };
+      /** Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      modelReference: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Visualization styles for a component */
+      styles?: {
+        /** Primary color of the component used for UI representation. */
+        primaryColor: string;
+        /** Secondary color of the entity used for UI representation. */
+        secondaryColor?: string;
+        /** White SVG of the entity used for UI representation on dark background. */
+        svgWhite: string;
+        /** Colored SVG of the entity used for UI representation on light background. */
+        svgColor: string;
+        /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+        svgComplete: string;
+        /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+        color?: string;
+        /** The opacity of the label text, including its outline. */
+        "text-opacity"?: number;
+        /** A comma-separated list of font names to use on the label text. */
+        "font-family"?: string;
+        /** The size of the label text. */
+        "font-size"?: string;
+        /** A CSS font style to be applied to the label text. */
+        "font-style"?: string;
+        /** A CSS font weight to be applied to the label text. */
+        "font-weight"?: string;
+        /** A transformation to apply to the label text */
+        "text-transform"?: "none" | "uppercase" | "lowercase";
+        /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children. */
+        opacity?: number;
+        /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+        "z-index"?: number;
+        /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+        label?: string;
+        /** The animation to apply to the element. example ripple,bounce,etc */
+        animation?: object;
+        [key: string]: any;
+      } & {
+        /** The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes) */
+        shape:
+          | "ellipse"
+          | "triangle"
+          | "round-triangle"
+          | "rectangle"
+          | "round-rectangle"
+          | "bottom-round-rectangle"
+          | "cut-rectangle"
+          | "barrel"
+          | "rhomboid"
+          | "diamond"
+          | "round-diamond"
+          | "pentagon"
+          | "round-pentagon"
+          | "hexagon"
+          | "round-hexagon"
+          | "concave-hexagon"
+          | "heptagon"
+          | "round-heptagon"
+          | "octagon"
+          | "round-octagon"
+          | "star"
+          | "tag"
+          | "round-tag"
+          | "vee"
+          | "polygon";
+        /** The position of the node. If the position is set, the node is drawn at that position in the given dimensions. If the position is not set, the node is drawn at a random position. */
+        position?: {
+          /** The x-coordinate of the node. */
+          x: number;
+          /** The y-coordinate of the node. */
+          y: number;
+        };
+        /** The text to display for an element's body. Can give a path, e.g. data(id) will label with the elements id */
+        "body-text"?: string;
+        /** How to wrap the text in the node. Can be 'none', 'wrap', or 'ellipsis'. */
+        "body-text-wrap"?: string;
+        /** The maximum width for wrapping text in the node. */
+        "body-text-max-width"?: string;
+        /** The opacity of the node's body text, including its outline. */
+        "body-text-opacity"?: number;
+        /** The colour of the node's body text background. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-background-color"?: string;
+        /** The size of the node's body text. */
+        "body-text-font-size"?: number;
+        /** The colour of the node's body text. Colours may be specified by name (e.g. red), hex (e.g. */
+        "body-text-color"?: string;
+        /** A CSS font weight to be applied to the node's body text. */
+        "body-text-font-weight"?: string;
+        /** A CSS horizontal alignment to be applied to the node's body text. */
+        "body-text-horizontal-align"?: string;
+        /** A CSS text decoration to be applied to the node's body text. */
+        "body-text-decoration"?: string;
+        /** A CSS vertical alignment to be applied to the node's body text. */
+        "body-text-vertical-align"?: string;
+        /** The width of the node's body or the width of an edge's line. */
+        width?: number;
+        /** The height of the node's body */
+        height?: number;
+        /** The URL that points to the image to show in the node. */
+        "background-image"?: string;
+        /** The colour of the node's body. Colours may be specified by name (e.g. red), hex (e.g. */
+        "background-color"?: string;
+        /** Blackens the node's body for values from 0 to 1; whitens the node's body for values from 0 to -1. */
+        "background-blacken"?: number;
+        /** The opacity level of the node's background colour */
+        "background-opacity"?: number;
+        /** The x position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-x"?: string;
+        /** The y position of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-position-y"?: string;
+        /** The x offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-x"?: string;
+        /** The y offset of the background image, measured in percent (e.g. 50%) or pixels (e.g. 10px) */
+        "background-offset-y"?: string;
+        /** How the background image is fit to the node. Can be 'none', 'contain', or 'cover'. */
+        "background-fit"?: string;
+        /** How the background image is clipped to the node. Can be 'none', 'node', or 'node-border'. */
+        "background-clip"?: string;
+        /** How the background image's width is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-width-relative-to"?: string;
+        /** How the background image's height is determined. Can be 'none', 'inner', or 'outer'. */
+        "background-height-relative-to"?: string;
+        /** The size of the node's border. */
+        "border-width"?: number;
+        /** The style of the node's border */
+        "border-style"?: "solid" | "dotted" | "dashed" | "double";
+        /** The colour of the node's border. Colours may be specified by name (e.g. red), hex (e.g. */
+        "border-color"?: string;
+        /** The opacity of the node's border */
+        "border-opacity"?: number;
+        /** The amount of padding around all sides of the node. */
+        padding?: number;
+        /** The horizontal alignment of a node's label */
+        "text-halign"?: "left" | "center" | "right";
+        /** The vertical alignment of a node's label */
+        "text-valign"?: "top" | "center" | "bottom";
+        /** Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset. */
+        ghost?: "yes" | "no";
+        /** The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "active-bg-color"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-opacity"?: string;
+        /** The opacity of the active background indicator. Selector needs to be *core*. */
+        "active-bg-size"?: string;
+        /** The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "selection-box-color"?: string;
+        /** The size of the border on the selection box. Selector needs to be *core* */
+        "selection-box-border-width"?: number;
+        /** The opacity of the selection box. Selector needs to be *core* */
+        "selection-box-opacity"?: number;
+        /** The colour of the area outside the viewport texture when initOptions.textureOnViewport === true. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. */
+        "outside-texture-bg-color"?: string;
+        /** The opacity of the area outside the viewport texture. Selector needs to be *core* */
+        "outside-texture-bg-opacity"?: number;
+        /** An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 ) */
+        "shape-polygon-points"?: string;
+        /** The colour of the background of the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-background-color"?: string;
+        /** The opacity of the background of the component menu. */
+        "menu-background-opacity"?: number;
+        /** The colour of the text or icons in the component menu. Colours may be specified by name (e.g. red), hex (e.g. */
+        "menu-forground-color"?: string;
+      };
+      /** Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Status of component, including:
+            - duplicate: this component is a duplicate of another. The component that is to be the canonical reference and that is duplicated by other components should not be assigned the 'duplicate' status.
+            - maintenance: model is unavailable for a period of time.
+            - enabled: model is available for use for all users of this Meshery Server.
+            - ignored: model is unavailable for use for all users of this Meshery Server. */
+      status?: "ignored" | "enabled" | "duplicate" | "resolved" | "open";
+      /** Metadata contains additional information associated with the component. */
+      metadata: {
+        /** Genealogy represents the various representational states of the component. */
+        genealogy: string;
+        /** Identifies whether the component is semantically meaningful or not; identifies whether the component should be treated as deployable entity or is for purposes of logical representation. */
+        isAnnotation: boolean;
+        /** Identifies whether the component is scoped to namespace or clsuter wide. */
+        isNamespaced: boolean;
+        /** 'published' controls whether the component should be registered in Meshery Registry. When the same 'published' property in Models, is set to 'false', the Model property takes precedence with all Entities in the Model not being registered. */
+        published: boolean;
+        /** InstanceDetails contains information about the instance of the component. */
+        instanceDetails: object;
+        /** Defines the UI schema for rendering the component's configuration. For more details, visit: https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ . */
+        configurationUISchema: string;
+        [key: string]: any;
+      };
+      /** The configuration of the component. The configuration is based on the schema defined within the component definition(component.schema). */
+      configuration: object;
+      /** data related to the third party capability that Component Defintion wraps , this is herematicaly sealed an */
+      component: {
+        /** Version of the component produced by the registrant. Example: APIVersion of a Kubernetes Pod. */
+        version: string;
+        /** The unique identifier (name) assigned by the registrant to this component. Example: A Kubernetes Pod is of kind 'Pod'. */
+        kind: string;
+        /** JSON schema of the object as defined by the registrant. */
+        schema: string;
+      };
+      /** Timestamp when the resource was created. */
+      created_at?: string;
+      /** Timestamp when the resource was updated. */
+      updated_at?: string;
+    }[];
+    /** Design-level preferences */
+    preferences?: {
+      /** Map of available layers, where keys are layer names. */
+      layers: object;
+    };
+    /** List of relationships between components */
+    relationships: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** Specifies the version of the schema used for the relationship definition. */
+      schemaVersion: string;
+      /** Specifies the version of the relationship definition. */
+      version: string;
+      /** Kind of the Relationship. Learn more about relationships - https://docs.meshery.io/concepts/logical/relationships. */
+      kind: "hierarchical" | "edge" | "sibling";
+      /** Classification of relationships. Used to group relationships similar in nature. */
+      type: string;
+      /** Most granular unit of relationship classification. The combination of Kind, Type and SubType together uniquely identify a Relationship. */
+      subType: string;
+      /** Status of the relationship. */
+      status?: "enabled" | "ignored" | "deleted" | "approved" | "pending";
+      /** Capabilities associated with the relationship. */
+      capabilities?: {
+        /** Specifies the version of the schema to which the capability definition conforms. */
+        schemaVersion: string;
+        /** Version of the capability definition. */
+        version: string;
+        /** Name of the capability in human-readible format. */
+        displayName: string;
+        /** A written representation of the purpose and characteristics of the capability. */
+        description: string;
+        /** Top-level categorization of the capability */
+        kind: "action" | "mutate" | "view" | "interaction";
+        /** Classification of capabilities. Used to group capabilities similar in nature. */
+        type: string;
+        /** Most granular unit of capability classification. The combination of Kind, Type and SubType together uniquely identify a Capability. */
+        subType: string;
+        /** Key that backs the capability. */
+        key: string;
+        /** State of the entity in which the capability is applicable. */
+        entityState: ("declaration" | "instance")[];
+        /** Status of the capability */
+        status: "enabled" | "disabled";
+        /** Metadata contains additional information associated with the capability. Extension point. */
+        metadata?: {
+          [key: string]: any;
+        };
+      }[];
+      /** Metadata contains additional information associated with the Relationship. */
+      metadata?: {
+        /** Characterization of the meaning of the relationship and its relevance to both Meshery and entities under management. */
+        description?: string;
+        /** Visualization styles for a relationship */
+        styles?: {
+          /** Primary color of the component used for UI representation. */
+          primaryColor: string;
+          /** Secondary color of the entity used for UI representation. */
+          secondaryColor?: string;
+          /** White SVG of the entity used for UI representation on dark background. */
+          svgWhite: string;
+          /** Colored SVG of the entity used for UI representation on light background. */
+          svgColor: string;
+          /** Complete SVG of the entity used for UI representation, often inclusive of background. */
+          svgComplete?: string;
+          /** The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. */
+          color?: string;
+          /** The opacity of the label text, including its outline. */
+          "text-opacity"?: number;
+          /** A comma-separated list of font names to use on the label text. */
+          "font-family"?: string;
+          /** The size of the label text. */
+          "font-size"?: string;
+          /** A CSS font style to be applied to the label text. */
+          "font-style"?: string;
+          /** A CSS font weight to be applied to the label text. */
+          "font-weight"?: string;
+          /** A transformation to apply to the label text */
+          "text-transform"?: "none" | "uppercase" | "lowercase";
+          /** The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.See https://js.cytoscape.org/#style/visibility */
+          opacity?: number;
+          /** An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index. */
+          "z-index"?: number;
+          /** The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id */
+          label?: string;
+          /** The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc . */
+          "edge-animation"?: string;
+          /** The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges. */
+          "curve-style"?: "haystack" | "straight" | "bezier" | "unbundled-bezier" | "segments" | "taxi";
+          /** The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g. */
+          "line-color"?: string;
+          /** The style of the edge's line. */
+          "line-style"?: "solid" | "dotted" | "dashed";
+          /** The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge. */
+          "line-cap"?: "butt" | "round" | "square";
+          /** The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents. */
+          "line-opacity"?: number;
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "target-arrow-fill"?: "filled" | "hollow";
+          /** The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g. */
+          "mid-target-arrow-color"?: string;
+          /** The shape of the edge's source arrow */
+          "mid-target-arrow-shape"?:
+            | "triangle"
+            | "triangle-tee"
+            | "circle-triangle"
+            | "triangle-cross"
+            | "triangle-backcurve"
+            | "vee"
+            | "tee"
+            | "square"
+            | "circle"
+            | "diamond"
+            | "chevron"
+            | "none";
+          /** The fill state of the edge's source arrow */
+          "mid-target-arrow-fill"?: "filled" | "hollow";
+          /** Scaling for the arrow size. */
+          "arrow-scale"?: number;
+          /** The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id */
+          "source-label"?: string;
+          /** The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id */
+          "target-label"?: string;
+        };
+        /** Indicates whether the relationship should be treated as a logical representation only */
+        isAnnotation?: boolean;
+        [key: string]: any;
+      };
+      /** Model Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models */
+      model: {
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        id: string;
+        /** The unique name for the model within the scope of a registrant. */
+        name: string;
+        /** Version of the model definition. */
+        version: string;
+        /** Human-readable name for the model. */
+        displayName: string;
+        /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+        model: {
+          /** Version of the model as defined by the registrant. */
+          version: string;
+        };
+        registrant: {
+          kind: string;
+        };
+      };
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      modelId?: string;
+      /** Optional. Assigns the policy to be used for the evaluation of the relationship. Deprecation Notice: In the future, this property is either to be removed or to it is to be an array of optional policy $refs. */
+      evaluationQuery?: string;
+      /** Selectors are organized as an array, with each item containing a distinct set of selectors that share a common functionality. This structure allows for flexibility in defining relationships, even when different components are involved. */
+      selectors?: {
+        /** Selectors used to define relationships which are allowed. */
+        allow: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+        /** Optional selectors used to define relationships which should not be created / is restricted. */
+        deny?: {
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          from: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+          /** Describes the component(s) which are involved in the relationship along with a set of actions to perform upon selection match. */
+          to: {
+            /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+            id?: string;
+            kind?: string;
+            /** Match configuration for selector */
+            match?: {
+              refs?: string[][];
+              from?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+              to?: {
+                /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+                id?: string;
+                kind: string;
+                /** JSON ref to value from where patch should be applied. */
+                mutatorRef?: string[][];
+                mutatedRef?: string[][];
+              }[];
+            };
+            /** Match strategy matrix for the selector */
+            match_strategy_matrix?: string[][];
+            /** Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models */
+            model?: {
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+              id: string;
+              /** The unique name for the model within the scope of a registrant. */
+              name: string;
+              /** Version of the model definition. */
+              version: string;
+              /** Human-readable name for the model. */
+              displayName: string;
+              /** Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31). */
+              model: {
+                /** Version of the model as defined by the registrant. */
+                version: string;
+              };
+              registrant: {
+                kind: string;
+              };
+            };
+            /** Patch configuration for the selector */
+            patch?: {
+              /** patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
+                            
+                            add: Inserts a value into an array or adds a member to an object.
+                            replace: Replaces a value.
+                            merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
+                            strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
+                            remove: Removes a value.
+                            copy: Copies a value from one location to another.
+                            move: Moves a value from one location to another.
+                            test: Tests that a value at the target location is equal to a specified value.
+                             */
+              patchStrategy?: "merge" | "strategic" | "add" | "remove" | "copy" | "move" | "test";
+              /** JSON ref to value from where patch should be applied. */
+              mutatorRef?: string[][];
+              mutatedRef?: string[][];
+            };
+          }[];
+        };
+      }[];
+    }[];
+  };
+  updated_at?: string;
+  id?: string;
+  visibility?: string;
+};
+export type ClonePatternApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type GetDesignPatternFileApiResponse = unknown;
+export type GetDesignPatternFileApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+};
+export type UpsertPatternSourceContentApiResponse = unknown;
+export type UpsertPatternSourceContentApiArg = {
+  /** Design (Pattern) ID */
+  id: string;
+  body: {
+    /** Supported formats: Kubernetes Manifests, Helm Charts, Docker Compose, and Meshery Designs. See [Import Designs Documentation](https://docs.meshery.io/guides/configuration-management/importing-designs#import-designs-using-meshery-ui) for details */
+    file?: string;
+    /** The name of the pattern file being imported. */
+    file_name?: string;
+    /** Provide a name for your design file. This name will help you identify the file more easily. You can also change the name of your design after importing it. */
+    name?: string;
+    /** Provide the URL of the file you want to import. This should be a direct URL to a single file, for example: https://raw.github.com/your-design-file.yaml. Also, ensure that design is in a supported format: Kubernetes Manifest, Helm Chart, Docker Compose, or Meshery Design. See [Import Designs Documentation](https://docs.meshery.io/guides/configuration-management/importing-designs#import-designs-using-meshery-ui) for details */
+    url?: string;
+  };
+};
 export type ImportDesignApiResponse = /** status 200 Successful Import */ {
   message?: string;
 };
@@ -2332,6 +7923,7 @@ export type CreateEnvironmentApiResponse = /** status 201 Created environment */
   created_at?: string;
   metadata?: object;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
 };
 export type CreateEnvironmentApiArg = {
@@ -2365,6 +7957,7 @@ export type GetEnvironmentsApiResponse = /** status 200 Environments */ {
     created_at?: string;
     metadata?: object;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
   }[];
 };
@@ -3174,6 +8767,229 @@ export type GetPlansApiResponse = /** status 200 Plans fetched successfully */ {
   currency: "usd";
 }[];
 export type GetPlansApiArg = void;
+export type AddRoleHolderApiResponse = unknown;
+export type AddRoleHolderApiArg = {
+  body: {
+    /** Email of the user to assign roles to. */
+    email: string;
+    /** List of role names to assign. */
+    role_names: string[];
+  };
+};
+export type DeleteRoleApiResponse = unknown;
+export type DeleteRoleApiArg = {
+  /** Role ID */
+  id: string;
+};
+export type GetAllRolesApiResponse = /** status 200 Roles fetched successfully */ {
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of roles per page. */
+  page_size: number;
+  /** Total number of roles across all pages. */
+  total_count: number;
+  roles: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Unique name of the role. */
+    role_name: string;
+    /** Human-readable description of the role. */
+    description: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the role was soft-deleted. */
+    deleted_at?: string;
+  }[];
+};
+export type GetAllRolesApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type UpsertRolesApiResponse = /** status 200 Roles upserted successfully */ {
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of roles per page. */
+  page_size: number;
+  /** Total number of roles across all pages. */
+  total_count: number;
+  roles: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Unique name of the role. */
+    role_name: string;
+    /** Human-readable description of the role. */
+    description: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the role was soft-deleted. */
+    deleted_at?: string;
+  }[];
+};
+export type UpsertRolesApiArg = {
+  /** Organization ID */
+  orgId: string;
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Unique name of the role. */
+    role_name: string;
+    /** Human-readable description of the role. */
+    description: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the role was soft-deleted. */
+    deleted_at?: string;
+  }[];
+};
+export type BulkEditRoleHolderApiResponse = unknown;
+export type BulkEditRoleHolderApiArg = {
+  /** Organization ID */
+  orgId: string;
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    user_id?: string;
+    username?: string;
+    email?: string;
+    first_name?: string;
+    last_name?: string;
+    status?: string;
+    role_names?: string[];
+    created_at?: string;
+    updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
+    deleted_at?: string;
+  }[];
+};
+export type GetRoleKeychainsApiResponse = unknown;
+export type GetRoleKeychainsApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+};
+export type AssignKeychainToRoleApiResponse = unknown;
+export type AssignKeychainToRoleApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+  /** Keychain ID */
+  keychainId: string;
+};
+export type UnassignKeychainFromRoleApiResponse = unknown;
+export type UnassignKeychainFromRoleApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+  /** Keychain ID */
+  keychainId: string;
+};
+export type GetSchedulesApiResponse = /** status 200 Schedules fetched successfully */ {
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of schedules per page. */
+  page_size: number;
+  /** Total number of schedules across all pages. */
+  total_count: number;
+  schedules: {
+    /** Unique identifier for the schedule. */
+    id?: string;
+    /** Human-readable name for the schedule. */
+    name: string;
+    /** UUID of the user who owns this schedule. */
+    user_id: string;
+    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+     */
+    cron_expression: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+  }[];
+};
+export type GetSchedulesApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type UpsertScheduleApiResponse = /** status 200 Schedule upserted successfully */ {
+  /** Unique identifier for the schedule. */
+  id?: string;
+  /** Human-readable name for the schedule. */
+  name: string;
+  /** UUID of the user who owns this schedule. */
+  user_id: string;
+  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+   */
+  cron_expression: string;
+  /** Timestamp when the resource was created. */
+  created_at?: string;
+  /** Timestamp when the resource was updated. */
+  updated_at?: string;
+};
+export type UpsertScheduleApiArg = {
+  body: {
+    /** Unique identifier for the schedule. */
+    id?: string;
+    /** Human-readable name for the schedule. */
+    name: string;
+    /** UUID of the user who owns this schedule. */
+    user_id: string;
+    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+     */
+    cron_expression: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+  };
+};
+export type GetScheduleApiResponse = /** status 200 Schedule fetched successfully */ {
+  /** Unique identifier for the schedule. */
+  id?: string;
+  /** Human-readable name for the schedule. */
+  name: string;
+  /** UUID of the user who owns this schedule. */
+  user_id: string;
+  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+   */
+  cron_expression: string;
+  /** Timestamp when the resource was created. */
+  created_at?: string;
+  /** Timestamp when the resource was updated. */
+  updated_at?: string;
+};
+export type GetScheduleApiArg = {
+  /** Schedule ID */
+  id: string;
+};
+export type DeleteScheduleApiResponse = unknown;
+export type DeleteScheduleApiArg = {
+  /** Schedule ID */
+  id: string;
+};
 export type GetSubscriptionsApiResponse = /** status 200 Get subscription response */ {
   page: number;
   page_size: number;
@@ -3354,6 +9170,7 @@ export type GetTeamsApiResponse = /** status 200 Teams */ {
     metadata?: object;
     created_at?: string;
     updated_at?: string;
+    /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
   }[];
 };
@@ -3382,6 +9199,7 @@ export type CreateTeamApiResponse = /** status 201 Created team */ {
   metadata?: object;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
 };
 export type CreateTeamApiArg = {
@@ -3408,6 +9226,7 @@ export type GetTeamByIdApiResponse = /** status 200 Team */ {
   metadata?: object;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
 };
 export type GetTeamByIdApiArg = {
@@ -3429,6 +9248,7 @@ export type UpdateTeamApiResponse = /** status 200 Updated team */ {
   metadata?: object;
   created_at?: string;
   updated_at?: string;
+  /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
 };
 export type UpdateTeamApiArg = {
@@ -3460,7 +9280,9 @@ export type GetTeamUsersApiResponse = /** status 200 Team users mapping */ {
     team_id?: string;
     /** user's email or username */
     user_id?: string;
+    /** Timestamp when the resource was created. */
     created_at?: string;
+    /** Timestamp when the resource was updated. */
     updated_at?: string;
     /** SQL null Timestamp to handle null values of time. */
     deleted_at?: string;
@@ -3485,7 +9307,9 @@ export type AddUserToTeamApiResponse = /** status 200 User added to team */ {
   team_id?: string;
   /** user's email or username */
   user_id?: string;
+  /** Timestamp when the resource was created. */
   created_at?: string;
+  /** Timestamp when the resource was updated. */
   updated_at?: string;
   /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
@@ -3503,7 +9327,9 @@ export type RemoveUserFromTeamApiResponse = /** status 200 User removed from tea
   team_id?: string;
   /** user's email or username */
   user_id?: string;
+  /** Timestamp when the resource was created. */
   created_at?: string;
+  /** Timestamp when the resource was updated. */
   updated_at?: string;
   /** SQL null Timestamp to handle null values of time. */
   deleted_at?: string;
@@ -3597,9 +9423,9 @@ export type DeleteApiWorkspacesByIdApiArg = {
   id: string;
 };
 export const {
-  useGetMyAcademyCirriculaQuery,
+  useGetMyAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
-  useGetAcademyCirriculaQuery,
+  useGetAcademyCurriculaQuery,
   useGetApiAcademyByTypeAndOrgIdSlugQuery,
   useRegisterToAcademyContentMutation,
   useWithdrawFromAcademyContentMutation,
@@ -3627,6 +9453,23 @@ export const {
   useGetKubernetesContextQuery,
   useAddConnectionToEnvironmentMutation,
   useRemoveConnectionFromEnvironmentMutation,
+  useGetUserCredentialsQuery,
+  useSaveUserCredentialMutation,
+  useUpdateUserCredentialMutation,
+  useGetCredentialByIdQuery,
+  useDeleteUserCredentialMutation,
+  useGetPatternsQuery,
+  useUpsertPatternMutation,
+  useDeletePatternsMutation,
+  useGetPatternResourcesQuery,
+  useUpsertPatternResourceMutation,
+  useGetPatternResourceQuery,
+  useDeletePatternResourceMutation,
+  useGetPatternQuery,
+  useDeletePatternMutation,
+  useClonePatternMutation,
+  useGetDesignPatternFileQuery,
+  useUpsertPatternSourceContentMutation,
   useImportDesignMutation,
   useCreateEnvironmentMutation,
   useGetEnvironmentsQuery,
@@ -3661,6 +9504,18 @@ export const {
   useAddTeamToOrgMutation,
   useRemoveTeamFromOrgMutation,
   useGetPlansQuery,
+  useAddRoleHolderMutation,
+  useDeleteRoleMutation,
+  useGetAllRolesQuery,
+  useUpsertRolesMutation,
+  useBulkEditRoleHolderMutation,
+  useGetRoleKeychainsQuery,
+  useAssignKeychainToRoleMutation,
+  useUnassignKeychainFromRoleMutation,
+  useGetSchedulesQuery,
+  useUpsertScheduleMutation,
+  useGetScheduleQuery,
+  useDeleteScheduleMutation,
   useGetSubscriptionsQuery,
   usePostApiEntitlementSubscriptionsBySubscriptionIdCancelMutation,
   usePostApiEntitlementSubscriptionsCreateMutation,

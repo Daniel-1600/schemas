@@ -3,12 +3,21 @@
  * Do not manually modify this file.
  */
 
-const SubscriptionSchema = {
+const SubscriptionSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "subscription",
+    "title": "Subscription",
     "description": "API for managing subscriptions using various payment processors in a SaaS application.",
-    "version": "1.0.0"
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {
@@ -147,9 +156,10 @@ const SubscriptionSchema = {
                             }
                           },
                           "plan": {
-                            "x-go-type": "plan.Plan",
+                            "x-go-type": "planv1beta1.Plan",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                              "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                              "name": "planv1beta1"
                             },
                             "x-oapi-codegen-extra-tags": {
                               "belongs_to": "plans",
@@ -473,9 +483,10 @@ const SubscriptionSchema = {
                             }
                           },
                           "plan": {
-                            "x-go-type": "plan.Plan",
+                            "x-go-type": "planv1beta1.Plan",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                              "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                              "name": "planv1beta1"
                             },
                             "x-oapi-codegen-extra-tags": {
                               "belongs_to": "plans",
@@ -859,9 +870,10 @@ const SubscriptionSchema = {
                       }
                     },
                     "plan": {
-                      "x-go-type": "plan.Plan",
+                      "x-go-type": "planv1beta1.Plan",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                        "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                        "name": "planv1beta1"
                       },
                       "x-oapi-codegen-extra-tags": {
                         "belongs_to": "plans",
@@ -1422,9 +1434,10 @@ const SubscriptionSchema = {
                   }
                 },
                 "plan": {
-                  "x-go-type": "plan.Plan",
+                  "x-go-type": "planv1beta1.Plan",
                   "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/v1beta1/plan"
+                    "path": "github.com/meshery/schemas/models/v1beta1/plan",
+                    "name": "planv1beta1"
                   },
                   "x-oapi-codegen-extra-tags": {
                     "belongs_to": "plans",
@@ -1669,9 +1682,10 @@ const SubscriptionSchema = {
             }
           },
           "plan": {
-            "x-go-type": "plan.Plan",
+            "x-go-type": "planv1beta1.Plan",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/plan"
+              "path": "github.com/meshery/schemas/models/v1beta1/plan",
+              "name": "planv1beta1"
             },
             "x-oapi-codegen-extra-tags": {
               "belongs_to": "plans",
@@ -1897,6 +1911,6 @@ const SubscriptionSchema = {
       }
     }
   }
-} as const;
+};
 
 export default SubscriptionSchema;

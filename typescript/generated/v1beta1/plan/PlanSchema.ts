@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const PlanSchema = {
+const PlanSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "plan",
-    "version": "1.0.0"
+    "title": "Plan",
+    "description": "OpenAPI schema for subscription plan management in Meshery Cloud.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "tags": [
     {
@@ -408,6 +418,6 @@ const PlanSchema = {
       }
     }
   }
-} as const;
+};
 
 export default PlanSchema;

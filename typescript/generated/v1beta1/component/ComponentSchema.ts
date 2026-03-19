@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const ComponentSchema = {
+const ComponentSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "component",
-    "version": "1.0.0"
+    "title": "Component",
+    "description": "OpenAPI schema for component definitions in Meshery.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {},
   "components": {
@@ -100,16 +110,17 @@ const ComponentSchema = {
             }
           },
           "model": {
-            "x-go-type": "model.ModelDefinition",
+            "x-go-type": "*modelv1beta1.ModelDefinition",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/model"
+              "path": "github.com/meshery/schemas/models/v1beta1/model",
+              "name": "modelv1beta1"
             },
             "x-order": 7,
             "description": "Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models",
             "x-oapi-codegen-extra-tags": {
-              "gorm": "foreignKey:ModelId;references:Id",
-              "json": "model,omitempty",
-              "yaml": "model,omitempty"
+              "gorm": "foreignKey:ModelId;references:ID",
+              "json": "model",
+              "yaml": "model"
             },
             "$id": "https://schemas.meshery.io/model.yaml",
             "$schema": "http://json-schema.org/draft-07/schema#",
@@ -229,9 +240,10 @@ const ComponentSchema = {
                   "gorm": "foreignKey:RegistrantId;references:ID"
                 },
                 "x-order": 8,
-                "x-go-type": "connection.Connection",
+                "x-go-type": "connectionv1beta1.Connection",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1beta1/connection"
+                  "path": "github.com/meshery/schemas/models/v1beta1/connection",
+                  "name": "connectionv1beta1"
                 },
                 "$id": "https://schemas.meshery.io/connection.yaml",
                 "$schema": "http://json-schema.org/draft-07/schema#",
@@ -387,22 +399,20 @@ const ComponentSchema = {
                       "db": "deleted_at",
                       "yaml": "deleted_at"
                     },
-                    "x-go-type": "core.NullTime",
-                    "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/core"
-                    },
                     "x-order": 12,
+                    "description": "SQL null Timestamp to handle null values of time.",
+                    "x-go-type": "sql.NullTime",
                     "type": "string",
-                    "format": "date-time",
                     "x-go-type-skip-optional-pointer": true
                   },
                   "environments": {
                     "type": "array",
                     "description": "Associated environments for this connection",
                     "items": {
-                      "x-go-type": "*environment.Environment",
+                      "x-go-type": "*environmentv1beta1.Environment",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                        "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                        "name": "environmentv1beta1"
                       },
                       "$id": "https://schemas.meshery.io/environment.yaml",
                       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -536,11 +546,10 @@ const ComponentSchema = {
                             "db": "deleted_at",
                             "yaml": "deleted_at"
                           },
-                          "x-go-type": "core.NullTime",
-                          "x-go-import": "database/sql",
                           "x-order": 10,
+                          "description": "SQL null Timestamp to handle null values of time.",
+                          "x-go-type": "sql.NullTime",
                           "type": "string",
-                          "format": "date-time",
                           "x-go-type-skip-optional-pointer": true
                         }
                       }
@@ -612,11 +621,12 @@ const ComponentSchema = {
                 "x-oapi-codegen-extra-tags": {
                   "yaml": "category",
                   "json": "category",
-                  "gorm": "foreignKey:CategoryId;references:Id"
+                  "gorm": "foreignKey:CategoryId;references:ID"
                 },
-                "x-go-type": "category.CategoryDefinition",
+                "x-go-type": "categoryv1beta1.CategoryDefinition",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1beta1/category"
+                  "path": "github.com/meshery/schemas/models/v1beta1/category",
+                  "name": "categoryv1beta1"
                 },
                 "$id": "https://schemas.meshery.io/category.yaml",
                 "$schema": "http://json-schema.org/draft-07/schema#",
@@ -681,9 +691,10 @@ const ComponentSchema = {
               },
               "subCategory": {
                 "x-order": 10,
-                "x-go-type": "subcategory.SubCategoryDefinition",
+                "x-go-type": "subcategoryv1beta1.SubCategoryDefinition",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1beta1/subcategory"
+                  "path": "github.com/meshery/schemas/models/v1beta1/subcategory",
+                  "name": "subcategoryv1beta1"
                 },
                 "$id": "https://schemas.meshery.io/category.yaml",
                 "$schema": "http://json-schema.org/draft-07/schema#",
@@ -758,9 +769,10 @@ const ComponentSchema = {
                     "type": "array",
                     "description": "Capabilities associated with the model",
                     "items": {
-                      "x-go-type": "capability.Capability",
+                      "x-go-type": "capabilityv1alpha1.Capability",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1alpha1/capability"
+                        "path": "github.com/meshery/schemas/models/v1alpha1/capability",
+                        "name": "capabilityv1alpha1"
                       },
                       "$id": "https://schemas.meshery.io/capability.yaml",
                       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1062,20 +1074,15 @@ const ComponentSchema = {
                 "properties": {
                   "version": {
                     "description": "Version of the model as defined by the registrant.",
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "minLength": 5,
-                        "maxLength": 100,
-                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                      }
-                    ],
                     "x-oapi-codegen-extra-tags": {
                       "yaml": "version",
                       "json": "version"
                     },
-                    "x-order": 1
+                    "x-order": 1,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                   }
                 }
               },
@@ -1167,9 +1174,10 @@ const ComponentSchema = {
             ]
           },
           "modelReference": {
-            "x-go-type": "model.ModelReference",
+            "x-go-type": "modelv1beta1.ModelReference",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/model"
+              "path": "github.com/meshery/schemas/models/v1beta1/model",
+              "name": "modelv1beta1"
             },
             "x-order": 8,
             "description": "Reference to the specific registered model to which the component belongs and from which model version, category, and other properties may be referenced. Learn more at https://docs.meshery.io/concepts/models",
@@ -1198,52 +1206,29 @@ const ComponentSchema = {
               "name": {
                 "type": "string",
                 "description": "The unique name for the model within the scope of a registrant.",
-                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                 "pattern": "^[a-z0-9-]+$",
                 "examples": [
                   "cert-manager"
-                ],
-                "x-order": 4,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "name",
-                  "json": "name"
-                },
-                "default": "untitled-model"
+                ]
               },
               "version": {
                 "description": "Version of the model definition.",
                 "type": "string",
-                "x-order": 3,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "version",
-                  "json": "version"
-                },
                 "minLength": 5,
                 "maxLength": 100,
                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
               },
               "displayName": {
+                "type": "string",
                 "description": "Human-readable name for the model.",
-                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                 "minLength": 1,
                 "maxLength": 100,
-                "type": "string",
                 "pattern": "^[a-zA-Z0-9 ]+$",
                 "examples": [
                   "Cert Manager"
-                ],
-                "x-order": 5,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "displayName",
-                  "json": "displayName"
-                },
-                "default": "Untitled Model"
+                ]
               },
               "model": {
-                "x-oapi-codegen-extra-tags": {
-                  "gorm": "type:bytes;serializer:json"
-                },
-                "x-order": 12,
                 "type": "object",
                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                 "required": [
@@ -1252,20 +1237,15 @@ const ComponentSchema = {
                 "properties": {
                   "version": {
                     "description": "Version of the model as defined by the registrant.",
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "minLength": 5,
-                        "maxLength": 100,
-                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                      }
-                    ],
                     "x-oapi-codegen-extra-tags": {
                       "yaml": "version",
                       "json": "version"
                     },
-                    "x-order": 1
+                    "x-order": 1,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                   }
                 }
               },
@@ -1307,9 +1287,10 @@ const ComponentSchema = {
               "yaml": "styles",
               "json": "styles"
             },
-            "x-go-type": "core.ComponentStyles",
+            "x-go-type": "corev1alpha1.ComponentStyles",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1alpha1/core"
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
             },
             "x-order": 8,
             "type": "object",
@@ -1689,9 +1670,10 @@ const ComponentSchema = {
             "type": "array",
             "description": "Meshery manages components in accordance with their specific capabilities. This field explicitly identifies those capabilities largely by what actions a given component supports; e.g. metric-scrape, sub-interface, and so on. This field is extensible. ComponentDefinitions may define a broad array of capabilities, which are in-turn dynamically interpretted by Meshery for full lifecycle management.",
             "items": {
-              "x-go-type": "capability.Capability",
+              "x-go-type": "capabilityv1alpha1.Capability",
               "x-go-type-import": {
-                "path": "github.com/meshery/schemas/models/v1alpha1/capability"
+                "path": "github.com/meshery/schemas/models/v1alpha1/capability",
+                "name": "capabilityv1alpha1"
               },
               "$id": "https://schemas.meshery.io/capability.yaml",
               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -2144,7 +2126,7 @@ const ComponentSchema = {
           "version",
           "configuration",
           "metadata",
-          "modelId",
+          "model",
           "modelReference",
           "component"
         ]
@@ -2177,6 +2159,6 @@ const ComponentSchema = {
       }
     }
   }
-} as const;
+};
 
 export default ComponentSchema;

@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const EventSchema = {
+const EventSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "events",
-    "version": "1.0.0"
+    "title": "Events",
+    "description": "OpenAPI schema for Meshery events and system notifications.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
     "/events/{id}": {
@@ -374,6 +384,6 @@ const EventSchema = {
       }
     }
   }
-} as const;
+};
 
 export default EventSchema;

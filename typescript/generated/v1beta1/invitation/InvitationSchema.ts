@@ -3,12 +3,21 @@
  * Do not manually modify this file.
  */
 
-const InvitationSchema = {
+const InvitationSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "invitation",
-    "description": "OpenAPI schema for managing invitations",
-    "version": "v1beta1"
+    "title": "Invitation",
+    "description": "OpenAPI schema for managing invitations.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "tags": [
     {
@@ -1844,6 +1853,6 @@ const InvitationSchema = {
       }
     }
   }
-} as const;
+};
 
 export default InvitationSchema;

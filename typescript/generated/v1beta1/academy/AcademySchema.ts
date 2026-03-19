@@ -3,14 +3,24 @@
  * Do not manually modify this file.
  */
 
-const AcademySchema = {
+const AcademySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Academy API",
-    "version": "1.0.0"
+    "description": "OpenAPI schema for Meshery Academy content and curriculum management.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
-    "/api/academy/cirricula/registered": {
+    "/api/academy/Curricula/registered": {
       "get": {
         "x-internal": [
           "cloud"
@@ -18,7 +28,7 @@ const AcademySchema = {
         "tags": [
           "Academy"
         ],
-        "operationId": "getMyAcademyCirricula",
+        "operationId": "getMyAcademyCurricula",
         "summary": "Get academy content",
         "description": "Returns a list of academy content registered by the user with optional filtering.",
         "parameters": [
@@ -27,13 +37,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by content types",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -41,451 +51,479 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by organization IDs",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
-            }
-          }
-        ]
-      },
-      "responses": {
-        "200": {
-          "description": "A list of content with total count",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "total": {
-                    "type": "integer",
-                    "description": "Total number of cirricula",
-                    "example": 7
-                  },
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "x-go-type": "AcademyCirricula",
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "description": "Id of the cirricula",
-                          "example": "923458-3490394-934893",
-                          "x-go-name": "ID",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "id",
-                            "json": "id",
-                            "yaml": "id"
-                          }
-                        },
-                        "type": {
-                          "x-go-type": "ContentType",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "type"
-                          },
-                          "type": "string",
-                          "enum": [
-                            "learning-path",
-                            "challenge",
-                            "certification"
-                          ]
-                        },
-                        "orgId": {
-                          "type": "string",
-                          "description": "Organization ID that owns this learning path",
-                          "example": "layer5",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "org_id",
-                            "json": "org_id",
-                            "yaml": "org_id"
-                          }
-                        },
-                        "visibility": {
-                          "description": "Visibility of the cirricula",
-                          "x-go-type": "Visibility",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "visibility",
-                            "json": "visibility",
-                            "yaml": "visibility"
-                          },
-                          "type": "string",
-                          "enum": [
-                            "public",
-                            "private"
-                          ]
-                        },
-                        "status": {
-                          "example": "ready",
-                          "description": "Status of the cirricula",
-                          "x-go-type": "Status",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "status",
-                            "json": "status",
-                            "yaml": "status"
-                          },
-                          "type": "string",
-                          "enum": [
-                            "ready",
-                            "archived",
-                            "not_ready"
-                          ]
-                        },
-                        "slug": {
-                          "type": "string",
-                          "description": "slug of the cirricula",
-                          "example": "intro-kubernetes-course"
-                        },
-                        "level": {
-                          "description": "Level of the cirricula",
-                          "x-go-type": "Level",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "level",
-                            "json": "level",
-                            "yaml": "level"
-                          },
-                          "type": "string",
-                          "enum": [
-                            "beginner",
-                            "intermediate",
-                            "advanced"
-                          ]
-                        },
-                        "badge_id": {
-                          "description": "ID of the badge to be awarded on completion of this curricula",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "badge_id",
-                            "json": "badge_id",
-                            "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        },
-                        "invite_id": {
-                          "description": "ID of the invite associated with this cirricula",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "invite_id",
-                            "json": "invite_id",
-                            "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        },
-                        "workspace_id": {
-                          "description": "ID of the workspace to which this cirricula belongs",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "workspace_id",
-                            "json": "workspace_id",
-                            "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        },
-                        "createdAt": {
-                          "description": "When the cirricula item was created",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "created_at",
-                            "json": "created_at",
-                            "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
-                        },
-                        "updatedAt": {
-                          "description": "When the cirricula was last updated",
-                          "x-go-type": "core.Time",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "updated_at",
-                            "json": "updated_at",
-                            "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
-                        },
-                        "deletedAt": {
-                          "x-go-type": "core.NullTime",
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "deleted_at",
-                            "json": "deleted_at",
-                            "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
-                        },
-                        "metadata": {
-                          "type": "object",
-                          "description": "Additional metadata about the cirricula",
-                          "additionalProperties": true,
-                          "x-go-type": "core.Map",
-                          "x-go-type-skip-optional-pointer": true,
-                          "x-oapi-codegen-extra-tags": {
-                            "db": "metadata",
-                            "json": "metadata",
-                            "yaml": "metadata"
-                          },
-                          "oneOf": [
-                            {
-                              "x-go-type": "CurriculaMetadata",
-                              "type": "object",
-                              "properties": {
-                                "title": {
-                                  "type": "string",
-                                  "description": "Title of the learning path",
-                                  "example": "Mastering Kubernetes for Engineers"
-                                },
-                                "description": {
-                                  "type": "string",
-                                  "description": "Short description of the curricula",
-                                  "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
-                                },
-                                "detailed_description": {
-                                  "type": "string",
-                                  "description": "Detailed description of the curricula",
-                                  "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
-                                },
-                                "banner": {
-                                  "type": "string",
-                                  "format": "uri",
-                                  "nullable": true,
-                                  "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                  "example": "kubernetes-icon.svg"
-                                },
-                                "permalink": {
-                                  "type": "string",
-                                  "format": "uri",
-                                  "description": "Canonical URL for the learning path",
-                                  "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
-                                },
-                                "certificate": {
-                                  "x-go-type": "Certificate",
-                                  "type": "object",
-                                  "required": [
-                                    "id",
-                                    "org_id",
-                                    "title",
-                                    "description",
-                                    "issuing_authorities",
-                                    "issued_date",
-                                    "recipient_id",
-                                    "recipient_name"
-                                  ],
-                                  "properties": {
-                                    "id": {
-                                      "type": "string",
-                                      "description": "Unique identifier for the certificate",
-                                      "example": "1234567890abcdef",
-                                      "x-go-name": "ID"
-                                    },
-                                    "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
-                                      "type": "string",
-                                      "format": "uuid",
-                                      "x-go-type": "uuid.UUID",
-                                      "x-go-type-import": {
-                                        "path": "github.com/gofrs/uuid"
-                                      }
-                                    },
-                                    "recipient_id": {
-                                      "type": "string",
-                                      "description": "ID of the recipient (user) who received the certificate",
-                                      "example": "1234567890abcdef"
-                                    },
-                                    "recipient_name": {
-                                      "type": "string",
-                                      "description": "Name of the recipient (user) who received the certificate",
-                                      "example": "John Doe"
-                                    },
-                                    "title": {
-                                      "type": "string",
-                                      "description": "Title of the certificate",
-                                      "example": "Kubernetes Expert Certification"
-                                    },
-                                    "description": {
-                                      "type": "string",
-                                      "description": "Description of the certificate",
-                                      "example": "Awarded for successfully completing the Kubernetes Expert course"
-                                    },
-                                    "issuing_authorities": {
-                                      "type": "array",
-                                      "items": {
-                                        "x-go-type": "CertificateIssuingAuthority",
-                                        "type": "object",
-                                        "required": [
-                                          "name",
-                                          "url"
-                                        ],
-                                        "properties": {
-                                          "name": {
-                                            "type": "string",
-                                            "description": "Name of the issuing authority",
-                                            "example": "Cloud Native Foundation"
-                                          },
-                                          "role": {
-                                            "type": "string",
-                                            "description": "Role of the issuing authority",
-                                            "example": "COO"
-                                          },
-                                          "signature_url": {
-                                            "type": "string",
-                                            "format": "uri",
-                                            "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
-                                            "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
-                                          }
-                                        }
-                                      },
-                                      "description": "List of issuing authorities for the certificate"
-                                    },
-                                    "issued_date": {
-                                      "type": "string",
-                                      "format": "date-time",
-                                      "description": "Date when the certificate was issued",
-                                      "example": "2023-10-01T12:00:00Z"
-                                    },
-                                    "expiration_date": {
-                                      "type": "string",
-                                      "format": "date-time",
-                                      "description": "Date when the certificate expires (optional)",
-                                      "example": "2025-10-01T12:00:00Z"
-                                    },
-                                    "expires_in": {
-                                      "type": "integer",
-                                      "description": "Number of months after which the certificate expires",
-                                      "example": 24
-                                    }
-                                  }
-                                },
-                                "children": {
-                                  "type": "array",
-                                  "description": "List of children items in the top-level curricula",
-                                  "items": {
-                                    "x-go-type": "ChildNode",
-                                    "type": "object",
-                                    "properties": {
-                                      "id": {
-                                        "type": "string",
-                                        "description": "Unique identifier for the course",
-                                        "example": "1234567890abcdef",
-                                        "x-go-name": "ID",
-                                        "x-oapi-codegen-extra-tags": {
-                                          "db": "id",
-                                          "json": "id",
-                                          "yaml": "id"
-                                        }
-                                      },
-                                      "title": {
-                                        "type": "string",
-                                        "description": "Title of the course",
-                                        "example": "Kubernetes Basics"
-                                      },
-                                      "permalink": {
-                                        "type": "string",
-                                        "format": "uri",
-                                        "description": "URL to the course content",
-                                        "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
-                                      },
-                                      "description": {
-                                        "type": "string",
-                                        "description": "Course description",
-                                        "example": "Learn the basics of Kubernetes"
-                                      },
-                                      "weight": {
-                                        "type": "number",
-                                        "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
-                                        "example": "eg 1 , 2"
-                                      },
-                                      "banner": {
-                                        "type": "string",
-                                        "format": "uri",
-                                        "nullable": true,
-                                        "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                        "example": "kubernetes-icon.svg"
-                                      },
-                                      "type": {
-                                        "x-go-type": "ContentType",
-                                        "description": "Type of the content (e.g., learning-path, challenge, certification)",
-                                        "type": "string",
-                                        "enum": [
-                                          "learning-path",
-                                          "challenge",
-                                          "certification"
-                                        ]
-                                      },
-                                      "children": {
-                                        "type": "array",
-                                        "description": "List of child nodes (sub-courses or modules)",
-                                        "items": {
-                                          "type": "object",
-                                          "x-go-type": "ChildNode"
-                                        }
-                                      }
-                                    },
-                                    "required": [
-                                      "title",
-                                      "description",
-                                      "id",
-                                      "permalink"
-                                    ]
-                                  }
-                                }
-                              },
-                              "required": [
-                                "title",
-                                "description",
-                                "permalink"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "type",
-                        "orgId",
-                        "visibility",
-                        "status",
-                        "slug",
-                        "createdAt",
-                        "updatedAt",
-                        "deletedAt",
-                        "metadata",
-                        "level"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "total",
-                  "data"
-                ]
               }
             }
           }
-        },
-        "400": {
-          "description": "Invalid request parameters"
-        },
-        "500": {
-          "description": "Server error"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of content with total count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of Curricula",
+                      "example": 7
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "x-go-type": "AcademyCurricula",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Id of the Curricula",
+                            "example": "923458-3490394-934893",
+                            "x-go-name": "ID",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "id",
+                              "json": "id",
+                              "yaml": "id"
+                            }
+                          },
+                          "type": {
+                            "x-go-type": "ContentType",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "type"
+                            },
+                            "type": "string",
+                            "enum": [
+                              "learning-path",
+                              "challenge",
+                              "certification"
+                            ]
+                          },
+                          "orgId": {
+                            "type": "string",
+                            "description": "Organization ID that owns this learning path",
+                            "example": "layer5",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "org_id",
+                              "json": "org_id",
+                              "yaml": "org_id"
+                            }
+                          },
+                          "visibility": {
+                            "description": "Visibility of the Curricula",
+                            "x-go-type": "Visibility",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "visibility",
+                              "json": "visibility",
+                              "yaml": "visibility"
+                            },
+                            "type": "string",
+                            "enum": [
+                              "public",
+                              "private"
+                            ]
+                          },
+                          "status": {
+                            "example": "ready",
+                            "description": "Status of the Curricula",
+                            "x-go-type": "Status",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "status",
+                              "json": "status",
+                              "yaml": "status"
+                            },
+                            "type": "string",
+                            "enum": [
+                              "ready",
+                              "archived",
+                              "not_ready"
+                            ]
+                          },
+                          "slug": {
+                            "type": "string",
+                            "description": "slug of the Curricula",
+                            "example": "intro-kubernetes-course"
+                          },
+                          "level": {
+                            "description": "Level of the Curricula",
+                            "x-go-type": "Level",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "level",
+                              "json": "level",
+                              "yaml": "level"
+                            },
+                            "type": "string",
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ]
+                          },
+                          "badge_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "ID of the badge to be awarded on completion of this curricula",
+                            "x-go-type": "corev1alpha1.Uuid",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                              "name": "corev1alpha1"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "badge_id",
+                              "json": "badge_id",
+                              "yaml": "badge_id"
+                            }
+                          },
+                          "invite_id": {
+                            "allOf": [
+                              {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                "x-go-type": "uuid.UUID",
+                                "x-go-type-import": {
+                                  "path": "github.com/gofrs/uuid"
+                                }
+                              }
+                            ],
+                            "description": "ID of the invite associated with this Curricula",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "invite_id",
+                              "json": "invite_id",
+                              "yaml": "invite_id"
+                            }
+                          },
+                          "workspace_id": {
+                            "allOf": [
+                              {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                "x-go-type": "uuid.UUID",
+                                "x-go-type-import": {
+                                  "path": "github.com/gofrs/uuid"
+                                }
+                              }
+                            ],
+                            "description": "ID of the workspace to which this Curricula belongs",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "workspace_id",
+                              "json": "workspace_id",
+                              "yaml": "workspace_id"
+                            }
+                          },
+                          "createdAt": {
+                            "allOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "x-go-type-skip-optional-pointer": true
+                              }
+                            ],
+                            "description": "When the Curricula item was created",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at",
+                              "json": "created_at",
+                              "yaml": "created_at"
+                            }
+                          },
+                          "updatedAt": {
+                            "allOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "x-go-type-skip-optional-pointer": true
+                              }
+                            ],
+                            "description": "When the Curricula was last updated",
+                            "x-go-type": "core.Time",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at",
+                              "json": "updated_at",
+                              "yaml": "updated_at"
+                            }
+                          },
+                          "deletedAt": {
+                            "allOf": [
+                              {
+                                "description": "Timestamp when the resource was deleted.",
+                                "x-go-type": "time.Time",
+                                "type": "string",
+                                "format": "date-time",
+                                "x-go-name": "DeletedAt",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "deleted_at",
+                                  "yaml": "deleted_at"
+                                },
+                                "x-go-type-skip-optional-pointer": true
+                              }
+                            ],
+                            "x-go-type": "core.NullTime",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deleted_at",
+                              "yaml": "deleted_at"
+                            }
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "Additional metadata about the Curricula",
+                            "additionalProperties": true,
+                            "x-go-type": "core.Map",
+                            "x-go-type-skip-optional-pointer": true,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "metadata",
+                              "json": "metadata",
+                              "yaml": "metadata"
+                            },
+                            "oneOf": [
+                              {
+                                "x-go-type": "CurriculaMetadata",
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "description": "Title of the learning path",
+                                    "example": "Mastering Kubernetes for Engineers"
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "description": "Short description of the curricula",
+                                    "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
+                                  },
+                                  "detailed_description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the curricula",
+                                    "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
+                                  },
+                                  "banner": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "nullable": true,
+                                    "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                    "example": "kubernetes-icon.svg"
+                                  },
+                                  "permalink": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "description": "Canonical URL for the learning path",
+                                    "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
+                                  },
+                                  "certificate": {
+                                    "x-go-type": "Certificate",
+                                    "type": "object",
+                                    "required": [
+                                      "id",
+                                      "org_id",
+                                      "title",
+                                      "description",
+                                      "issuing_authorities",
+                                      "issued_date",
+                                      "recipient_id",
+                                      "recipient_name"
+                                    ],
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "description": "Unique identifier for the certificate",
+                                        "example": "1234567890abcdef",
+                                        "x-go-name": "ID"
+                                      },
+                                      "org_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                        "x-go-type": "uuid.UUID",
+                                        "x-go-type-import": {
+                                          "path": "github.com/gofrs/uuid"
+                                        }
+                                      },
+                                      "recipient_id": {
+                                        "type": "string",
+                                        "description": "ID of the recipient (user) who received the certificate",
+                                        "example": "1234567890abcdef"
+                                      },
+                                      "recipient_name": {
+                                        "type": "string",
+                                        "description": "Name of the recipient (user) who received the certificate",
+                                        "example": "John Doe"
+                                      },
+                                      "title": {
+                                        "type": "string",
+                                        "description": "Title of the certificate",
+                                        "example": "Kubernetes Expert Certification"
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "description": "Description of the certificate",
+                                        "example": "Awarded for successfully completing the Kubernetes Expert course"
+                                      },
+                                      "issuing_authorities": {
+                                        "type": "array",
+                                        "items": {
+                                          "x-go-type": "CertificateIssuingAuthority",
+                                          "type": "object",
+                                          "required": [
+                                            "name",
+                                            "url"
+                                          ],
+                                          "properties": {
+                                            "name": {
+                                              "type": "string",
+                                              "description": "Name of the issuing authority",
+                                              "example": "Cloud Native Foundation"
+                                            },
+                                            "role": {
+                                              "type": "string",
+                                              "description": "Role of the issuing authority",
+                                              "example": "COO"
+                                            },
+                                            "signature_url": {
+                                              "type": "string",
+                                              "format": "uri",
+                                              "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
+                                              "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
+                                            }
+                                          }
+                                        },
+                                        "description": "List of issuing authorities for the certificate"
+                                      },
+                                      "issued_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Date when the certificate was issued",
+                                        "example": "2023-10-01T12:00:00Z"
+                                      },
+                                      "expiration_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Date when the certificate expires (optional)",
+                                        "example": "2025-10-01T12:00:00Z"
+                                      },
+                                      "expires_in": {
+                                        "type": "integer",
+                                        "description": "Number of months after which the certificate expires",
+                                        "example": 24
+                                      }
+                                    }
+                                  },
+                                  "children": {
+                                    "type": "array",
+                                    "description": "List of children items in the top-level curricula",
+                                    "items": {
+                                      "x-go-type": "ChildNode",
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "string",
+                                          "description": "Unique identifier for the course",
+                                          "example": "1234567890abcdef",
+                                          "x-go-name": "ID",
+                                          "x-oapi-codegen-extra-tags": {
+                                            "db": "id",
+                                            "json": "id",
+                                            "yaml": "id"
+                                          }
+                                        },
+                                        "title": {
+                                          "type": "string",
+                                          "description": "Title of the course",
+                                          "example": "Kubernetes Basics"
+                                        },
+                                        "permalink": {
+                                          "type": "string",
+                                          "format": "uri",
+                                          "description": "URL to the course content",
+                                          "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                                        },
+                                        "description": {
+                                          "type": "string",
+                                          "description": "Course description",
+                                          "example": "Learn the basics of Kubernetes"
+                                        },
+                                        "weight": {
+                                          "type": "number",
+                                          "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
+                                          "example": "eg 1 , 2"
+                                        },
+                                        "banner": {
+                                          "type": "string",
+                                          "format": "uri",
+                                          "nullable": true,
+                                          "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                          "example": "kubernetes-icon.svg"
+                                        },
+                                        "type": {
+                                          "x-go-type": "ContentType",
+                                          "description": "Type of the content (e.g., learning-path, challenge, certification)",
+                                          "type": "string",
+                                          "enum": [
+                                            "learning-path",
+                                            "challenge",
+                                            "certification"
+                                          ]
+                                        },
+                                        "children": {
+                                          "type": "array",
+                                          "description": "List of child nodes (sub-courses or modules)",
+                                          "items": {
+                                            "type": "object",
+                                            "x-go-type": "ChildNode"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "title",
+                                        "description",
+                                        "id",
+                                        "permalink"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "title",
+                                  "description",
+                                  "permalink"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "orgId",
+                          "visibility",
+                          "status",
+                          "slug",
+                          "createdAt",
+                          "updatedAt",
+                          "deletedAt",
+                          "metadata",
+                          "level"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -531,78 +569,87 @@ const AcademySchema = {
                     }
                   },
                   "orgId": {
-                    "description": "Organization ID that owns this curricula",
-                    "x-go-name": "OrgId",
-                    "x-oapi-codegen-extra-tags": {
-                      "json": "org_id",
-                      "db": "org_id",
-                      "yaml": "org_id"
-                    },
                     "type": "string",
-                    "example": "layer5"
+                    "description": "Organization ID that owns this learning path",
+                    "example": "layer5",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "org_id",
+                      "json": "org_id",
+                      "yaml": "org_id"
+                    }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
+                    "description": "ID of the workspace to which this Curricula belongs",
                     "x-oapi-codegen-extra-tags": {
                       "db": "workspace_id",
                       "json": "workspace_id",
                       "yaml": "workspace_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "badge_id": {
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
                       "yaml": "badge_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "team_id": {
-                    "description": "ID of the team associated with this curricula",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-go-name": "TeamId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "team_id",
                       "db": "team_id",
                       "yaml": "team_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "access_expires_at": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-go-type-skip-optional-pointer": true
+                      }
+                    ],
                     "description": "Expiry time for curricula access",
-                    "x-go-name": "AccessExpiresAt",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_expires_at",
                       "db": "access_expires_at",
                       "yaml": "access_expires_at"
-                    },
-                    "type": "string",
-                    "format": "date-time",
-                    "x-go-type-skip-optional-pointer": true
+                    }
                   },
                   "access_status": {
                     "description": "Current access status of the curricula",
                     "x-go-name": "AccessStatus",
-                    "x-go-type": "invitation.InvitationStatus",
+                    "x-go-type": "invitationv1beta1.InvitationStatus",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+                      "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+                      "name": "invitationv1beta1"
                     },
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_status",
@@ -617,7 +664,7 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the Curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
@@ -680,9 +727,9 @@ const AcademySchema = {
                                 "x-go-name": "ID"
                               },
                               "org_id": {
-                                "description": "UUID of the organization that issued the certificate",
                                 "type": "string",
                                 "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
@@ -863,7 +910,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -895,7 +942,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -910,7 +957,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -926,11 +973,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -945,86 +992,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
-                      "description": "ID of the invite associated with this cirricula",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
-                      "description": "When the cirricula item was created",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
-                      "description": "When the cirricula was last updated",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -1087,9 +1162,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -1273,7 +1348,7 @@ const AcademySchema = {
         }
       }
     },
-    "/api/academy/cirricula": {
+    "/api/academy/Curricula": {
       "get": {
         "x-internal": [
           "cloud"
@@ -1281,7 +1356,7 @@ const AcademySchema = {
         "tags": [
           "Academy"
         ],
-        "operationId": "getAcademyCirricula",
+        "operationId": "getAcademyCurricula",
         "summary": "Get academy content",
         "description": "Returns a list of academy content with optional filtering.",
         "parameters": [
@@ -1290,13 +1365,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by content types",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1304,13 +1379,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by visibility (public/private)",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1318,13 +1393,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by difficulty level",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1332,13 +1407,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by organization IDs",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1346,13 +1421,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter content by categories",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1360,13 +1435,13 @@ const AcademySchema = {
             "in": "query",
             "description": "Filter by registration status",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -1418,463 +1493,491 @@ const AcademySchema = {
               "type": "integer"
             }
           }
-        ]
-      },
-      "responses": {
-        "200": {
-          "description": "A list of content with total count",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "total": {
-                    "type": "integer",
-                    "description": "Total number of cirricula",
-                    "example": 7
-                  },
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "x-go-type": "AcademyCurriculaWithMetrics",
-                      "x-go-type-skip-optional-pointer": true,
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "description": "Id of the cirricula",
-                              "example": "923458-3490394-934893",
-                              "x-go-name": "ID",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "id",
-                                "json": "id",
-                                "yaml": "id"
-                              }
-                            },
-                            "type": {
-                              "x-go-type": "ContentType",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "type"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of content with total count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of Curricula",
+                      "example": 7
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "x-go-type": "AcademyCurriculaWithMetrics",
+                        "x-go-type-skip-optional-pointer": true,
+                        "allOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Id of the Curricula",
+                                "example": "923458-3490394-934893",
+                                "x-go-name": "ID",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "id",
+                                  "json": "id",
+                                  "yaml": "id"
+                                }
                               },
-                              "type": "string",
-                              "enum": [
-                                "learning-path",
-                                "challenge",
-                                "certification"
-                              ]
-                            },
-                            "orgId": {
-                              "type": "string",
-                              "description": "Organization ID that owns this learning path",
-                              "example": "layer5",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "org_id",
-                                "json": "org_id",
-                                "yaml": "org_id"
-                              }
-                            },
-                            "visibility": {
-                              "description": "Visibility of the cirricula",
-                              "x-go-type": "Visibility",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "visibility",
-                                "json": "visibility",
-                                "yaml": "visibility"
+                              "type": {
+                                "x-go-type": "ContentType",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "type"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "learning-path",
+                                  "challenge",
+                                  "certification"
+                                ]
                               },
-                              "type": "string",
-                              "enum": [
-                                "public",
-                                "private"
-                              ]
-                            },
-                            "status": {
-                              "example": "ready",
-                              "description": "Status of the cirricula",
-                              "x-go-type": "Status",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "status",
-                                "json": "status",
-                                "yaml": "status"
+                              "orgId": {
+                                "type": "string",
+                                "description": "Organization ID that owns this learning path",
+                                "example": "layer5",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "org_id",
+                                  "json": "org_id",
+                                  "yaml": "org_id"
+                                }
                               },
-                              "type": "string",
-                              "enum": [
-                                "ready",
-                                "archived",
-                                "not_ready"
-                              ]
-                            },
-                            "slug": {
-                              "type": "string",
-                              "description": "slug of the cirricula",
-                              "example": "intro-kubernetes-course"
-                            },
-                            "level": {
-                              "description": "Level of the cirricula",
-                              "x-go-type": "Level",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "level",
-                                "json": "level",
-                                "yaml": "level"
+                              "visibility": {
+                                "description": "Visibility of the Curricula",
+                                "x-go-type": "Visibility",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "visibility",
+                                  "json": "visibility",
+                                  "yaml": "visibility"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "public",
+                                  "private"
+                                ]
                               },
-                              "type": "string",
-                              "enum": [
-                                "beginner",
-                                "intermediate",
-                                "advanced"
-                              ]
-                            },
-                            "badge_id": {
-                              "description": "ID of the badge to be awarded on completion of this curricula",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "badge_id",
-                                "json": "badge_id",
-                                "yaml": "badge_id"
+                              "status": {
+                                "example": "ready",
+                                "description": "Status of the Curricula",
+                                "x-go-type": "Status",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "status",
+                                  "json": "status",
+                                  "yaml": "status"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "ready",
+                                  "archived",
+                                  "not_ready"
+                                ]
                               },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            },
-                            "invite_id": {
-                              "description": "ID of the invite associated with this cirricula",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "invite_id",
-                                "json": "invite_id",
-                                "yaml": "invite_id"
+                              "slug": {
+                                "type": "string",
+                                "description": "slug of the Curricula",
+                                "example": "intro-kubernetes-course"
                               },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            },
-                            "workspace_id": {
-                              "description": "ID of the workspace to which this cirricula belongs",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "workspace_id",
-                                "json": "workspace_id",
-                                "yaml": "workspace_id"
+                              "level": {
+                                "description": "Level of the Curricula",
+                                "x-go-type": "Level",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "level",
+                                  "json": "level",
+                                  "yaml": "level"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "beginner",
+                                  "intermediate",
+                                  "advanced"
+                                ]
                               },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            },
-                            "createdAt": {
-                              "description": "When the cirricula item was created",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "created_at",
-                                "json": "created_at",
-                                "yaml": "created_at"
+                              "badge_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "ID of the badge to be awarded on completion of this curricula",
+                                "x-go-type": "corev1alpha1.Uuid",
+                                "x-go-type-import": {
+                                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                                  "name": "corev1alpha1"
+                                },
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "badge_id",
+                                  "json": "badge_id",
+                                  "yaml": "badge_id"
+                                }
                               },
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-type-skip-optional-pointer": true
-                            },
-                            "updatedAt": {
-                              "description": "When the cirricula was last updated",
-                              "x-go-type": "core.Time",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "updated_at",
-                                "json": "updated_at",
-                                "yaml": "updated_at"
+                              "invite_id": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                    "x-go-type": "uuid.UUID",
+                                    "x-go-type-import": {
+                                      "path": "github.com/gofrs/uuid"
+                                    }
+                                  }
+                                ],
+                                "description": "ID of the invite associated with this Curricula",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "invite_id",
+                                  "json": "invite_id",
+                                  "yaml": "invite_id"
+                                }
                               },
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-type-skip-optional-pointer": true
-                            },
-                            "deletedAt": {
-                              "x-go-type": "core.NullTime",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "deleted_at",
-                                "json": "deleted_at",
-                                "yaml": "deleted_at"
+                              "workspace_id": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                    "x-go-type": "uuid.UUID",
+                                    "x-go-type-import": {
+                                      "path": "github.com/gofrs/uuid"
+                                    }
+                                  }
+                                ],
+                                "description": "ID of the workspace to which this Curricula belongs",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "workspace_id",
+                                  "json": "workspace_id",
+                                  "yaml": "workspace_id"
+                                }
                               },
-                              "description": "Timestamp when the resource was deleted.",
-                              "type": "string",
-                              "format": "date-time",
-                              "x-go-name": "DeletedAt",
-                              "x-go-type-skip-optional-pointer": true
-                            },
-                            "metadata": {
-                              "type": "object",
-                              "description": "Additional metadata about the cirricula",
-                              "additionalProperties": true,
-                              "x-go-type": "core.Map",
-                              "x-go-type-skip-optional-pointer": true,
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "metadata",
-                                "json": "metadata",
-                                "yaml": "metadata"
+                              "createdAt": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "description": "When the Curricula item was created",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "created_at",
+                                  "json": "created_at",
+                                  "yaml": "created_at"
+                                }
                               },
-                              "oneOf": [
-                                {
-                                  "x-go-type": "CurriculaMetadata",
-                                  "type": "object",
-                                  "properties": {
-                                    "title": {
-                                      "type": "string",
-                                      "description": "Title of the learning path",
-                                      "example": "Mastering Kubernetes for Engineers"
+                              "updatedAt": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "description": "When the Curricula was last updated",
+                                "x-go-type": "core.Time",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "updated_at",
+                                  "json": "updated_at",
+                                  "yaml": "updated_at"
+                                }
+                              },
+                              "deletedAt": {
+                                "allOf": [
+                                  {
+                                    "description": "Timestamp when the resource was deleted.",
+                                    "x-go-type": "time.Time",
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-name": "DeletedAt",
+                                    "x-oapi-codegen-extra-tags": {
+                                      "db": "deleted_at",
+                                      "yaml": "deleted_at"
                                     },
-                                    "description": {
-                                      "type": "string",
-                                      "description": "Short description of the curricula",
-                                      "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
-                                    },
-                                    "detailed_description": {
-                                      "type": "string",
-                                      "description": "Detailed description of the curricula",
-                                      "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
-                                    },
-                                    "banner": {
-                                      "type": "string",
-                                      "format": "uri",
-                                      "nullable": true,
-                                      "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                      "example": "kubernetes-icon.svg"
-                                    },
-                                    "permalink": {
-                                      "type": "string",
-                                      "format": "uri",
-                                      "description": "Canonical URL for the learning path",
-                                      "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
-                                    },
-                                    "certificate": {
-                                      "x-go-type": "Certificate",
-                                      "type": "object",
-                                      "required": [
-                                        "id",
-                                        "org_id",
-                                        "title",
-                                        "description",
-                                        "issuing_authorities",
-                                        "issued_date",
-                                        "recipient_id",
-                                        "recipient_name"
-                                      ],
-                                      "properties": {
-                                        "id": {
-                                          "type": "string",
-                                          "description": "Unique identifier for the certificate",
-                                          "example": "1234567890abcdef",
-                                          "x-go-name": "ID"
-                                        },
-                                        "org_id": {
-                                          "description": "UUID of the organization that issued the certificate",
-                                          "type": "string",
-                                          "format": "uuid",
-                                          "x-go-type": "uuid.UUID",
-                                          "x-go-type-import": {
-                                            "path": "github.com/gofrs/uuid"
-                                          }
-                                        },
-                                        "recipient_id": {
-                                          "type": "string",
-                                          "description": "ID of the recipient (user) who received the certificate",
-                                          "example": "1234567890abcdef"
-                                        },
-                                        "recipient_name": {
-                                          "type": "string",
-                                          "description": "Name of the recipient (user) who received the certificate",
-                                          "example": "John Doe"
-                                        },
-                                        "title": {
-                                          "type": "string",
-                                          "description": "Title of the certificate",
-                                          "example": "Kubernetes Expert Certification"
-                                        },
-                                        "description": {
-                                          "type": "string",
-                                          "description": "Description of the certificate",
-                                          "example": "Awarded for successfully completing the Kubernetes Expert course"
-                                        },
-                                        "issuing_authorities": {
-                                          "type": "array",
-                                          "items": {
-                                            "x-go-type": "CertificateIssuingAuthority",
-                                            "type": "object",
-                                            "required": [
-                                              "name",
-                                              "url"
-                                            ],
-                                            "properties": {
-                                              "name": {
-                                                "type": "string",
-                                                "description": "Name of the issuing authority",
-                                                "example": "Cloud Native Foundation"
-                                              },
-                                              "role": {
-                                                "type": "string",
-                                                "description": "Role of the issuing authority",
-                                                "example": "COO"
-                                              },
-                                              "signature_url": {
-                                                "type": "string",
-                                                "format": "uri",
-                                                "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
-                                                "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
-                                              }
-                                            }
-                                          },
-                                          "description": "List of issuing authorities for the certificate"
-                                        },
-                                        "issued_date": {
-                                          "type": "string",
-                                          "format": "date-time",
-                                          "description": "Date when the certificate was issued",
-                                          "example": "2023-10-01T12:00:00Z"
-                                        },
-                                        "expiration_date": {
-                                          "type": "string",
-                                          "format": "date-time",
-                                          "description": "Date when the certificate expires (optional)",
-                                          "example": "2025-10-01T12:00:00Z"
-                                        },
-                                        "expires_in": {
-                                          "type": "integer",
-                                          "description": "Number of months after which the certificate expires",
-                                          "example": 24
-                                        }
-                                      }
-                                    },
-                                    "children": {
-                                      "type": "array",
-                                      "description": "List of children items in the top-level curricula",
-                                      "items": {
-                                        "x-go-type": "ChildNode",
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "x-go-type": "core.NullTime",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "deleted_at",
+                                  "json": "deleted_at",
+                                  "yaml": "deleted_at"
+                                }
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "description": "Additional metadata about the Curricula",
+                                "additionalProperties": true,
+                                "x-go-type": "core.Map",
+                                "x-go-type-skip-optional-pointer": true,
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "metadata",
+                                  "json": "metadata",
+                                  "yaml": "metadata"
+                                },
+                                "oneOf": [
+                                  {
+                                    "x-go-type": "CurriculaMetadata",
+                                    "type": "object",
+                                    "properties": {
+                                      "title": {
+                                        "type": "string",
+                                        "description": "Title of the learning path",
+                                        "example": "Mastering Kubernetes for Engineers"
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "description": "Short description of the curricula",
+                                        "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
+                                      },
+                                      "detailed_description": {
+                                        "type": "string",
+                                        "description": "Detailed description of the curricula",
+                                        "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
+                                      },
+                                      "banner": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "nullable": true,
+                                        "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                        "example": "kubernetes-icon.svg"
+                                      },
+                                      "permalink": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "Canonical URL for the learning path",
+                                        "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
+                                      },
+                                      "certificate": {
+                                        "x-go-type": "Certificate",
                                         "type": "object",
+                                        "required": [
+                                          "id",
+                                          "org_id",
+                                          "title",
+                                          "description",
+                                          "issuing_authorities",
+                                          "issued_date",
+                                          "recipient_id",
+                                          "recipient_name"
+                                        ],
                                         "properties": {
                                           "id": {
                                             "type": "string",
-                                            "description": "Unique identifier for the course",
+                                            "description": "Unique identifier for the certificate",
                                             "example": "1234567890abcdef",
-                                            "x-go-name": "ID",
-                                            "x-oapi-codegen-extra-tags": {
-                                              "db": "id",
-                                              "json": "id",
-                                              "yaml": "id"
+                                            "x-go-name": "ID"
+                                          },
+                                          "org_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                            "x-go-type": "uuid.UUID",
+                                            "x-go-type-import": {
+                                              "path": "github.com/gofrs/uuid"
                                             }
+                                          },
+                                          "recipient_id": {
+                                            "type": "string",
+                                            "description": "ID of the recipient (user) who received the certificate",
+                                            "example": "1234567890abcdef"
+                                          },
+                                          "recipient_name": {
+                                            "type": "string",
+                                            "description": "Name of the recipient (user) who received the certificate",
+                                            "example": "John Doe"
                                           },
                                           "title": {
                                             "type": "string",
-                                            "description": "Title of the course",
-                                            "example": "Kubernetes Basics"
-                                          },
-                                          "permalink": {
-                                            "type": "string",
-                                            "format": "uri",
-                                            "description": "URL to the course content",
-                                            "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                                            "description": "Title of the certificate",
+                                            "example": "Kubernetes Expert Certification"
                                           },
                                           "description": {
                                             "type": "string",
-                                            "description": "Course description",
-                                            "example": "Learn the basics of Kubernetes"
+                                            "description": "Description of the certificate",
+                                            "example": "Awarded for successfully completing the Kubernetes Expert course"
                                           },
-                                          "weight": {
-                                            "type": "number",
-                                            "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
-                                            "example": "eg 1 , 2"
-                                          },
-                                          "banner": {
-                                            "type": "string",
-                                            "format": "uri",
-                                            "nullable": true,
-                                            "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                            "example": "kubernetes-icon.svg"
-                                          },
-                                          "type": {
-                                            "x-go-type": "ContentType",
-                                            "description": "Type of the content (e.g., learning-path, challenge, certification)",
-                                            "type": "string",
-                                            "enum": [
-                                              "learning-path",
-                                              "challenge",
-                                              "certification"
-                                            ]
-                                          },
-                                          "children": {
+                                          "issuing_authorities": {
                                             "type": "array",
-                                            "description": "List of child nodes (sub-courses or modules)",
                                             "items": {
+                                              "x-go-type": "CertificateIssuingAuthority",
                                               "type": "object",
-                                              "x-go-type": "ChildNode"
-                                            }
+                                              "required": [
+                                                "name",
+                                                "url"
+                                              ],
+                                              "properties": {
+                                                "name": {
+                                                  "type": "string",
+                                                  "description": "Name of the issuing authority",
+                                                  "example": "Cloud Native Foundation"
+                                                },
+                                                "role": {
+                                                  "type": "string",
+                                                  "description": "Role of the issuing authority",
+                                                  "example": "COO"
+                                                },
+                                                "signature_url": {
+                                                  "type": "string",
+                                                  "format": "uri",
+                                                  "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
+                                                  "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
+                                                }
+                                              }
+                                            },
+                                            "description": "List of issuing authorities for the certificate"
+                                          },
+                                          "issued_date": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Date when the certificate was issued",
+                                            "example": "2023-10-01T12:00:00Z"
+                                          },
+                                          "expiration_date": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Date when the certificate expires (optional)",
+                                            "example": "2025-10-01T12:00:00Z"
+                                          },
+                                          "expires_in": {
+                                            "type": "integer",
+                                            "description": "Number of months after which the certificate expires",
+                                            "example": 24
                                           }
-                                        },
-                                        "required": [
-                                          "title",
-                                          "description",
-                                          "id",
-                                          "permalink"
-                                        ]
+                                        }
+                                      },
+                                      "children": {
+                                        "type": "array",
+                                        "description": "List of children items in the top-level curricula",
+                                        "items": {
+                                          "x-go-type": "ChildNode",
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string",
+                                              "description": "Unique identifier for the course",
+                                              "example": "1234567890abcdef",
+                                              "x-go-name": "ID",
+                                              "x-oapi-codegen-extra-tags": {
+                                                "db": "id",
+                                                "json": "id",
+                                                "yaml": "id"
+                                              }
+                                            },
+                                            "title": {
+                                              "type": "string",
+                                              "description": "Title of the course",
+                                              "example": "Kubernetes Basics"
+                                            },
+                                            "permalink": {
+                                              "type": "string",
+                                              "format": "uri",
+                                              "description": "URL to the course content",
+                                              "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                                            },
+                                            "description": {
+                                              "type": "string",
+                                              "description": "Course description",
+                                              "example": "Learn the basics of Kubernetes"
+                                            },
+                                            "weight": {
+                                              "type": "number",
+                                              "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
+                                              "example": "eg 1 , 2"
+                                            },
+                                            "banner": {
+                                              "type": "string",
+                                              "format": "uri",
+                                              "nullable": true,
+                                              "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                              "example": "kubernetes-icon.svg"
+                                            },
+                                            "type": {
+                                              "x-go-type": "ContentType",
+                                              "description": "Type of the content (e.g., learning-path, challenge, certification)",
+                                              "type": "string",
+                                              "enum": [
+                                                "learning-path",
+                                                "challenge",
+                                                "certification"
+                                              ]
+                                            },
+                                            "children": {
+                                              "type": "array",
+                                              "description": "List of child nodes (sub-courses or modules)",
+                                              "items": {
+                                                "type": "object",
+                                                "x-go-type": "ChildNode"
+                                              }
+                                            }
+                                          },
+                                          "required": [
+                                            "title",
+                                            "description",
+                                            "id",
+                                            "permalink"
+                                          ]
+                                        }
                                       }
-                                    }
-                                  },
-                                  "required": [
-                                    "title",
-                                    "description",
-                                    "permalink"
-                                  ]
-                                }
-                              ]
-                            }
+                                    },
+                                    "required": [
+                                      "title",
+                                      "description",
+                                      "permalink"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "orgId",
+                              "visibility",
+                              "status",
+                              "slug",
+                              "createdAt",
+                              "updatedAt",
+                              "deletedAt",
+                              "metadata",
+                              "level"
+                            ]
                           },
-                          "required": [
-                            "id",
-                            "type",
-                            "orgId",
-                            "visibility",
-                            "status",
-                            "slug",
-                            "createdAt",
-                            "updatedAt",
-                            "deletedAt",
-                            "metadata",
-                            "level"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "required": [
-                            "RegistrationCount"
-                          ],
-                          "properties": {
-                            "RegistrationCount": {
-                              "type": "number",
-                              "x-oapi-codegen-extra-tags": {
-                                "db": "registration_count,omitempty",
-                                "json": "registration_count,omitempty",
-                                "yaml": "registration_count,omitempty"
+                          {
+                            "type": "object",
+                            "required": [
+                              "RegistrationCount"
+                            ],
+                            "properties": {
+                              "RegistrationCount": {
+                                "type": "number",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "registration_count,omitempty",
+                                  "json": "registration_count,omitempty",
+                                  "yaml": "registration_count,omitempty"
+                                }
                               }
                             }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     }
-                  }
-                },
-                "required": [
-                  "total",
-                  "data"
-                ]
+                  },
+                  "required": [
+                    "total",
+                    "data"
+                  ]
+                }
               }
             }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "500": {
+            "description": "Server error"
           }
-        },
-        "400": {
-          "description": "Invalid request parameters"
-        },
-        "500": {
-          "description": "Server error"
         }
       }
     },
@@ -1921,7 +2024,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -1953,7 +2056,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -1968,7 +2071,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -1984,11 +2087,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -2003,86 +2106,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
-                      "description": "ID of the invite associated with this cirricula",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
-                      "description": "When the cirricula item was created",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
-                      "description": "When the cirricula was last updated",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -2145,9 +2276,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -2390,30 +2521,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -2424,15 +2555,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -2450,32 +2581,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -2503,9 +2635,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -2646,30 +2778,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -2680,15 +2812,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -2706,32 +2838,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -2759,9 +2892,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -2913,78 +3046,87 @@ const AcademySchema = {
                     }
                   },
                   "orgId": {
-                    "description": "Organization ID that owns this curricula",
-                    "x-go-name": "OrgId",
-                    "x-oapi-codegen-extra-tags": {
-                      "json": "org_id",
-                      "db": "org_id",
-                      "yaml": "org_id"
-                    },
                     "type": "string",
-                    "example": "layer5"
+                    "description": "Organization ID that owns this learning path",
+                    "example": "layer5",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "org_id",
+                      "json": "org_id",
+                      "yaml": "org_id"
+                    }
                   },
                   "workspace_id": {
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                        "x-go-type": "uuid.UUID",
+                        "x-go-type-import": {
+                          "path": "github.com/gofrs/uuid"
+                        }
+                      }
+                    ],
+                    "description": "ID of the workspace to which this Curricula belongs",
                     "x-oapi-codegen-extra-tags": {
                       "db": "workspace_id",
                       "json": "workspace_id",
                       "yaml": "workspace_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "badge_id": {
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
                       "yaml": "badge_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "team_id": {
-                    "description": "ID of the team associated with this curricula",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-go-name": "TeamId",
                     "x-oapi-codegen-extra-tags": {
                       "json": "team_id",
                       "db": "team_id",
                       "yaml": "team_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "access_expires_at": {
+                    "allOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-go-type-skip-optional-pointer": true
+                      }
+                    ],
                     "description": "Expiry time for curricula access",
-                    "x-go-name": "AccessExpiresAt",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_expires_at",
                       "db": "access_expires_at",
                       "yaml": "access_expires_at"
-                    },
-                    "type": "string",
-                    "format": "date-time",
-                    "x-go-type-skip-optional-pointer": true
+                    }
                   },
                   "access_status": {
                     "description": "Current access status of the curricula",
                     "x-go-name": "AccessStatus",
-                    "x-go-type": "invitation.InvitationStatus",
+                    "x-go-type": "invitationv1beta1.InvitationStatus",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+                      "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+                      "name": "invitationv1beta1"
                     },
                     "x-oapi-codegen-extra-tags": {
                       "json": "access_status",
@@ -2999,7 +3141,7 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the Curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
@@ -3062,9 +3204,9 @@ const AcademySchema = {
                                 "x-go-name": "ID"
                               },
                               "org_id": {
-                                "description": "UUID of the organization that issued the certificate",
                                 "type": "string",
                                 "format": "uuid",
+                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
@@ -3248,7 +3390,7 @@ const AcademySchema = {
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Id of the cirricula",
+                          "description": "Id of the Curricula",
                           "example": "923458-3490394-934893",
                           "x-go-name": "ID",
                           "x-oapi-codegen-extra-tags": {
@@ -3280,7 +3422,7 @@ const AcademySchema = {
                           }
                         },
                         "visibility": {
-                          "description": "Visibility of the cirricula",
+                          "description": "Visibility of the Curricula",
                           "x-go-type": "Visibility",
                           "x-oapi-codegen-extra-tags": {
                             "db": "visibility",
@@ -3295,7 +3437,7 @@ const AcademySchema = {
                         },
                         "status": {
                           "example": "ready",
-                          "description": "Status of the cirricula",
+                          "description": "Status of the Curricula",
                           "x-go-type": "Status",
                           "x-oapi-codegen-extra-tags": {
                             "db": "status",
@@ -3311,11 +3453,11 @@ const AcademySchema = {
                         },
                         "slug": {
                           "type": "string",
-                          "description": "slug of the cirricula",
+                          "description": "slug of the Curricula",
                           "example": "intro-kubernetes-course"
                         },
                         "level": {
-                          "description": "Level of the cirricula",
+                          "description": "Level of the Curricula",
                           "x-go-type": "Level",
                           "x-oapi-codegen-extra-tags": {
                             "db": "level",
@@ -3330,86 +3472,114 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
                             "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "invite_id": {
-                          "description": "ID of the invite associated with this cirricula",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
+                          "description": "ID of the invite associated with this Curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
                             "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "workspace_id": {
-                          "description": "ID of the workspace to which this cirricula belongs",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
+                          "description": "ID of the workspace to which this Curricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
                             "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "createdAt": {
-                          "description": "When the cirricula item was created",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
+                          "description": "When the Curricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
                             "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "updatedAt": {
-                          "description": "When the cirricula was last updated",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
+                          "description": "When the Curricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
                             "json": "updated_at",
                             "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "deletedAt": {
+                          "allOf": [
+                            {
+                              "description": "Timestamp when the resource was deleted.",
+                              "x-go-type": "time.Time",
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-name": "DeletedAt",
+                              "x-oapi-codegen-extra-tags": {
+                                "db": "deleted_at",
+                                "yaml": "deleted_at"
+                              },
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "x-go-type": "core.NullTime",
                           "x-oapi-codegen-extra-tags": {
                             "db": "deleted_at",
                             "json": "deleted_at",
                             "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "metadata": {
                           "type": "object",
-                          "description": "Additional metadata about the cirricula",
+                          "description": "Additional metadata about the Curricula",
                           "additionalProperties": true,
                           "x-go-type": "core.Map",
                           "x-go-type-skip-optional-pointer": true,
@@ -3472,9 +3642,9 @@ const AcademySchema = {
                                       "x-go-name": "ID"
                                     },
                                     "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
                                       "type": "string",
                                       "format": "uuid",
+                                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                       "x-go-type": "uuid.UUID",
                                       "x-go-type-import": {
                                         "path": "github.com/gofrs/uuid"
@@ -3661,9 +3831,10 @@ const AcademySchema = {
                           }
                         },
                         "Invitation": {
-                          "x-go-type": "invitation.Invitation",
+                          "x-go-type": "invitationv1beta1.Invitation",
                           "x-go-type-import": {
-                            "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+                            "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+                            "name": "invitationv1beta1"
                           },
                           "type": "object",
                           "required": [
@@ -3683,26 +3854,26 @@ const AcademySchema = {
                           ],
                           "properties": {
                             "id": {
-                              "x-go-name": "ID",
-                              "description": "Unique identifier for the invitation , is also used as the invitation code",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
-                              }
+                              },
+                              "x-go-name": "ID"
                             },
                             "owner_id": {
-                              "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "owner_id",
                                 "json": "owner_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "is_default": {
@@ -3919,7 +4090,7 @@ const AcademySchema = {
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Id of the cirricula",
+                          "description": "Id of the Curricula",
                           "example": "923458-3490394-934893",
                           "x-go-name": "ID",
                           "x-oapi-codegen-extra-tags": {
@@ -3951,7 +4122,7 @@ const AcademySchema = {
                           }
                         },
                         "visibility": {
-                          "description": "Visibility of the cirricula",
+                          "description": "Visibility of the Curricula",
                           "x-go-type": "Visibility",
                           "x-oapi-codegen-extra-tags": {
                             "db": "visibility",
@@ -3966,7 +4137,7 @@ const AcademySchema = {
                         },
                         "status": {
                           "example": "ready",
-                          "description": "Status of the cirricula",
+                          "description": "Status of the Curricula",
                           "x-go-type": "Status",
                           "x-oapi-codegen-extra-tags": {
                             "db": "status",
@@ -3982,11 +4153,11 @@ const AcademySchema = {
                         },
                         "slug": {
                           "type": "string",
-                          "description": "slug of the cirricula",
+                          "description": "slug of the Curricula",
                           "example": "intro-kubernetes-course"
                         },
                         "level": {
-                          "description": "Level of the cirricula",
+                          "description": "Level of the Curricula",
                           "x-go-type": "Level",
                           "x-oapi-codegen-extra-tags": {
                             "db": "level",
@@ -4001,86 +4172,114 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
                             "yaml": "badge_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "invite_id": {
-                          "description": "ID of the invite associated with this cirricula",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
+                          "description": "ID of the invite associated with this Curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
                             "yaml": "invite_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "workspace_id": {
-                          "description": "ID of the workspace to which this cirricula belongs",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              }
+                            }
+                          ],
+                          "description": "ID of the workspace to which this Curricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
                             "yaml": "workspace_id"
-                          },
-                          "type": "string",
-                          "format": "uuid",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
                           }
                         },
                         "createdAt": {
-                          "description": "When the cirricula item was created",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
+                          "description": "When the Curricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
                             "yaml": "created_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "updatedAt": {
-                          "description": "When the cirricula was last updated",
+                          "allOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
+                          "description": "When the Curricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
                             "json": "updated_at",
                             "yaml": "updated_at"
-                          },
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "deletedAt": {
+                          "allOf": [
+                            {
+                              "description": "Timestamp when the resource was deleted.",
+                              "x-go-type": "time.Time",
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-name": "DeletedAt",
+                              "x-oapi-codegen-extra-tags": {
+                                "db": "deleted_at",
+                                "yaml": "deleted_at"
+                              },
+                              "x-go-type-skip-optional-pointer": true
+                            }
+                          ],
                           "x-go-type": "core.NullTime",
                           "x-oapi-codegen-extra-tags": {
                             "db": "deleted_at",
                             "json": "deleted_at",
                             "yaml": "deleted_at"
-                          },
-                          "description": "Timestamp when the resource was deleted.",
-                          "type": "string",
-                          "format": "date-time",
-                          "x-go-name": "DeletedAt",
-                          "x-go-type-skip-optional-pointer": true
+                          }
                         },
                         "metadata": {
                           "type": "object",
-                          "description": "Additional metadata about the cirricula",
+                          "description": "Additional metadata about the Curricula",
                           "additionalProperties": true,
                           "x-go-type": "core.Map",
                           "x-go-type-skip-optional-pointer": true,
@@ -4143,9 +4342,9 @@ const AcademySchema = {
                                       "x-go-name": "ID"
                                     },
                                     "org_id": {
-                                      "description": "UUID of the organization that issued the certificate",
                                       "type": "string",
                                       "format": "uuid",
+                                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                       "x-go-type": "uuid.UUID",
                                       "x-go-type-import": {
                                         "path": "github.com/gofrs/uuid"
@@ -4332,9 +4531,10 @@ const AcademySchema = {
                           }
                         },
                         "Invitation": {
-                          "x-go-type": "invitation.Invitation",
+                          "x-go-type": "invitationv1beta1.Invitation",
                           "x-go-type-import": {
-                            "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+                            "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+                            "name": "invitationv1beta1"
                           },
                           "type": "object",
                           "required": [
@@ -4354,26 +4554,26 @@ const AcademySchema = {
                           ],
                           "properties": {
                             "id": {
-                              "x-go-name": "ID",
-                              "description": "Unique identifier for the invitation , is also used as the invitation code",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
-                              }
+                              },
+                              "x-go-name": "ID"
                             },
                             "owner_id": {
-                              "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                              "x-go-type": "uuid.UUID",
+                              "x-go-type-import": {
+                                "path": "github.com/gofrs/uuid"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "owner_id",
                                 "json": "owner_id"
-                              },
-                              "type": "string",
-                              "format": "uuid",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
                               }
                             },
                             "is_default": {
@@ -4572,30 +4772,30 @@ const AcademySchema = {
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id",
-                        "yaml": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
                       }
                     },
                     "org_id": {
-                      "description": "ID of the organization",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id"
                       }
                     },
                     "content_id": {
@@ -4606,15 +4806,15 @@ const AcademySchema = {
                       }
                     },
                     "user_id": {
-                      "description": "ID of the user (foreign key to User)",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
-                      },
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "user_id"
                       }
                     },
                     "status": {
@@ -4632,32 +4832,33 @@ const AcademySchema = {
                       ]
                     },
                     "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was updated",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true,
                       "description": "When the registration was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deleted_at": {
-                      "x-go-type": "core.NullTime",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
                       "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
                       "type": "string",
                       "format": "date-time",
                       "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
                       "x-go-type-skip-optional-pointer": true
                     },
                     "certificate": {
@@ -4685,9 +4886,9 @@ const AcademySchema = {
                           "x-go-name": "ID"
                         },
                         "org_id": {
-                          "description": "UUID of the organization that issued the certificate",
                           "type": "string",
                           "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
@@ -4827,7 +5028,7 @@ const AcademySchema = {
                     "x-go-type": "ContentType"
                   },
                   "item_data": {
-                    "x-go-type": "CirriculaCurrentItemData",
+                    "x-go-type": "CurriculaCurrentItemData",
                     "type": "object",
                     "required": [
                       "id",
@@ -4886,7 +5087,7 @@ const AcademySchema = {
                         "current_item": {
                           "type": "object",
                           "additionalProperties": {
-                            "x-go-type": "CirriculaCurrentItemData",
+                            "x-go-type": "CurriculaCurrentItemData",
                             "type": "object",
                             "required": [
                               "id",
@@ -6842,13 +7043,13 @@ const AcademySchema = {
             "in": "query",
             "required": false,
             "description": "Filter by content types",
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           },
           {
@@ -6856,13 +7057,13 @@ const AcademySchema = {
             "in": "query",
             "required": false,
             "description": "Filter by registration status",
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "style": "form",
-              "explode": true
+              }
             }
           }
         ],
@@ -7076,9 +7277,9 @@ const AcademySchema = {
                       "x-go-name": "ID"
                     },
                     "org_id": {
-                      "description": "UUID of the organization that issued the certificate",
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
@@ -7182,6 +7383,366 @@ const AcademySchema = {
       }
     },
     "schemas": {
+      "AcademyCurriculaOrgId": {
+        "type": "string",
+        "description": "Organization ID that owns this learning path",
+        "example": "layer5",
+        "x-oapi-codegen-extra-tags": {
+          "db": "org_id",
+          "json": "org_id",
+          "yaml": "org_id"
+        }
+      },
+      "AcademyCurriculaBadgeId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the badge to be awarded on completion of this curricula",
+        "x-oapi-codegen-extra-tags": {
+          "db": "badge_id",
+          "json": "badge_id",
+          "yaml": "badge_id"
+        }
+      },
+      "AcademyCurriculaInviteId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the invite associated with this Curricula",
+        "x-oapi-codegen-extra-tags": {
+          "db": "invite_id",
+          "json": "invite_id",
+          "yaml": "invite_id"
+        }
+      },
+      "AcademyCurriculaWorkspaceId": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          }
+        ],
+        "description": "ID of the workspace to which this Curricula belongs",
+        "x-oapi-codegen-extra-tags": {
+          "db": "workspace_id",
+          "json": "workspace_id",
+          "yaml": "workspace_id"
+        }
+      },
+      "AcademyCurriculaCreatedAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "When the Curricula item was created",
+        "x-oapi-codegen-extra-tags": {
+          "db": "created_at",
+          "json": "created_at",
+          "yaml": "created_at"
+        }
+      },
+      "AcademyCurriculaUpdatedAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "When the Curricula was last updated",
+        "x-go-type": "core.Time",
+        "x-oapi-codegen-extra-tags": {
+          "db": "updated_at",
+          "json": "updated_at",
+          "yaml": "updated_at"
+        }
+      },
+      "AcademyCurriculaDeletedAt": {
+        "allOf": [
+          {
+            "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
+            "type": "string",
+            "format": "date-time",
+            "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "x-go-type": "core.NullTime",
+        "x-oapi-codegen-extra-tags": {
+          "db": "deleted_at",
+          "json": "deleted_at",
+          "yaml": "deleted_at"
+        }
+      },
+      "AcademyCurriculaMetadata": {
+        "type": "object",
+        "description": "Additional metadata about the Curricula",
+        "additionalProperties": true,
+        "x-go-type": "core.Map",
+        "x-go-type-skip-optional-pointer": true,
+        "x-oapi-codegen-extra-tags": {
+          "db": "metadata",
+          "json": "metadata",
+          "yaml": "metadata"
+        },
+        "oneOf": [
+          {
+            "x-go-type": "CurriculaMetadata",
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title of the learning path",
+                "example": "Mastering Kubernetes for Engineers"
+              },
+              "description": {
+                "type": "string",
+                "description": "Short description of the curricula",
+                "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
+              },
+              "detailed_description": {
+                "type": "string",
+                "description": "Detailed description of the curricula",
+                "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
+              },
+              "banner": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true,
+                "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                "example": "kubernetes-icon.svg"
+              },
+              "permalink": {
+                "type": "string",
+                "format": "uri",
+                "description": "Canonical URL for the learning path",
+                "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
+              },
+              "certificate": {
+                "x-go-type": "Certificate",
+                "type": "object",
+                "required": [
+                  "id",
+                  "org_id",
+                  "title",
+                  "description",
+                  "issuing_authorities",
+                  "issued_date",
+                  "recipient_id",
+                  "recipient_name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the certificate",
+                    "example": "1234567890abcdef",
+                    "x-go-name": "ID"
+                  },
+                  "org_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  },
+                  "recipient_id": {
+                    "type": "string",
+                    "description": "ID of the recipient (user) who received the certificate",
+                    "example": "1234567890abcdef"
+                  },
+                  "recipient_name": {
+                    "type": "string",
+                    "description": "Name of the recipient (user) who received the certificate",
+                    "example": "John Doe"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the certificate",
+                    "example": "Kubernetes Expert Certification"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the certificate",
+                    "example": "Awarded for successfully completing the Kubernetes Expert course"
+                  },
+                  "issuing_authorities": {
+                    "type": "array",
+                    "items": {
+                      "x-go-type": "CertificateIssuingAuthority",
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "url"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the issuing authority",
+                          "example": "Cloud Native Foundation"
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Role of the issuing authority",
+                          "example": "COO"
+                        },
+                        "signature_url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
+                          "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
+                        }
+                      }
+                    },
+                    "description": "List of issuing authorities for the certificate"
+                  },
+                  "issued_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date when the certificate was issued",
+                    "example": "2023-10-01T12:00:00Z"
+                  },
+                  "expiration_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date when the certificate expires (optional)",
+                    "example": "2025-10-01T12:00:00Z"
+                  },
+                  "expires_in": {
+                    "type": "integer",
+                    "description": "Number of months after which the certificate expires",
+                    "example": 24
+                  }
+                }
+              },
+              "children": {
+                "type": "array",
+                "description": "List of children items in the top-level curricula",
+                "items": {
+                  "x-go-type": "ChildNode",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier for the course",
+                      "example": "1234567890abcdef",
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id",
+                        "yaml": "id"
+                      }
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title of the course",
+                      "example": "Kubernetes Basics"
+                    },
+                    "permalink": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to the course content",
+                      "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Course description",
+                      "example": "Learn the basics of Kubernetes"
+                    },
+                    "weight": {
+                      "type": "number",
+                      "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
+                      "example": "eg 1 , 2"
+                    },
+                    "banner": {
+                      "type": "string",
+                      "format": "uri",
+                      "nullable": true,
+                      "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                      "example": "kubernetes-icon.svg"
+                    },
+                    "type": {
+                      "x-go-type": "ContentType",
+                      "description": "Type of the content (e.g., learning-path, challenge, certification)",
+                      "type": "string",
+                      "enum": [
+                        "learning-path",
+                        "challenge",
+                        "certification"
+                      ]
+                    },
+                    "children": {
+                      "type": "array",
+                      "description": "List of child nodes (sub-courses or modules)",
+                      "items": {
+                        "type": "object",
+                        "x-go-type": "ChildNode"
+                      }
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "description",
+                    "id",
+                    "permalink"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "title",
+              "description",
+              "permalink"
+            ]
+          }
+        ]
+      },
+      "AcademyCurriculaAccessExpiresAt": {
+        "allOf": [
+          {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true
+          }
+        ],
+        "description": "Expiry time for curricula access",
+        "x-go-type": "*time.Time",
+        "x-oapi-codegen-extra-tags": {
+          "json": "access_expires_at",
+          "db": "access_expires_at",
+          "yaml": "access_expires_at"
+        }
+      },
       "RegisterToAcademyContentRequest": {
         "type": "object",
         "required": [
@@ -7234,12 +7795,12 @@ const AcademySchema = {
           "not_ready"
         ]
       },
-      "AcademyCirricula": {
+      "AcademyCurricula": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "Id of the cirricula",
+            "description": "Id of the Curricula",
             "example": "923458-3490394-934893",
             "x-go-name": "ID",
             "x-oapi-codegen-extra-tags": {
@@ -7271,7 +7832,7 @@ const AcademySchema = {
             }
           },
           "visibility": {
-            "description": "Visibility of the cirricula",
+            "description": "Visibility of the Curricula",
             "x-go-type": "Visibility",
             "x-oapi-codegen-extra-tags": {
               "db": "visibility",
@@ -7286,7 +7847,7 @@ const AcademySchema = {
           },
           "status": {
             "example": "ready",
-            "description": "Status of the cirricula",
+            "description": "Status of the Curricula",
             "x-go-type": "Status",
             "x-oapi-codegen-extra-tags": {
               "db": "status",
@@ -7302,11 +7863,11 @@ const AcademySchema = {
           },
           "slug": {
             "type": "string",
-            "description": "slug of the cirricula",
+            "description": "slug of the Curricula",
             "example": "intro-kubernetes-course"
           },
           "level": {
-            "description": "Level of the cirricula",
+            "description": "Level of the Curricula",
             "x-go-type": "Level",
             "x-oapi-codegen-extra-tags": {
               "db": "level",
@@ -7321,86 +7882,114 @@ const AcademySchema = {
             ]
           },
           "badge_id": {
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
               "yaml": "badge_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "invite_id": {
-            "description": "ID of the invite associated with this cirricula",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
+            "description": "ID of the invite associated with this Curricula",
             "x-oapi-codegen-extra-tags": {
               "db": "invite_id",
               "json": "invite_id",
               "yaml": "invite_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "workspace_id": {
-            "description": "ID of the workspace to which this cirricula belongs",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
+            "description": "ID of the workspace to which this Curricula belongs",
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
               "json": "workspace_id",
               "yaml": "workspace_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "createdAt": {
-            "description": "When the cirricula item was created",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
+            "description": "When the Curricula item was created",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
               "json": "created_at",
               "yaml": "created_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "updatedAt": {
-            "description": "When the cirricula was last updated",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
+            "description": "When the Curricula was last updated",
             "x-go-type": "core.Time",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
               "json": "updated_at",
               "yaml": "updated_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "deletedAt": {
+            "allOf": [
+              {
+                "description": "Timestamp when the resource was deleted.",
+                "x-go-type": "time.Time",
+                "type": "string",
+                "format": "date-time",
+                "x-go-name": "DeletedAt",
+                "x-oapi-codegen-extra-tags": {
+                  "db": "deleted_at",
+                  "yaml": "deleted_at"
+                },
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "x-go-type": "core.NullTime",
             "x-oapi-codegen-extra-tags": {
               "db": "deleted_at",
               "json": "deleted_at",
               "yaml": "deleted_at"
-            },
-            "description": "Timestamp when the resource was deleted.",
-            "type": "string",
-            "format": "date-time",
-            "x-go-name": "DeletedAt",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the cirricula",
+            "description": "Additional metadata about the Curricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
@@ -7463,9 +8052,9 @@ const AcademySchema = {
                         "x-go-name": "ID"
                       },
                       "org_id": {
-                        "description": "UUID of the organization that issued the certificate",
                         "type": "string",
                         "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                         "x-go-type": "uuid.UUID",
                         "x-go-type-import": {
                           "path": "github.com/gofrs/uuid"
@@ -7645,7 +8234,7 @@ const AcademySchema = {
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Id of the cirricula",
+                "description": "Id of the Curricula",
                 "example": "923458-3490394-934893",
                 "x-go-name": "ID",
                 "x-oapi-codegen-extra-tags": {
@@ -7677,7 +8266,7 @@ const AcademySchema = {
                 }
               },
               "visibility": {
-                "description": "Visibility of the cirricula",
+                "description": "Visibility of the Curricula",
                 "x-go-type": "Visibility",
                 "x-oapi-codegen-extra-tags": {
                   "db": "visibility",
@@ -7692,7 +8281,7 @@ const AcademySchema = {
               },
               "status": {
                 "example": "ready",
-                "description": "Status of the cirricula",
+                "description": "Status of the Curricula",
                 "x-go-type": "Status",
                 "x-oapi-codegen-extra-tags": {
                   "db": "status",
@@ -7708,11 +8297,11 @@ const AcademySchema = {
               },
               "slug": {
                 "type": "string",
-                "description": "slug of the cirricula",
+                "description": "slug of the Curricula",
                 "example": "intro-kubernetes-course"
               },
               "level": {
-                "description": "Level of the cirricula",
+                "description": "Level of the Curricula",
                 "x-go-type": "Level",
                 "x-oapi-codegen-extra-tags": {
                   "db": "level",
@@ -7727,86 +8316,114 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
                   "yaml": "badge_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "invite_id": {
-                "description": "ID of the invite associated with this cirricula",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
+                "description": "ID of the invite associated with this Curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
                   "yaml": "invite_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "workspace_id": {
-                "description": "ID of the workspace to which this cirricula belongs",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
+                "description": "ID of the workspace to which this Curricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
                   "yaml": "workspace_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "createdAt": {
-                "description": "When the cirricula item was created",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
+                "description": "When the Curricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
                   "yaml": "created_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "updatedAt": {
-                "description": "When the cirricula was last updated",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
+                "description": "When the Curricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
                   "json": "updated_at",
                   "yaml": "updated_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "deletedAt": {
+                "allOf": [
+                  {
+                    "description": "Timestamp when the resource was deleted.",
+                    "x-go-type": "time.Time",
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-name": "DeletedAt",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "deleted_at",
+                      "yaml": "deleted_at"
+                    },
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "x-go-type": "core.NullTime",
                 "x-oapi-codegen-extra-tags": {
                   "db": "deleted_at",
                   "json": "deleted_at",
                   "yaml": "deleted_at"
-                },
-                "description": "Timestamp when the resource was deleted.",
-                "type": "string",
-                "format": "date-time",
-                "x-go-name": "DeletedAt",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "metadata": {
                 "type": "object",
-                "description": "Additional metadata about the cirricula",
+                "description": "Additional metadata about the Curricula",
                 "additionalProperties": true,
                 "x-go-type": "core.Map",
                 "x-go-type-skip-optional-pointer": true,
@@ -7869,9 +8486,9 @@ const AcademySchema = {
                             "x-go-name": "ID"
                           },
                           "org_id": {
-                            "description": "UUID of the organization that issued the certificate",
                             "type": "string",
                             "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
@@ -8058,9 +8675,10 @@ const AcademySchema = {
                 }
               },
               "Invitation": {
-                "x-go-type": "invitation.Invitation",
+                "x-go-type": "invitationv1beta1.Invitation",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+                  "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+                  "name": "invitationv1beta1"
                 },
                 "type": "object",
                 "required": [
@@ -8080,26 +8698,26 @@ const AcademySchema = {
                 ],
                 "properties": {
                   "id": {
-                    "x-go-name": "ID",
-                    "description": "Unique identifier for the invitation , is also used as the invitation code",
                     "type": "string",
                     "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                     "x-go-type": "uuid.UUID",
                     "x-go-type-import": {
                       "path": "github.com/gofrs/uuid"
-                    }
+                    },
+                    "x-go-name": "ID"
                   },
                   "owner_id": {
-                    "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "owner_id",
                       "json": "owner_id"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
                   "is_default": {
@@ -8259,78 +8877,87 @@ const AcademySchema = {
             }
           },
           "orgId": {
-            "description": "Organization ID that owns this curricula",
-            "x-go-name": "OrgId",
-            "x-oapi-codegen-extra-tags": {
-              "json": "org_id",
-              "db": "org_id",
-              "yaml": "org_id"
-            },
             "type": "string",
-            "example": "layer5"
+            "description": "Organization ID that owns this learning path",
+            "example": "layer5",
+            "x-oapi-codegen-extra-tags": {
+              "db": "org_id",
+              "json": "org_id",
+              "yaml": "org_id"
+            }
           },
           "workspace_id": {
-            "description": "ID of the workspace to which this cirricula belongs",
+            "allOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                "x-go-type": "uuid.UUID",
+                "x-go-type-import": {
+                  "path": "github.com/gofrs/uuid"
+                }
+              }
+            ],
+            "description": "ID of the workspace to which this Curricula belongs",
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
               "json": "workspace_id",
               "yaml": "workspace_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "badge_id": {
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
               "yaml": "badge_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "team_id": {
-            "description": "ID of the team associated with this curricula",
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            },
             "x-go-name": "TeamId",
             "x-oapi-codegen-extra-tags": {
               "json": "team_id",
               "db": "team_id",
               "yaml": "team_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
             }
           },
           "access_expires_at": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "x-go-type-skip-optional-pointer": true
+              }
+            ],
             "description": "Expiry time for curricula access",
-            "x-go-name": "AccessExpiresAt",
             "x-go-type": "*time.Time",
             "x-oapi-codegen-extra-tags": {
               "json": "access_expires_at",
               "db": "access_expires_at",
               "yaml": "access_expires_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "access_status": {
             "description": "Current access status of the curricula",
             "x-go-name": "AccessStatus",
-            "x-go-type": "invitation.InvitationStatus",
+            "x-go-type": "invitationv1beta1.InvitationStatus",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/invitation"
+              "path": "github.com/meshery/schemas/models/v1beta1/invitation",
+              "name": "invitationv1beta1"
             },
             "x-oapi-codegen-extra-tags": {
               "json": "access_status",
@@ -8345,7 +8972,7 @@ const AcademySchema = {
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the cirricula",
+            "description": "Additional metadata about the Curricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
@@ -8408,9 +9035,9 @@ const AcademySchema = {
                         "x-go-name": "ID"
                       },
                       "org_id": {
-                        "description": "UUID of the organization that issued the certificate",
                         "type": "string",
                         "format": "uuid",
+                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                         "x-go-type": "uuid.UUID",
                         "x-go-type-import": {
                           "path": "github.com/gofrs/uuid"
@@ -8585,7 +9212,7 @@ const AcademySchema = {
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Id of the cirricula",
+                "description": "Id of the Curricula",
                 "example": "923458-3490394-934893",
                 "x-go-name": "ID",
                 "x-oapi-codegen-extra-tags": {
@@ -8617,7 +9244,7 @@ const AcademySchema = {
                 }
               },
               "visibility": {
-                "description": "Visibility of the cirricula",
+                "description": "Visibility of the Curricula",
                 "x-go-type": "Visibility",
                 "x-oapi-codegen-extra-tags": {
                   "db": "visibility",
@@ -8632,7 +9259,7 @@ const AcademySchema = {
               },
               "status": {
                 "example": "ready",
-                "description": "Status of the cirricula",
+                "description": "Status of the Curricula",
                 "x-go-type": "Status",
                 "x-oapi-codegen-extra-tags": {
                   "db": "status",
@@ -8648,11 +9275,11 @@ const AcademySchema = {
               },
               "slug": {
                 "type": "string",
-                "description": "slug of the cirricula",
+                "description": "slug of the Curricula",
                 "example": "intro-kubernetes-course"
               },
               "level": {
-                "description": "Level of the cirricula",
+                "description": "Level of the Curricula",
                 "x-go-type": "Level",
                 "x-oapi-codegen-extra-tags": {
                   "db": "level",
@@ -8667,86 +9294,114 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
                   "yaml": "badge_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "invite_id": {
-                "description": "ID of the invite associated with this cirricula",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
+                "description": "ID of the invite associated with this Curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
                   "yaml": "invite_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "workspace_id": {
-                "description": "ID of the workspace to which this cirricula belongs",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  }
+                ],
+                "description": "ID of the workspace to which this Curricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
                   "yaml": "workspace_id"
-                },
-                "type": "string",
-                "format": "uuid",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
                 }
               },
               "createdAt": {
-                "description": "When the cirricula item was created",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
+                "description": "When the Curricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
                   "yaml": "created_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "updatedAt": {
-                "description": "When the cirricula was last updated",
+                "allOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
+                "description": "When the Curricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
                   "json": "updated_at",
                   "yaml": "updated_at"
-                },
-                "type": "string",
-                "format": "date-time",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "deletedAt": {
+                "allOf": [
+                  {
+                    "description": "Timestamp when the resource was deleted.",
+                    "x-go-type": "time.Time",
+                    "type": "string",
+                    "format": "date-time",
+                    "x-go-name": "DeletedAt",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "deleted_at",
+                      "yaml": "deleted_at"
+                    },
+                    "x-go-type-skip-optional-pointer": true
+                  }
+                ],
                 "x-go-type": "core.NullTime",
                 "x-oapi-codegen-extra-tags": {
                   "db": "deleted_at",
                   "json": "deleted_at",
                   "yaml": "deleted_at"
-                },
-                "description": "Timestamp when the resource was deleted.",
-                "type": "string",
-                "format": "date-time",
-                "x-go-name": "DeletedAt",
-                "x-go-type-skip-optional-pointer": true
+                }
               },
               "metadata": {
                 "type": "object",
-                "description": "Additional metadata about the cirricula",
+                "description": "Additional metadata about the Curricula",
                 "additionalProperties": true,
                 "x-go-type": "core.Map",
                 "x-go-type-skip-optional-pointer": true,
@@ -8809,9 +9464,9 @@ const AcademySchema = {
                             "x-go-name": "ID"
                           },
                           "org_id": {
-                            "description": "UUID of the organization that issued the certificate",
                             "type": "string",
                             "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
@@ -9001,23 +9656,23 @@ const AcademySchema = {
           }
         ]
       },
-      "AcademyCirriculaListResponse": {
+      "AcademyCurriculaListResponse": {
         "type": "object",
         "properties": {
           "total": {
             "type": "integer",
-            "description": "Total number of cirricula",
+            "description": "Total number of Curricula",
             "example": 7
           },
           "data": {
             "type": "array",
             "items": {
-              "x-go-type": "AcademyCirricula",
+              "x-go-type": "AcademyCurricula",
               "type": "object",
               "properties": {
                 "id": {
                   "type": "string",
-                  "description": "Id of the cirricula",
+                  "description": "Id of the Curricula",
                   "example": "923458-3490394-934893",
                   "x-go-name": "ID",
                   "x-oapi-codegen-extra-tags": {
@@ -9049,7 +9704,7 @@ const AcademySchema = {
                   }
                 },
                 "visibility": {
-                  "description": "Visibility of the cirricula",
+                  "description": "Visibility of the Curricula",
                   "x-go-type": "Visibility",
                   "x-oapi-codegen-extra-tags": {
                     "db": "visibility",
@@ -9064,7 +9719,7 @@ const AcademySchema = {
                 },
                 "status": {
                   "example": "ready",
-                  "description": "Status of the cirricula",
+                  "description": "Status of the Curricula",
                   "x-go-type": "Status",
                   "x-oapi-codegen-extra-tags": {
                     "db": "status",
@@ -9080,11 +9735,11 @@ const AcademySchema = {
                 },
                 "slug": {
                   "type": "string",
-                  "description": "slug of the cirricula",
+                  "description": "slug of the Curricula",
                   "example": "intro-kubernetes-course"
                 },
                 "level": {
-                  "description": "Level of the cirricula",
+                  "description": "Level of the Curricula",
                   "x-go-type": "Level",
                   "x-oapi-codegen-extra-tags": {
                     "db": "level",
@@ -9099,86 +9754,114 @@ const AcademySchema = {
                   ]
                 },
                 "badge_id": {
+                  "type": "string",
+                  "format": "uuid",
                   "description": "ID of the badge to be awarded on completion of this curricula",
+                  "x-go-type": "corev1alpha1.Uuid",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                    "name": "corev1alpha1"
+                  },
                   "x-oapi-codegen-extra-tags": {
                     "db": "badge_id",
                     "json": "badge_id",
                     "yaml": "badge_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "invite_id": {
-                  "description": "ID of the invite associated with this cirricula",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    }
+                  ],
+                  "description": "ID of the invite associated with this Curricula",
                   "x-oapi-codegen-extra-tags": {
                     "db": "invite_id",
                     "json": "invite_id",
                     "yaml": "invite_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "workspace_id": {
-                  "description": "ID of the workspace to which this cirricula belongs",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    }
+                  ],
+                  "description": "ID of the workspace to which this Curricula belongs",
                   "x-oapi-codegen-extra-tags": {
                     "db": "workspace_id",
                     "json": "workspace_id",
                     "yaml": "workspace_id"
-                  },
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
                   }
                 },
                 "createdAt": {
-                  "description": "When the cirricula item was created",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
+                  "description": "When the Curricula item was created",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
                     "json": "created_at",
                     "yaml": "created_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "updatedAt": {
-                  "description": "When the cirricula was last updated",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
+                  "description": "When the Curricula was last updated",
                   "x-go-type": "core.Time",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
                     "json": "updated_at",
                     "yaml": "updated_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "deletedAt": {
+                  "allOf": [
+                    {
+                      "description": "Timestamp when the resource was deleted.",
+                      "x-go-type": "time.Time",
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-name": "DeletedAt",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "yaml": "deleted_at"
+                      },
+                      "x-go-type-skip-optional-pointer": true
+                    }
+                  ],
                   "x-go-type": "core.NullTime",
                   "x-oapi-codegen-extra-tags": {
                     "db": "deleted_at",
                     "json": "deleted_at",
                     "yaml": "deleted_at"
-                  },
-                  "description": "Timestamp when the resource was deleted.",
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-name": "DeletedAt",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "metadata": {
                   "type": "object",
-                  "description": "Additional metadata about the cirricula",
+                  "description": "Additional metadata about the Curricula",
                   "additionalProperties": true,
                   "x-go-type": "core.Map",
                   "x-go-type-skip-optional-pointer": true,
@@ -9241,9 +9924,9 @@ const AcademySchema = {
                               "x-go-name": "ID"
                             },
                             "org_id": {
-                              "description": "UUID of the organization that issued the certificate",
                               "type": "string",
                               "format": "uuid",
+                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                               "x-go-type": "uuid.UUID",
                               "x-go-type-import": {
                                 "path": "github.com/gofrs/uuid"
@@ -9427,7 +10110,7 @@ const AcademySchema = {
         "properties": {
           "total": {
             "type": "integer",
-            "description": "Total number of cirricula",
+            "description": "Total number of Curricula",
             "example": 7
           },
           "data": {
@@ -9441,7 +10124,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -9473,7 +10156,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -9488,7 +10171,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -9504,11 +10187,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -9523,86 +10206,114 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
                         "yaml": "badge_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "invite_id": {
-                      "description": "ID of the invite associated with this cirricula",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
                         "yaml": "invite_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "workspace_id": {
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                          "x-go-type": "uuid.UUID",
+                          "x-go-type-import": {
+                            "path": "github.com/gofrs/uuid"
+                          }
+                        }
+                      ],
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
                         "yaml": "workspace_id"
-                      },
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
                       }
                     },
                     "createdAt": {
-                      "description": "When the cirricula item was created",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
                         "yaml": "created_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "updatedAt": {
-                      "description": "When the cirricula was last updated",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
                         "json": "updated_at",
                         "yaml": "updated_at"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "deletedAt": {
+                      "allOf": [
+                        {
+                          "description": "Timestamp when the resource was deleted.",
+                          "x-go-type": "time.Time",
+                          "type": "string",
+                          "format": "date-time",
+                          "x-go-name": "DeletedAt",
+                          "x-oapi-codegen-extra-tags": {
+                            "db": "deleted_at",
+                            "yaml": "deleted_at"
+                          },
+                          "x-go-type-skip-optional-pointer": true
+                        }
+                      ],
                       "x-go-type": "core.NullTime",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
                         "json": "deleted_at",
                         "yaml": "deleted_at"
-                      },
-                      "description": "Timestamp when the resource was deleted.",
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-name": "DeletedAt",
-                      "x-go-type-skip-optional-pointer": true
+                      }
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -9665,9 +10376,9 @@ const AcademySchema = {
                                   "x-go-name": "ID"
                                 },
                                 "org_id": {
-                                  "description": "UUID of the organization that issued the certificate",
                                   "type": "string",
                                   "format": "uuid",
+                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                   "x-go-type": "uuid.UUID",
                                   "x-go-type-import": {
                                     "path": "github.com/gofrs/uuid"
@@ -9917,9 +10628,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10127,9 +10838,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10329,9 +11040,9 @@ const AcademySchema = {
             "x-go-name": "ID"
           },
           "org_id": {
-            "description": "UUID of the organization that issued the certificate",
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
@@ -10458,9 +11169,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -10644,30 +11355,30 @@ const AcademySchema = {
         ],
         "properties": {
           "id": {
-            "x-go-name": "ID",
-            "x-oapi-codegen-extra-tags": {
-              "db": "id",
-              "json": "id",
-              "yaml": "id"
-            },
             "type": "string",
             "format": "uuid",
             "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "ID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "id",
+              "json": "id",
+              "yaml": "id"
             }
           },
           "org_id": {
-            "description": "ID of the organization",
-            "x-oapi-codegen-extra-tags": {
-              "db": "org_id"
-            },
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "org_id"
             }
           },
           "content_id": {
@@ -10678,15 +11389,15 @@ const AcademySchema = {
             }
           },
           "user_id": {
-            "description": "ID of the user (foreign key to User)",
-            "x-oapi-codegen-extra-tags": {
-              "db": "user_id"
-            },
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "user_id"
             }
           },
           "status": {
@@ -10704,32 +11415,33 @@ const AcademySchema = {
             ]
           },
           "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true,
             "description": "When the registration was updated",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "x-go-type-skip-optional-pointer": true,
             "description": "When the registration was created",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "deleted_at": {
-            "x-go-type": "core.NullTime",
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
             "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
             "type": "string",
             "format": "date-time",
             "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
             "x-go-type-skip-optional-pointer": true
           },
           "certificate": {
@@ -10757,9 +11469,9 @@ const AcademySchema = {
                 "x-go-name": "ID"
               },
               "org_id": {
-                "description": "UUID of the organization that issued the certificate",
                 "type": "string",
                 "format": "uuid",
+                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
@@ -11571,30 +12283,30 @@ const AcademySchema = {
               ],
               "properties": {
                 "id": {
-                  "x-go-name": "ID",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "id",
-                    "json": "id",
-                    "yaml": "id"
-                  },
                   "type": "string",
                   "format": "uuid",
                   "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-go-name": "ID",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "id",
+                    "json": "id",
+                    "yaml": "id"
                   }
                 },
                 "org_id": {
-                  "description": "ID of the organization",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "org_id"
-                  },
                   "type": "string",
                   "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "org_id"
                   }
                 },
                 "content_id": {
@@ -11605,15 +12317,15 @@ const AcademySchema = {
                   }
                 },
                 "user_id": {
-                  "description": "ID of the user (foreign key to User)",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "user_id"
-                  },
                   "type": "string",
                   "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "user_id"
                   }
                 },
                 "status": {
@@ -11631,32 +12343,33 @@ const AcademySchema = {
                   ]
                 },
                 "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true,
                   "description": "When the registration was updated",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true,
                   "description": "When the registration was created",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at"
-                  },
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  }
                 },
                 "deleted_at": {
-                  "x-go-type": "core.NullTime",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "deleted_at"
-                  },
                   "description": "Timestamp when the resource was deleted.",
+                  "x-go-type": "time.Time",
                   "type": "string",
                   "format": "date-time",
                   "x-go-name": "DeletedAt",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "yaml": "deleted_at"
+                  },
                   "x-go-type-skip-optional-pointer": true
                 },
                 "certificate": {
@@ -11684,9 +12397,9 @@ const AcademySchema = {
                       "x-go-name": "ID"
                     },
                     "org_id": {
-                      "description": "UUID of the organization that issued the certificate",
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
@@ -11781,7 +12494,7 @@ const AcademySchema = {
           "data"
         ]
       },
-      "CirriculaCurrentItemData": {
+      "CurriculaCurrentItemData": {
         "type": "object",
         "required": [
           "id",
@@ -11807,7 +12520,7 @@ const AcademySchema = {
           }
         }
       },
-      "CirriculaProgressTracker": {
+      "CurriculaProgressTracker": {
         "type": "object",
         "required": [
           "current_item",
@@ -11820,7 +12533,7 @@ const AcademySchema = {
           "current_item": {
             "type": "object",
             "additionalProperties": {
-              "x-go-type": "CirriculaCurrentItemData",
+              "x-go-type": "CurriculaCurrentItemData",
               "type": "object",
               "required": [
                 "id",
@@ -12265,7 +12978,7 @@ const AcademySchema = {
             "x-go-type": "ContentType"
           },
           "item_data": {
-            "x-go-type": "CirriculaCurrentItemData",
+            "x-go-type": "CurriculaCurrentItemData",
             "type": "object",
             "required": [
               "id",
@@ -12876,14 +13589,15 @@ const AcademySchema = {
             }
           },
           "deleted_at": {
-            "x-go-type": "core.NullTime",
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
             "description": "Timestamp when the resource was deleted.",
+            "x-go-type": "time.Time",
             "type": "string",
             "format": "date-time",
             "x-go-name": "DeletedAt",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "yaml": "deleted_at"
+            },
             "x-go-type-skip-optional-pointer": true
           },
           "submitted_at": {
@@ -14160,6 +14874,6 @@ const AcademySchema = {
       }
     }
   }
-} as const;
+};
 
 export default AcademySchema;

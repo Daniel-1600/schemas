@@ -38,35 +38,6 @@ const (
 	Yes ComponentStylesGhost = "yes"
 )
 
-// Defines values for ComponentStylesShape.
-const (
-	ComponentStylesShapeBarrel               ComponentStylesShape = "barrel"
-	ComponentStylesShapeBottomRoundRectangle ComponentStylesShape = "bottom-round-rectangle"
-	ComponentStylesShapeConcaveHexagon       ComponentStylesShape = "concave-hexagon"
-	ComponentStylesShapeCutRectangle         ComponentStylesShape = "cut-rectangle"
-	ComponentStylesShapeDiamond              ComponentStylesShape = "diamond"
-	ComponentStylesShapeEllipse              ComponentStylesShape = "ellipse"
-	ComponentStylesShapeHeptagon             ComponentStylesShape = "heptagon"
-	ComponentStylesShapeHexagon              ComponentStylesShape = "hexagon"
-	ComponentStylesShapeOctagon              ComponentStylesShape = "octagon"
-	ComponentStylesShapePentagon             ComponentStylesShape = "pentagon"
-	ComponentStylesShapePolygon              ComponentStylesShape = "polygon"
-	ComponentStylesShapeRectangle            ComponentStylesShape = "rectangle"
-	ComponentStylesShapeRhomboid             ComponentStylesShape = "rhomboid"
-	ComponentStylesShapeRoundDiamond         ComponentStylesShape = "round-diamond"
-	ComponentStylesShapeRoundHeptagon        ComponentStylesShape = "round-heptagon"
-	ComponentStylesShapeRoundHexagon         ComponentStylesShape = "round-hexagon"
-	ComponentStylesShapeRoundOctagon         ComponentStylesShape = "round-octagon"
-	ComponentStylesShapeRoundPentagon        ComponentStylesShape = "round-pentagon"
-	ComponentStylesShapeRoundRectangle       ComponentStylesShape = "round-rectangle"
-	ComponentStylesShapeRoundTag             ComponentStylesShape = "round-tag"
-	ComponentStylesShapeRoundTriangle        ComponentStylesShape = "round-triangle"
-	ComponentStylesShapeStar                 ComponentStylesShape = "star"
-	ComponentStylesShapeTag                  ComponentStylesShape = "tag"
-	ComponentStylesShapeTriangle             ComponentStylesShape = "triangle"
-	ComponentStylesShapeVee                  ComponentStylesShape = "vee"
-)
-
 // Defines values for ComponentStylesTextHalign.
 const (
 	ComponentStylesTextHalignCenter ComponentStylesTextHalign = "center"
@@ -90,12 +61,12 @@ const (
 
 // Defines values for EdgeStylesCurveStyle.
 const (
-	EdgeStylesCurveStyleBezier          EdgeStylesCurveStyle = "bezier"
-	EdgeStylesCurveStyleHaystack        EdgeStylesCurveStyle = "haystack"
-	EdgeStylesCurveStyleSegments        EdgeStylesCurveStyle = "segments"
-	EdgeStylesCurveStyleStraight        EdgeStylesCurveStyle = "straight"
-	EdgeStylesCurveStyleTaxi            EdgeStylesCurveStyle = "taxi"
-	EdgeStylesCurveStyleUnbundledBezier EdgeStylesCurveStyle = "unbundled-bezier"
+	Bezier          EdgeStylesCurveStyle = "bezier"
+	Haystack        EdgeStylesCurveStyle = "haystack"
+	Segments        EdgeStylesCurveStyle = "segments"
+	Straight        EdgeStylesCurveStyle = "straight"
+	Taxi            EdgeStylesCurveStyle = "taxi"
+	UnbundledBezier EdgeStylesCurveStyle = "unbundled-bezier"
 )
 
 // Defines values for EdgeStylesLineCap.
@@ -163,81 +134,6 @@ const (
 	EdgeStylesTextTransformUppercase EdgeStylesTextTransform = "uppercase"
 )
 
-// Defines values for RelationshipStyles0CurveStyle.
-const (
-	RelationshipStyles0CurveStyleBezier          RelationshipStyles0CurveStyle = "bezier"
-	RelationshipStyles0CurveStyleHaystack        RelationshipStyles0CurveStyle = "haystack"
-	RelationshipStyles0CurveStyleSegments        RelationshipStyles0CurveStyle = "segments"
-	RelationshipStyles0CurveStyleStraight        RelationshipStyles0CurveStyle = "straight"
-	RelationshipStyles0CurveStyleTaxi            RelationshipStyles0CurveStyle = "taxi"
-	RelationshipStyles0CurveStyleUnbundledBezier RelationshipStyles0CurveStyle = "unbundled-bezier"
-)
-
-// Defines values for RelationshipStyles0LineCap.
-const (
-	RelationshipStyles0LineCapButt   RelationshipStyles0LineCap = "butt"
-	RelationshipStyles0LineCapRound  RelationshipStyles0LineCap = "round"
-	RelationshipStyles0LineCapSquare RelationshipStyles0LineCap = "square"
-)
-
-// Defines values for RelationshipStyles0LineStyle.
-const (
-	Dashed RelationshipStyles0LineStyle = "dashed"
-	Dotted RelationshipStyles0LineStyle = "dotted"
-	Solid  RelationshipStyles0LineStyle = "solid"
-)
-
-// Defines values for RelationshipStyles0MidTargetArrowFill.
-const (
-	RelationshipStyles0MidTargetArrowFillFilled RelationshipStyles0MidTargetArrowFill = "filled"
-	RelationshipStyles0MidTargetArrowFillHollow RelationshipStyles0MidTargetArrowFill = "hollow"
-)
-
-// Defines values for RelationshipStyles0MidTargetArrowShape.
-const (
-	RelationshipStyles0MidTargetArrowShapeChevron           RelationshipStyles0MidTargetArrowShape = "chevron"
-	RelationshipStyles0MidTargetArrowShapeCircle            RelationshipStyles0MidTargetArrowShape = "circle"
-	RelationshipStyles0MidTargetArrowShapeCircleTriangle    RelationshipStyles0MidTargetArrowShape = "circle-triangle"
-	RelationshipStyles0MidTargetArrowShapeDiamond           RelationshipStyles0MidTargetArrowShape = "diamond"
-	RelationshipStyles0MidTargetArrowShapeNone              RelationshipStyles0MidTargetArrowShape = "none"
-	RelationshipStyles0MidTargetArrowShapeSquare            RelationshipStyles0MidTargetArrowShape = "square"
-	RelationshipStyles0MidTargetArrowShapeTee               RelationshipStyles0MidTargetArrowShape = "tee"
-	RelationshipStyles0MidTargetArrowShapeTriangle          RelationshipStyles0MidTargetArrowShape = "triangle"
-	RelationshipStyles0MidTargetArrowShapeTriangleBackcurve RelationshipStyles0MidTargetArrowShape = "triangle-backcurve"
-	RelationshipStyles0MidTargetArrowShapeTriangleCross     RelationshipStyles0MidTargetArrowShape = "triangle-cross"
-	RelationshipStyles0MidTargetArrowShapeTriangleTee       RelationshipStyles0MidTargetArrowShape = "triangle-tee"
-	RelationshipStyles0MidTargetArrowShapeVee               RelationshipStyles0MidTargetArrowShape = "vee"
-)
-
-// Defines values for RelationshipStyles0TargetArrowFill.
-const (
-	RelationshipStyles0TargetArrowFillFilled RelationshipStyles0TargetArrowFill = "filled"
-	RelationshipStyles0TargetArrowFillHollow RelationshipStyles0TargetArrowFill = "hollow"
-)
-
-// Defines values for RelationshipStyles0TargetArrowShape.
-const (
-	RelationshipStyles0TargetArrowShapeChevron           RelationshipStyles0TargetArrowShape = "chevron"
-	RelationshipStyles0TargetArrowShapeCircle            RelationshipStyles0TargetArrowShape = "circle"
-	RelationshipStyles0TargetArrowShapeCircleTriangle    RelationshipStyles0TargetArrowShape = "circle-triangle"
-	RelationshipStyles0TargetArrowShapeDiamond           RelationshipStyles0TargetArrowShape = "diamond"
-	RelationshipStyles0TargetArrowShapeNone              RelationshipStyles0TargetArrowShape = "none"
-	RelationshipStyles0TargetArrowShapeSquare            RelationshipStyles0TargetArrowShape = "square"
-	RelationshipStyles0TargetArrowShapeTee               RelationshipStyles0TargetArrowShape = "tee"
-	RelationshipStyles0TargetArrowShapeTriangle          RelationshipStyles0TargetArrowShape = "triangle"
-	RelationshipStyles0TargetArrowShapeTriangleBackcurve RelationshipStyles0TargetArrowShape = "triangle-backcurve"
-	RelationshipStyles0TargetArrowShapeTriangleCross     RelationshipStyles0TargetArrowShape = "triangle-cross"
-	RelationshipStyles0TargetArrowShapeTriangleTee       RelationshipStyles0TargetArrowShape = "triangle-tee"
-	RelationshipStyles0TargetArrowShapeVee               RelationshipStyles0TargetArrowShape = "vee"
-)
-
-// Defines values for RelationshipStyles0TextTransform.
-const (
-	RelationshipStyles0TextTransformLowercase RelationshipStyles0TextTransform = "lowercase"
-	RelationshipStyles0TextTransformNone      RelationshipStyles0TextTransform = "none"
-	RelationshipStyles0TextTransformUppercase RelationshipStyles0TextTransform = "uppercase"
-)
-
 // Defines values for RelationshipStyles1TextTransform.
 const (
 	RelationshipStyles1TextTransformLowercase RelationshipStyles1TextTransform = "lowercase"
@@ -276,18 +172,19 @@ const (
 
 // Defines values for StylesTextTransform.
 const (
-	StylesTextTransformLowercase StylesTextTransform = "lowercase"
-	StylesTextTransformNone      StylesTextTransform = "none"
-	StylesTextTransformUppercase StylesTextTransform = "uppercase"
+	Lowercase StylesTextTransform = "lowercase"
+	None      StylesTextTransform = "none"
+	Uppercase StylesTextTransform = "uppercase"
 )
 
-// Endpoint endpoint
-type Endpoint = string
+// Endpoint defines model for Endpoint.
+type Endpoint = Text
 
 // IaCFileTypes The type of the IaC file
 type IaCFileTypes string
 
 // Id defines model for Id.
+// Id defines model for id.
 type Id = uuid.UUID
 
 // MapObject defines model for MapObject.
@@ -296,31 +193,31 @@ type MapObject map[string]string
 // NonResolvedAlias An alias is an component that acts as an ref/pointer to a field in another component, nonResolvedAlias are not aware of there immediate parents
 type NonResolvedAlias struct {
 	// AliasComponentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	AliasComponentId uuid.UUID `json:"alias_component_id" yaml:"alias_component_id"`
+	AliasComponentId Uuid `json:"alias_component_id" yaml:"alias_component_id"`
 
 	// ImmediateParentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ImmediateParentId     uuid.UUID `json:"immediate_parent_id" yaml:"immediate_parent_id"`
-	ImmediateRefFieldPath []string  `json:"immediate_ref_field_path" yaml:"immediate_ref_field_path"`
+	ImmediateParentId     Uuid     `json:"immediate_parent_id" yaml:"immediate_parent_id"`
+	ImmediateRefFieldPath []string `json:"immediate_ref_field_path" yaml:"immediate_ref_field_path"`
 
 	// RelationshipId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	RelationshipId uuid.UUID `json:"relationship_id" yaml:"relationship_id"`
+	RelationshipId Uuid `json:"relationship_id" yaml:"relationship_id"`
 }
 
 // ResolvedAlias defines model for ResolvedAlias.
 type ResolvedAlias struct {
 	// AliasComponentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	AliasComponentId uuid.UUID `json:"alias_component_id" yaml:"alias_component_id"`
+	AliasComponentId Uuid `json:"alias_component_id" yaml:"alias_component_id"`
 
 	// ImmediateParentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ImmediateParentId     uuid.UUID `json:"immediate_parent_id" yaml:"immediate_parent_id"`
-	ImmediateRefFieldPath []string  `json:"immediate_ref_field_path" yaml:"immediate_ref_field_path"`
+	ImmediateParentId     Uuid     `json:"immediate_parent_id" yaml:"immediate_parent_id"`
+	ImmediateRefFieldPath []string `json:"immediate_ref_field_path" yaml:"immediate_ref_field_path"`
 
 	// RelationshipId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	RelationshipId uuid.UUID `json:"relationship_id" yaml:"relationship_id"`
+	RelationshipId Uuid `json:"relationship_id" yaml:"relationship_id"`
 
 	// ResolvedParentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-	ResolvedParentId     uuid.UUID `json:"resolved_parent_id" yaml:"resolved_parent_id"`
-	ResolvedRefFieldPath []string  `json:"resolved_ref_field_path" yaml:"resolved_ref_field_path"`
+	ResolvedParentId     Uuid     `json:"resolved_parent_id" yaml:"resolved_parent_id"`
+	ResolvedRefFieldPath []string `json:"resolved_ref_field_path" yaml:"resolved_ref_field_path"`
 }
 
 // SqlNullTime defines model for SqlNullTime.
@@ -506,7 +403,7 @@ type ComponentStyles struct {
 	SelectionBoxOpacity *float32 `json:"selection-box-opacity,omitempty" yaml:"selection-box-opacity,omitempty"`
 
 	// Shape The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes)
-	Shape *ComponentStylesShape `json:"shape,omitempty" yaml:"shape,omitempty"`
+	Shape *Shape `json:"shape,omitempty" yaml:"shape,omitempty"`
 
 	// ShapePolygonPoints An array (or a space-separated string) of numbers ranging on [-1, 1], representing alternating x and y values (i.e. x1 y1 x2 y2, x3 y3 ...). This represents the points in the polygon for the node's shape. The bounding box of the node is given by (-1, -1), (1, -1), (1, 1), (-1, 1). The node's position is the origin (0, 0 )
 	ShapePolygonPoints *string `json:"shape-polygon-points,omitempty" yaml:"shape-polygon-points,omitempty"`
@@ -546,9 +443,6 @@ type ComponentStylesBorderStyle string
 // ComponentStylesGhost Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset.
 type ComponentStylesGhost string
 
-// ComponentStylesShape The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes)
-type ComponentStylesShape string
-
 // ComponentStylesTextHalign The horizontal alignment of a node's label
 type ComponentStylesTextHalign string
 
@@ -566,9 +460,6 @@ type CredentialID = uuid.UUID
 
 // DeletedAt Timestamp when the resource was deleted.
 type DeletedAt = time.Time
-
-// DesignId defines model for design_id.
-type DesignId = uuid.UUID
 
 // EdgeStyles defines model for edgeStyles.
 type EdgeStyles struct {
@@ -701,7 +592,7 @@ type EmailPreference struct {
 }
 
 // Emails defines model for emails.
-type Emails = []openapi_types.Email
+type Emails = []Email
 
 // Empty Body for empty request
 type Empty = map[string]interface{}
@@ -751,127 +642,6 @@ type RecordsPage struct {
 type RelationshipStyles struct {
 	union json.RawMessage
 }
-
-// RelationshipStyles0 defines model for .
-type RelationshipStyles0 struct {
-	// Animation The animation to apply to the element. example ripple,bounce,etc
-	Animation *map[string]interface{} `json:"animation,omitempty" yaml:"animation,omitempty"`
-
-	// ArrowScale Scaling for the arrow size.
-	ArrowScale *float32 `json:"arrow-scale,omitempty" yaml:"arrow-scale,omitempty"`
-
-	// Color The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g.
-	Color *string `json:"color,omitempty" yaml:"color,omitempty"`
-
-	// CurveStyle The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges.
-	CurveStyle *RelationshipStyles0CurveStyle `json:"curve-style,omitempty" yaml:"curve-style,omitempty"`
-
-	// EdgeAnimation The animation to use for the edge. Can be like 'marching-ants' , 'blink' , 'moving-gradient',etc .
-	EdgeAnimation *string `json:"edge-animation,omitempty" yaml:"edge-animation,omitempty"`
-
-	// FontFamily A comma-separated list of font names to use on the label text.
-	FontFamily *string `json:"font-family,omitempty" yaml:"font-family,omitempty"`
-
-	// FontSize The size of the label text.
-	FontSize *string `json:"font-size,omitempty" yaml:"font-size,omitempty"`
-
-	// FontStyle A CSS font style to be applied to the label text.
-	FontStyle *string `json:"font-style,omitempty" yaml:"font-style,omitempty"`
-
-	// FontWeight A CSS font weight to be applied to the label text.
-	FontWeight *string `json:"font-weight,omitempty" yaml:"font-weight,omitempty"`
-
-	// Label The text to display for an element's label. Can give a path, e.g. data(id) will label with the elements id
-	Label *string `json:"label,omitempty" yaml:"label,omitempty"`
-
-	// LineCap The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge.
-	LineCap *RelationshipStyles0LineCap `json:"line-cap,omitempty" yaml:"line-cap,omitempty"`
-
-	// LineColor The colour of the edge's line. Colours may be specified by name (e.g. red), hex (e.g.
-	LineColor *string `json:"line-color,omitempty" yaml:"line-color,omitempty"`
-
-	// LineOpacity The opacity of the edge's line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents.
-	LineOpacity *float32 `json:"line-opacity,omitempty" yaml:"line-opacity,omitempty"`
-
-	// LineStyle The style of the edge's line.
-	LineStyle *RelationshipStyles0LineStyle `json:"line-style,omitempty" yaml:"line-style,omitempty"`
-
-	// MidTargetArrowColor The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g.
-	MidTargetArrowColor *string `json:"mid-target-arrow-color,omitempty" yaml:"mid-target-arrow-color,omitempty"`
-
-	// MidTargetArrowFill The fill state of the edge's source arrow
-	MidTargetArrowFill *RelationshipStyles0MidTargetArrowFill `json:"mid-target-arrow-fill,omitempty" yaml:"mid-target-arrow-fill,omitempty"`
-
-	// MidTargetArrowShape The shape of the edge's source arrow
-	MidTargetArrowShape *RelationshipStyles0MidTargetArrowShape `json:"mid-target-arrow-shape,omitempty" yaml:"mid-target-arrow-shape,omitempty"`
-
-	// Opacity The opacity of the element, ranging from 0 to 1. Note that the opacity of a compound node parent affects the effective opacity of its children.
-	Opacity *float32 `json:"opacity,omitempty" yaml:"opacity,omitempty"`
-
-	// PrimaryColor Primary color of the component used for UI representation.
-	PrimaryColor string `json:"primaryColor" yaml:"primaryColor"`
-
-	// SecondaryColor Secondary color of the entity used for UI representation.
-	SecondaryColor *string `json:"secondaryColor,omitempty" yaml:"secondaryColor,omitempty"`
-
-	// SourceLabel The text to display for an edge's source label. Can give a path, e.g. data(id) will label with the elements id
-	SourceLabel *string `json:"source-label,omitempty" yaml:"source-label,omitempty"`
-
-	// SvgColor Colored SVG of the entity used for UI representation on light background.
-	SvgColor string `json:"svgColor" yaml:"svgColor"`
-
-	// SvgComplete Complete SVG of the entity used for UI representation, often inclusive of background.
-	SvgComplete string `json:"svgComplete" yaml:"svgComplete"`
-
-	// SvgWhite White SVG of the entity used for UI representation on dark background.
-	SvgWhite string `json:"svgWhite" yaml:"svgWhite"`
-
-	// TargetArrowColor The colour of the edge's source arrow. Colours may be specified by name (e.g. red), hex (e.g.
-	TargetArrowColor *string `json:"target-arrow-color,omitempty" yaml:"target-arrow-color,omitempty"`
-
-	// TargetArrowFill The fill state of the edge's source arrow
-	TargetArrowFill *RelationshipStyles0TargetArrowFill `json:"target-arrow-fill,omitempty" yaml:"target-arrow-fill,omitempty"`
-
-	// TargetArrowShape The shape of the edge's source arrow
-	TargetArrowShape *RelationshipStyles0TargetArrowShape `json:"target-arrow-shape,omitempty" yaml:"target-arrow-shape,omitempty"`
-
-	// TargetLabel The text to display for an edge's target label. Can give a path, e.g. data(id) will label with the elements id
-	TargetLabel *string `json:"target-label,omitempty" yaml:"target-label,omitempty"`
-
-	// TextOpacity The opacity of the label text, including its outline.
-	TextOpacity *float32 `json:"text-opacity,omitempty" yaml:"text-opacity,omitempty"`
-
-	// TextTransform A transformation to apply to the label text
-	TextTransform *RelationshipStyles0TextTransform `json:"text-transform,omitempty" yaml:"text-transform,omitempty"`
-
-	// ZIndex An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index.
-	ZIndex               *int                   `json:"z-index,omitempty" yaml:"z-index,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-" yaml:"-"`
-}
-
-// RelationshipStyles0CurveStyle The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges.
-type RelationshipStyles0CurveStyle string
-
-// RelationshipStyles0LineCap The cap style of the edge's line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge.
-type RelationshipStyles0LineCap string
-
-// RelationshipStyles0LineStyle The style of the edge's line.
-type RelationshipStyles0LineStyle string
-
-// RelationshipStyles0MidTargetArrowFill The fill state of the edge's source arrow
-type RelationshipStyles0MidTargetArrowFill string
-
-// RelationshipStyles0MidTargetArrowShape The shape of the edge's source arrow
-type RelationshipStyles0MidTargetArrowShape string
-
-// RelationshipStyles0TargetArrowFill The fill state of the edge's source arrow
-type RelationshipStyles0TargetArrowFill string
-
-// RelationshipStyles0TargetArrowShape The shape of the edge's source arrow
-type RelationshipStyles0TargetArrowShape string
-
-// RelationshipStyles0TextTransform A transformation to apply to the label text
-type RelationshipStyles0TextTransform string
 
 // RelationshipStyles1 defines model for .
 type RelationshipStyles1 struct {
@@ -939,7 +709,7 @@ type ResultsPage struct {
 // RoleNames defines model for roleNames.
 type RoleNames = []string
 
-// SemverString A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1.
+// SemverString A valid semantic version string between 5 and 100 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1'.
 type SemverString = string
 
 // Shape The shape of the node's body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes)
@@ -1016,7 +786,7 @@ type UpdatedAt = time.Time
 type UserId = string
 
 // UserIds defines model for user_ids.
-type UserIds = []uuid.UUID
+type UserIds = []Id
 
 // UserID defines model for user_uuid.
 type UserID = uuid.UUID
@@ -1035,9 +805,6 @@ type ViewId = uuid.UUID
 
 // WorkspaceId defines model for workspace_id.
 type WorkspaceId = uuid.UUID
-
-// ActorType defines model for actorType.
-type ActorType = string
 
 // All defines model for all.
 type All = bool
@@ -1083,9 +850,6 @@ type Page = string
 
 // Pagesize defines model for pagesize.
 type Pagesize = string
-
-// PagesizeWithAll defines model for pagesizeWithAll.
-type PagesizeWithAll = string
 
 // Playground defines model for playground.
 type Playground = string
@@ -2611,516 +2375,6 @@ func (a EdgeStyles) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-// Getter for additional properties for RelationshipStyles0. Returns the specified
-// element and whether it was found
-func (a RelationshipStyles0) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for RelationshipStyles0
-func (a *RelationshipStyles0) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for RelationshipStyles0 to handle AdditionalProperties
-func (a *RelationshipStyles0) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["animation"]; found {
-		err = json.Unmarshal(raw, &a.Animation)
-		if err != nil {
-			return fmt.Errorf("error reading 'animation': %w", err)
-		}
-		delete(object, "animation")
-	}
-
-	if raw, found := object["arrow-scale"]; found {
-		err = json.Unmarshal(raw, &a.ArrowScale)
-		if err != nil {
-			return fmt.Errorf("error reading 'arrow-scale': %w", err)
-		}
-		delete(object, "arrow-scale")
-	}
-
-	if raw, found := object["color"]; found {
-		err = json.Unmarshal(raw, &a.Color)
-		if err != nil {
-			return fmt.Errorf("error reading 'color': %w", err)
-		}
-		delete(object, "color")
-	}
-
-	if raw, found := object["curve-style"]; found {
-		err = json.Unmarshal(raw, &a.CurveStyle)
-		if err != nil {
-			return fmt.Errorf("error reading 'curve-style': %w", err)
-		}
-		delete(object, "curve-style")
-	}
-
-	if raw, found := object["edge-animation"]; found {
-		err = json.Unmarshal(raw, &a.EdgeAnimation)
-		if err != nil {
-			return fmt.Errorf("error reading 'edge-animation': %w", err)
-		}
-		delete(object, "edge-animation")
-	}
-
-	if raw, found := object["font-family"]; found {
-		err = json.Unmarshal(raw, &a.FontFamily)
-		if err != nil {
-			return fmt.Errorf("error reading 'font-family': %w", err)
-		}
-		delete(object, "font-family")
-	}
-
-	if raw, found := object["font-size"]; found {
-		err = json.Unmarshal(raw, &a.FontSize)
-		if err != nil {
-			return fmt.Errorf("error reading 'font-size': %w", err)
-		}
-		delete(object, "font-size")
-	}
-
-	if raw, found := object["font-style"]; found {
-		err = json.Unmarshal(raw, &a.FontStyle)
-		if err != nil {
-			return fmt.Errorf("error reading 'font-style': %w", err)
-		}
-		delete(object, "font-style")
-	}
-
-	if raw, found := object["font-weight"]; found {
-		err = json.Unmarshal(raw, &a.FontWeight)
-		if err != nil {
-			return fmt.Errorf("error reading 'font-weight': %w", err)
-		}
-		delete(object, "font-weight")
-	}
-
-	if raw, found := object["label"]; found {
-		err = json.Unmarshal(raw, &a.Label)
-		if err != nil {
-			return fmt.Errorf("error reading 'label': %w", err)
-		}
-		delete(object, "label")
-	}
-
-	if raw, found := object["line-cap"]; found {
-		err = json.Unmarshal(raw, &a.LineCap)
-		if err != nil {
-			return fmt.Errorf("error reading 'line-cap': %w", err)
-		}
-		delete(object, "line-cap")
-	}
-
-	if raw, found := object["line-color"]; found {
-		err = json.Unmarshal(raw, &a.LineColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'line-color': %w", err)
-		}
-		delete(object, "line-color")
-	}
-
-	if raw, found := object["line-opacity"]; found {
-		err = json.Unmarshal(raw, &a.LineOpacity)
-		if err != nil {
-			return fmt.Errorf("error reading 'line-opacity': %w", err)
-		}
-		delete(object, "line-opacity")
-	}
-
-	if raw, found := object["line-style"]; found {
-		err = json.Unmarshal(raw, &a.LineStyle)
-		if err != nil {
-			return fmt.Errorf("error reading 'line-style': %w", err)
-		}
-		delete(object, "line-style")
-	}
-
-	if raw, found := object["mid-target-arrow-color"]; found {
-		err = json.Unmarshal(raw, &a.MidTargetArrowColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'mid-target-arrow-color': %w", err)
-		}
-		delete(object, "mid-target-arrow-color")
-	}
-
-	if raw, found := object["mid-target-arrow-fill"]; found {
-		err = json.Unmarshal(raw, &a.MidTargetArrowFill)
-		if err != nil {
-			return fmt.Errorf("error reading 'mid-target-arrow-fill': %w", err)
-		}
-		delete(object, "mid-target-arrow-fill")
-	}
-
-	if raw, found := object["mid-target-arrow-shape"]; found {
-		err = json.Unmarshal(raw, &a.MidTargetArrowShape)
-		if err != nil {
-			return fmt.Errorf("error reading 'mid-target-arrow-shape': %w", err)
-		}
-		delete(object, "mid-target-arrow-shape")
-	}
-
-	if raw, found := object["opacity"]; found {
-		err = json.Unmarshal(raw, &a.Opacity)
-		if err != nil {
-			return fmt.Errorf("error reading 'opacity': %w", err)
-		}
-		delete(object, "opacity")
-	}
-
-	if raw, found := object["primaryColor"]; found {
-		err = json.Unmarshal(raw, &a.PrimaryColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'primaryColor': %w", err)
-		}
-		delete(object, "primaryColor")
-	}
-
-	if raw, found := object["secondaryColor"]; found {
-		err = json.Unmarshal(raw, &a.SecondaryColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'secondaryColor': %w", err)
-		}
-		delete(object, "secondaryColor")
-	}
-
-	if raw, found := object["source-label"]; found {
-		err = json.Unmarshal(raw, &a.SourceLabel)
-		if err != nil {
-			return fmt.Errorf("error reading 'source-label': %w", err)
-		}
-		delete(object, "source-label")
-	}
-
-	if raw, found := object["svgColor"]; found {
-		err = json.Unmarshal(raw, &a.SvgColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'svgColor': %w", err)
-		}
-		delete(object, "svgColor")
-	}
-
-	if raw, found := object["svgComplete"]; found {
-		err = json.Unmarshal(raw, &a.SvgComplete)
-		if err != nil {
-			return fmt.Errorf("error reading 'svgComplete': %w", err)
-		}
-		delete(object, "svgComplete")
-	}
-
-	if raw, found := object["svgWhite"]; found {
-		err = json.Unmarshal(raw, &a.SvgWhite)
-		if err != nil {
-			return fmt.Errorf("error reading 'svgWhite': %w", err)
-		}
-		delete(object, "svgWhite")
-	}
-
-	if raw, found := object["target-arrow-color"]; found {
-		err = json.Unmarshal(raw, &a.TargetArrowColor)
-		if err != nil {
-			return fmt.Errorf("error reading 'target-arrow-color': %w", err)
-		}
-		delete(object, "target-arrow-color")
-	}
-
-	if raw, found := object["target-arrow-fill"]; found {
-		err = json.Unmarshal(raw, &a.TargetArrowFill)
-		if err != nil {
-			return fmt.Errorf("error reading 'target-arrow-fill': %w", err)
-		}
-		delete(object, "target-arrow-fill")
-	}
-
-	if raw, found := object["target-arrow-shape"]; found {
-		err = json.Unmarshal(raw, &a.TargetArrowShape)
-		if err != nil {
-			return fmt.Errorf("error reading 'target-arrow-shape': %w", err)
-		}
-		delete(object, "target-arrow-shape")
-	}
-
-	if raw, found := object["target-label"]; found {
-		err = json.Unmarshal(raw, &a.TargetLabel)
-		if err != nil {
-			return fmt.Errorf("error reading 'target-label': %w", err)
-		}
-		delete(object, "target-label")
-	}
-
-	if raw, found := object["text-opacity"]; found {
-		err = json.Unmarshal(raw, &a.TextOpacity)
-		if err != nil {
-			return fmt.Errorf("error reading 'text-opacity': %w", err)
-		}
-		delete(object, "text-opacity")
-	}
-
-	if raw, found := object["text-transform"]; found {
-		err = json.Unmarshal(raw, &a.TextTransform)
-		if err != nil {
-			return fmt.Errorf("error reading 'text-transform': %w", err)
-		}
-		delete(object, "text-transform")
-	}
-
-	if raw, found := object["z-index"]; found {
-		err = json.Unmarshal(raw, &a.ZIndex)
-		if err != nil {
-			return fmt.Errorf("error reading 'z-index': %w", err)
-		}
-		delete(object, "z-index")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for RelationshipStyles0 to handle AdditionalProperties
-func (a RelationshipStyles0) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	if a.Animation != nil {
-		object["animation"], err = json.Marshal(a.Animation)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'animation': %w", err)
-		}
-	}
-
-	if a.ArrowScale != nil {
-		object["arrow-scale"], err = json.Marshal(a.ArrowScale)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'arrow-scale': %w", err)
-		}
-	}
-
-	if a.Color != nil {
-		object["color"], err = json.Marshal(a.Color)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'color': %w", err)
-		}
-	}
-
-	if a.CurveStyle != nil {
-		object["curve-style"], err = json.Marshal(a.CurveStyle)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'curve-style': %w", err)
-		}
-	}
-
-	if a.EdgeAnimation != nil {
-		object["edge-animation"], err = json.Marshal(a.EdgeAnimation)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'edge-animation': %w", err)
-		}
-	}
-
-	if a.FontFamily != nil {
-		object["font-family"], err = json.Marshal(a.FontFamily)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'font-family': %w", err)
-		}
-	}
-
-	if a.FontSize != nil {
-		object["font-size"], err = json.Marshal(a.FontSize)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'font-size': %w", err)
-		}
-	}
-
-	if a.FontStyle != nil {
-		object["font-style"], err = json.Marshal(a.FontStyle)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'font-style': %w", err)
-		}
-	}
-
-	if a.FontWeight != nil {
-		object["font-weight"], err = json.Marshal(a.FontWeight)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'font-weight': %w", err)
-		}
-	}
-
-	if a.Label != nil {
-		object["label"], err = json.Marshal(a.Label)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'label': %w", err)
-		}
-	}
-
-	if a.LineCap != nil {
-		object["line-cap"], err = json.Marshal(a.LineCap)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'line-cap': %w", err)
-		}
-	}
-
-	if a.LineColor != nil {
-		object["line-color"], err = json.Marshal(a.LineColor)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'line-color': %w", err)
-		}
-	}
-
-	if a.LineOpacity != nil {
-		object["line-opacity"], err = json.Marshal(a.LineOpacity)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'line-opacity': %w", err)
-		}
-	}
-
-	if a.LineStyle != nil {
-		object["line-style"], err = json.Marshal(a.LineStyle)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'line-style': %w", err)
-		}
-	}
-
-	if a.MidTargetArrowColor != nil {
-		object["mid-target-arrow-color"], err = json.Marshal(a.MidTargetArrowColor)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'mid-target-arrow-color': %w", err)
-		}
-	}
-
-	if a.MidTargetArrowFill != nil {
-		object["mid-target-arrow-fill"], err = json.Marshal(a.MidTargetArrowFill)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'mid-target-arrow-fill': %w", err)
-		}
-	}
-
-	if a.MidTargetArrowShape != nil {
-		object["mid-target-arrow-shape"], err = json.Marshal(a.MidTargetArrowShape)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'mid-target-arrow-shape': %w", err)
-		}
-	}
-
-	if a.Opacity != nil {
-		object["opacity"], err = json.Marshal(a.Opacity)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'opacity': %w", err)
-		}
-	}
-
-	object["primaryColor"], err = json.Marshal(a.PrimaryColor)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'primaryColor': %w", err)
-	}
-
-	if a.SecondaryColor != nil {
-		object["secondaryColor"], err = json.Marshal(a.SecondaryColor)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'secondaryColor': %w", err)
-		}
-	}
-
-	if a.SourceLabel != nil {
-		object["source-label"], err = json.Marshal(a.SourceLabel)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'source-label': %w", err)
-		}
-	}
-
-	object["svgColor"], err = json.Marshal(a.SvgColor)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'svgColor': %w", err)
-	}
-
-	object["svgComplete"], err = json.Marshal(a.SvgComplete)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'svgComplete': %w", err)
-	}
-
-	object["svgWhite"], err = json.Marshal(a.SvgWhite)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'svgWhite': %w", err)
-	}
-
-	if a.TargetArrowColor != nil {
-		object["target-arrow-color"], err = json.Marshal(a.TargetArrowColor)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'target-arrow-color': %w", err)
-		}
-	}
-
-	if a.TargetArrowFill != nil {
-		object["target-arrow-fill"], err = json.Marshal(a.TargetArrowFill)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'target-arrow-fill': %w", err)
-		}
-	}
-
-	if a.TargetArrowShape != nil {
-		object["target-arrow-shape"], err = json.Marshal(a.TargetArrowShape)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'target-arrow-shape': %w", err)
-		}
-	}
-
-	if a.TargetLabel != nil {
-		object["target-label"], err = json.Marshal(a.TargetLabel)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'target-label': %w", err)
-		}
-	}
-
-	if a.TextOpacity != nil {
-		object["text-opacity"], err = json.Marshal(a.TextOpacity)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'text-opacity': %w", err)
-		}
-	}
-
-	if a.TextTransform != nil {
-		object["text-transform"], err = json.Marshal(a.TextTransform)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'text-transform': %w", err)
-		}
-	}
-
-	if a.ZIndex != nil {
-		object["z-index"], err = json.Marshal(a.ZIndex)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'z-index': %w", err)
-		}
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
 // Getter for additional properties for RelationshipStyles1. Returns the specified
 // element and whether it was found
 func (a RelationshipStyles1) Get(fieldName string) (value interface{}, found bool) {
@@ -3691,22 +2945,22 @@ func (a Styles) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-// AsRelationshipStyles0 returns the union data inside the RelationshipStyles as a RelationshipStyles0
-func (t RelationshipStyles) AsRelationshipStyles0() (RelationshipStyles0, error) {
-	var body RelationshipStyles0
+// AsEdgeStyles returns the union data inside the RelationshipStyles as a EdgeStyles
+func (t RelationshipStyles) AsEdgeStyles() (EdgeStyles, error) {
+	var body EdgeStyles
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromRelationshipStyles0 overwrites any union data inside the RelationshipStyles as the provided RelationshipStyles0
-func (t *RelationshipStyles) FromRelationshipStyles0(v RelationshipStyles0) error {
+// FromEdgeStyles overwrites any union data inside the RelationshipStyles as the provided EdgeStyles
+func (t *RelationshipStyles) FromEdgeStyles(v EdgeStyles) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeRelationshipStyles0 performs a merge with any union data inside the RelationshipStyles, using the provided RelationshipStyles0
-func (t *RelationshipStyles) MergeRelationshipStyles0(v RelationshipStyles0) error {
+// MergeEdgeStyles performs a merge with any union data inside the RelationshipStyles, using the provided EdgeStyles
+func (t *RelationshipStyles) MergeEdgeStyles(v EdgeStyles) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err

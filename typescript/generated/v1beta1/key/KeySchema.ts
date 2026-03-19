@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const KeySchema = {
+const KeySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "key",
-    "version": "1.0.0"
+    "title": "Key",
+    "description": "OpenAPI schema for authorization key management in Meshery.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "security": [
     {
@@ -78,7 +88,6 @@ const KeySchema = {
                     "keys": {
                       "type": "array",
                       "items": {
-                        "x-go-type": "Key",
                         "type": "object",
                         "description": "Represents an authorization key used for access control.",
                         "required": [
@@ -296,7 +305,6 @@ const KeySchema = {
                     "keys": {
                       "type": "array",
                       "items": {
-                        "x-go-type": "Key",
                         "type": "object",
                         "description": "Represents an authorization key used for access control.",
                         "required": [
@@ -1205,7 +1213,6 @@ const KeySchema = {
           "keys": {
             "type": "array",
             "items": {
-              "x-go-type": "Key",
               "type": "object",
               "description": "Represents an authorization key used for access control.",
               "required": [
@@ -1323,6 +1330,6 @@ const KeySchema = {
       }
     }
   }
-} as const;
+};
 
 export default KeySchema;

@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const OrganizationSchema = {
+const OrganizationSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Organization",
-    "version": "1.0.0"
+    "description": "OpenAPI schema for organization management in Meshery Cloud.",
+    "version": "v1beta1",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
     "/api/identity/orgs/by-domain": {
@@ -1663,6 +1673,6 @@ const OrganizationSchema = {
       }
     }
   }
-} as const;
+};
 
 export default OrganizationSchema;

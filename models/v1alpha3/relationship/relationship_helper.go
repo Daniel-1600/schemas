@@ -12,6 +12,24 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// Deprecated: use RelationshipDefinitionSelectorsPatch.
+type RelationshipDefinition_Selectors_Patch = RelationshipDefinitionSelectorsPatch
+
+// Deprecated: use RelationshipDefinitionSelectorsPatchStrategy.
+type RelationshipDefinitionSelectorsPatchPatchStrategy = RelationshipDefinitionSelectorsPatchStrategy
+
+// Deprecated: use RelationshipMetadata.
+type Relationship_Metadata = RelationshipMetadata
+
+const (
+	// Deprecated: use Lowercase.
+	RelationshipDefinitionMetadataStylesTextTransformLowercase RelationshipDefinitionMetadataStylesTextTransform = Lowercase
+	// Deprecated: use None.
+	RelationshipDefinitionMetadataStylesTextTransformNone RelationshipDefinitionMetadataStylesTextTransform = None
+	// Deprecated: use Uppercase.
+	RelationshipDefinitionMetadataStylesTextTransformUppercase RelationshipDefinitionMetadataStylesTextTransform = Uppercase
+)
+
 func (r RelationshipDefinition) TableName() string {
 	return "relationship_definition_dbs"
 }
@@ -25,7 +43,7 @@ func (r *RelationshipDefinition) GenerateID() (uuid.UUID, error) {
 }
 
 func (r RelationshipDefinition) GetID() uuid.UUID {
-	return r.Id
+	return r.ID
 }
 
 func (r *RelationshipDefinition) GetEntityDetail() string {
@@ -37,7 +55,7 @@ func (r *RelationshipDefinition) Create(db *database.Handler, hostID uuid.UUID) 
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	r.Id = id
+	r.ID = id
 
 	err = db.Omit(clause.Associations).Create(&r).Error
 	if err != nil {

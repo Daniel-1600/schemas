@@ -3,15 +3,21 @@
  * Do not manually modify this file.
  */
 
-const WorkspaceSchema = {
+const WorkspaceSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "workspace",
-    "description": "Documentation for meshery Cloud REST APIs",
+    "title": "Workspace",
+    "description": "OpenAPI schema for workspace management in Meshery Cloud.",
+    "version": "v1beta1",
     "contact": {
-      "email": "maintainers@meshery.io"
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
     },
-    "version": "v0.6.394"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {
@@ -479,7 +485,7 @@ const WorkspaceSchema = {
     "securitySchemes": {
       "jwt": {
         "type": "http",
-        "scheme": "Bearer",
+        "scheme": "bearer",
         "bearerFormat": "JWT"
       }
     },
@@ -749,16 +755,16 @@ const WorkspaceSchema = {
           "design_id": {
             "type": "string",
             "format": "uuid",
-            "x-go-type": "uuid.UUID",
+            "x-go-type": "corev1alpha1.Uuid",
             "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
             },
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "design_id",
               "json": "design_id"
-            },
-            "x-go-type-name": "DesignId",
-            "x-go-type-skip-optional-pointer": true
+            }
           },
           "workspace_id": {
             "type": "string",
@@ -999,6 +1005,6 @@ const WorkspaceSchema = {
       }
     }
   }
-} as const;
+};
 
 export default WorkspaceSchema;

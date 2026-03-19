@@ -3,19 +3,25 @@
  * Do not manually modify this file.
  */
 
-const ConnectionSchema = {
+const ConnectionSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Connection API",
+    "description": "API for managing Meshery connections - managed and unmanaged resources tracked by Meshery.",
     "version": "v1beta1",
-    "description": "API for managing Meshery connections - managed and unmanaged resources tracked by Meshery"
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {
     "/api/integrations/connections": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -149,8 +155,8 @@ const ConnectionSchema = {
                     "connections": {
                       "type": "array",
                       "description": "List of connections on this page",
+                      "x-go-type": "[]*Connection",
                       "items": {
-                        "x-go-type": "*Connection",
                         "$id": "https://schemas.meshery.io/connection.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
                         "description": "Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections",
@@ -305,22 +311,20 @@ const ConnectionSchema = {
                               "db": "deleted_at",
                               "yaml": "deleted_at"
                             },
-                            "x-go-type": "core.NullTime",
-                            "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
                             "x-order": 12,
+                            "description": "SQL null Timestamp to handle null values of time.",
+                            "x-go-type": "sql.NullTime",
                             "type": "string",
-                            "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
                           },
                           "environments": {
                             "type": "array",
                             "description": "Associated environments for this connection",
                             "items": {
-                              "x-go-type": "*environment.Environment",
+                              "x-go-type": "*environmentv1beta1.Environment",
                               "x-go-type-import": {
-                                "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                                "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                                "name": "environmentv1beta1"
                               },
                               "$id": "https://schemas.meshery.io/environment.yaml",
                               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -454,11 +458,10 @@ const ConnectionSchema = {
                                     "db": "deleted_at",
                                     "yaml": "deleted_at"
                                   },
-                                  "x-go-type": "core.NullTime",
-                                  "x-go-import": "database/sql",
                                   "x-order": 10,
+                                  "description": "SQL null Timestamp to handle null values of time.",
+                                  "x-go-type": "sql.NullTime",
                                   "type": "string",
-                                  "format": "date-time",
                                   "x-go-type-skip-optional-pointer": true
                                 }
                               }
@@ -548,9 +551,6 @@ const ConnectionSchema = {
         }
       },
       "post": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -814,22 +814,20 @@ const ConnectionSchema = {
                         "db": "deleted_at",
                         "yaml": "deleted_at"
                       },
-                      "x-go-type": "core.NullTime",
-                      "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
                       "x-order": 12,
+                      "description": "SQL null Timestamp to handle null values of time.",
+                      "x-go-type": "sql.NullTime",
                       "type": "string",
-                      "format": "date-time",
                       "x-go-type-skip-optional-pointer": true
                     },
                     "environments": {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environment.Environment",
+                        "x-go-type": "*environmentv1beta1.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                          "name": "environmentv1beta1"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -963,11 +961,10 @@ const ConnectionSchema = {
                               "db": "deleted_at",
                               "yaml": "deleted_at"
                             },
-                            "x-go-type": "core.NullTime",
-                            "x-go-import": "database/sql",
                             "x-order": 10,
+                            "description": "SQL null Timestamp to handle null values of time.",
+                            "x-go-type": "sql.NullTime",
                             "type": "string",
-                            "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
                           }
                         }
@@ -1018,9 +1015,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/{connectionId}": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1199,22 +1193,20 @@ const ConnectionSchema = {
                         "db": "deleted_at",
                         "yaml": "deleted_at"
                       },
-                      "x-go-type": "core.NullTime",
-                      "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
                       "x-order": 12,
+                      "description": "SQL null Timestamp to handle null values of time.",
+                      "x-go-type": "sql.NullTime",
                       "type": "string",
-                      "format": "date-time",
                       "x-go-type-skip-optional-pointer": true
                     },
                     "environments": {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environment.Environment",
+                        "x-go-type": "*environmentv1beta1.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                          "name": "environmentv1beta1"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1348,11 +1340,10 @@ const ConnectionSchema = {
                               "db": "deleted_at",
                               "yaml": "deleted_at"
                             },
-                            "x-go-type": "core.NullTime",
-                            "x-go-import": "database/sql",
                             "x-order": 10,
+                            "description": "SQL null Timestamp to handle null values of time.",
+                            "x-go-type": "sql.NullTime",
                             "type": "string",
-                            "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
                           }
                         }
@@ -1401,9 +1392,6 @@ const ConnectionSchema = {
         }
       },
       "put": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1679,22 +1667,20 @@ const ConnectionSchema = {
                         "db": "deleted_at",
                         "yaml": "deleted_at"
                       },
-                      "x-go-type": "core.NullTime",
-                      "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
                       "x-order": 12,
+                      "description": "SQL null Timestamp to handle null values of time.",
+                      "x-go-type": "sql.NullTime",
                       "type": "string",
-                      "format": "date-time",
                       "x-go-type-skip-optional-pointer": true
                     },
                     "environments": {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environment.Environment",
+                        "x-go-type": "*environmentv1beta1.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                          "name": "environmentv1beta1"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1828,11 +1814,10 @@ const ConnectionSchema = {
                               "db": "deleted_at",
                               "yaml": "deleted_at"
                             },
-                            "x-go-type": "core.NullTime",
-                            "x-go-import": "database/sql",
                             "x-order": 10,
+                            "description": "SQL null Timestamp to handle null values of time.",
+                            "x-go-type": "sql.NullTime",
                             "type": "string",
-                            "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
                           }
                         }
@@ -1881,9 +1866,6 @@ const ConnectionSchema = {
         }
       },
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1917,9 +1899,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/meshery/{mesheryServerId}": {
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1953,9 +1932,6 @@ const ConnectionSchema = {
     },
     "/api/integrations/connections/kubernetes/{connectionId}/context": {
       "get": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -1996,9 +1972,6 @@ const ConnectionSchema = {
     },
     "/api/environments/{environmentId}/connections/{connectionId}": {
       "post": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -2040,9 +2013,6 @@ const ConnectionSchema = {
         }
       },
       "delete": {
-        "x-internal": [
-          "cloud"
-        ],
         "tags": [
           "Connections"
         ],
@@ -2311,22 +2281,20 @@ const ConnectionSchema = {
               "db": "deleted_at",
               "yaml": "deleted_at"
             },
-            "x-go-type": "core.NullTime",
-            "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/core"
-            },
             "x-order": 12,
+            "description": "SQL null Timestamp to handle null values of time.",
+            "x-go-type": "sql.NullTime",
             "type": "string",
-            "format": "date-time",
             "x-go-type-skip-optional-pointer": true
           },
           "environments": {
             "type": "array",
             "description": "Associated environments for this connection",
             "items": {
-              "x-go-type": "*environment.Environment",
+              "x-go-type": "*environmentv1beta1.Environment",
               "x-go-type-import": {
-                "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                "name": "environmentv1beta1"
               },
               "$id": "https://schemas.meshery.io/environment.yaml",
               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -2460,11 +2428,10 @@ const ConnectionSchema = {
                     "db": "deleted_at",
                     "yaml": "deleted_at"
                   },
-                  "x-go-type": "core.NullTime",
-                  "x-go-import": "database/sql",
                   "x-order": 10,
+                  "description": "SQL null Timestamp to handle null values of time.",
+                  "x-go-type": "sql.NullTime",
                   "type": "string",
-                  "format": "date-time",
                   "x-go-type-skip-optional-pointer": true
                 }
               }
@@ -2517,8 +2484,8 @@ const ConnectionSchema = {
           "connections": {
             "type": "array",
             "description": "List of connections on this page",
+            "x-go-type": "[]*Connection",
             "items": {
-              "x-go-type": "*Connection",
               "$id": "https://schemas.meshery.io/connection.yaml",
               "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Meshery Connections are managed and unmanaged resources that either through discovery or manual entry are tracked by Meshery. Learn more at https://docs.meshery.io/concepts/logical/connections",
@@ -2673,22 +2640,20 @@ const ConnectionSchema = {
                     "db": "deleted_at",
                     "yaml": "deleted_at"
                   },
-                  "x-go-type": "core.NullTime",
-                  "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/core"
-                  },
                   "x-order": 12,
+                  "description": "SQL null Timestamp to handle null values of time.",
+                  "x-go-type": "sql.NullTime",
                   "type": "string",
-                  "format": "date-time",
                   "x-go-type-skip-optional-pointer": true
                 },
                 "environments": {
                   "type": "array",
                   "description": "Associated environments for this connection",
                   "items": {
-                    "x-go-type": "*environment.Environment",
+                    "x-go-type": "*environmentv1beta1.Environment",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1beta1/environment"
+                      "path": "github.com/meshery/schemas/models/v1beta1/environment",
+                      "name": "environmentv1beta1"
                     },
                     "$id": "https://schemas.meshery.io/environment.yaml",
                     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -2822,11 +2787,10 @@ const ConnectionSchema = {
                           "db": "deleted_at",
                           "yaml": "deleted_at"
                         },
-                        "x-go-type": "core.NullTime",
-                        "x-go-import": "database/sql",
                         "x-order": 10,
+                        "description": "SQL null Timestamp to handle null values of time.",
+                        "x-go-type": "sql.NullTime",
                         "type": "string",
-                        "format": "date-time",
                         "x-go-type-skip-optional-pointer": true
                       }
                     }
@@ -3326,6 +3290,6 @@ const ConnectionSchema = {
       }
     }
   }
-} as const;
+};
 
 export default ConnectionSchema;

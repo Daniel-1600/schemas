@@ -4,17 +4,17 @@
  */
 
 export interface paths {
-  "/api/academy/cirricula/registered": {
+  "/api/academy/Curricula/registered": {
     /** Returns a list of academy content registered by the user with optional filtering. */
-    get: operations["getMyAcademyCirricula"];
+    get: operations["getMyAcademyCurricula"];
   };
   "/api/academy/curricula": {
     /** Creates a new academy curricula with the provided details. */
     post: operations["createAcademyCurricula"];
   };
-  "/api/academy/cirricula": {
+  "/api/academy/Curricula": {
     /** Returns a list of academy content with optional filtering. */
-    get: operations["getAcademyCirricula"];
+    get: operations["getAcademyCurricula"];
   };
   "/api/academy/{type}/{orgId}/{slug}": {
     /** Returns a learning path identified by type, orgId, and slug. */
@@ -32,7 +32,7 @@ export interface paths {
           content: {
             "application/json": {
               /**
-               * @description Id of the cirricula
+               * @description Id of the Curricula
                * @example 923458-3490394-934893
                */
               id: string;
@@ -44,23 +44,23 @@ export interface paths {
                */
               orgId: string;
               /**
-               * @description Visibility of the cirricula
+               * @description Visibility of the Curricula
                * @enum {string}
                */
               visibility: "public" | "private";
               /**
-               * @description Status of the cirricula
+               * @description Status of the Curricula
                * @example ready
                * @enum {string}
                */
               status: "ready" | "archived" | "not_ready";
               /**
-               * @description slug of the cirricula
+               * @description slug of the Curricula
                * @example intro-kubernetes-course
                */
               slug: string;
               /**
-               * @description Level of the cirricula
+               * @description Level of the Curricula
                * @enum {string}
                */
               level: "beginner" | "intermediate" | "advanced";
@@ -69,32 +69,16 @@ export interface paths {
                * @description ID of the badge to be awarded on completion of this curricula
                */
               badge_id?: string;
-              /**
-               * Format: uuid
-               * @description ID of the invite associated with this cirricula
-               */
+              /** @description ID of the invite associated with this Curricula */
               invite_id?: string;
-              /**
-               * Format: uuid
-               * @description ID of the workspace to which this cirricula belongs
-               */
+              /** @description ID of the workspace to which this Curricula belongs */
               workspace_id?: string;
-              /**
-               * Format: date-time
-               * @description When the cirricula item was created
-               */
+              /** @description When the Curricula item was created */
               createdAt: string;
-              /**
-               * Format: date-time
-               * @description When the cirricula was last updated
-               */
+              /** @description When the Curricula was last updated */
               updatedAt: string;
-              /**
-               * Format: date-time
-               * @description Timestamp when the resource was deleted.
-               */
               deletedAt: string;
-              /** @description Additional metadata about the cirricula */
+              /** @description Additional metadata about the Curricula */
               metadata: {
                 /**
                  * @description Title of the learning path
@@ -131,7 +115,7 @@ export interface paths {
                   id: string;
                   /**
                    * Format: uuid
-                   * @description UUID of the organization that issued the certificate
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                    */
                   org_id: string;
                   /**
@@ -285,14 +269,14 @@ export interface paths {
               id: string;
               /**
                * Format: uuid
-               * @description ID of the organization
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               org_id: string;
               /** @description ID of the course content */
               content_id: string;
               /**
                * Format: uuid
-               * @description ID of the user (foreign key to User)
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               user_id: string;
               /**
@@ -324,7 +308,7 @@ export interface paths {
                 id: string;
                 /**
                  * Format: uuid
-                 * @description UUID of the organization that issued the certificate
+                 * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                  */
                 org_id: string;
                 /**
@@ -436,6 +420,166 @@ export interface paths {
 
 export interface components {
   schemas: {
+    /**
+     * @description Organization ID that owns this learning path
+     * @example layer5
+     */
+    AcademyCurriculaOrgId: string;
+    /** @description ID of the badge to be awarded on completion of this curricula */
+    AcademyCurriculaBadgeId: string;
+    /** @description ID of the invite associated with this Curricula */
+    AcademyCurriculaInviteId: string;
+    /** @description ID of the workspace to which this Curricula belongs */
+    AcademyCurriculaWorkspaceId: string;
+    /** @description When the Curricula item was created */
+    AcademyCurriculaCreatedAt: string;
+    /** @description When the Curricula was last updated */
+    AcademyCurriculaUpdatedAt: string;
+    AcademyCurriculaDeletedAt: string;
+    /** @description Additional metadata about the Curricula */
+    AcademyCurriculaMetadata: {
+      /**
+       * @description Title of the learning path
+       * @example Mastering Kubernetes for Engineers
+       */
+      title: string;
+      /**
+       * @description Short description of the curricula
+       * @example Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads
+       */
+      description: string;
+      /**
+       * @description Detailed description of the curricula
+       * @example This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios.
+       */
+      detailed_description?: string;
+      /**
+       * Format: uri
+       * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+       * @example kubernetes-icon.svg
+       */
+      banner?: string | null;
+      /**
+       * Format: uri
+       * @description Canonical URL for the learning path
+       * @example http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/
+       */
+      permalink: string;
+      certificate?: {
+        /**
+         * @description Unique identifier for the certificate
+         * @example 1234567890abcdef
+         */
+        id: string;
+        /**
+         * Format: uuid
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+         */
+        org_id: string;
+        /**
+         * @description ID of the recipient (user) who received the certificate
+         * @example 1234567890abcdef
+         */
+        recipient_id: string;
+        /**
+         * @description Name of the recipient (user) who received the certificate
+         * @example John Doe
+         */
+        recipient_name: string;
+        /**
+         * @description Title of the certificate
+         * @example Kubernetes Expert Certification
+         */
+        title: string;
+        /**
+         * @description Description of the certificate
+         * @example Awarded for successfully completing the Kubernetes Expert course
+         */
+        description: string;
+        /** @description List of issuing authorities for the certificate */
+        issuing_authorities: ({
+          /**
+           * @description Name of the issuing authority
+           * @example Cloud Native Foundation
+           */
+          name: string;
+          /**
+           * @description Role of the issuing authority
+           * @example COO
+           */
+          role?: string;
+          /**
+           * Format: uri
+           * @description URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format
+           * @example http://localhost:9876/signatures/cloud-native-foundation.png
+           */
+          signature_url?: string;
+        } & {
+          url: unknown;
+        })[];
+        /**
+         * Format: date-time
+         * @description Date when the certificate was issued
+         * @example 2023-10-01T12:00:00Z
+         */
+        issued_date: string;
+        /**
+         * Format: date-time
+         * @description Date when the certificate expires (optional)
+         * @example 2025-10-01T12:00:00Z
+         */
+        expiration_date?: string;
+        /**
+         * @description Number of months after which the certificate expires
+         * @example 24
+         */
+        expires_in?: number;
+      };
+      /** @description List of children items in the top-level curricula */
+      children?: {
+        /**
+         * @description Unique identifier for the course
+         * @example 1234567890abcdef
+         */
+        id: string;
+        /**
+         * @description Title of the course
+         * @example Kubernetes Basics
+         */
+        title: string;
+        /**
+         * Format: uri
+         * @description URL to the course content
+         * @example http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/
+         */
+        permalink: string;
+        /**
+         * @description Course description
+         * @example Learn the basics of Kubernetes
+         */
+        description: string;
+        /**
+         * @description A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.
+         * @example eg 1 , 2
+         */
+        weight?: number;
+        /**
+         * Format: uri
+         * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+         * @example kubernetes-icon.svg
+         */
+        banner?: string | null;
+        /**
+         * @description Type of the content (e.g., learning-path, challenge, certification)
+         * @enum {string}
+         */
+        type?: "learning-path" | "challenge" | "certification";
+        /** @description List of child nodes (sub-courses or modules) */
+        children?: { [key: string]: unknown }[];
+      }[];
+    } & { [key: string]: unknown };
+    /** @description Expiry time for curricula access */
+    AcademyCurriculaAccessExpiresAt: string;
     RegisterToAcademyContentRequest: {
       /** @description ID of the academy content to register for */
       content_id: string;
@@ -452,9 +596,9 @@ export interface components {
     Level: "beginner" | "intermediate" | "advanced";
     /** @enum {string} */
     Status: "ready" | "archived" | "not_ready";
-    AcademyCirricula: {
+    AcademyCurricula: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -466,23 +610,23 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
@@ -491,32 +635,16 @@ export interface components {
        * @description ID of the badge to be awarded on completion of this curricula
        */
       badge_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the invite associated with this cirricula
-       */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the workspace to which this cirricula belongs
-       */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula item was created
-       */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula was last updated
-       */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
-      /**
-       * Format: date-time
-       * @description Timestamp when the resource was deleted.
-       */
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -553,7 +681,7 @@ export interface components {
           id: string;
           /**
            * Format: uuid
-           * @description UUID of the organization that issued the certificate
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           org_id: string;
           /**
@@ -661,7 +789,7 @@ export interface components {
     };
     SingleAcademyCurriculaResponse: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -673,23 +801,23 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
@@ -698,32 +826,16 @@ export interface components {
        * @description ID of the badge to be awarded on completion of this curricula
        */
       badge_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the invite associated with this cirricula
-       */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the workspace to which this cirricula belongs
-       */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula item was created
-       */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula was last updated
-       */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
-      /**
-       * Format: date-time
-       * @description Timestamp when the resource was deleted.
-       */
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -760,7 +872,7 @@ export interface components {
           id: string;
           /**
            * Format: uuid
-           * @description UUID of the organization that issued the certificate
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           org_id: string;
           /**
@@ -870,12 +982,12 @@ export interface components {
       Invitation?: {
         /**
          * Format: uuid
-         * @description Unique identifier for the invitation , is also used as the invitation code
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         id: string;
         /**
          * Format: uuid
-         * @description ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         owner_id: string;
         /** @description Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
@@ -932,14 +1044,11 @@ export interface components {
        */
       title: string;
       /**
-       * @description Organization ID that owns this curricula
+       * @description Organization ID that owns this learning path
        * @example layer5
        */
       orgId: string;
-      /**
-       * Format: uuid
-       * @description ID of the workspace to which this cirricula belongs
-       */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id: string;
       /**
        * Format: uuid
@@ -948,20 +1057,17 @@ export interface components {
       badge_id?: string;
       /**
        * Format: uuid
-       * @description ID of the team associated with this curricula
+       * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
        */
       team_id: string;
-      /**
-       * Format: date-time
-       * @description Expiry time for curricula access
-       */
+      /** @description Expiry time for curricula access */
       access_expires_at?: string;
       /**
        * @description Current access status of the curricula
        * @enum {string}
        */
       access_status: "enabled" | "disabled";
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -998,7 +1104,7 @@ export interface components {
           id: string;
           /**
            * Format: uuid
-           * @description UUID of the organization that issued the certificate
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           org_id: string;
           /**
@@ -1106,7 +1212,7 @@ export interface components {
     };
     AcademyCurriculaWithMetrics: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -1118,23 +1224,23 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
@@ -1143,32 +1249,16 @@ export interface components {
        * @description ID of the badge to be awarded on completion of this curricula
        */
       badge_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the invite associated with this cirricula
-       */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /**
-       * Format: uuid
-       * @description ID of the workspace to which this cirricula belongs
-       */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula item was created
-       */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @description When the cirricula was last updated
-       */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
-      /**
-       * Format: date-time
-       * @description Timestamp when the resource was deleted.
-       */
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -1205,7 +1295,7 @@ export interface components {
           id: string;
           /**
            * Format: uuid
-           * @description UUID of the organization that issued the certificate
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           org_id: string;
           /**
@@ -1313,15 +1403,15 @@ export interface components {
     } & {
       RegistrationCount: number;
     };
-    AcademyCirriculaListResponse: {
+    AcademyCurriculaListResponse: {
       /**
-       * @description Total number of cirricula
+       * @description Total number of Curricula
        * @example 7
        */
       total: number;
       data: {
         /**
-         * @description Id of the cirricula
+         * @description Id of the Curricula
          * @example 923458-3490394-934893
          */
         id: string;
@@ -1333,23 +1423,23 @@ export interface components {
          */
         orgId: string;
         /**
-         * @description Visibility of the cirricula
+         * @description Visibility of the Curricula
          * @enum {string}
          */
         visibility: "public" | "private";
         /**
-         * @description Status of the cirricula
+         * @description Status of the Curricula
          * @example ready
          * @enum {string}
          */
         status: "ready" | "archived" | "not_ready";
         /**
-         * @description slug of the cirricula
+         * @description slug of the Curricula
          * @example intro-kubernetes-course
          */
         slug: string;
         /**
-         * @description Level of the cirricula
+         * @description Level of the Curricula
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
@@ -1358,32 +1448,16 @@ export interface components {
          * @description ID of the badge to be awarded on completion of this curricula
          */
         badge_id?: string;
-        /**
-         * Format: uuid
-         * @description ID of the invite associated with this cirricula
-         */
+        /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
-        /**
-         * Format: uuid
-         * @description ID of the workspace to which this cirricula belongs
-         */
+        /** @description ID of the workspace to which this Curricula belongs */
         workspace_id?: string;
-        /**
-         * Format: date-time
-         * @description When the cirricula item was created
-         */
+        /** @description When the Curricula item was created */
         createdAt: string;
-        /**
-         * Format: date-time
-         * @description When the cirricula was last updated
-         */
+        /** @description When the Curricula was last updated */
         updatedAt: string;
-        /**
-         * Format: date-time
-         * @description Timestamp when the resource was deleted.
-         */
         deletedAt: string;
-        /** @description Additional metadata about the cirricula */
+        /** @description Additional metadata about the Curricula */
         metadata: {
           /**
            * @description Title of the learning path
@@ -1420,7 +1494,7 @@ export interface components {
             id: string;
             /**
              * Format: uuid
-             * @description UUID of the organization that issued the certificate
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             org_id: string;
             /**
@@ -1529,13 +1603,13 @@ export interface components {
     };
     AcademyCurriculaWithMetricsListResponse: {
       /**
-       * @description Total number of cirricula
+       * @description Total number of Curricula
        * @example 7
        */
       total: number;
       data: ({
         /**
-         * @description Id of the cirricula
+         * @description Id of the Curricula
          * @example 923458-3490394-934893
          */
         id: string;
@@ -1547,23 +1621,23 @@ export interface components {
          */
         orgId: string;
         /**
-         * @description Visibility of the cirricula
+         * @description Visibility of the Curricula
          * @enum {string}
          */
         visibility: "public" | "private";
         /**
-         * @description Status of the cirricula
+         * @description Status of the Curricula
          * @example ready
          * @enum {string}
          */
         status: "ready" | "archived" | "not_ready";
         /**
-         * @description slug of the cirricula
+         * @description slug of the Curricula
          * @example intro-kubernetes-course
          */
         slug: string;
         /**
-         * @description Level of the cirricula
+         * @description Level of the Curricula
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
@@ -1572,32 +1646,16 @@ export interface components {
          * @description ID of the badge to be awarded on completion of this curricula
          */
         badge_id?: string;
-        /**
-         * Format: uuid
-         * @description ID of the invite associated with this cirricula
-         */
+        /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
-        /**
-         * Format: uuid
-         * @description ID of the workspace to which this cirricula belongs
-         */
+        /** @description ID of the workspace to which this Curricula belongs */
         workspace_id?: string;
-        /**
-         * Format: date-time
-         * @description When the cirricula item was created
-         */
+        /** @description When the Curricula item was created */
         createdAt: string;
-        /**
-         * Format: date-time
-         * @description When the cirricula was last updated
-         */
+        /** @description When the Curricula was last updated */
         updatedAt: string;
-        /**
-         * Format: date-time
-         * @description Timestamp when the resource was deleted.
-         */
         deletedAt: string;
-        /** @description Additional metadata about the cirricula */
+        /** @description Additional metadata about the Curricula */
         metadata: {
           /**
            * @description Title of the learning path
@@ -1634,7 +1692,7 @@ export interface components {
             id: string;
             /**
              * Format: uuid
-             * @description UUID of the organization that issued the certificate
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             org_id: string;
             /**
@@ -1779,7 +1837,7 @@ export interface components {
         id: string;
         /**
          * Format: uuid
-         * @description UUID of the organization that issued the certificate
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         org_id: string;
         /**
@@ -1920,7 +1978,7 @@ export interface components {
         id: string;
         /**
          * Format: uuid
-         * @description UUID of the organization that issued the certificate
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         org_id: string;
         /**
@@ -2053,7 +2111,7 @@ export interface components {
       id: string;
       /**
        * Format: uuid
-       * @description UUID of the organization that issued the certificate
+       * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
        */
       org_id: string;
       /**
@@ -2151,7 +2209,7 @@ export interface components {
         id: string;
         /**
          * Format: uuid
-         * @description UUID of the organization that issued the certificate
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         org_id: string;
         /**
@@ -2273,14 +2331,14 @@ export interface components {
       id: string;
       /**
        * Format: uuid
-       * @description ID of the organization
+       * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
        */
       org_id: string;
       /** @description ID of the course content */
       content_id: string;
       /**
        * Format: uuid
-       * @description ID of the user (foreign key to User)
+       * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
        */
       user_id: string;
       /**
@@ -2312,7 +2370,7 @@ export interface components {
         id: string;
         /**
          * Format: uuid
-         * @description UUID of the organization that issued the certificate
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         org_id: string;
         /**
@@ -2606,14 +2664,14 @@ export interface components {
         id: string;
         /**
          * Format: uuid
-         * @description ID of the organization
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         org_id: string;
         /** @description ID of the course content */
         content_id: string;
         /**
          * Format: uuid
-         * @description ID of the user (foreign key to User)
+         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
          */
         user_id: string;
         /**
@@ -2645,7 +2703,7 @@ export interface components {
           id: string;
           /**
            * Format: uuid
-           * @description UUID of the organization that issued the certificate
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           org_id: string;
           /**
@@ -2713,14 +2771,14 @@ export interface components {
         test_submissions: unknown;
       })[];
     };
-    CirriculaCurrentItemData: {
+    CurriculaCurrentItemData: {
       id: string;
       /** Format: date-time */
       last_opened: string;
       /** @enum {string} */
       content_type: "learning-path" | "challenge" | "certification";
     };
-    CirriculaProgressTracker: {
+    CurriculaProgressTracker: {
       current_item: {
         [key: string]: {
           id: string;
@@ -3408,7 +3466,7 @@ export interface components {
 
 export interface operations {
   /** Returns a list of academy content registered by the user with optional filtering. */
-  getMyAcademyCirricula: {
+  getMyAcademyCurricula: {
     parameters: {
       query: {
         /** Filter content by content types */
@@ -3416,6 +3474,215 @@ export interface operations {
         /** Filter content by organization IDs */
         orgId?: string[];
       };
+    };
+    responses: {
+      /** A list of content with total count */
+      200: {
+        content: {
+          "application/json": {
+            /**
+             * @description Total number of Curricula
+             * @example 7
+             */
+            total: number;
+            data: {
+              /**
+               * @description Id of the Curricula
+               * @example 923458-3490394-934893
+               */
+              id: string;
+              /** @enum {string} */
+              type: "learning-path" | "challenge" | "certification";
+              /**
+               * @description Organization ID that owns this learning path
+               * @example layer5
+               */
+              orgId: string;
+              /**
+               * @description Visibility of the Curricula
+               * @enum {string}
+               */
+              visibility: "public" | "private";
+              /**
+               * @description Status of the Curricula
+               * @example ready
+               * @enum {string}
+               */
+              status: "ready" | "archived" | "not_ready";
+              /**
+               * @description slug of the Curricula
+               * @example intro-kubernetes-course
+               */
+              slug: string;
+              /**
+               * @description Level of the Curricula
+               * @enum {string}
+               */
+              level: "beginner" | "intermediate" | "advanced";
+              /**
+               * Format: uuid
+               * @description ID of the badge to be awarded on completion of this curricula
+               */
+              badge_id?: string;
+              /** @description ID of the invite associated with this Curricula */
+              invite_id?: string;
+              /** @description ID of the workspace to which this Curricula belongs */
+              workspace_id?: string;
+              /** @description When the Curricula item was created */
+              createdAt: string;
+              /** @description When the Curricula was last updated */
+              updatedAt: string;
+              deletedAt: string;
+              /** @description Additional metadata about the Curricula */
+              metadata: {
+                /**
+                 * @description Title of the learning path
+                 * @example Mastering Kubernetes for Engineers
+                 */
+                title: string;
+                /**
+                 * @description Short description of the curricula
+                 * @example Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads
+                 */
+                description: string;
+                /**
+                 * @description Detailed description of the curricula
+                 * @example This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios.
+                 */
+                detailed_description?: string;
+                /**
+                 * Format: uri
+                 * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+                 * @example kubernetes-icon.svg
+                 */
+                banner?: string | null;
+                /**
+                 * Format: uri
+                 * @description Canonical URL for the learning path
+                 * @example http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/
+                 */
+                permalink: string;
+                certificate?: {
+                  /**
+                   * @description Unique identifier for the certificate
+                   * @example 1234567890abcdef
+                   */
+                  id: string;
+                  /**
+                   * Format: uuid
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+                   */
+                  org_id: string;
+                  /**
+                   * @description ID of the recipient (user) who received the certificate
+                   * @example 1234567890abcdef
+                   */
+                  recipient_id: string;
+                  /**
+                   * @description Name of the recipient (user) who received the certificate
+                   * @example John Doe
+                   */
+                  recipient_name: string;
+                  /**
+                   * @description Title of the certificate
+                   * @example Kubernetes Expert Certification
+                   */
+                  title: string;
+                  /**
+                   * @description Description of the certificate
+                   * @example Awarded for successfully completing the Kubernetes Expert course
+                   */
+                  description: string;
+                  /** @description List of issuing authorities for the certificate */
+                  issuing_authorities: ({
+                    /**
+                     * @description Name of the issuing authority
+                     * @example Cloud Native Foundation
+                     */
+                    name: string;
+                    /**
+                     * @description Role of the issuing authority
+                     * @example COO
+                     */
+                    role?: string;
+                    /**
+                     * Format: uri
+                     * @description URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format
+                     * @example http://localhost:9876/signatures/cloud-native-foundation.png
+                     */
+                    signature_url?: string;
+                  } & {
+                    url: unknown;
+                  })[];
+                  /**
+                   * Format: date-time
+                   * @description Date when the certificate was issued
+                   * @example 2023-10-01T12:00:00Z
+                   */
+                  issued_date: string;
+                  /**
+                   * Format: date-time
+                   * @description Date when the certificate expires (optional)
+                   * @example 2025-10-01T12:00:00Z
+                   */
+                  expiration_date?: string;
+                  /**
+                   * @description Number of months after which the certificate expires
+                   * @example 24
+                   */
+                  expires_in?: number;
+                };
+                /** @description List of children items in the top-level curricula */
+                children?: {
+                  /**
+                   * @description Unique identifier for the course
+                   * @example 1234567890abcdef
+                   */
+                  id: string;
+                  /**
+                   * @description Title of the course
+                   * @example Kubernetes Basics
+                   */
+                  title: string;
+                  /**
+                   * Format: uri
+                   * @description URL to the course content
+                   * @example http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/
+                   */
+                  permalink: string;
+                  /**
+                   * @description Course description
+                   * @example Learn the basics of Kubernetes
+                   */
+                  description: string;
+                  /**
+                   * @description A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.
+                   * @example eg 1 , 2
+                   */
+                  weight?: number;
+                  /**
+                   * Format: uri
+                   * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+                   * @example kubernetes-icon.svg
+                   */
+                  banner?: string | null;
+                  /**
+                   * @description Type of the content (e.g., learning-path, challenge, certification)
+                   * @enum {string}
+                   */
+                  type?: "learning-path" | "challenge" | "certification";
+                  /** @description List of child nodes (sub-courses or modules) */
+                  children?: { [key: string]: unknown }[];
+                }[];
+              } & { [key: string]: unknown };
+            }[];
+          };
+        };
+      };
+      /** Invalid request parameters */
+      400: unknown;
+      /** Server error */
+      500: unknown;
     };
   };
   /** Creates a new academy curricula with the provided details. */
@@ -3426,7 +3693,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -3438,23 +3705,23 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
@@ -3463,32 +3730,16 @@ export interface operations {
              * @description ID of the badge to be awarded on completion of this curricula
              */
             badge_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the invite associated with this cirricula
-             */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the workspace to which this cirricula belongs
-             */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula item was created
-             */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula was last updated
-             */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
-            /**
-             * Format: date-time
-             * @description Timestamp when the resource was deleted.
-             */
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -3525,7 +3776,7 @@ export interface operations {
                 id: string;
                 /**
                  * Format: uuid
-                 * @description UUID of the organization that issued the certificate
+                 * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                  */
                 org_id: string;
                 /**
@@ -3652,14 +3903,11 @@ export interface operations {
            */
           title: string;
           /**
-           * @description Organization ID that owns this curricula
+           * @description Organization ID that owns this learning path
            * @example layer5
            */
           orgId: string;
-          /**
-           * Format: uuid
-           * @description ID of the workspace to which this cirricula belongs
-           */
+          /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
           /**
            * Format: uuid
@@ -3668,20 +3916,17 @@ export interface operations {
           badge_id?: string;
           /**
            * Format: uuid
-           * @description ID of the team associated with this curricula
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           team_id: string;
-          /**
-           * Format: date-time
-           * @description Expiry time for curricula access
-           */
+          /** @description Expiry time for curricula access */
           access_expires_at?: string;
           /**
            * @description Current access status of the curricula
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the Curricula */
           metadata: {
             /**
              * @description Title of the learning path
@@ -3718,7 +3963,7 @@ export interface operations {
               id: string;
               /**
                * Format: uuid
-               * @description UUID of the organization that issued the certificate
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               org_id: string;
               /**
@@ -3828,7 +4073,7 @@ export interface operations {
     };
   };
   /** Returns a list of academy content with optional filtering. */
-  getAcademyCirricula: {
+  getAcademyCurricula: {
     parameters: {
       query: {
         /** Filter content by content types */
@@ -3855,6 +4100,217 @@ export interface operations {
         page?: number;
       };
     };
+    responses: {
+      /** A list of content with total count */
+      200: {
+        content: {
+          "application/json": {
+            /**
+             * @description Total number of Curricula
+             * @example 7
+             */
+            total: number;
+            data: ({
+              /**
+               * @description Id of the Curricula
+               * @example 923458-3490394-934893
+               */
+              id: string;
+              /** @enum {string} */
+              type: "learning-path" | "challenge" | "certification";
+              /**
+               * @description Organization ID that owns this learning path
+               * @example layer5
+               */
+              orgId: string;
+              /**
+               * @description Visibility of the Curricula
+               * @enum {string}
+               */
+              visibility: "public" | "private";
+              /**
+               * @description Status of the Curricula
+               * @example ready
+               * @enum {string}
+               */
+              status: "ready" | "archived" | "not_ready";
+              /**
+               * @description slug of the Curricula
+               * @example intro-kubernetes-course
+               */
+              slug: string;
+              /**
+               * @description Level of the Curricula
+               * @enum {string}
+               */
+              level: "beginner" | "intermediate" | "advanced";
+              /**
+               * Format: uuid
+               * @description ID of the badge to be awarded on completion of this curricula
+               */
+              badge_id?: string;
+              /** @description ID of the invite associated with this Curricula */
+              invite_id?: string;
+              /** @description ID of the workspace to which this Curricula belongs */
+              workspace_id?: string;
+              /** @description When the Curricula item was created */
+              createdAt: string;
+              /** @description When the Curricula was last updated */
+              updatedAt: string;
+              deletedAt: string;
+              /** @description Additional metadata about the Curricula */
+              metadata: {
+                /**
+                 * @description Title of the learning path
+                 * @example Mastering Kubernetes for Engineers
+                 */
+                title: string;
+                /**
+                 * @description Short description of the curricula
+                 * @example Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads
+                 */
+                description: string;
+                /**
+                 * @description Detailed description of the curricula
+                 * @example This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios.
+                 */
+                detailed_description?: string;
+                /**
+                 * Format: uri
+                 * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+                 * @example kubernetes-icon.svg
+                 */
+                banner?: string | null;
+                /**
+                 * Format: uri
+                 * @description Canonical URL for the learning path
+                 * @example http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/
+                 */
+                permalink: string;
+                certificate?: {
+                  /**
+                   * @description Unique identifier for the certificate
+                   * @example 1234567890abcdef
+                   */
+                  id: string;
+                  /**
+                   * Format: uuid
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
+                   */
+                  org_id: string;
+                  /**
+                   * @description ID of the recipient (user) who received the certificate
+                   * @example 1234567890abcdef
+                   */
+                  recipient_id: string;
+                  /**
+                   * @description Name of the recipient (user) who received the certificate
+                   * @example John Doe
+                   */
+                  recipient_name: string;
+                  /**
+                   * @description Title of the certificate
+                   * @example Kubernetes Expert Certification
+                   */
+                  title: string;
+                  /**
+                   * @description Description of the certificate
+                   * @example Awarded for successfully completing the Kubernetes Expert course
+                   */
+                  description: string;
+                  /** @description List of issuing authorities for the certificate */
+                  issuing_authorities: ({
+                    /**
+                     * @description Name of the issuing authority
+                     * @example Cloud Native Foundation
+                     */
+                    name: string;
+                    /**
+                     * @description Role of the issuing authority
+                     * @example COO
+                     */
+                    role?: string;
+                    /**
+                     * Format: uri
+                     * @description URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format
+                     * @example http://localhost:9876/signatures/cloud-native-foundation.png
+                     */
+                    signature_url?: string;
+                  } & {
+                    url: unknown;
+                  })[];
+                  /**
+                   * Format: date-time
+                   * @description Date when the certificate was issued
+                   * @example 2023-10-01T12:00:00Z
+                   */
+                  issued_date: string;
+                  /**
+                   * Format: date-time
+                   * @description Date when the certificate expires (optional)
+                   * @example 2025-10-01T12:00:00Z
+                   */
+                  expiration_date?: string;
+                  /**
+                   * @description Number of months after which the certificate expires
+                   * @example 24
+                   */
+                  expires_in?: number;
+                };
+                /** @description List of children items in the top-level curricula */
+                children?: {
+                  /**
+                   * @description Unique identifier for the course
+                   * @example 1234567890abcdef
+                   */
+                  id: string;
+                  /**
+                   * @description Title of the course
+                   * @example Kubernetes Basics
+                   */
+                  title: string;
+                  /**
+                   * Format: uri
+                   * @description URL to the course content
+                   * @example http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/
+                   */
+                  permalink: string;
+                  /**
+                   * @description Course description
+                   * @example Learn the basics of Kubernetes
+                   */
+                  description: string;
+                  /**
+                   * @description A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.
+                   * @example eg 1 , 2
+                   */
+                  weight?: number;
+                  /**
+                   * Format: uri
+                   * @description Filename of the banner image, which should be placed in the same directory as the _index.md file
+                   * @example kubernetes-icon.svg
+                   */
+                  banner?: string | null;
+                  /**
+                   * @description Type of the content (e.g., learning-path, challenge, certification)
+                   * @enum {string}
+                   */
+                  type?: "learning-path" | "challenge" | "certification";
+                  /** @description List of child nodes (sub-courses or modules) */
+                  children?: { [key: string]: unknown }[];
+                }[];
+              } & { [key: string]: unknown };
+            } & {
+              RegistrationCount: number;
+            })[];
+          };
+        };
+      };
+      /** Invalid request parameters */
+      400: unknown;
+      /** Server error */
+      500: unknown;
+    };
   };
   registerToAcademyContent: {
     responses: {
@@ -3869,14 +4325,14 @@ export interface operations {
             id: string;
             /**
              * Format: uuid
-             * @description ID of the organization
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             org_id: string;
             /** @description ID of the course content */
             content_id: string;
             /**
              * Format: uuid
-             * @description ID of the user (foreign key to User)
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             user_id: string;
             /**
@@ -3908,7 +4364,7 @@ export interface operations {
               id: string;
               /**
                * Format: uuid
-               * @description UUID of the organization that issued the certificate
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               org_id: string;
               /**
@@ -4014,14 +4470,14 @@ export interface operations {
             id: string;
             /**
              * Format: uuid
-             * @description ID of the organization
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             org_id: string;
             /** @description ID of the course content */
             content_id: string;
             /**
              * Format: uuid
-             * @description ID of the user (foreign key to User)
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             user_id: string;
             /**
@@ -4053,7 +4509,7 @@ export interface operations {
               id: string;
               /**
                * Format: uuid
-               * @description UUID of the organization that issued the certificate
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               org_id: string;
               /**
@@ -4142,7 +4598,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -4154,23 +4610,23 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
@@ -4179,32 +4635,16 @@ export interface operations {
              * @description ID of the badge to be awarded on completion of this curricula
              */
             badge_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the invite associated with this cirricula
-             */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the workspace to which this cirricula belongs
-             */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula item was created
-             */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula was last updated
-             */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
-            /**
-             * Format: date-time
-             * @description Timestamp when the resource was deleted.
-             */
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -4241,7 +4681,7 @@ export interface operations {
                 id: string;
                 /**
                  * Format: uuid
-                 * @description UUID of the organization that issued the certificate
+                 * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                  */
                 org_id: string;
                 /**
@@ -4351,12 +4791,12 @@ export interface operations {
             Invitation?: {
               /**
                * Format: uuid
-               * @description Unique identifier for the invitation , is also used as the invitation code
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
               /**
                * Format: uuid
-               * @description ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               owner_id: string;
               /** @description Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
@@ -4425,7 +4865,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -4437,23 +4877,23 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
@@ -4462,32 +4902,16 @@ export interface operations {
              * @description ID of the badge to be awarded on completion of this curricula
              */
             badge_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the invite associated with this cirricula
-             */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /**
-             * Format: uuid
-             * @description ID of the workspace to which this cirricula belongs
-             */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula item was created
-             */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @description When the cirricula was last updated
-             */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
-            /**
-             * Format: date-time
-             * @description Timestamp when the resource was deleted.
-             */
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -4524,7 +4948,7 @@ export interface operations {
                 id: string;
                 /**
                  * Format: uuid
-                 * @description UUID of the organization that issued the certificate
+                 * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                  */
                 org_id: string;
                 /**
@@ -4634,12 +5058,12 @@ export interface operations {
             Invitation?: {
               /**
                * Format: uuid
-               * @description Unique identifier for the invitation , is also used as the invitation code
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               id: string;
               /**
                * Format: uuid
-               * @description ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               owner_id: string;
               /** @description Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
@@ -4707,14 +5131,11 @@ export interface operations {
            */
           title: string;
           /**
-           * @description Organization ID that owns this curricula
+           * @description Organization ID that owns this learning path
            * @example layer5
            */
           orgId: string;
-          /**
-           * Format: uuid
-           * @description ID of the workspace to which this cirricula belongs
-           */
+          /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
           /**
            * Format: uuid
@@ -4723,20 +5144,17 @@ export interface operations {
           badge_id?: string;
           /**
            * Format: uuid
-           * @description ID of the team associated with this curricula
+           * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
            */
           team_id: string;
-          /**
-           * Format: date-time
-           * @description Expiry time for curricula access
-           */
+          /** @description Expiry time for curricula access */
           access_expires_at?: string;
           /**
            * @description Current access status of the curricula
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the Curricula */
           metadata: {
             /**
              * @description Title of the learning path
@@ -4773,7 +5191,7 @@ export interface operations {
               id: string;
               /**
                * Format: uuid
-               * @description UUID of the organization that issued the certificate
+               * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                */
               org_id: string;
               /**
@@ -5634,7 +6052,7 @@ export interface operations {
             id: string;
             /**
              * Format: uuid
-             * @description UUID of the organization that issued the certificate
+             * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
              */
             org_id: string;
             /**

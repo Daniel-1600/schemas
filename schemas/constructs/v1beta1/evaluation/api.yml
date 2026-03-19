@@ -1,8 +1,15 @@
 openapi: 3.0.0
 info:
-  title: evaluation
-  version: 1.0.0
-  description: API for evaluating relationships in Meshery designs
+  title: Evaluation
+  description: API for evaluating relationships in Meshery designs.
+  version: v1beta1
+  contact:
+    name: Meshery Maintainers
+    email: maintainers@meshery.io
+    url: https://meshery.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 paths:
   /evaluate:
@@ -36,11 +43,12 @@ components:
         - design
       properties:
         design:
-          $ref: ../design/design.yaml
+          $ref: ../design/api.yml#/components/schemas/PatternFile
 
-          "x-go-type": "pattern.PatternFile"
+          "x-go-type": "patternv1beta1.PatternFile"
           "x-go-type-import":
             "path": "github.com/meshery/schemas/models/v1beta1/pattern"
+            "name": "patternv1beta1"
 
         options:
           type: object
@@ -65,11 +73,12 @@ components:
           description: Specifies the version of the schema to which the evaluation response conforms.
 
         design:
-          $ref: ../design/design.yaml
+          $ref: ../design/api.yml#/components/schemas/PatternFile
 
-          "x-go-type": "pattern.PatternFile"
+          "x-go-type": "patternv1beta1.PatternFile"
           "x-go-type-import":
             "path": "github.com/meshery/schemas/models/v1beta1/pattern"
+            "name": "patternv1beta1"
 
           description: The final evaluated design, including all updated components and relationships. This can be either the complete updated design or only a diff of changes. The version of the design will be automatically incremented if any modifications are made during the evaluation process. This field provides a comprehensive view of the design state after all relationship evaluations and policy applications have been completed.
 

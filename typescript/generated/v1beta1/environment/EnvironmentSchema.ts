@@ -3,28 +3,26 @@
  * Do not manually modify this file.
  */
 
-const EnvironmentSchema = {
+const EnvironmentSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "environment",
-    "description": "Documentation for meshery Cloud REST APIs",
+    "title": "Environment",
+    "description": "OpenAPI schema for environment management in Meshery Cloud.",
+    "version": "v1beta1",
     "contact": {
-      "email": "maintainers@meshery.io"
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
     },
-    "version": "v0.6.394"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {
-      "url": "https://cloud.meshery.io",
-      "description": "Meshery Cloud production server URL"
-    },
-    {
-      "url": "https://staging-cloud.meshery.io",
-      "description": "Meshery Cloud staging server URL"
-    },
-    {
-      "url": "http://localhost:9876",
-      "description": "Meshery Cloud development server URL (controlled via PORT environment variable)"
+      "url": "http://localhost:9081",
+      "description": "Meshery Server development server URL (controlled via PORT environment variable)"
     }
   ],
   "security": [
@@ -280,11 +278,10 @@ const EnvironmentSchema = {
               "db": "deleted_at",
               "yaml": "deleted_at"
             },
-            "x-go-type": "core.NullTime",
-            "x-go-import": "database/sql",
             "x-order": 10,
+            "description": "SQL null Timestamp to handle null values of time.",
+            "x-go-type": "sql.NullTime",
             "type": "string",
-            "format": "date-time",
             "x-go-type-skip-optional-pointer": true
           }
         }
@@ -527,11 +524,10 @@ const EnvironmentSchema = {
                     "db": "deleted_at",
                     "yaml": "deleted_at"
                   },
-                  "x-go-type": "core.NullTime",
-                  "x-go-import": "database/sql",
                   "x-order": 10,
+                  "description": "SQL null Timestamp to handle null values of time.",
+                  "x-go-type": "sql.NullTime",
                   "type": "string",
-                  "format": "date-time",
                   "x-go-type-skip-optional-pointer": true
                 }
               }
@@ -760,11 +756,10 @@ const EnvironmentSchema = {
                         "db": "deleted_at",
                         "yaml": "deleted_at"
                       },
-                      "x-go-type": "core.NullTime",
-                      "x-go-import": "database/sql",
                       "x-order": 10,
+                      "description": "SQL null Timestamp to handle null values of time.",
+                      "x-go-type": "sql.NullTime",
                       "type": "string",
-                      "format": "date-time",
                       "x-go-type-skip-optional-pointer": true
                     }
                   }
@@ -1000,11 +995,10 @@ const EnvironmentSchema = {
                               "db": "deleted_at",
                               "yaml": "deleted_at"
                             },
-                            "x-go-type": "core.NullTime",
-                            "x-go-import": "database/sql",
                             "x-order": 10,
+                            "description": "SQL null Timestamp to handle null values of time.",
+                            "x-go-type": "sql.NullTime",
                             "type": "string",
-                            "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
                           }
                         }
@@ -1039,6 +1033,6 @@ const EnvironmentSchema = {
       }
     }
   }
-} as const;
+};
 
 export default EnvironmentSchema;

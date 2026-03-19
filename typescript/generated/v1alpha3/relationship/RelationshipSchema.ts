@@ -3,11 +3,21 @@
  * Do not manually modify this file.
  */
 
-const RelationshipSchema = {
+const RelationshipSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
-    "title": "relationship",
-    "version": "1.0.0"
+    "title": "Relationship",
+    "description": "OpenAPI schema for relationship definitions between Meshery components.",
+    "version": "v1alpha3",
+    "contact": {
+      "name": "Meshery Maintainers",
+      "email": "maintainers@meshery.io",
+      "url": "https://meshery.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "paths": {},
   "components": {
@@ -129,9 +139,10 @@ const RelationshipSchema = {
             "description": "Capabilities associated with the relationship.",
             "x-order": 2,
             "items": {
-              "x-go-type": "capability.Capability",
+              "x-go-type": "capabilityv1alpha1.Capability",
               "x-go-type-import": {
-                "path": "github.com/meshery/schemas/models/v1alpha1/capability"
+                "path": "github.com/meshery/schemas/models/v1alpha1/capability",
+                "name": "capabilityv1alpha1"
               },
               "$id": "https://schemas.meshery.io/capability.yaml",
               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -691,9 +702,10 @@ const RelationshipSchema = {
             }
           },
           "model": {
-            "x-go-type": "model.ModelReference",
+            "x-go-type": "modelv1beta1.ModelReference",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/model"
+              "path": "github.com/meshery/schemas/models/v1beta1/model",
+              "name": "modelv1beta1"
             },
             "x-go-type-skip-optional-pointer": true,
             "x-order": 6,
@@ -725,52 +737,29 @@ const RelationshipSchema = {
               "name": {
                 "type": "string",
                 "description": "The unique name for the model within the scope of a registrant.",
-                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                 "pattern": "^[a-z0-9-]+$",
                 "examples": [
                   "cert-manager"
-                ],
-                "x-order": 4,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "name",
-                  "json": "name"
-                },
-                "default": "untitled-model"
+                ]
               },
               "version": {
                 "description": "Version of the model definition.",
                 "type": "string",
-                "x-order": 3,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "version",
-                  "json": "version"
-                },
                 "minLength": 5,
                 "maxLength": 100,
                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
               },
               "displayName": {
+                "type": "string",
                 "description": "Human-readable name for the model.",
-                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                 "minLength": 1,
                 "maxLength": 100,
-                "type": "string",
                 "pattern": "^[a-zA-Z0-9 ]+$",
                 "examples": [
                   "Cert Manager"
-                ],
-                "x-order": 5,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "displayName",
-                  "json": "displayName"
-                },
-                "default": "Untitled Model"
+                ]
               },
               "model": {
-                "x-oapi-codegen-extra-tags": {
-                  "gorm": "type:bytes;serializer:json"
-                },
-                "x-order": 12,
                 "type": "object",
                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                 "required": [
@@ -779,20 +768,15 @@ const RelationshipSchema = {
                 "properties": {
                   "version": {
                     "description": "Version of the model as defined by the registrant.",
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "minLength": 5,
-                        "maxLength": 100,
-                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                      }
-                    ],
                     "x-oapi-codegen-extra-tags": {
                       "yaml": "version",
                       "json": "version"
                     },
-                    "x-order": 1
+                    "x-order": 1,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                   }
                 }
               },
@@ -1069,9 +1053,10 @@ const RelationshipSchema = {
                             }
                           },
                           "model": {
-                            "x-go-type": "model.ModelReference",
+                            "x-go-type": "modelv1beta1.ModelReference",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/model"
+                              "path": "github.com/meshery/schemas/models/v1beta1/model",
+                              "name": "modelv1beta1"
                             },
                             "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                             "x-oapi-codegen-extra-tags": {
@@ -1100,52 +1085,29 @@ const RelationshipSchema = {
                               "name": {
                                 "type": "string",
                                 "description": "The unique name for the model within the scope of a registrant.",
-                                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                                 "pattern": "^[a-z0-9-]+$",
                                 "examples": [
                                   "cert-manager"
-                                ],
-                                "x-order": 4,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "name",
-                                  "json": "name"
-                                },
-                                "default": "untitled-model"
+                                ]
                               },
                               "version": {
                                 "description": "Version of the model definition.",
                                 "type": "string",
-                                "x-order": 3,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "version",
-                                  "json": "version"
-                                },
                                 "minLength": 5,
                                 "maxLength": 100,
                                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               },
                               "displayName": {
+                                "type": "string",
                                 "description": "Human-readable name for the model.",
-                                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                                 "minLength": 1,
                                 "maxLength": 100,
-                                "type": "string",
                                 "pattern": "^[a-zA-Z0-9 ]+$",
                                 "examples": [
                                   "Cert Manager"
-                                ],
-                                "x-order": 5,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "displayName",
-                                  "json": "displayName"
-                                },
-                                "default": "Untitled Model"
+                                ]
                               },
                               "model": {
-                                "x-oapi-codegen-extra-tags": {
-                                  "gorm": "type:bytes;serializer:json"
-                                },
-                                "x-order": 12,
                                 "type": "object",
                                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                                 "required": [
@@ -1154,20 +1116,15 @@ const RelationshipSchema = {
                                 "properties": {
                                   "version": {
                                     "description": "Version of the model as defined by the registrant.",
-                                    "allOf": [
-                                      {
-                                        "type": "string",
-                                        "minLength": 5,
-                                        "maxLength": 100,
-                                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                      }
-                                    ],
                                     "x-oapi-codegen-extra-tags": {
                                       "yaml": "version",
                                       "json": "version"
                                     },
-                                    "x-order": 1
+                                    "x-order": 1,
+                                    "type": "string",
+                                    "minLength": 5,
+                                    "maxLength": 100,
+                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                                   }
                                 }
                               },
@@ -1452,9 +1409,10 @@ const RelationshipSchema = {
                             }
                           },
                           "model": {
-                            "x-go-type": "model.ModelReference",
+                            "x-go-type": "modelv1beta1.ModelReference",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/model"
+                              "path": "github.com/meshery/schemas/models/v1beta1/model",
+                              "name": "modelv1beta1"
                             },
                             "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                             "x-oapi-codegen-extra-tags": {
@@ -1483,52 +1441,29 @@ const RelationshipSchema = {
                               "name": {
                                 "type": "string",
                                 "description": "The unique name for the model within the scope of a registrant.",
-                                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                                 "pattern": "^[a-z0-9-]+$",
                                 "examples": [
                                   "cert-manager"
-                                ],
-                                "x-order": 4,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "name",
-                                  "json": "name"
-                                },
-                                "default": "untitled-model"
+                                ]
                               },
                               "version": {
                                 "description": "Version of the model definition.",
                                 "type": "string",
-                                "x-order": 3,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "version",
-                                  "json": "version"
-                                },
                                 "minLength": 5,
                                 "maxLength": 100,
                                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               },
                               "displayName": {
+                                "type": "string",
                                 "description": "Human-readable name for the model.",
-                                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                                 "minLength": 1,
                                 "maxLength": 100,
-                                "type": "string",
                                 "pattern": "^[a-zA-Z0-9 ]+$",
                                 "examples": [
                                   "Cert Manager"
-                                ],
-                                "x-order": 5,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "displayName",
-                                  "json": "displayName"
-                                },
-                                "default": "Untitled Model"
+                                ]
                               },
                               "model": {
-                                "x-oapi-codegen-extra-tags": {
-                                  "gorm": "type:bytes;serializer:json"
-                                },
-                                "x-order": 12,
                                 "type": "object",
                                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                                 "required": [
@@ -1537,20 +1472,15 @@ const RelationshipSchema = {
                                 "properties": {
                                   "version": {
                                     "description": "Version of the model as defined by the registrant.",
-                                    "allOf": [
-                                      {
-                                        "type": "string",
-                                        "minLength": 5,
-                                        "maxLength": 100,
-                                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                      }
-                                    ],
                                     "x-oapi-codegen-extra-tags": {
                                       "yaml": "version",
                                       "json": "version"
                                     },
-                                    "x-order": 1
+                                    "x-order": 1,
+                                    "type": "string",
+                                    "minLength": 5,
+                                    "maxLength": 100,
+                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                                   }
                                 }
                               },
@@ -1850,9 +1780,10 @@ const RelationshipSchema = {
                             }
                           },
                           "model": {
-                            "x-go-type": "model.ModelReference",
+                            "x-go-type": "modelv1beta1.ModelReference",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/model"
+                              "path": "github.com/meshery/schemas/models/v1beta1/model",
+                              "name": "modelv1beta1"
                             },
                             "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                             "x-oapi-codegen-extra-tags": {
@@ -1881,52 +1812,29 @@ const RelationshipSchema = {
                               "name": {
                                 "type": "string",
                                 "description": "The unique name for the model within the scope of a registrant.",
-                                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                                 "pattern": "^[a-z0-9-]+$",
                                 "examples": [
                                   "cert-manager"
-                                ],
-                                "x-order": 4,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "name",
-                                  "json": "name"
-                                },
-                                "default": "untitled-model"
+                                ]
                               },
                               "version": {
                                 "description": "Version of the model definition.",
                                 "type": "string",
-                                "x-order": 3,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "version",
-                                  "json": "version"
-                                },
                                 "minLength": 5,
                                 "maxLength": 100,
                                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               },
                               "displayName": {
+                                "type": "string",
                                 "description": "Human-readable name for the model.",
-                                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                                 "minLength": 1,
                                 "maxLength": 100,
-                                "type": "string",
                                 "pattern": "^[a-zA-Z0-9 ]+$",
                                 "examples": [
                                   "Cert Manager"
-                                ],
-                                "x-order": 5,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "displayName",
-                                  "json": "displayName"
-                                },
-                                "default": "Untitled Model"
+                                ]
                               },
                               "model": {
-                                "x-oapi-codegen-extra-tags": {
-                                  "gorm": "type:bytes;serializer:json"
-                                },
-                                "x-order": 12,
                                 "type": "object",
                                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                                 "required": [
@@ -1935,20 +1843,15 @@ const RelationshipSchema = {
                                 "properties": {
                                   "version": {
                                     "description": "Version of the model as defined by the registrant.",
-                                    "allOf": [
-                                      {
-                                        "type": "string",
-                                        "minLength": 5,
-                                        "maxLength": 100,
-                                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                      }
-                                    ],
                                     "x-oapi-codegen-extra-tags": {
                                       "yaml": "version",
                                       "json": "version"
                                     },
-                                    "x-order": 1
+                                    "x-order": 1,
+                                    "type": "string",
+                                    "minLength": 5,
+                                    "maxLength": 100,
+                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                                   }
                                 }
                               },
@@ -2233,9 +2136,10 @@ const RelationshipSchema = {
                             }
                           },
                           "model": {
-                            "x-go-type": "model.ModelReference",
+                            "x-go-type": "modelv1beta1.ModelReference",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta1/model"
+                              "path": "github.com/meshery/schemas/models/v1beta1/model",
+                              "name": "modelv1beta1"
                             },
                             "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                             "x-oapi-codegen-extra-tags": {
@@ -2264,52 +2168,29 @@ const RelationshipSchema = {
                               "name": {
                                 "type": "string",
                                 "description": "The unique name for the model within the scope of a registrant.",
-                                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                                 "pattern": "^[a-z0-9-]+$",
                                 "examples": [
                                   "cert-manager"
-                                ],
-                                "x-order": 4,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "name",
-                                  "json": "name"
-                                },
-                                "default": "untitled-model"
+                                ]
                               },
                               "version": {
                                 "description": "Version of the model definition.",
                                 "type": "string",
-                                "x-order": 3,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "version",
-                                  "json": "version"
-                                },
                                 "minLength": 5,
                                 "maxLength": 100,
                                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               },
                               "displayName": {
+                                "type": "string",
                                 "description": "Human-readable name for the model.",
-                                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                                 "minLength": 1,
                                 "maxLength": 100,
-                                "type": "string",
                                 "pattern": "^[a-zA-Z0-9 ]+$",
                                 "examples": [
                                   "Cert Manager"
-                                ],
-                                "x-order": 5,
-                                "x-oapi-codegen-extra-tags": {
-                                  "yaml": "displayName",
-                                  "json": "displayName"
-                                },
-                                "default": "Untitled Model"
+                                ]
                               },
                               "model": {
-                                "x-oapi-codegen-extra-tags": {
-                                  "gorm": "type:bytes;serializer:json"
-                                },
-                                "x-order": 12,
                                 "type": "object",
                                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                                 "required": [
@@ -2318,20 +2199,15 @@ const RelationshipSchema = {
                                 "properties": {
                                   "version": {
                                     "description": "Version of the model as defined by the registrant.",
-                                    "allOf": [
-                                      {
-                                        "type": "string",
-                                        "minLength": 5,
-                                        "maxLength": 100,
-                                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                      }
-                                    ],
                                     "x-oapi-codegen-extra-tags": {
                                       "yaml": "version",
                                       "json": "version"
                                     },
-                                    "x-order": 1
+                                    "x-order": 1,
+                                    "type": "string",
+                                    "minLength": 5,
+                                    "maxLength": 100,
+                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                                   }
                                 }
                               },
@@ -2885,9 +2761,10 @@ const RelationshipSchema = {
             }
           },
           "model": {
-            "x-go-type": "model.ModelReference",
+            "x-go-type": "modelv1beta1.ModelReference",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta1/model"
+              "path": "github.com/meshery/schemas/models/v1beta1/model",
+              "name": "modelv1beta1"
             },
             "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
             "x-oapi-codegen-extra-tags": {
@@ -2916,52 +2793,29 @@ const RelationshipSchema = {
               "name": {
                 "type": "string",
                 "description": "The unique name for the model within the scope of a registrant.",
-                "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                 "pattern": "^[a-z0-9-]+$",
                 "examples": [
                   "cert-manager"
-                ],
-                "x-order": 4,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "name",
-                  "json": "name"
-                },
-                "default": "untitled-model"
+                ]
               },
               "version": {
                 "description": "Version of the model definition.",
                 "type": "string",
-                "x-order": 3,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "version",
-                  "json": "version"
-                },
                 "minLength": 5,
                 "maxLength": 100,
                 "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
               },
               "displayName": {
+                "type": "string",
                 "description": "Human-readable name for the model.",
-                "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                 "minLength": 1,
                 "maxLength": 100,
-                "type": "string",
                 "pattern": "^[a-zA-Z0-9 ]+$",
                 "examples": [
                   "Cert Manager"
-                ],
-                "x-order": 5,
-                "x-oapi-codegen-extra-tags": {
-                  "yaml": "displayName",
-                  "json": "displayName"
-                },
-                "default": "Untitled Model"
+                ]
               },
               "model": {
-                "x-oapi-codegen-extra-tags": {
-                  "gorm": "type:bytes;serializer:json"
-                },
-                "x-order": 12,
                 "type": "object",
                 "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                 "required": [
@@ -2970,20 +2824,15 @@ const RelationshipSchema = {
                 "properties": {
                   "version": {
                     "description": "Version of the model as defined by the registrant.",
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "minLength": 5,
-                        "maxLength": 100,
-                        "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                        "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                      }
-                    ],
                     "x-oapi-codegen-extra-tags": {
                       "yaml": "version",
                       "json": "version"
                     },
-                    "x-order": 1
+                    "x-order": 1,
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                   }
                 }
               },
@@ -3271,9 +3120,10 @@ const RelationshipSchema = {
                   }
                 },
                 "model": {
-                  "x-go-type": "model.ModelReference",
+                  "x-go-type": "modelv1beta1.ModelReference",
                   "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/v1beta1/model"
+                    "path": "github.com/meshery/schemas/models/v1beta1/model",
+                    "name": "modelv1beta1"
                   },
                   "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                   "x-oapi-codegen-extra-tags": {
@@ -3302,52 +3152,29 @@ const RelationshipSchema = {
                     "name": {
                       "type": "string",
                       "description": "The unique name for the model within the scope of a registrant.",
-                      "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                       "pattern": "^[a-z0-9-]+$",
                       "examples": [
                         "cert-manager"
-                      ],
-                      "x-order": 4,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "name",
-                        "json": "name"
-                      },
-                      "default": "untitled-model"
+                      ]
                     },
                     "version": {
                       "description": "Version of the model definition.",
                       "type": "string",
-                      "x-order": 3,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "version",
-                        "json": "version"
-                      },
                       "minLength": 5,
                       "maxLength": 100,
                       "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                     },
                     "displayName": {
+                      "type": "string",
                       "description": "Human-readable name for the model.",
-                      "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                       "minLength": 1,
                       "maxLength": 100,
-                      "type": "string",
                       "pattern": "^[a-zA-Z0-9 ]+$",
                       "examples": [
                         "Cert Manager"
-                      ],
-                      "x-order": 5,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "displayName",
-                        "json": "displayName"
-                      },
-                      "default": "Untitled Model"
+                      ]
                     },
                     "model": {
-                      "x-oapi-codegen-extra-tags": {
-                        "gorm": "type:bytes;serializer:json"
-                      },
-                      "x-order": 12,
                       "type": "object",
                       "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                       "required": [
@@ -3356,20 +3183,15 @@ const RelationshipSchema = {
                       "properties": {
                         "version": {
                           "description": "Version of the model as defined by the registrant.",
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "minLength": 5,
-                              "maxLength": 100,
-                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                              "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                            }
-                          ],
                           "x-oapi-codegen-extra-tags": {
                             "yaml": "version",
                             "json": "version"
                           },
-                          "x-order": 1
+                          "x-order": 1,
+                          "type": "string",
+                          "minLength": 5,
+                          "maxLength": 100,
+                          "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         }
                       }
                     },
@@ -3654,9 +3476,10 @@ const RelationshipSchema = {
                   }
                 },
                 "model": {
-                  "x-go-type": "model.ModelReference",
+                  "x-go-type": "modelv1beta1.ModelReference",
                   "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/v1beta1/model"
+                    "path": "github.com/meshery/schemas/models/v1beta1/model",
+                    "name": "modelv1beta1"
                   },
                   "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                   "x-oapi-codegen-extra-tags": {
@@ -3685,52 +3508,29 @@ const RelationshipSchema = {
                     "name": {
                       "type": "string",
                       "description": "The unique name for the model within the scope of a registrant.",
-                      "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                       "pattern": "^[a-z0-9-]+$",
                       "examples": [
                         "cert-manager"
-                      ],
-                      "x-order": 4,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "name",
-                        "json": "name"
-                      },
-                      "default": "untitled-model"
+                      ]
                     },
                     "version": {
                       "description": "Version of the model definition.",
                       "type": "string",
-                      "x-order": 3,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "version",
-                        "json": "version"
-                      },
                       "minLength": 5,
                       "maxLength": 100,
                       "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                     },
                     "displayName": {
+                      "type": "string",
                       "description": "Human-readable name for the model.",
-                      "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                       "minLength": 1,
                       "maxLength": 100,
-                      "type": "string",
                       "pattern": "^[a-zA-Z0-9 ]+$",
                       "examples": [
                         "Cert Manager"
-                      ],
-                      "x-order": 5,
-                      "x-oapi-codegen-extra-tags": {
-                        "yaml": "displayName",
-                        "json": "displayName"
-                      },
-                      "default": "Untitled Model"
+                      ]
                     },
                     "model": {
-                      "x-oapi-codegen-extra-tags": {
-                        "gorm": "type:bytes;serializer:json"
-                      },
-                      "x-order": 12,
                       "type": "object",
                       "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                       "required": [
@@ -3739,20 +3539,15 @@ const RelationshipSchema = {
                       "properties": {
                         "version": {
                           "description": "Version of the model as defined by the registrant.",
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "minLength": 5,
-                              "maxLength": 100,
-                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                              "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                            }
-                          ],
                           "x-oapi-codegen-extra-tags": {
                             "yaml": "version",
                             "json": "version"
                           },
-                          "x-order": 1
+                          "x-order": 1,
+                          "type": "string",
+                          "minLength": 5,
+                          "maxLength": 100,
+                          "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         }
                       }
                     },
@@ -4059,9 +3854,10 @@ const RelationshipSchema = {
                       }
                     },
                     "model": {
-                      "x-go-type": "model.ModelReference",
+                      "x-go-type": "modelv1beta1.ModelReference",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/model"
+                        "path": "github.com/meshery/schemas/models/v1beta1/model",
+                        "name": "modelv1beta1"
                       },
                       "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                       "x-oapi-codegen-extra-tags": {
@@ -4090,52 +3886,29 @@ const RelationshipSchema = {
                         "name": {
                           "type": "string",
                           "description": "The unique name for the model within the scope of a registrant.",
-                          "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                           "pattern": "^[a-z0-9-]+$",
                           "examples": [
                             "cert-manager"
-                          ],
-                          "x-order": 4,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "name",
-                            "json": "name"
-                          },
-                          "default": "untitled-model"
+                          ]
                         },
                         "version": {
                           "description": "Version of the model definition.",
                           "type": "string",
-                          "x-order": 3,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "version",
-                            "json": "version"
-                          },
                           "minLength": 5,
                           "maxLength": 100,
                           "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         },
                         "displayName": {
+                          "type": "string",
                           "description": "Human-readable name for the model.",
-                          "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                           "minLength": 1,
                           "maxLength": 100,
-                          "type": "string",
                           "pattern": "^[a-zA-Z0-9 ]+$",
                           "examples": [
                             "Cert Manager"
-                          ],
-                          "x-order": 5,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "displayName",
-                            "json": "displayName"
-                          },
-                          "default": "Untitled Model"
+                          ]
                         },
                         "model": {
-                          "x-oapi-codegen-extra-tags": {
-                            "gorm": "type:bytes;serializer:json"
-                          },
-                          "x-order": 12,
                           "type": "object",
                           "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                           "required": [
@@ -4144,20 +3917,15 @@ const RelationshipSchema = {
                           "properties": {
                             "version": {
                               "description": "Version of the model as defined by the registrant.",
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "minLength": 5,
-                                  "maxLength": 100,
-                                  "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                  "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                }
-                              ],
                               "x-oapi-codegen-extra-tags": {
                                 "yaml": "version",
                                 "json": "version"
                               },
-                              "x-order": 1
+                              "x-order": 1,
+                              "type": "string",
+                              "minLength": 5,
+                              "maxLength": 100,
+                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                             }
                           }
                         },
@@ -4442,9 +4210,10 @@ const RelationshipSchema = {
                       }
                     },
                     "model": {
-                      "x-go-type": "model.ModelReference",
+                      "x-go-type": "modelv1beta1.ModelReference",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/model"
+                        "path": "github.com/meshery/schemas/models/v1beta1/model",
+                        "name": "modelv1beta1"
                       },
                       "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                       "x-oapi-codegen-extra-tags": {
@@ -4473,52 +4242,29 @@ const RelationshipSchema = {
                         "name": {
                           "type": "string",
                           "description": "The unique name for the model within the scope of a registrant.",
-                          "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                           "pattern": "^[a-z0-9-]+$",
                           "examples": [
                             "cert-manager"
-                          ],
-                          "x-order": 4,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "name",
-                            "json": "name"
-                          },
-                          "default": "untitled-model"
+                          ]
                         },
                         "version": {
                           "description": "Version of the model definition.",
                           "type": "string",
-                          "x-order": 3,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "version",
-                            "json": "version"
-                          },
                           "minLength": 5,
                           "maxLength": 100,
                           "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         },
                         "displayName": {
+                          "type": "string",
                           "description": "Human-readable name for the model.",
-                          "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                           "minLength": 1,
                           "maxLength": 100,
-                          "type": "string",
                           "pattern": "^[a-zA-Z0-9 ]+$",
                           "examples": [
                             "Cert Manager"
-                          ],
-                          "x-order": 5,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "displayName",
-                            "json": "displayName"
-                          },
-                          "default": "Untitled Model"
+                          ]
                         },
                         "model": {
-                          "x-oapi-codegen-extra-tags": {
-                            "gorm": "type:bytes;serializer:json"
-                          },
-                          "x-order": 12,
                           "type": "object",
                           "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                           "required": [
@@ -4527,20 +4273,15 @@ const RelationshipSchema = {
                           "properties": {
                             "version": {
                               "description": "Version of the model as defined by the registrant.",
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "minLength": 5,
-                                  "maxLength": 100,
-                                  "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                  "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                }
-                              ],
                               "x-oapi-codegen-extra-tags": {
                                 "yaml": "version",
                                 "json": "version"
                               },
-                              "x-order": 1
+                              "x-order": 1,
+                              "type": "string",
+                              "minLength": 5,
+                              "maxLength": 100,
+                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                             }
                           }
                         },
@@ -4840,9 +4581,10 @@ const RelationshipSchema = {
                       }
                     },
                     "model": {
-                      "x-go-type": "model.ModelReference",
+                      "x-go-type": "modelv1beta1.ModelReference",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/model"
+                        "path": "github.com/meshery/schemas/models/v1beta1/model",
+                        "name": "modelv1beta1"
                       },
                       "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                       "x-oapi-codegen-extra-tags": {
@@ -4871,52 +4613,29 @@ const RelationshipSchema = {
                         "name": {
                           "type": "string",
                           "description": "The unique name for the model within the scope of a registrant.",
-                          "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                           "pattern": "^[a-z0-9-]+$",
                           "examples": [
                             "cert-manager"
-                          ],
-                          "x-order": 4,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "name",
-                            "json": "name"
-                          },
-                          "default": "untitled-model"
+                          ]
                         },
                         "version": {
                           "description": "Version of the model definition.",
                           "type": "string",
-                          "x-order": 3,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "version",
-                            "json": "version"
-                          },
                           "minLength": 5,
                           "maxLength": 100,
                           "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         },
                         "displayName": {
+                          "type": "string",
                           "description": "Human-readable name for the model.",
-                          "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                           "minLength": 1,
                           "maxLength": 100,
-                          "type": "string",
                           "pattern": "^[a-zA-Z0-9 ]+$",
                           "examples": [
                             "Cert Manager"
-                          ],
-                          "x-order": 5,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "displayName",
-                            "json": "displayName"
-                          },
-                          "default": "Untitled Model"
+                          ]
                         },
                         "model": {
-                          "x-oapi-codegen-extra-tags": {
-                            "gorm": "type:bytes;serializer:json"
-                          },
-                          "x-order": 12,
                           "type": "object",
                           "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                           "required": [
@@ -4925,20 +4644,15 @@ const RelationshipSchema = {
                           "properties": {
                             "version": {
                               "description": "Version of the model as defined by the registrant.",
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "minLength": 5,
-                                  "maxLength": 100,
-                                  "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                  "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                }
-                              ],
                               "x-oapi-codegen-extra-tags": {
                                 "yaml": "version",
                                 "json": "version"
                               },
-                              "x-order": 1
+                              "x-order": 1,
+                              "type": "string",
+                              "minLength": 5,
+                              "maxLength": 100,
+                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                             }
                           }
                         },
@@ -5223,9 +4937,10 @@ const RelationshipSchema = {
                       }
                     },
                     "model": {
-                      "x-go-type": "model.ModelReference",
+                      "x-go-type": "modelv1beta1.ModelReference",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta1/model"
+                        "path": "github.com/meshery/schemas/models/v1beta1/model",
+                        "name": "modelv1beta1"
                       },
                       "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                       "x-oapi-codegen-extra-tags": {
@@ -5254,52 +4969,29 @@ const RelationshipSchema = {
                         "name": {
                           "type": "string",
                           "description": "The unique name for the model within the scope of a registrant.",
-                          "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                           "pattern": "^[a-z0-9-]+$",
                           "examples": [
                             "cert-manager"
-                          ],
-                          "x-order": 4,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "name",
-                            "json": "name"
-                          },
-                          "default": "untitled-model"
+                          ]
                         },
                         "version": {
                           "description": "Version of the model definition.",
                           "type": "string",
-                          "x-order": 3,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "version",
-                            "json": "version"
-                          },
                           "minLength": 5,
                           "maxLength": 100,
                           "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                         },
                         "displayName": {
+                          "type": "string",
                           "description": "Human-readable name for the model.",
-                          "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                           "minLength": 1,
                           "maxLength": 100,
-                          "type": "string",
                           "pattern": "^[a-zA-Z0-9 ]+$",
                           "examples": [
                             "Cert Manager"
-                          ],
-                          "x-order": 5,
-                          "x-oapi-codegen-extra-tags": {
-                            "yaml": "displayName",
-                            "json": "displayName"
-                          },
-                          "default": "Untitled Model"
+                          ]
                         },
                         "model": {
-                          "x-oapi-codegen-extra-tags": {
-                            "gorm": "type:bytes;serializer:json"
-                          },
-                          "x-order": 12,
                           "type": "object",
                           "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                           "required": [
@@ -5308,20 +5000,15 @@ const RelationshipSchema = {
                           "properties": {
                             "version": {
                               "description": "Version of the model as defined by the registrant.",
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "minLength": 5,
-                                  "maxLength": 100,
-                                  "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                  "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                }
-                              ],
                               "x-oapi-codegen-extra-tags": {
                                 "yaml": "version",
                                 "json": "version"
                               },
-                              "x-order": 1
+                              "x-order": 1,
+                              "type": "string",
+                              "minLength": 5,
+                              "maxLength": 100,
+                              "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                             }
                           }
                         },
@@ -5636,9 +5323,10 @@ const RelationshipSchema = {
                         }
                       },
                       "model": {
-                        "x-go-type": "model.ModelReference",
+                        "x-go-type": "modelv1beta1.ModelReference",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/model"
+                          "path": "github.com/meshery/schemas/models/v1beta1/model",
+                          "name": "modelv1beta1"
                         },
                         "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                         "x-oapi-codegen-extra-tags": {
@@ -5667,52 +5355,29 @@ const RelationshipSchema = {
                           "name": {
                             "type": "string",
                             "description": "The unique name for the model within the scope of a registrant.",
-                            "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                             "pattern": "^[a-z0-9-]+$",
                             "examples": [
                               "cert-manager"
-                            ],
-                            "x-order": 4,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "name",
-                              "json": "name"
-                            },
-                            "default": "untitled-model"
+                            ]
                           },
                           "version": {
                             "description": "Version of the model definition.",
                             "type": "string",
-                            "x-order": 3,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "version",
-                              "json": "version"
-                            },
                             "minLength": 5,
                             "maxLength": 100,
                             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                           },
                           "displayName": {
+                            "type": "string",
                             "description": "Human-readable name for the model.",
-                            "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                             "minLength": 1,
                             "maxLength": 100,
-                            "type": "string",
                             "pattern": "^[a-zA-Z0-9 ]+$",
                             "examples": [
                               "Cert Manager"
-                            ],
-                            "x-order": 5,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "displayName",
-                              "json": "displayName"
-                            },
-                            "default": "Untitled Model"
+                            ]
                           },
                           "model": {
-                            "x-oapi-codegen-extra-tags": {
-                              "gorm": "type:bytes;serializer:json"
-                            },
-                            "x-order": 12,
                             "type": "object",
                             "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                             "required": [
@@ -5721,20 +5386,15 @@ const RelationshipSchema = {
                             "properties": {
                               "version": {
                                 "description": "Version of the model as defined by the registrant.",
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "minLength": 5,
-                                    "maxLength": 100,
-                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                  }
-                                ],
                                 "x-oapi-codegen-extra-tags": {
                                   "yaml": "version",
                                   "json": "version"
                                 },
-                                "x-order": 1
+                                "x-order": 1,
+                                "type": "string",
+                                "minLength": 5,
+                                "maxLength": 100,
+                                "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               }
                             }
                           },
@@ -6019,9 +5679,10 @@ const RelationshipSchema = {
                         }
                       },
                       "model": {
-                        "x-go-type": "model.ModelReference",
+                        "x-go-type": "modelv1beta1.ModelReference",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/model"
+                          "path": "github.com/meshery/schemas/models/v1beta1/model",
+                          "name": "modelv1beta1"
                         },
                         "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                         "x-oapi-codegen-extra-tags": {
@@ -6050,52 +5711,29 @@ const RelationshipSchema = {
                           "name": {
                             "type": "string",
                             "description": "The unique name for the model within the scope of a registrant.",
-                            "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                             "pattern": "^[a-z0-9-]+$",
                             "examples": [
                               "cert-manager"
-                            ],
-                            "x-order": 4,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "name",
-                              "json": "name"
-                            },
-                            "default": "untitled-model"
+                            ]
                           },
                           "version": {
                             "description": "Version of the model definition.",
                             "type": "string",
-                            "x-order": 3,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "version",
-                              "json": "version"
-                            },
                             "minLength": 5,
                             "maxLength": 100,
                             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                           },
                           "displayName": {
+                            "type": "string",
                             "description": "Human-readable name for the model.",
-                            "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                             "minLength": 1,
                             "maxLength": 100,
-                            "type": "string",
                             "pattern": "^[a-zA-Z0-9 ]+$",
                             "examples": [
                               "Cert Manager"
-                            ],
-                            "x-order": 5,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "displayName",
-                              "json": "displayName"
-                            },
-                            "default": "Untitled Model"
+                            ]
                           },
                           "model": {
-                            "x-oapi-codegen-extra-tags": {
-                              "gorm": "type:bytes;serializer:json"
-                            },
-                            "x-order": 12,
                             "type": "object",
                             "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                             "required": [
@@ -6104,20 +5742,15 @@ const RelationshipSchema = {
                             "properties": {
                               "version": {
                                 "description": "Version of the model as defined by the registrant.",
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "minLength": 5,
-                                    "maxLength": 100,
-                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                  }
-                                ],
                                 "x-oapi-codegen-extra-tags": {
                                   "yaml": "version",
                                   "json": "version"
                                 },
-                                "x-order": 1
+                                "x-order": 1,
+                                "type": "string",
+                                "minLength": 5,
+                                "maxLength": 100,
+                                "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               }
                             }
                           },
@@ -6417,9 +6050,10 @@ const RelationshipSchema = {
                         }
                       },
                       "model": {
-                        "x-go-type": "model.ModelReference",
+                        "x-go-type": "modelv1beta1.ModelReference",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/model"
+                          "path": "github.com/meshery/schemas/models/v1beta1/model",
+                          "name": "modelv1beta1"
                         },
                         "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                         "x-oapi-codegen-extra-tags": {
@@ -6448,52 +6082,29 @@ const RelationshipSchema = {
                           "name": {
                             "type": "string",
                             "description": "The unique name for the model within the scope of a registrant.",
-                            "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                             "pattern": "^[a-z0-9-]+$",
                             "examples": [
                               "cert-manager"
-                            ],
-                            "x-order": 4,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "name",
-                              "json": "name"
-                            },
-                            "default": "untitled-model"
+                            ]
                           },
                           "version": {
                             "description": "Version of the model definition.",
                             "type": "string",
-                            "x-order": 3,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "version",
-                              "json": "version"
-                            },
                             "minLength": 5,
                             "maxLength": 100,
                             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                           },
                           "displayName": {
+                            "type": "string",
                             "description": "Human-readable name for the model.",
-                            "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                             "minLength": 1,
                             "maxLength": 100,
-                            "type": "string",
                             "pattern": "^[a-zA-Z0-9 ]+$",
                             "examples": [
                               "Cert Manager"
-                            ],
-                            "x-order": 5,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "displayName",
-                              "json": "displayName"
-                            },
-                            "default": "Untitled Model"
+                            ]
                           },
                           "model": {
-                            "x-oapi-codegen-extra-tags": {
-                              "gorm": "type:bytes;serializer:json"
-                            },
-                            "x-order": 12,
                             "type": "object",
                             "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                             "required": [
@@ -6502,20 +6113,15 @@ const RelationshipSchema = {
                             "properties": {
                               "version": {
                                 "description": "Version of the model as defined by the registrant.",
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "minLength": 5,
-                                    "maxLength": 100,
-                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                  }
-                                ],
                                 "x-oapi-codegen-extra-tags": {
                                   "yaml": "version",
                                   "json": "version"
                                 },
-                                "x-order": 1
+                                "x-order": 1,
+                                "type": "string",
+                                "minLength": 5,
+                                "maxLength": 100,
+                                "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               }
                             }
                           },
@@ -6800,9 +6406,10 @@ const RelationshipSchema = {
                         }
                       },
                       "model": {
-                        "x-go-type": "model.ModelReference",
+                        "x-go-type": "modelv1beta1.ModelReference",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/model"
+                          "path": "github.com/meshery/schemas/models/v1beta1/model",
+                          "name": "modelv1beta1"
                         },
                         "description": "Name of the model implicated by this selector. Learn more at https://docs.meshery.io/concepts/models",
                         "x-oapi-codegen-extra-tags": {
@@ -6831,52 +6438,29 @@ const RelationshipSchema = {
                           "name": {
                             "type": "string",
                             "description": "The unique name for the model within the scope of a registrant.",
-                            "helperText": "Model name should be in lowercase with hyphens, not whitespaces.",
                             "pattern": "^[a-z0-9-]+$",
                             "examples": [
                               "cert-manager"
-                            ],
-                            "x-order": 4,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "name",
-                              "json": "name"
-                            },
-                            "default": "untitled-model"
+                            ]
                           },
                           "version": {
                             "description": "Version of the model definition.",
                             "type": "string",
-                            "x-order": 3,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "version",
-                              "json": "version"
-                            },
                             "minLength": 5,
                             "maxLength": 100,
                             "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                           },
                           "displayName": {
+                            "type": "string",
                             "description": "Human-readable name for the model.",
-                            "helperText": "Model display name may include letters, numbers, and spaces. Special characters are not allowed.",
                             "minLength": 1,
                             "maxLength": 100,
-                            "type": "string",
                             "pattern": "^[a-zA-Z0-9 ]+$",
                             "examples": [
                               "Cert Manager"
-                            ],
-                            "x-order": 5,
-                            "x-oapi-codegen-extra-tags": {
-                              "yaml": "displayName",
-                              "json": "displayName"
-                            },
-                            "default": "Untitled Model"
+                            ]
                           },
                           "model": {
-                            "x-oapi-codegen-extra-tags": {
-                              "gorm": "type:bytes;serializer:json"
-                            },
-                            "x-order": 12,
                             "type": "object",
                             "description": "Registrant-defined data associated with the model. Properties pertain to the software being managed (e.g. Kubernetes v1.31).",
                             "required": [
@@ -6885,20 +6469,15 @@ const RelationshipSchema = {
                             "properties": {
                               "version": {
                                 "description": "Version of the model as defined by the registrant.",
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "minLength": 5,
-                                    "maxLength": 100,
-                                    "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
-                                    "description": "A valid semantic version string between 5 and 256 characters. The pattern allows for a major.minor.patch version followed by an optional pre-release tag like '-alpha' or '-beta.2' and an optional build metadata tag like '+build.1."
-                                  }
-                                ],
                                 "x-oapi-codegen-extra-tags": {
                                   "yaml": "version",
                                   "json": "version"
                                 },
-                                "x-order": 1
+                                "x-order": 1,
+                                "type": "string",
+                                "minLength": 5,
+                                "maxLength": 100,
+                                "pattern": "^[a-z0-9]+.[0-9]+.[0-9]+(-[0-9A-Za-z-]+(.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
                               }
                             }
                           },
@@ -7700,6 +7279,6 @@ const RelationshipSchema = {
       }
     }
   }
-} as const;
+};
 
 export default RelationshipSchema;
