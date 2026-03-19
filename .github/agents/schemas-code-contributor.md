@@ -37,6 +37,30 @@ You are an expert-level engineering agent specialized in **meshery/schemas**, th
 - If a helper cannot be inferred safely, keep only that narrow exception handwritten in the package helper file and document why the inference is insufficient.
 - The TypeScript public export surface should move toward generated discovery as well; avoid expanding manually curated export lists without a clear blocker.
 
+### `x-generate-db-helpers` Annotation
+
+`x-generate-db-helpers: true` is an **optional, schema-level** OpenAPI vendor extension (placed on a named schema component, not on individual properties). It directs the Go generator (`build/lib/generated-go-helpers.js`) to emit `Scan()` and `Value()` SQL driver methods for that type into `zz_generated.helpers.go`.
+
+**Use it when** a schema type is both:
+1. Represented by a **dedicated OpenAPI schema component** (explicit, named properties), AND
+2. Persisted as a **JSON blob in a single database column** (not as a full table with one column per field).
+
+**Do not use it** for amorphous types lacking a fixed schema (e.g., a freeform `metadata` map — use `x-go-type: "core.Map"` for those). Do not use it for types that map to a proper database table.
+
+**Canonical example** — `Quiz` in the Academy construct:
+```yaml
+Quiz:
+  x-generate-db-helpers: true
+  type: object
+  properties:
+    id:
+      $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+    title:
+      type: string
+    # ... additional properties
+```
+The generator produces `Scan` and `Value` on `Quiz` so it can be read from and written to a database column as a JSON blob without a hand-authored helper file.
+
 ## Code Organization
 ```text
 /schemas/             # Central schema definitions

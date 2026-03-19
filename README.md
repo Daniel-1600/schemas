@@ -477,6 +477,75 @@ paths:
 
 ---
 
+### `x-generate-db-helpers`
+
+Use `x-generate-db-helpers: true` as a **schema-level** annotation (not per-property) on a named component under `components/schemas` to instruct the Go generator to automatically produce SQL driver helper methods (`Scan` and `Value`) for that type.
+
+**When to use it**: The annotated schema type must satisfy both conditions:
+
+1. It has a **dedicated OpenAPI schema definition** (i.e., it is a named component with explicit properties, not a generic map).
+2. It is **persisted as a JSON blob** in a single database column — not spread across a dedicated table with one column per field.
+
+**When NOT to use it**: Do not annotate amorphous types that have no fixed schema definition (e.g., a generic `metadata` object). Those fields should use `x-go-type: "core.Map"` instead. Also do not annotate types that map to full database tables with individual columns for each property — those are handled by the normal DB tag generation.
+
+#### Example
+
+```yaml
+components:
+  schemas:
+    Quiz:
+      x-generate-db-helpers: true   # ← schema-level; not on individual properties
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        title:
+          type: string
+```
+
+The generator produces `zz_generated.helpers.go` containing:
+
+```go
+func (value *Quiz) Scan(src interface{}) error {
+    if src == nil {
+        *value = Quiz{}
+        return nil
+    }
+    mapVal := core.Map{}
+    if err := mapVal.Scan(src); err != nil {
+        return err
+    }
+    return core.MapToStruct(mapVal, value)
+}
+
+func (value Quiz) Value() (driver.Value, error) {
+    mapVal, err := core.StructToMap(value)
+    if err != nil {
+        return nil, err
+    }
+    return core.Map(mapVal).Value()
+}
+```
+
+These implement Go's `sql.Scanner` and `driver.Valuer` interfaces so the struct is transparently serialized as JSON when reading from or writing to a database column.
+
+**Counter-example — `metadata`**: A `metadata` field stored as JSON in the database is intentionally *not* annotated with `x-generate-db-helpers` because it is amorphous — it has no fixed property list. Use `x-go-type: "core.Map"` for those fields instead:
+
+```yaml
+metadata:
+  type: object
+  additionalProperties: true
+  x-go-type: "core.Map"
+  x-go-type-skip-optional-pointer: true
+  x-oapi-codegen-extra-tags:
+    db: "metadata"
+```
+
+---
+
 ## 🛠️ Advanced Usage (Optional)
 
 ### 📌 Custom Generation in `generate.sh`

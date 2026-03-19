@@ -235,6 +235,39 @@ Keep helper generation implicit whenever possible.
 - If a helper is not safely inferable, keep only that narrow exception handwritten in the package helper file and explain the exception in code or docs.
 - Do not introduce new hand-maintained generator manifests for package/type-level helper behavior unless the schema and generated type information genuinely cannot express the rule.
 
+### `x-generate-db-helpers` — explicit JSON-blob helper generation
+
+`x-generate-db-helpers: true` is a **schema-level** OpenAPI vendor extension (declared on a named schema component, not on individual properties). It explicitly instructs the Go generator to produce `Scan()` and `Value()` SQL driver methods for that type in `zz_generated.helpers.go`.
+
+**Use it when** both of the following are true:
+1. The type has a **dedicated OpenAPI schema component** with well-defined, named properties.
+2. The type is **persisted as a JSON blob in a single database column** — not in a dedicated table with one column per property.
+
+**Do not use it** for amorphous objects with no fixed property set (e.g., a freeform `metadata` field). Those should use `x-go-type: "core.Map"` instead. Do not use it for types that correspond to a proper relational table.
+
+```yaml
+# ✅ Correct: dedicated schema, stored as a JSON blob in one DB column
+Quiz:
+  x-generate-db-helpers: true
+  type: object
+  properties:
+    id:
+      $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+    title:
+      type: string
+
+# ❌ Wrong: amorphous map — use x-go-type: "core.Map" instead
+metadata:
+  type: object
+  additionalProperties: true
+  x-go-type: "core.Map"
+  x-go-type-skip-optional-pointer: true
+  x-oapi-codegen-extra-tags:
+    db: "metadata"
+```
+
+The annotation feeds into `build/lib/generated-go-helpers.js` via `collectSchemaAnnotatedDbHelperTypes()`, which merges annotated types with types already inferred from DB-tagged struct fields. The resulting `Scan`/`Value` pair enables the type to round-trip as JSON through any `database/sql`-compatible driver.
+
 ### String arrays (pq.StringArray for PostgreSQL)
 
 ```yaml
@@ -388,6 +421,8 @@ When reviewing or auditing schemas, check every item on this list:
 - [ ] Array fields backed by PostgreSQL use `x-go-type: "pq.StringArray"` where appropriate
 - [ ] Nullable database fields use proper nullable markers
 - [ ] New generator behavior is inferred from schema/type conventions rather than a hand-maintained package manifest unless there is a documented exception
+- [ ] Schema components that are stored as JSON blobs in a DB column AND have a dedicated schema definition carry `x-generate-db-helpers: true` at the schema level (not on individual properties)
+- [ ] Amorphous JSON blob fields (no fixed schema) use `x-go-type: "core.Map"` rather than `x-generate-db-helpers`
 
 ## What NOT to do
 
