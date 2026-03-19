@@ -157,10 +157,10 @@ plan:
 Use a single-entry wrapper only for reusable alias components that need local metadata:
 
 ```yaml
-AcademyCurriculaBadgeId:
+AcademyCurriculumBadgeId:
   allOf:
     - $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
-  description: ID of the badge to be awarded on completion of this curriculum
+  description: ID of the badge awarded upon completion of this curriculum
   x-oapi-codegen-extra-tags:
     db: "badge_id"
     json: "badge_id"
