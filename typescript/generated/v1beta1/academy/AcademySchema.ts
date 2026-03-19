@@ -165,18 +165,14 @@ const AcademySchema: Record<string, unknown> = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -602,18 +598,14 @@ const AcademySchema: Record<string, unknown> = {
                     }
                   },
                   "badge_id": {
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                        "x-go-type": "uuid.UUID",
-                        "x-go-type-import": {
-                          "path": "github.com/gofrs/uuid"
-                        }
-                      }
-                    ],
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
@@ -1000,18 +992,14 @@ const AcademySchema: Record<string, unknown> = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
@@ -1613,18 +1601,14 @@ const AcademySchema: Record<string, unknown> = {
                               ]
                             },
                             "badge_id": {
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "format": "uuid",
-                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                                  "x-go-type": "uuid.UUID",
-                                  "x-go-type-import": {
-                                    "path": "github.com/gofrs/uuid"
-                                  }
-                                }
-                              ],
+                              "type": "string",
+                              "format": "uuid",
                               "description": "ID of the badge to be awarded on completion of this curricula",
+                              "x-go-type": "corev1alpha1.Uuid",
+                              "x-go-type-import": {
+                                "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                                "name": "corev1alpha1"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "badge_id",
                                 "json": "badge_id",
@@ -2122,18 +2106,14 @@ const AcademySchema: Record<string, unknown> = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
@@ -3095,18 +3075,14 @@ const AcademySchema: Record<string, unknown> = {
                     }
                   },
                   "badge_id": {
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                        "x-go-type": "uuid.UUID",
-                        "x-go-type-import": {
-                          "path": "github.com/gofrs/uuid"
-                        }
-                      }
-                    ],
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
@@ -3496,18 +3472,14 @@ const AcademySchema: Record<string, unknown> = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -4200,18 +4172,14 @@ const AcademySchema: Record<string, unknown> = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -7914,18 +7882,14 @@ const AcademySchema: Record<string, unknown> = {
             ]
           },
           "badge_id": {
-            "allOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
-                }
-              }
-            ],
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
@@ -8352,18 +8316,14 @@ const AcademySchema: Record<string, unknown> = {
                 ]
               },
               "badge_id": {
-                "allOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
-                    }
-                  }
-                ],
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
@@ -8946,18 +8906,14 @@ const AcademySchema: Record<string, unknown> = {
             }
           },
           "badge_id": {
-            "allOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
-                }
-              }
-            ],
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
@@ -9338,18 +9294,14 @@ const AcademySchema: Record<string, unknown> = {
                 ]
               },
               "badge_id": {
-                "allOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
-                    }
-                  }
-                ],
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
@@ -9802,18 +9754,14 @@ const AcademySchema: Record<string, unknown> = {
                   ]
                 },
                 "badge_id": {
-                  "allOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    }
-                  ],
+                  "type": "string",
+                  "format": "uuid",
                   "description": "ID of the badge to be awarded on completion of this curricula",
+                  "x-go-type": "corev1alpha1.Uuid",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                    "name": "corev1alpha1"
+                  },
                   "x-oapi-codegen-extra-tags": {
                     "db": "badge_id",
                     "json": "badge_id",
@@ -10258,18 +10206,14 @@ const AcademySchema: Record<string, unknown> = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",

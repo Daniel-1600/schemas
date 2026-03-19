@@ -64,7 +64,10 @@ export interface paths {
                * @enum {string}
                */
               level: "beginner" | "intermediate" | "advanced";
-              /** @description ID of the badge to be awarded on completion of this curricula */
+              /**
+               * Format: uuid
+               * @description ID of the badge to be awarded on completion of this curricula
+               */
               badge_id?: string;
               /** @description ID of the invite associated with this Curricula */
               invite_id?: string;
@@ -627,7 +630,10 @@ export interface components {
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
       /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
@@ -815,7 +821,10 @@ export interface components {
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
       /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
@@ -1041,7 +1050,10 @@ export interface components {
       orgId: string;
       /** @description ID of the workspace to which this Curricula belongs */
       workspace_id: string;
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
       /**
        * Format: uuid
@@ -1232,7 +1244,10 @@ export interface components {
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
       /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
@@ -1428,7 +1443,10 @@ export interface components {
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
-        /** @description ID of the badge to be awarded on completion of this curricula */
+        /**
+         * Format: uuid
+         * @description ID of the badge to be awarded on completion of this curricula
+         */
         badge_id?: string;
         /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
@@ -1623,7 +1641,10 @@ export interface components {
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
-        /** @description ID of the badge to be awarded on completion of this curricula */
+        /**
+         * Format: uuid
+         * @description ID of the badge to be awarded on completion of this curricula
+         */
         badge_id?: string;
         /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
@@ -3495,7 +3516,10 @@ export interface operations {
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
             /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
@@ -3676,7 +3700,10 @@ export interface operations {
           orgId: string;
           /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
-          /** @description ID of the badge to be awarded on completion of this curricula */
+          /**
+           * Format: uuid
+           * @description ID of the badge to be awarded on completion of this curricula
+           */
           badge_id?: string;
           /**
            * Format: uuid
@@ -4183,7 +4210,10 @@ export interface operations {
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
             /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
@@ -4447,7 +4477,10 @@ export interface operations {
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
             /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
@@ -4684,7 +4717,10 @@ export interface operations {
           orgId: string;
           /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
-          /** @description ID of the badge to be awarded on completion of this curricula */
+          /**
+           * Format: uuid
+           * @description ID of the badge to be awarded on completion of this curricula
+           */
           badge_id?: string;
           /**
            * Format: uuid

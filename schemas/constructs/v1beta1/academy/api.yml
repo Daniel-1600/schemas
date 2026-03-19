@@ -864,7 +864,17 @@ components:
             yaml: "level"
 
         badge_id:
-          $ref: "#/components/schemas/AcademyCurriculaBadgeId"
+          type: string
+          format: uuid
+          description: ID of the badge to be awarded on completion of this curricula
+          x-go-type: "corev1alpha1.Uuid"
+          x-go-type-import:
+            path: "github.com/meshery/schemas/models/v1alpha1/core"
+            name: corev1alpha1
+          x-oapi-codegen-extra-tags:
+            db: "badge_id"
+            json: "badge_id"
+            yaml: "badge_id"
 
         invite_id:
           $ref: "#/components/schemas/AcademyCurriculaInviteId"
@@ -942,7 +952,17 @@ components:
           $ref: "#/components/schemas/AcademyCurriculaWorkspaceId"
 
         badge_id:
-          $ref: "#/components/schemas/AcademyCurriculaBadgeId"
+          type: string
+          format: uuid
+          description: ID of the badge to be awarded on completion of this curricula
+          x-go-type: "corev1alpha1.Uuid"
+          x-go-type-import:
+            path: "github.com/meshery/schemas/models/v1alpha1/core"
+            name: corev1alpha1
+          x-oapi-codegen-extra-tags:
+            db: "badge_id"
+            json: "badge_id"
+            yaml: "badge_id"
 
         team_id:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"

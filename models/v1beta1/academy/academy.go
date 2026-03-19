@@ -65,7 +65,7 @@ const (
 // AcademyCurricula defines model for AcademyCurricula.
 type AcademyCurricula struct {
 	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *AcademyCurriculaBadgeId `db:"badge_id" json:"badge_id" yaml:"badge_id"`
+	BadgeId *corev1alpha1.Uuid `db:"badge_id" json:"badge_id" yaml:"badge_id"`
 
 	// CreatedAt When the Curricula item was created
 	CreatedAt AcademyCurriculaCreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
@@ -131,7 +131,7 @@ type AcademyCurriculaWithMetrics struct {
 	RegistrationCount float32 `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
 
 	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *AcademyCurriculaBadgeId `db:"badge_id" json:"badge_id" yaml:"badge_id"`
+	BadgeId *corev1alpha1.Uuid `db:"badge_id" json:"badge_id" yaml:"badge_id"`
 
 	// CreatedAt When the Curricula item was created
 	CreatedAt AcademyCurriculaCreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
@@ -301,7 +301,7 @@ type CreateAcademyCurriculaRequest struct {
 	AccessStatus invitationv1beta1.InvitationStatus `db:"access_status" json:"access_status" yaml:"access_status"`
 
 	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *AcademyCurriculaBadgeId `db:"badge_id" json:"badge_id" yaml:"badge_id"`
+	BadgeId *corev1alpha1.Uuid `db:"badge_id" json:"badge_id" yaml:"badge_id"`
 
 	// Metadata Additional metadata about the Curricula
 	Metadata AcademyCurriculaMetadata `db:"metadata" json:"metadata" yaml:"metadata"`
@@ -501,7 +501,7 @@ type SingleAcademyCurriculaResponse struct {
 	RegistrationCount float32                  `db:"registration_count,omitempty" json:"registration_count,omitempty" yaml:"registration_count,omitempty"`
 
 	// BadgeId ID of the badge to be awarded on completion of this curricula
-	BadgeId *AcademyCurriculaBadgeId `db:"badge_id" json:"badge_id" yaml:"badge_id"`
+	BadgeId *corev1alpha1.Uuid `db:"badge_id" json:"badge_id" yaml:"badge_id"`
 
 	// CreatedAt When the Curricula item was created
 	CreatedAt AcademyCurriculaCreatedAt `db:"created_at" json:"created_at" yaml:"created_at"`
