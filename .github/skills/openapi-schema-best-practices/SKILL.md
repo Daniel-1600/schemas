@@ -82,7 +82,7 @@ These conventions apply to all new additions (properties, paths, operationIds, e
 
 | Element | Convention | Examples |
 |---------|-----------|----------|
-| Schema property names | camelCase | `schemaVersion`, `displayName`, `componentsCount` |
+| Non-DB-mirrored schema property names | camelCase | `schemaVersion`, `displayName`, `componentsCount` |
 | Identifier fields | camelCase + "Id" suffix | `modelId`, `registrantId`, `categoryId` |
 | Enum values | lowercase | `enabled`, `ignored`, `duplicate` |
 | Schema component names | PascalCase | `ModelDefinition`, `ComponentDefinition` |
@@ -97,7 +97,7 @@ Note: Some existing `operationId` values use PascalCase (for example, `RegisterM
 
 **Exceptions for DB-mirrored/system fields**
 
-Some fields intentionally remain `snake_case` to mirror existing database columns and historical schemas. Common examples are `created_at`, `updated_at`, and `user_id`. Do **not** rename these to camelCase in existing schemas; instead, ensure that any new, non-DB-mirrored fields you add follow the camelCase rules above.
+Some fields intentionally remain `snake_case` to mirror existing database columns and historical schemas. Common examples are `created_at`, `updated_at`, and `user_id`. Do **not** rename these to camelCase in existing schemas. These DB-mirrored/system fields are the only allowed `snake_case` properties; all other (non-DB-mirrored) property names MUST follow the camelCase rules above.
 
 ## Common schema references
 
