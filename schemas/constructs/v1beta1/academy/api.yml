@@ -1452,6 +1452,7 @@ components:
           type: string
 
     Quiz:
+      x-generate-db-helpers: true
       type: object
       required:
         - id
