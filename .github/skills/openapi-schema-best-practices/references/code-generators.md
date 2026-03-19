@@ -38,8 +38,8 @@ Detailed reference for how the build scripts consume OpenAPI schemas and produce
 ## Go Generator
 
 **Script**: `build/generate-golang.js`
-**Dependency**: `oapi-codegen` v2.5.1
-**Prerequisite**: none beyond the source schemas themselves; `make build` still runs bundling as part of the full pipeline
+**Dependency**: `oapi-codegen` v2.x (pinned via `tool` directive in `go.mod`)
+**Prerequisite**: `bundle-openapi.js` must run first (enforced by `make generate-golang` depending on `bundle-openapi`, and by `build/index.js` marking `golang` as `dependsOn: "bundle"`). The Go generator reads source `api.yml` files directly, but the standard build runs bundling first.
 
 ### Go generator flow
 
@@ -50,7 +50,7 @@ Detailed reference for how the build scripts consume OpenAPI schemas and produce
 5. Collects `x-oapi-codegen-extra-tags`, `x-go-name`, and `x-go-type` metadata across direct `$ref` and `allOf` composition
 6. Generates Go structs via `oapi-codegen` with both JSON and YAML struct tags
 7. Rewrites external import aliases to readable names and preserves explicit `x-go-type-import.name` aliases
-8. Infers repetitive helper methods from the generated package types and existing handwritten helpers
+8. Infers repetitive helper methods from generated package types and existing handwritten helpers
 9. Applies extra tags and field-name/type overrides post-generation
 
 ### Output location
@@ -59,7 +59,7 @@ Detailed reference for how the build scripts consume OpenAPI schemas and produce
 
 ### Key behaviors
 
-- **YAML tag mirroring**: After `oapi-codegen` runs, `build/generate-golang.js` runs a regex-based `addYamlTags()` pass that scans for `json:"fieldName,omitempty"` struct tags and appends matching `yaml:"fieldName,omitempty"` tags. This is a text-only transform that mirrors the JSON tag value verbatim and may miss unconventional or hand-edited tag layouts.
+- **YAML tag mirroring**: After `oapi-codegen` runs, `build/generate-golang.js` runs a regex-based `addYamlTags()` pass that scans for `json:"..."` struct tags and appends corresponding `yaml:"..."` tags, mirroring the entire JSON tag value verbatim (including options like `omitempty`). This is a text-only transform and may miss unconventional or hand-edited tag layouts.
 - **Extra tags**: `x-oapi-codegen-extra-tags` values are injected as additional struct tags
 - **Import mappings**: External `$ref` targets are mapped to Go import paths so cross-package types compile
 - **Composed-schema inheritance**: Property metadata is collected through both direct `$ref` and `allOf`, so composed object schemas inherit field tags and overrides
@@ -70,15 +70,17 @@ Detailed reference for how the build scripts consume OpenAPI schemas and produce
 
 ### Schema features that affect Go output
 
-- `type: string, format: uuid`: `openapi_types.UUID`
-- `x-go-type: "core.Map"`: Uses the specified Go type directly
-- `x-go-type-import`: Adds the specified import
-- `x-go-type-skip-optional-pointer`: Skips `*` prefix on optional fields
-- `x-oapi-codegen-extra-tags`: Adds custom struct tags
-- `allOf`: Inherits property tags and overrides from composed subschemas during post-processing
-- `oneOf` / `anyOf`: Union type with `RawMessage`
-- `$ref` to external schema: Import from the referenced package
-- `nullable: true`: Pointer type
+| Schema feature | Go result |
+| -------------- | --------- |
+| `type: string, format: uuid` | `openapi_types.UUID` |
+| `x-go-type: "core.Map"` | Uses the specified Go type directly |
+| `x-go-type-import` | Adds the specified import |
+| `x-go-type-skip-optional-pointer` | Skips `*` prefix on optional fields |
+| `x-oapi-codegen-extra-tags` | Adds custom struct tags |
+| `allOf` | Inherits property tags and overrides from composed subschemas during post-processing |
+| `oneOf` / `anyOf` | Union type with RawMessage |
+| `$ref` to external schema | Import from the referenced package |
+| `nullable: true` | Pointer type |
 
 ### Helper generation guidance
 
@@ -138,19 +140,20 @@ Note: The property name in `["schemas"]["..."]` matches the schema component nam
 
 - Endpoints tagged `x-internal: ["cloud"]` go into `cloud.ts` hooks
 - Endpoints tagged `x-internal: ["meshery"]` go into `meshery.ts` hooks
-- Endpoints with no `x-internal` tag are included by `filterOpenapiByTag.js` (when unset in both `cloud_openapi.yml` and `meshery_openapi.yml`) and can generate RTK hooks, potentially in both `cloud.ts` and `meshery.ts`
+- Operations with no `x-internal` tag are included by `filterOpenapiByTag.js` for any tag filter, so they appear (and generate hooks) in both the cloud and meshery RTK outputs
 
 ## Package Discovery
 
 **Module**: `build/lib/config.js`
 
-The algorithm:
+The algorithm (`discoverSchemaPackages()`):
 
 1. Walk `schemas/constructs/<version>/`
 2. Find directories containing `api.yml`
-3. Apply exclusions (`core`, `capability`)
-4. Apply name overrides (`design` → `pattern`)
-5. Return `{version, package}` tuples
+3. Apply name overrides (`design` → `pattern`)
+4. Return `{name, version, dirName, openapiPath}` tuples
+
+A separate `getMergePackages()` function filters out packages listed in `excludeFromMerge` (currently `v1alpha1/core` and `v1alpha1/capability`). Excluded packages are still discovered and processed for per-package bundling and Go generation — they are only skipped when merging specs.
 
 This means:
 
@@ -186,4 +189,4 @@ Usually means invalid `$ref` path. Check:
 ### Package not discovered by build
 
 - Ensure `api.yml` exists in the construct directory (not just `<construct>.yaml`)
-- Check if the directory is in the exclusion list in `build/lib/config.js`
+- Check `build/lib/config.js` to see whether the directory is filtered out during the merge step (for example, via `getMergePackages()` or an `excludeFromMerge` list) — it will still be discovered, but its spec may be skipped during merging

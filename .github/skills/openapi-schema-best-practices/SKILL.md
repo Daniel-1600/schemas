@@ -16,16 +16,21 @@ Meshery defines its data model as OpenAPI 3.0 YAML schemas under `schemas/constr
 ### Build pipeline overview
 
 ```
-schemas/constructs/**/*.y{a,}ml  (you write these)
-  │
-  ├──▶ generate-golang.js    (stages source api.yml files + reachable refs)
-  │       └──▶ models/**/*.go
-  │
-  └──▶ bundle-openapi.js     (bundles + dereferences via swagger-cli)
-    └──▶ _openapi_build/**/*.json
-      ├──▶ generate-typescript.js → typescript/generated/
-      └──▶ generate-rtk.js        → typescript/rtk/
+schemas/constructs/**/*.{yaml,yml}  (you write these)
+    │
+    ▼
+  bundle-openapi.js           (bundles + dereferences via swagger-cli)
+    │
+    ▼
+  _openapi_build/**/*.json    (intermediate bundled JSON)
+    │
+    ├──▶ generate-golang.js     (reads source api.yml packages + reachable refs)
+    │      └──▶ models/**/*.go  (oapi-codegen)
+    ├──▶ generate-typescript.js → typescript/generated/  (openapi-typescript)
+    └──▶ generate-rtk.js        → typescript/rtk/        (RTK Query hooks)
 ```
+
+Note: `generate-golang.js` reads source `api.yml` files directly (not the bundled JSON), but the standard build (`make build`) still runs `bundle-openapi` first because Go generation depends on it in both the Makefile and `build/index.js`.
 
 Understanding this pipeline matters because schema design decisions directly affect the quality of generated code. A poorly structured schema produces awkward Go structs and confusing TypeScript types.
 
@@ -39,7 +44,7 @@ Understanding this pipeline matters because schema design decisions directly aff
 - Builds import mappings from external `$ref` targets so cross-package types resolve correctly
 - Rewrites external import aliases using explicit `x-go-type-import.name` values when provided
 - Derives repetitive Go helper methods from generated package/type structure instead of relying on a hand-maintained package manifest
-- Uses `oapi-codegen` v2.x (see go.mod/tools) under the hood
+- Uses `oapi-codegen` v2.x (pinned via `tool` directive in `go.mod`) under the hood
 
 **TypeScript generator** (`build/generate-typescript.js`):
 - Reads the same bundled JSON
@@ -75,24 +80,26 @@ The `api.yml` is the entry point. It references subschemas via `$ref` and define
 
 ## Naming conventions
 
-These conventions apply to all new fields for consistency across APIs. Some legacy and DB-mirrored fields are explicit exceptions, as noted below:
+These conventions apply to all new additions (properties, paths, operationIds, etc.) for consistency across APIs. Some legacy and DB-mirrored fields are explicit exceptions, as noted below:
 
 | Element | Convention | Examples |
 |---------|-----------|----------|
-| Schema property names | camelCase | `schemaVersion`, `displayName`, `componentsCount` |
+| Non-DB-mirrored schema property names | camelCase | `schemaVersion`, `displayName`, `componentsCount` |
 | Identifier fields | camelCase + "Id" suffix | `modelId`, `registrantId`, `categoryId` |
 | Enum values | lowercase | `enabled`, `ignored`, `duplicate` |
 | Schema component names | PascalCase | `ModelDefinition`, `ComponentDefinition` |
 | File/folder names | lowercase, underscores OK | `model.yaml`, `model_core.yml`, `api.yml` |
 | API paths | `/api` prefix, kebab-case, plural nouns | `/api/workspaces`, `/api/environments` |
 | Path parameters | camelCase | `{subscriptionId}`, `{connectionId}` |
-| operationId | camelCase VerbNoun | `registerMeshmodels`, `getAllRoles` |
+| operationId | lower camelCase verbNoun | `getAllRoles`, `listUsers` |
 | Version strings | k8s-style | `v1alpha1`, `v1beta1` |
 | schemaVersion | group/version | `models.meshery.io/v1beta1` |
 
+Note: Some existing `operationId` values use PascalCase (for example, `RegisterMeshmodels`) and are treated as legacy. Do not rename these in existing schemas, but ensure any new `operationId` you add follows the lower camelCase convention above.
+
 **Exceptions for DB-mirrored/system fields**
 
-Some fields intentionally remain `snake_case` to mirror existing database columns and historical schemas. Common examples are `created_at`, `updated_at`, and `user_id`. Do **not** rename these to camelCase in existing schemas; instead, ensure that any new, non-DB-mirrored fields you add follow the camelCase rules above.
+Some fields intentionally remain `snake_case` to mirror existing database columns and historical schemas. Common examples are `created_at`, `updated_at`, and `user_id`. Do **not** rename these to camelCase in existing schemas. These DB-mirrored/system fields are the only allowed `snake_case` properties; all other (non-DB-mirrored) property names MUST follow the camelCase rules above.
 
 ## Common schema references
 
@@ -152,10 +159,10 @@ plan:
 Use a single-entry wrapper only for reusable alias components that need local metadata:
 
 ```yaml
-AcademyCirriculaBadgeId:
+AcademyCurriculaBadgeId:
   allOf:
     - $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
-  description: ID of the badge to be awarded on completion of this curricula
+  description: ID of the badge awarded on completion of the curricula
   x-oapi-codegen-extra-tags:
     db: "badge_id"
     json: "badge_id"
@@ -236,7 +243,8 @@ roleNames:
   items:
     type: string
   x-go-type: "pq.StringArray"
-  x-go-import-path: "github.com/lib/pq"
+  x-go-type-import:
+    path: "github.com/lib/pq"
 ```
 
 ### Internal API marking
@@ -340,7 +348,7 @@ When reviewing or auditing schemas, check every item on this list:
 
 ### Naming audit
 
-- [ ] All property names are camelCase (not snake_case, not PascalCase)
+- [ ] All non-DB-mirrored property names are camelCase (DB-mirrored fields like `created_at`, `updated_at`, `user_id` are explicit exceptions)
 - [ ] Identifier fields end with "Id" suffix (e.g., `modelId` not `model_id` or `modelID`)
 - [ ] Enum values are lowercase
 - [ ] Schema component names under `components/schemas` are PascalCase

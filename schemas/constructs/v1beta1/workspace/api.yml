@@ -102,7 +102,7 @@ components:
   securitySchemes:
     jwt:
       type: http
-      scheme: bearer
+      scheme: Bearer
       bearerFormat: JWT
   schemas:
     workspace:
@@ -170,16 +170,7 @@ components:
         ID:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/general_id"
         design_id:
-          type: string
-          format: uuid
-          x-go-type: corev1alpha1.Uuid
-          x-go-type-import:
-            path: github.com/meshery/schemas/models/v1alpha1/core
-            name: corev1alpha1
-          x-go-type-skip-optional-pointer: true
-          x-oapi-codegen-extra-tags:
-            db: design_id
-            json: design_id
+          $ref: "../../v1alpha1/core/api.yml#/components/schemas/design_id"
         workspace_id:
           $ref: "../../v1alpha1/core/api.yml#/components/schemas/workspace_id"
         created_at:

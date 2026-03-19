@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const WorkspaceSchema: Record<string, unknown> = {
+const WorkspaceSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Workspace",
@@ -485,7 +485,7 @@ const WorkspaceSchema: Record<string, unknown> = {
     "securitySchemes": {
       "jwt": {
         "type": "http",
-        "scheme": "bearer",
+        "scheme": "Bearer",
         "bearerFormat": "JWT"
       }
     },
@@ -755,16 +755,16 @@ const WorkspaceSchema: Record<string, unknown> = {
           "design_id": {
             "type": "string",
             "format": "uuid",
-            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type": "uuid.UUID",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1alpha1/core",
-              "name": "corev1alpha1"
+              "path": "github.com/gofrs/uuid"
             },
-            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "design_id",
               "json": "design_id"
-            }
+            },
+            "x-go-type-name": "DesignId",
+            "x-go-type-skip-optional-pointer": true
           },
           "workspace_id": {
             "type": "string",
@@ -1005,6 +1005,6 @@ const WorkspaceSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default WorkspaceSchema;

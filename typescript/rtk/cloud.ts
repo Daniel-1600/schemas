@@ -30,9 +30,9 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
+      getMyAcademyCirricula: build.query<GetMyAcademyCirriculaApiResponse, GetMyAcademyCirriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/Curricula/registered`,
+          url: `/api/academy/cirricula/registered`,
           params: {
             contentType: queryArg.contentType,
             orgId: queryArg.orgId,
@@ -44,9 +44,9 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/academy/curricula`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Academy_API_Academy"],
       }),
-      getAcademyCurricula: build.query<GetAcademyCurriculaApiResponse, GetAcademyCurriculaApiArg>({
+      getAcademyCirricula: build.query<GetAcademyCirriculaApiResponse, GetAcademyCirriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/Curricula`,
+          url: `/api/academy/cirricula`,
           params: {
             contentType: queryArg.contentType,
             visibility: queryArg.visibility,
@@ -784,130 +784,39 @@ const injectedRtkApi = api
     overrideExisting: false,
   });
 export { injectedRtkApi as cloudApi };
-export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
-  /** Total number of Curricula */
-  total: number;
-  data: {
-    /** Id of the Curricula */
-    id: string;
-    type: "learning-path" | "challenge" | "certification";
-    /** Organization ID that owns this learning path */
-    orgId: string;
-    /** Visibility of the Curricula */
-    visibility: "public" | "private";
-    /** Status of the Curricula */
-    status: "ready" | "archived" | "not_ready";
-    /** slug of the Curricula */
-    slug: string;
-    /** Level of the Curricula */
-    level: "beginner" | "intermediate" | "advanced";
-    /** ID of the badge to be awarded on completion of this curricula */
-    badge_id?: string;
-    /** ID of the invite associated with this Curricula */
-    invite_id?: string;
-    /** ID of the workspace to which this Curricula belongs */
-    workspace_id?: string;
-    /** When the Curricula item was created */
-    createdAt: string;
-    /** When the Curricula was last updated */
-    updatedAt: string;
-    deletedAt: string;
-    /** Additional metadata about the Curricula */
-    metadata: {
-      /** Title of the learning path */
-      title: string;
-      /** Short description of the curricula */
-      description: string;
-      /** Detailed description of the curricula */
-      detailed_description?: string;
-      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-      banner?: string | null;
-      /** Canonical URL for the learning path */
-      permalink: string;
-      certificate?: {
-        /** Unique identifier for the certificate */
-        id: string;
-        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-        org_id: string;
-        /** ID of the recipient (user) who received the certificate */
-        recipient_id: string;
-        /** Name of the recipient (user) who received the certificate */
-        recipient_name: string;
-        /** Title of the certificate */
-        title: string;
-        /** Description of the certificate */
-        description: string;
-        /** List of issuing authorities for the certificate */
-        issuing_authorities: {
-          /** Name of the issuing authority */
-          name: string;
-          /** Role of the issuing authority */
-          role?: string;
-          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
-          signature_url?: string;
-        }[];
-        /** Date when the certificate was issued */
-        issued_date: string;
-        /** Date when the certificate expires (optional) */
-        expiration_date?: string;
-        /** Number of months after which the certificate expires */
-        expires_in?: number;
-      };
-      /** List of children items in the top-level curricula */
-      children?: {
-        /** Unique identifier for the course */
-        id: string;
-        /** Title of the course */
-        title: string;
-        /** URL to the course content */
-        permalink: string;
-        /** Course description */
-        description: string;
-        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
-        weight?: number;
-        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-        banner?: string | null;
-        /** Type of the content (e.g., learning-path, challenge, certification) */
-        type?: "learning-path" | "challenge" | "certification";
-        /** List of child nodes (sub-courses or modules) */
-        children?: object[];
-      }[];
-      [key: string]: any;
-    };
-  }[];
-};
-export type GetMyAcademyCurriculaApiArg = {
+export type GetMyAcademyCirriculaApiResponse = unknown;
+export type GetMyAcademyCirriculaApiArg = {
   /** Filter content by content types */
   contentType?: string[];
   /** Filter content by organization IDs */
   orgId?: string[];
 };
 export type CreateAcademyCurriculaApiResponse = /** status 201 created the curricula */ {
-  /** Id of the Curricula */
+  /** Id of the cirricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the Curricula */
+  /** Visibility of the cirricula */
   visibility: "public" | "private";
-  /** Status of the Curricula */
+  /** Status of the cirricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the Curricula */
+  /** slug of the cirricula */
   slug: string;
-  /** Level of the Curricula */
+  /** Level of the cirricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this Curricula */
+  /** ID of the invite associated with this cirricula */
   invite_id?: string;
-  /** ID of the workspace to which this Curricula belongs */
+  /** ID of the workspace to which this cirricula belongs */
   workspace_id?: string;
-  /** When the Curricula item was created */
+  /** When the cirricula item was created */
   createdAt: string;
-  /** When the Curricula was last updated */
+  /** When the cirricula was last updated */
   updatedAt: string;
   deletedAt: string;
-  /** Additional metadata about the Curricula */
+  /** Additional metadata about the cirricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -978,7 +887,7 @@ export type CreateAcademyCurriculaApiArg = {
     title: string;
     /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this Curricula belongs */
+    /** ID of the workspace to which this cirricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
@@ -988,7 +897,7 @@ export type CreateAcademyCurriculaApiArg = {
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the Curricula */
+    /** Additional metadata about the cirricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -1052,101 +961,8 @@ export type CreateAcademyCurriculaApiArg = {
     };
   };
 };
-export type GetAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
-  /** Total number of Curricula */
-  total: number;
-  data: ({
-    /** Id of the Curricula */
-    id: string;
-    type: "learning-path" | "challenge" | "certification";
-    /** Organization ID that owns this learning path */
-    orgId: string;
-    /** Visibility of the Curricula */
-    visibility: "public" | "private";
-    /** Status of the Curricula */
-    status: "ready" | "archived" | "not_ready";
-    /** slug of the Curricula */
-    slug: string;
-    /** Level of the Curricula */
-    level: "beginner" | "intermediate" | "advanced";
-    /** ID of the badge to be awarded on completion of this curricula */
-    badge_id?: string;
-    /** ID of the invite associated with this Curricula */
-    invite_id?: string;
-    /** ID of the workspace to which this Curricula belongs */
-    workspace_id?: string;
-    /** When the Curricula item was created */
-    createdAt: string;
-    /** When the Curricula was last updated */
-    updatedAt: string;
-    deletedAt: string;
-    /** Additional metadata about the Curricula */
-    metadata: {
-      /** Title of the learning path */
-      title: string;
-      /** Short description of the curricula */
-      description: string;
-      /** Detailed description of the curricula */
-      detailed_description?: string;
-      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-      banner?: string | null;
-      /** Canonical URL for the learning path */
-      permalink: string;
-      certificate?: {
-        /** Unique identifier for the certificate */
-        id: string;
-        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-        org_id: string;
-        /** ID of the recipient (user) who received the certificate */
-        recipient_id: string;
-        /** Name of the recipient (user) who received the certificate */
-        recipient_name: string;
-        /** Title of the certificate */
-        title: string;
-        /** Description of the certificate */
-        description: string;
-        /** List of issuing authorities for the certificate */
-        issuing_authorities: {
-          /** Name of the issuing authority */
-          name: string;
-          /** Role of the issuing authority */
-          role?: string;
-          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
-          signature_url?: string;
-        }[];
-        /** Date when the certificate was issued */
-        issued_date: string;
-        /** Date when the certificate expires (optional) */
-        expiration_date?: string;
-        /** Number of months after which the certificate expires */
-        expires_in?: number;
-      };
-      /** List of children items in the top-level curricula */
-      children?: {
-        /** Unique identifier for the course */
-        id: string;
-        /** Title of the course */
-        title: string;
-        /** URL to the course content */
-        permalink: string;
-        /** Course description */
-        description: string;
-        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
-        weight?: number;
-        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-        banner?: string | null;
-        /** Type of the content (e.g., learning-path, challenge, certification) */
-        type?: "learning-path" | "challenge" | "certification";
-        /** List of child nodes (sub-courses or modules) */
-        children?: object[];
-      }[];
-      [key: string]: any;
-    };
-  } & {
-    RegistrationCount: number;
-  })[];
-};
-export type GetAcademyCurriculaApiArg = {
+export type GetAcademyCirriculaApiResponse = unknown;
+export type GetAcademyCirriculaApiArg = {
   /** Filter content by content types */
   contentType?: string[];
   /** Filter content by visibility (public/private) */
@@ -1171,31 +987,31 @@ export type GetAcademyCurriculaApiArg = {
   page?: number;
 };
 export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single academy content */ {
-  /** Id of the Curricula */
+  /** Id of the cirricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the Curricula */
+  /** Visibility of the cirricula */
   visibility: "public" | "private";
-  /** Status of the Curricula */
+  /** Status of the cirricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the Curricula */
+  /** slug of the cirricula */
   slug: string;
-  /** Level of the Curricula */
+  /** Level of the cirricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this Curricula */
+  /** ID of the invite associated with this cirricula */
   invite_id?: string;
-  /** ID of the workspace to which this Curricula belongs */
+  /** ID of the workspace to which this cirricula belongs */
   workspace_id?: string;
-  /** When the Curricula item was created */
+  /** When the cirricula item was created */
   createdAt: string;
-  /** When the Curricula was last updated */
+  /** When the cirricula was last updated */
   updatedAt: string;
   deletedAt: string;
-  /** Additional metadata about the Curricula */
+  /** Additional metadata about the cirricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -1379,31 +1195,31 @@ export type WithdrawFromAcademyContentApiArg = {
   id: string;
 };
 export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the curricula */ {
-  /** Id of the Curricula */
+  /** Id of the cirricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the Curricula */
+  /** Visibility of the cirricula */
   visibility: "public" | "private";
-  /** Status of the Curricula */
+  /** Status of the cirricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the Curricula */
+  /** slug of the cirricula */
   slug: string;
-  /** Level of the Curricula */
+  /** Level of the cirricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this Curricula */
+  /** ID of the invite associated with this cirricula */
   invite_id?: string;
-  /** ID of the workspace to which this Curricula belongs */
+  /** ID of the workspace to which this cirricula belongs */
   workspace_id?: string;
-  /** When the Curricula item was created */
+  /** When the cirricula item was created */
   createdAt: string;
-  /** When the Curricula was last updated */
+  /** When the cirricula was last updated */
   updatedAt: string;
   deletedAt: string;
-  /** Additional metadata about the Curricula */
+  /** Additional metadata about the cirricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -1509,7 +1325,7 @@ export type UpdateAcademyCurriculaByIdApiArg = {
     title: string;
     /** Organization ID that owns this learning path */
     orgId: string;
-    /** ID of the workspace to which this Curricula belongs */
+    /** ID of the workspace to which this cirricula belongs */
     workspace_id: string;
     /** ID of the badge to be awarded on completion of this curricula */
     badge_id?: string;
@@ -1519,7 +1335,7 @@ export type UpdateAcademyCurriculaByIdApiArg = {
     access_expires_at?: string;
     /** Current access status of the curricula */
     access_status: "enabled" | "disabled";
-    /** Additional metadata about the Curricula */
+    /** Additional metadata about the cirricula */
     metadata: {
       /** Title of the learning path */
       title: string;
@@ -1589,31 +1405,31 @@ export type DeleteAcademyCurriculaByIdApiArg = {
   id: string;
 };
 export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricula */ {
-  /** Id of the Curricula */
+  /** Id of the cirricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
   /** Organization ID that owns this learning path */
   orgId: string;
-  /** Visibility of the Curricula */
+  /** Visibility of the cirricula */
   visibility: "public" | "private";
-  /** Status of the Curricula */
+  /** Status of the cirricula */
   status: "ready" | "archived" | "not_ready";
-  /** slug of the Curricula */
+  /** slug of the cirricula */
   slug: string;
-  /** Level of the Curricula */
+  /** Level of the cirricula */
   level: "beginner" | "intermediate" | "advanced";
   /** ID of the badge to be awarded on completion of this curricula */
   badge_id?: string;
-  /** ID of the invite associated with this Curricula */
+  /** ID of the invite associated with this cirricula */
   invite_id?: string;
-  /** ID of the workspace to which this Curricula belongs */
+  /** ID of the workspace to which this cirricula belongs */
   workspace_id?: string;
-  /** When the Curricula item was created */
+  /** When the cirricula item was created */
   createdAt: string;
-  /** When the Curricula was last updated */
+  /** When the cirricula was last updated */
   updatedAt: string;
   deletedAt: string;
-  /** Additional metadata about the Curricula */
+  /** Additional metadata about the cirricula */
   metadata: {
     /** Title of the learning path */
     title: string;
@@ -3143,7 +2959,7 @@ export type GetPatternsApiResponse = /** status 200 Designs fetched successfully
           };
         };
         /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-        modelId?: string;
+        modelId: string;
         /** Visualization styles for a component */
         styles?: {
           /** Primary color of the component used for UI representation. */
@@ -4156,7 +3972,7 @@ export type UpsertPatternApiResponse = /** status 200 Design saved successfully 
         };
       };
       /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      modelId?: string;
+      modelId: string;
       /** Visualization styles for a component */
       styles?: {
         /** Primary color of the component used for UI representation. */
@@ -5157,7 +4973,7 @@ export type UpsertPatternApiArg = {
             };
           };
           /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-          modelId?: string;
+          modelId: string;
           /** Visualization styles for a component */
           styles?: {
             /** Primary color of the component used for UI representation. */
@@ -6193,7 +6009,7 @@ export type GetPatternApiResponse = /** status 200 Design fetched successfully *
         };
       };
       /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      modelId?: string;
+      modelId: string;
       /** Visualization styles for a component */
       styles?: {
         /** Primary color of the component used for UI representation. */
@@ -7200,7 +7016,7 @@ export type ClonePatternApiResponse = /** status 200 Design cloned successfully 
         };
       };
       /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      modelId?: string;
+      modelId: string;
       /** Visualization styles for a component */
       styles?: {
         /** Primary color of the component used for UI representation. */
@@ -9423,9 +9239,9 @@ export type DeleteApiWorkspacesByIdApiArg = {
   id: string;
 };
 export const {
-  useGetMyAcademyCurriculaQuery,
+  useGetMyAcademyCirriculaQuery,
   useCreateAcademyCurriculaMutation,
-  useGetAcademyCurriculaQuery,
+  useGetAcademyCirriculaQuery,
   useGetApiAcademyByTypeAndOrgIdSlugQuery,
   useRegisterToAcademyContentMutation,
   useWithdrawFromAcademyContentMutation,

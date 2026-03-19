@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const KeychainSchema: Record<string, unknown> = {
+const KeychainSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Keychain",
@@ -1683,6 +1683,6 @@ const KeychainSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default KeychainSchema;

@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const PatternSchema: Record<string, unknown> = {
+const PatternSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Design",
@@ -2459,6 +2459,7 @@ const PatternSchema: Record<string, unknown> = {
                                         "configuration",
                                         "metadata",
                                         "model",
+                                        "modelId",
                                         "modelReference",
                                         "component"
                                       ]
@@ -7228,6 +7229,7 @@ const PatternSchema: Record<string, unknown> = {
                                     "configuration",
                                     "metadata",
                                     "model",
+                                    "modelId",
                                     "modelReference",
                                     "component"
                                   ]
@@ -11964,6 +11966,7 @@ const PatternSchema: Record<string, unknown> = {
                                   "configuration",
                                   "metadata",
                                   "model",
+                                  "modelId",
                                   "modelReference",
                                   "component"
                                 ]
@@ -17069,6 +17072,7 @@ const PatternSchema: Record<string, unknown> = {
                                   "configuration",
                                   "metadata",
                                   "model",
+                                  "modelId",
                                   "modelReference",
                                   "component"
                                 ]
@@ -21913,6 +21917,7 @@ const PatternSchema: Record<string, unknown> = {
                                   "configuration",
                                   "metadata",
                                   "model",
+                                  "modelId",
                                   "modelReference",
                                   "component"
                                 ]
@@ -26903,6 +26908,7 @@ const PatternSchema: Record<string, unknown> = {
                     "configuration",
                     "metadata",
                     "model",
+                    "modelId",
                     "modelReference",
                     "component"
                   ]
@@ -31596,6 +31602,7 @@ const PatternSchema: Record<string, unknown> = {
                         "configuration",
                         "metadata",
                         "model",
+                        "modelId",
                         "modelReference",
                         "component"
                       ]
@@ -36321,6 +36328,7 @@ const PatternSchema: Record<string, unknown> = {
                               "configuration",
                               "metadata",
                               "model",
+                              "modelId",
                               "modelReference",
                               "component"
                             ]
@@ -41078,6 +41086,7 @@ const PatternSchema: Record<string, unknown> = {
                             "configuration",
                             "metadata",
                             "model",
+                            "modelId",
                             "modelReference",
                             "component"
                           ]
@@ -43482,6 +43491,6 @@ const PatternSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default PatternSchema;

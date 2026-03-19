@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const RelationshipSchema: Record<string, unknown> = {
+const RelationshipSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Relationship",
@@ -7279,6 +7279,6 @@ const RelationshipSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default RelationshipSchema;

@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const ScheduleSchema: Record<string, unknown> = {
+const ScheduleSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "schedule",
@@ -949,6 +949,6 @@ const ScheduleSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default ScheduleSchema;

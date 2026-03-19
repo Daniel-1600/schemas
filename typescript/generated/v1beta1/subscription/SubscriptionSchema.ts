@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const SubscriptionSchema: Record<string, unknown> = {
+const SubscriptionSchema = {
   "openapi": "3.0.0",
   "info": {
     "title": "Subscription",
@@ -1911,6 +1911,6 @@ const SubscriptionSchema: Record<string, unknown> = {
       }
     }
   }
-};
+} as const satisfies Record<string, unknown>;
 
 export default SubscriptionSchema;
