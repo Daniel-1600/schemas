@@ -459,7 +459,7 @@ type CreatedAt = time.Time
 type CredentialID = uuid.UUID
 
 // DeletedAt Timestamp when the resource was deleted.
-type DeletedAt = time.Time
+type DeletedAt = NullTime
 
 // EdgeStyles defines model for edgeStyles.
 type EdgeStyles struct {

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const yaml = require("js-yaml");
 
 function toPascalCase(str) {
   return str
@@ -227,12 +228,46 @@ function collectCompatibilityEnumAliases(outputPath, outputDir) {
   return enumAliases;
 }
 
+function collectSchemaAnnotatedDbHelperTypes(pkg) {
+  const schemaPath = path.resolve(__dirname, "../..", pkg.openapiPath);
+  if (!fs.existsSync(schemaPath)) {
+    return new Set();
+  }
+
+  try {
+    const doc = yaml.load(fs.readFileSync(schemaPath, "utf-8"));
+    const schemas = doc?.components?.schemas;
+    if (!schemas || typeof schemas !== "object") {
+      return new Set();
+    }
+
+    const annotatedTypes = new Set();
+    for (const [schemaName, schemaDef] of Object.entries(schemas)) {
+      if (schemaDef?.["x-generate-db-helpers"] === true) {
+        annotatedTypes.add(schemaName);
+      }
+    }
+
+    return annotatedTypes;
+  } catch {
+    return new Set();
+  }
+}
+
 function inferHelperSpec(pkg, outputPath, outputDir) {
   const { localStructTypes, dbReferencedLocalStructs } = collectGeneratedStructInfo(outputPath);
   const existingHelperMethods = collectExistingHelperMethods(outputDir);
   const primaryType = toPascalCase(pkg.name);
   const enumAliases = collectCompatibilityEnumAliases(outputPath, outputDir);
-  const mapStructTypes = [...dbReferencedLocalStructs].filter(
+  const schemaAnnotatedTypes = collectSchemaAnnotatedDbHelperTypes(pkg);
+
+  // Merge db-referenced types with schema-annotated types (x-generate-db-helpers: true)
+  const candidateTypes = new Set([
+    ...dbReferencedLocalStructs,
+    ...[...schemaAnnotatedTypes].filter((typeName) => localStructTypes.has(typeName)),
+  ]);
+
+  const mapStructTypes = [...candidateTypes].filter(
     (typeName) => !existingHelperMethods.get(typeName)?.has("Scan") && !existingHelperMethods.get(typeName)?.has("Value"),
   );
   const eventCategories = {};

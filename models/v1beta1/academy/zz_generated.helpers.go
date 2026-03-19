@@ -3,6 +3,7 @@ package academy
 
 import (
 	"database/sql/driver"
+
 	core "github.com/meshery/schemas/models/core"
 )
 
@@ -44,6 +45,29 @@ func (value *QuizSubmission) Scan(src interface{}) error {
 }
 
 func (value QuizSubmission) Value() (driver.Value, error) {
+	mapVal, err := core.StructToMap(value)
+	if err != nil {
+		return nil, err
+	}
+
+	return core.Map(mapVal).Value()
+}
+
+func (value *Quiz) Scan(src interface{}) error {
+	if src == nil {
+		*value = Quiz{}
+		return nil
+	}
+
+	mapVal := core.Map{}
+	if err := mapVal.Scan(src); err != nil {
+		return err
+	}
+
+	return core.MapToStruct(mapVal, value)
+}
+
+func (value Quiz) Value() (driver.Value, error) {
 	mapVal, err := core.StructToMap(value)
 	if err != nil {
 		return nil, err
