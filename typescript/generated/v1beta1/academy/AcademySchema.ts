@@ -3,7 +3,7 @@
  * Do not manually modify this file.
  */
 
-const AcademySchema = {
+const AcademySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Academy API",
@@ -20,7 +20,7 @@ const AcademySchema = {
     }
   },
   "paths": {
-    "/api/academy/cirricula/registered": {
+    "/api/academy/Curricula/registered": {
       "get": {
         "x-internal": [
           "cloud"
@@ -28,7 +28,7 @@ const AcademySchema = {
         "tags": [
           "Academy"
         ],
-        "operationId": "getMyAcademyCirricula",
+        "operationId": "getMyAcademyCurricula",
         "summary": "Get academy content",
         "description": "Returns a list of academy content registered by the user with optional filtering.",
         "parameters": [
@@ -72,18 +72,18 @@ const AcademySchema = {
                 "properties": {
                   "total": {
                     "type": "integer",
-                    "description": "Total number of cirricula",
+                    "description": "Total number of Curricula",
                     "example": 7
                   },
                   "data": {
                     "type": "array",
                     "items": {
-                      "x-go-type": "AcademyCirricula",
+                      "x-go-type": "AcademyCurricula",
                       "type": "object",
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Id of the cirricula",
+                          "description": "Id of the Curricula",
                           "example": "923458-3490394-934893",
                           "x-go-name": "ID",
                           "x-oapi-codegen-extra-tags": {
@@ -115,7 +115,7 @@ const AcademySchema = {
                           }
                         },
                         "visibility": {
-                          "description": "Visibility of the cirricula",
+                          "description": "Visibility of the Curricula",
                           "x-go-type": "Visibility",
                           "x-oapi-codegen-extra-tags": {
                             "db": "visibility",
@@ -130,7 +130,7 @@ const AcademySchema = {
                         },
                         "status": {
                           "example": "ready",
-                          "description": "Status of the cirricula",
+                          "description": "Status of the Curricula",
                           "x-go-type": "Status",
                           "x-oapi-codegen-extra-tags": {
                             "db": "status",
@@ -146,11 +146,11 @@ const AcademySchema = {
                         },
                         "slug": {
                           "type": "string",
-                          "description": "slug of the cirricula",
+                          "description": "slug of the Curricula",
                           "example": "intro-kubernetes-course"
                         },
                         "level": {
-                          "description": "Level of the cirricula",
+                          "description": "Level of the Curricula",
                           "x-go-type": "Level",
                           "x-oapi-codegen-extra-tags": {
                             "db": "level",
@@ -165,18 +165,14 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -195,7 +191,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the invite associated with this cirricula",
+                          "description": "ID of the invite associated with this Curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
@@ -214,7 +210,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the workspace to which this cirricula belongs",
+                          "description": "ID of the workspace to which this Curricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
@@ -229,7 +225,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula item was created",
+                          "description": "When the Curricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
@@ -244,7 +240,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula was last updated",
+                          "description": "When the Curricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
@@ -276,7 +272,7 @@ const AcademySchema = {
                         },
                         "metadata": {
                           "type": "object",
-                          "description": "Additional metadata about the cirricula",
+                          "description": "Additional metadata about the Curricula",
                           "additionalProperties": true,
                           "x-go-type": "core.Map",
                           "x-go-type-skip-optional-pointer": true,
@@ -594,7 +590,7 @@ const AcademySchema = {
                         }
                       }
                     ],
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "description": "ID of the workspace to which this Curricula belongs",
                     "x-oapi-codegen-extra-tags": {
                       "db": "workspace_id",
                       "json": "workspace_id",
@@ -602,18 +598,14 @@ const AcademySchema = {
                     }
                   },
                   "badge_id": {
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                        "x-go-type": "uuid.UUID",
-                        "x-go-type-import": {
-                          "path": "github.com/gofrs/uuid"
-                        }
-                      }
-                    ],
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
@@ -672,7 +664,7 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the Curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
@@ -918,7 +910,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -950,7 +942,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -965,7 +957,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -981,11 +973,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -1000,18 +992,14 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
@@ -1030,7 +1018,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the invite associated with this cirricula",
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
@@ -1049,7 +1037,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
@@ -1064,7 +1052,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula item was created",
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
@@ -1079,7 +1067,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula was last updated",
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
@@ -1111,7 +1099,7 @@ const AcademySchema = {
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -1360,7 +1348,7 @@ const AcademySchema = {
         }
       }
     },
-    "/api/academy/cirricula": {
+    "/api/academy/Curricula": {
       "get": {
         "x-internal": [
           "cloud"
@@ -1368,7 +1356,7 @@ const AcademySchema = {
         "tags": [
           "Academy"
         ],
-        "operationId": "getAcademyCirricula",
+        "operationId": "getAcademyCurricula",
         "summary": "Get academy content",
         "description": "Returns a list of academy content with optional filtering.",
         "parameters": [
@@ -1517,7 +1505,7 @@ const AcademySchema = {
                 "properties": {
                   "total": {
                     "type": "integer",
-                    "description": "Total number of cirricula",
+                    "description": "Total number of Curricula",
                     "example": 7
                   },
                   "data": {
@@ -1531,7 +1519,7 @@ const AcademySchema = {
                           "properties": {
                             "id": {
                               "type": "string",
-                              "description": "Id of the cirricula",
+                              "description": "Id of the Curricula",
                               "example": "923458-3490394-934893",
                               "x-go-name": "ID",
                               "x-oapi-codegen-extra-tags": {
@@ -1563,7 +1551,7 @@ const AcademySchema = {
                               }
                             },
                             "visibility": {
-                              "description": "Visibility of the cirricula",
+                              "description": "Visibility of the Curricula",
                               "x-go-type": "Visibility",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "visibility",
@@ -1578,7 +1566,7 @@ const AcademySchema = {
                             },
                             "status": {
                               "example": "ready",
-                              "description": "Status of the cirricula",
+                              "description": "Status of the Curricula",
                               "x-go-type": "Status",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "status",
@@ -1594,11 +1582,11 @@ const AcademySchema = {
                             },
                             "slug": {
                               "type": "string",
-                              "description": "slug of the cirricula",
+                              "description": "slug of the Curricula",
                               "example": "intro-kubernetes-course"
                             },
                             "level": {
-                              "description": "Level of the cirricula",
+                              "description": "Level of the Curricula",
                               "x-go-type": "Level",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "level",
@@ -1613,18 +1601,14 @@ const AcademySchema = {
                               ]
                             },
                             "badge_id": {
-                              "allOf": [
-                                {
-                                  "type": "string",
-                                  "format": "uuid",
-                                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                                  "x-go-type": "uuid.UUID",
-                                  "x-go-type-import": {
-                                    "path": "github.com/gofrs/uuid"
-                                  }
-                                }
-                              ],
+                              "type": "string",
+                              "format": "uuid",
                               "description": "ID of the badge to be awarded on completion of this curricula",
+                              "x-go-type": "corev1alpha1.Uuid",
+                              "x-go-type-import": {
+                                "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                                "name": "corev1alpha1"
+                              },
                               "x-oapi-codegen-extra-tags": {
                                 "db": "badge_id",
                                 "json": "badge_id",
@@ -1643,7 +1627,7 @@ const AcademySchema = {
                                   }
                                 }
                               ],
-                              "description": "ID of the invite associated with this cirricula",
+                              "description": "ID of the invite associated with this Curricula",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "invite_id",
                                 "json": "invite_id",
@@ -1662,7 +1646,7 @@ const AcademySchema = {
                                   }
                                 }
                               ],
-                              "description": "ID of the workspace to which this cirricula belongs",
+                              "description": "ID of the workspace to which this Curricula belongs",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "workspace_id",
                                 "json": "workspace_id",
@@ -1677,7 +1661,7 @@ const AcademySchema = {
                                   "x-go-type-skip-optional-pointer": true
                                 }
                               ],
-                              "description": "When the cirricula item was created",
+                              "description": "When the Curricula item was created",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "created_at",
                                 "json": "created_at",
@@ -1692,7 +1676,7 @@ const AcademySchema = {
                                   "x-go-type-skip-optional-pointer": true
                                 }
                               ],
-                              "description": "When the cirricula was last updated",
+                              "description": "When the Curricula was last updated",
                               "x-go-type": "core.Time",
                               "x-oapi-codegen-extra-tags": {
                                 "db": "updated_at",
@@ -1724,7 +1708,7 @@ const AcademySchema = {
                             },
                             "metadata": {
                               "type": "object",
-                              "description": "Additional metadata about the cirricula",
+                              "description": "Additional metadata about the Curricula",
                               "additionalProperties": true,
                               "x-go-type": "core.Map",
                               "x-go-type-skip-optional-pointer": true,
@@ -2040,7 +2024,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -2072,7 +2056,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -2087,7 +2071,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -2103,11 +2087,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -2122,18 +2106,14 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
@@ -2152,7 +2132,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the invite associated with this cirricula",
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
@@ -2171,7 +2151,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
@@ -2186,7 +2166,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula item was created",
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
@@ -2201,7 +2181,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula was last updated",
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
@@ -2233,7 +2213,7 @@ const AcademySchema = {
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -3087,7 +3067,7 @@ const AcademySchema = {
                         }
                       }
                     ],
-                    "description": "ID of the workspace to which this cirricula belongs",
+                    "description": "ID of the workspace to which this Curricula belongs",
                     "x-oapi-codegen-extra-tags": {
                       "db": "workspace_id",
                       "json": "workspace_id",
@@ -3095,18 +3075,14 @@ const AcademySchema = {
                     }
                   },
                   "badge_id": {
-                    "allOf": [
-                      {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                        "x-go-type": "uuid.UUID",
-                        "x-go-type-import": {
-                          "path": "github.com/gofrs/uuid"
-                        }
-                      }
-                    ],
+                    "type": "string",
+                    "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
+                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type-import": {
+                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                      "name": "corev1alpha1"
+                    },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
                       "json": "badge_id",
@@ -3165,7 +3141,7 @@ const AcademySchema = {
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "Additional metadata about the cirricula",
+                    "description": "Additional metadata about the Curricula",
                     "additionalProperties": true,
                     "x-go-type": "core.Map",
                     "x-go-type-skip-optional-pointer": true,
@@ -3414,7 +3390,7 @@ const AcademySchema = {
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Id of the cirricula",
+                          "description": "Id of the Curricula",
                           "example": "923458-3490394-934893",
                           "x-go-name": "ID",
                           "x-oapi-codegen-extra-tags": {
@@ -3446,7 +3422,7 @@ const AcademySchema = {
                           }
                         },
                         "visibility": {
-                          "description": "Visibility of the cirricula",
+                          "description": "Visibility of the Curricula",
                           "x-go-type": "Visibility",
                           "x-oapi-codegen-extra-tags": {
                             "db": "visibility",
@@ -3461,7 +3437,7 @@ const AcademySchema = {
                         },
                         "status": {
                           "example": "ready",
-                          "description": "Status of the cirricula",
+                          "description": "Status of the Curricula",
                           "x-go-type": "Status",
                           "x-oapi-codegen-extra-tags": {
                             "db": "status",
@@ -3477,11 +3453,11 @@ const AcademySchema = {
                         },
                         "slug": {
                           "type": "string",
-                          "description": "slug of the cirricula",
+                          "description": "slug of the Curricula",
                           "example": "intro-kubernetes-course"
                         },
                         "level": {
-                          "description": "Level of the cirricula",
+                          "description": "Level of the Curricula",
                           "x-go-type": "Level",
                           "x-oapi-codegen-extra-tags": {
                             "db": "level",
@@ -3496,18 +3472,14 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -3526,7 +3498,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the invite associated with this cirricula",
+                          "description": "ID of the invite associated with this Curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
@@ -3545,7 +3517,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the workspace to which this cirricula belongs",
+                          "description": "ID of the workspace to which this Curricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
@@ -3560,7 +3532,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula item was created",
+                          "description": "When the Curricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
@@ -3575,7 +3547,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula was last updated",
+                          "description": "When the Curricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
@@ -3607,7 +3579,7 @@ const AcademySchema = {
                         },
                         "metadata": {
                           "type": "object",
-                          "description": "Additional metadata about the cirricula",
+                          "description": "Additional metadata about the Curricula",
                           "additionalProperties": true,
                           "x-go-type": "core.Map",
                           "x-go-type-skip-optional-pointer": true,
@@ -4118,7 +4090,7 @@ const AcademySchema = {
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "Id of the cirricula",
+                          "description": "Id of the Curricula",
                           "example": "923458-3490394-934893",
                           "x-go-name": "ID",
                           "x-oapi-codegen-extra-tags": {
@@ -4150,7 +4122,7 @@ const AcademySchema = {
                           }
                         },
                         "visibility": {
-                          "description": "Visibility of the cirricula",
+                          "description": "Visibility of the Curricula",
                           "x-go-type": "Visibility",
                           "x-oapi-codegen-extra-tags": {
                             "db": "visibility",
@@ -4165,7 +4137,7 @@ const AcademySchema = {
                         },
                         "status": {
                           "example": "ready",
-                          "description": "Status of the cirricula",
+                          "description": "Status of the Curricula",
                           "x-go-type": "Status",
                           "x-oapi-codegen-extra-tags": {
                             "db": "status",
@@ -4181,11 +4153,11 @@ const AcademySchema = {
                         },
                         "slug": {
                           "type": "string",
-                          "description": "slug of the cirricula",
+                          "description": "slug of the Curricula",
                           "example": "intro-kubernetes-course"
                         },
                         "level": {
-                          "description": "Level of the cirricula",
+                          "description": "Level of the Curricula",
                           "x-go-type": "Level",
                           "x-oapi-codegen-extra-tags": {
                             "db": "level",
@@ -4200,18 +4172,14 @@ const AcademySchema = {
                           ]
                         },
                         "badge_id": {
-                          "allOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                              "x-go-type": "uuid.UUID",
-                              "x-go-type-import": {
-                                "path": "github.com/gofrs/uuid"
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
+                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type-import": {
+                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                            "name": "corev1alpha1"
+                          },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
                             "json": "badge_id",
@@ -4230,7 +4198,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the invite associated with this cirricula",
+                          "description": "ID of the invite associated with this Curricula",
                           "x-oapi-codegen-extra-tags": {
                             "db": "invite_id",
                             "json": "invite_id",
@@ -4249,7 +4217,7 @@ const AcademySchema = {
                               }
                             }
                           ],
-                          "description": "ID of the workspace to which this cirricula belongs",
+                          "description": "ID of the workspace to which this Curricula belongs",
                           "x-oapi-codegen-extra-tags": {
                             "db": "workspace_id",
                             "json": "workspace_id",
@@ -4264,7 +4232,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula item was created",
+                          "description": "When the Curricula item was created",
                           "x-oapi-codegen-extra-tags": {
                             "db": "created_at",
                             "json": "created_at",
@@ -4279,7 +4247,7 @@ const AcademySchema = {
                               "x-go-type-skip-optional-pointer": true
                             }
                           ],
-                          "description": "When the cirricula was last updated",
+                          "description": "When the Curricula was last updated",
                           "x-go-type": "core.Time",
                           "x-oapi-codegen-extra-tags": {
                             "db": "updated_at",
@@ -4311,7 +4279,7 @@ const AcademySchema = {
                         },
                         "metadata": {
                           "type": "object",
-                          "description": "Additional metadata about the cirricula",
+                          "description": "Additional metadata about the Curricula",
                           "additionalProperties": true,
                           "x-go-type": "core.Map",
                           "x-go-type-skip-optional-pointer": true,
@@ -5060,7 +5028,7 @@ const AcademySchema = {
                     "x-go-type": "ContentType"
                   },
                   "item_data": {
-                    "x-go-type": "CirriculaCurrentItemData",
+                    "x-go-type": "CurriculaCurrentItemData",
                     "type": "object",
                     "required": [
                       "id",
@@ -5119,7 +5087,7 @@ const AcademySchema = {
                         "current_item": {
                           "type": "object",
                           "additionalProperties": {
-                            "x-go-type": "CirriculaCurrentItemData",
+                            "x-go-type": "CurriculaCurrentItemData",
                             "type": "object",
                             "required": [
                               "id",
@@ -7415,7 +7383,7 @@ const AcademySchema = {
       }
     },
     "schemas": {
-      "AcademyCirriculaOrgId": {
+      "AcademyCurriculaOrgId": {
         "type": "string",
         "description": "Organization ID that owns this learning path",
         "example": "layer5",
@@ -7425,7 +7393,7 @@ const AcademySchema = {
           "yaml": "org_id"
         }
       },
-      "AcademyCirriculaBadgeId": {
+      "AcademyCurriculaBadgeId": {
         "allOf": [
           {
             "type": "string",
@@ -7444,7 +7412,7 @@ const AcademySchema = {
           "yaml": "badge_id"
         }
       },
-      "AcademyCirriculaInviteId": {
+      "AcademyCurriculaInviteId": {
         "allOf": [
           {
             "type": "string",
@@ -7456,14 +7424,14 @@ const AcademySchema = {
             }
           }
         ],
-        "description": "ID of the invite associated with this cirricula",
+        "description": "ID of the invite associated with this Curricula",
         "x-oapi-codegen-extra-tags": {
           "db": "invite_id",
           "json": "invite_id",
           "yaml": "invite_id"
         }
       },
-      "AcademyCirriculaWorkspaceId": {
+      "AcademyCurriculaWorkspaceId": {
         "allOf": [
           {
             "type": "string",
@@ -7475,14 +7443,14 @@ const AcademySchema = {
             }
           }
         ],
-        "description": "ID of the workspace to which this cirricula belongs",
+        "description": "ID of the workspace to which this Curricula belongs",
         "x-oapi-codegen-extra-tags": {
           "db": "workspace_id",
           "json": "workspace_id",
           "yaml": "workspace_id"
         }
       },
-      "AcademyCirriculaCreatedAt": {
+      "AcademyCurriculaCreatedAt": {
         "allOf": [
           {
             "type": "string",
@@ -7490,14 +7458,14 @@ const AcademySchema = {
             "x-go-type-skip-optional-pointer": true
           }
         ],
-        "description": "When the cirricula item was created",
+        "description": "When the Curricula item was created",
         "x-oapi-codegen-extra-tags": {
           "db": "created_at",
           "json": "created_at",
           "yaml": "created_at"
         }
       },
-      "AcademyCirriculaUpdatedAt": {
+      "AcademyCurriculaUpdatedAt": {
         "allOf": [
           {
             "type": "string",
@@ -7505,7 +7473,7 @@ const AcademySchema = {
             "x-go-type-skip-optional-pointer": true
           }
         ],
-        "description": "When the cirricula was last updated",
+        "description": "When the Curricula was last updated",
         "x-go-type": "core.Time",
         "x-oapi-codegen-extra-tags": {
           "db": "updated_at",
@@ -7513,7 +7481,7 @@ const AcademySchema = {
           "yaml": "updated_at"
         }
       },
-      "AcademyCirriculaDeletedAt": {
+      "AcademyCurriculaDeletedAt": {
         "allOf": [
           {
             "description": "Timestamp when the resource was deleted.",
@@ -7535,9 +7503,9 @@ const AcademySchema = {
           "yaml": "deleted_at"
         }
       },
-      "AcademyCirriculaMetadata": {
+      "AcademyCurriculaMetadata": {
         "type": "object",
-        "description": "Additional metadata about the cirricula",
+        "description": "Additional metadata about the Curricula",
         "additionalProperties": true,
         "x-go-type": "core.Map",
         "x-go-type-skip-optional-pointer": true,
@@ -7827,12 +7795,12 @@ const AcademySchema = {
           "not_ready"
         ]
       },
-      "AcademyCirricula": {
+      "AcademyCurricula": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "Id of the cirricula",
+            "description": "Id of the Curricula",
             "example": "923458-3490394-934893",
             "x-go-name": "ID",
             "x-oapi-codegen-extra-tags": {
@@ -7864,7 +7832,7 @@ const AcademySchema = {
             }
           },
           "visibility": {
-            "description": "Visibility of the cirricula",
+            "description": "Visibility of the Curricula",
             "x-go-type": "Visibility",
             "x-oapi-codegen-extra-tags": {
               "db": "visibility",
@@ -7879,7 +7847,7 @@ const AcademySchema = {
           },
           "status": {
             "example": "ready",
-            "description": "Status of the cirricula",
+            "description": "Status of the Curricula",
             "x-go-type": "Status",
             "x-oapi-codegen-extra-tags": {
               "db": "status",
@@ -7895,11 +7863,11 @@ const AcademySchema = {
           },
           "slug": {
             "type": "string",
-            "description": "slug of the cirricula",
+            "description": "slug of the Curricula",
             "example": "intro-kubernetes-course"
           },
           "level": {
-            "description": "Level of the cirricula",
+            "description": "Level of the Curricula",
             "x-go-type": "Level",
             "x-oapi-codegen-extra-tags": {
               "db": "level",
@@ -7914,18 +7882,14 @@ const AcademySchema = {
             ]
           },
           "badge_id": {
-            "allOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
-                }
-              }
-            ],
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
@@ -7944,7 +7908,7 @@ const AcademySchema = {
                 }
               }
             ],
-            "description": "ID of the invite associated with this cirricula",
+            "description": "ID of the invite associated with this Curricula",
             "x-oapi-codegen-extra-tags": {
               "db": "invite_id",
               "json": "invite_id",
@@ -7963,7 +7927,7 @@ const AcademySchema = {
                 }
               }
             ],
-            "description": "ID of the workspace to which this cirricula belongs",
+            "description": "ID of the workspace to which this Curricula belongs",
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
               "json": "workspace_id",
@@ -7978,7 +7942,7 @@ const AcademySchema = {
                 "x-go-type-skip-optional-pointer": true
               }
             ],
-            "description": "When the cirricula item was created",
+            "description": "When the Curricula item was created",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
               "json": "created_at",
@@ -7993,7 +7957,7 @@ const AcademySchema = {
                 "x-go-type-skip-optional-pointer": true
               }
             ],
-            "description": "When the cirricula was last updated",
+            "description": "When the Curricula was last updated",
             "x-go-type": "core.Time",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
@@ -8025,7 +7989,7 @@ const AcademySchema = {
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the cirricula",
+            "description": "Additional metadata about the Curricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
@@ -8270,7 +8234,7 @@ const AcademySchema = {
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Id of the cirricula",
+                "description": "Id of the Curricula",
                 "example": "923458-3490394-934893",
                 "x-go-name": "ID",
                 "x-oapi-codegen-extra-tags": {
@@ -8302,7 +8266,7 @@ const AcademySchema = {
                 }
               },
               "visibility": {
-                "description": "Visibility of the cirricula",
+                "description": "Visibility of the Curricula",
                 "x-go-type": "Visibility",
                 "x-oapi-codegen-extra-tags": {
                   "db": "visibility",
@@ -8317,7 +8281,7 @@ const AcademySchema = {
               },
               "status": {
                 "example": "ready",
-                "description": "Status of the cirricula",
+                "description": "Status of the Curricula",
                 "x-go-type": "Status",
                 "x-oapi-codegen-extra-tags": {
                   "db": "status",
@@ -8333,11 +8297,11 @@ const AcademySchema = {
               },
               "slug": {
                 "type": "string",
-                "description": "slug of the cirricula",
+                "description": "slug of the Curricula",
                 "example": "intro-kubernetes-course"
               },
               "level": {
-                "description": "Level of the cirricula",
+                "description": "Level of the Curricula",
                 "x-go-type": "Level",
                 "x-oapi-codegen-extra-tags": {
                   "db": "level",
@@ -8352,18 +8316,14 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
-                "allOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
-                    }
-                  }
-                ],
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
@@ -8382,7 +8342,7 @@ const AcademySchema = {
                     }
                   }
                 ],
-                "description": "ID of the invite associated with this cirricula",
+                "description": "ID of the invite associated with this Curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
@@ -8401,7 +8361,7 @@ const AcademySchema = {
                     }
                   }
                 ],
-                "description": "ID of the workspace to which this cirricula belongs",
+                "description": "ID of the workspace to which this Curricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
@@ -8416,7 +8376,7 @@ const AcademySchema = {
                     "x-go-type-skip-optional-pointer": true
                   }
                 ],
-                "description": "When the cirricula item was created",
+                "description": "When the Curricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
@@ -8431,7 +8391,7 @@ const AcademySchema = {
                     "x-go-type-skip-optional-pointer": true
                   }
                 ],
-                "description": "When the cirricula was last updated",
+                "description": "When the Curricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
@@ -8463,7 +8423,7 @@ const AcademySchema = {
               },
               "metadata": {
                 "type": "object",
-                "description": "Additional metadata about the cirricula",
+                "description": "Additional metadata about the Curricula",
                 "additionalProperties": true,
                 "x-go-type": "core.Map",
                 "x-go-type-skip-optional-pointer": true,
@@ -8938,7 +8898,7 @@ const AcademySchema = {
                 }
               }
             ],
-            "description": "ID of the workspace to which this cirricula belongs",
+            "description": "ID of the workspace to which this Curricula belongs",
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
               "json": "workspace_id",
@@ -8946,18 +8906,14 @@ const AcademySchema = {
             }
           },
           "badge_id": {
-            "allOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                "x-go-type": "uuid.UUID",
-                "x-go-type-import": {
-                  "path": "github.com/gofrs/uuid"
-                }
-              }
-            ],
+            "type": "string",
+            "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
+            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/v1alpha1/core",
+              "name": "corev1alpha1"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
               "json": "badge_id",
@@ -9016,7 +8972,7 @@ const AcademySchema = {
           },
           "metadata": {
             "type": "object",
-            "description": "Additional metadata about the cirricula",
+            "description": "Additional metadata about the Curricula",
             "additionalProperties": true,
             "x-go-type": "core.Map",
             "x-go-type-skip-optional-pointer": true,
@@ -9256,7 +9212,7 @@ const AcademySchema = {
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Id of the cirricula",
+                "description": "Id of the Curricula",
                 "example": "923458-3490394-934893",
                 "x-go-name": "ID",
                 "x-oapi-codegen-extra-tags": {
@@ -9288,7 +9244,7 @@ const AcademySchema = {
                 }
               },
               "visibility": {
-                "description": "Visibility of the cirricula",
+                "description": "Visibility of the Curricula",
                 "x-go-type": "Visibility",
                 "x-oapi-codegen-extra-tags": {
                   "db": "visibility",
@@ -9303,7 +9259,7 @@ const AcademySchema = {
               },
               "status": {
                 "example": "ready",
-                "description": "Status of the cirricula",
+                "description": "Status of the Curricula",
                 "x-go-type": "Status",
                 "x-oapi-codegen-extra-tags": {
                   "db": "status",
@@ -9319,11 +9275,11 @@ const AcademySchema = {
               },
               "slug": {
                 "type": "string",
-                "description": "slug of the cirricula",
+                "description": "slug of the Curricula",
                 "example": "intro-kubernetes-course"
               },
               "level": {
-                "description": "Level of the cirricula",
+                "description": "Level of the Curricula",
                 "x-go-type": "Level",
                 "x-oapi-codegen-extra-tags": {
                   "db": "level",
@@ -9338,18 +9294,14 @@ const AcademySchema = {
                 ]
               },
               "badge_id": {
-                "allOf": [
-                  {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
-                    }
-                  }
-                ],
+                "type": "string",
+                "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
+                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type-import": {
+                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                  "name": "corev1alpha1"
+                },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
                   "json": "badge_id",
@@ -9368,7 +9320,7 @@ const AcademySchema = {
                     }
                   }
                 ],
-                "description": "ID of the invite associated with this cirricula",
+                "description": "ID of the invite associated with this Curricula",
                 "x-oapi-codegen-extra-tags": {
                   "db": "invite_id",
                   "json": "invite_id",
@@ -9387,7 +9339,7 @@ const AcademySchema = {
                     }
                   }
                 ],
-                "description": "ID of the workspace to which this cirricula belongs",
+                "description": "ID of the workspace to which this Curricula belongs",
                 "x-oapi-codegen-extra-tags": {
                   "db": "workspace_id",
                   "json": "workspace_id",
@@ -9402,7 +9354,7 @@ const AcademySchema = {
                     "x-go-type-skip-optional-pointer": true
                   }
                 ],
-                "description": "When the cirricula item was created",
+                "description": "When the Curricula item was created",
                 "x-oapi-codegen-extra-tags": {
                   "db": "created_at",
                   "json": "created_at",
@@ -9417,7 +9369,7 @@ const AcademySchema = {
                     "x-go-type-skip-optional-pointer": true
                   }
                 ],
-                "description": "When the cirricula was last updated",
+                "description": "When the Curricula was last updated",
                 "x-go-type": "core.Time",
                 "x-oapi-codegen-extra-tags": {
                   "db": "updated_at",
@@ -9449,7 +9401,7 @@ const AcademySchema = {
               },
               "metadata": {
                 "type": "object",
-                "description": "Additional metadata about the cirricula",
+                "description": "Additional metadata about the Curricula",
                 "additionalProperties": true,
                 "x-go-type": "core.Map",
                 "x-go-type-skip-optional-pointer": true,
@@ -9704,23 +9656,23 @@ const AcademySchema = {
           }
         ]
       },
-      "AcademyCirriculaListResponse": {
+      "AcademyCurriculaListResponse": {
         "type": "object",
         "properties": {
           "total": {
             "type": "integer",
-            "description": "Total number of cirricula",
+            "description": "Total number of Curricula",
             "example": 7
           },
           "data": {
             "type": "array",
             "items": {
-              "x-go-type": "AcademyCirricula",
+              "x-go-type": "AcademyCurricula",
               "type": "object",
               "properties": {
                 "id": {
                   "type": "string",
-                  "description": "Id of the cirricula",
+                  "description": "Id of the Curricula",
                   "example": "923458-3490394-934893",
                   "x-go-name": "ID",
                   "x-oapi-codegen-extra-tags": {
@@ -9752,7 +9704,7 @@ const AcademySchema = {
                   }
                 },
                 "visibility": {
-                  "description": "Visibility of the cirricula",
+                  "description": "Visibility of the Curricula",
                   "x-go-type": "Visibility",
                   "x-oapi-codegen-extra-tags": {
                     "db": "visibility",
@@ -9767,7 +9719,7 @@ const AcademySchema = {
                 },
                 "status": {
                   "example": "ready",
-                  "description": "Status of the cirricula",
+                  "description": "Status of the Curricula",
                   "x-go-type": "Status",
                   "x-oapi-codegen-extra-tags": {
                     "db": "status",
@@ -9783,11 +9735,11 @@ const AcademySchema = {
                 },
                 "slug": {
                   "type": "string",
-                  "description": "slug of the cirricula",
+                  "description": "slug of the Curricula",
                   "example": "intro-kubernetes-course"
                 },
                 "level": {
-                  "description": "Level of the cirricula",
+                  "description": "Level of the Curricula",
                   "x-go-type": "Level",
                   "x-oapi-codegen-extra-tags": {
                     "db": "level",
@@ -9802,18 +9754,14 @@ const AcademySchema = {
                   ]
                 },
                 "badge_id": {
-                  "allOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    }
-                  ],
+                  "type": "string",
+                  "format": "uuid",
                   "description": "ID of the badge to be awarded on completion of this curricula",
+                  "x-go-type": "corev1alpha1.Uuid",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                    "name": "corev1alpha1"
+                  },
                   "x-oapi-codegen-extra-tags": {
                     "db": "badge_id",
                     "json": "badge_id",
@@ -9832,7 +9780,7 @@ const AcademySchema = {
                       }
                     }
                   ],
-                  "description": "ID of the invite associated with this cirricula",
+                  "description": "ID of the invite associated with this Curricula",
                   "x-oapi-codegen-extra-tags": {
                     "db": "invite_id",
                     "json": "invite_id",
@@ -9851,7 +9799,7 @@ const AcademySchema = {
                       }
                     }
                   ],
-                  "description": "ID of the workspace to which this cirricula belongs",
+                  "description": "ID of the workspace to which this Curricula belongs",
                   "x-oapi-codegen-extra-tags": {
                     "db": "workspace_id",
                     "json": "workspace_id",
@@ -9866,7 +9814,7 @@ const AcademySchema = {
                       "x-go-type-skip-optional-pointer": true
                     }
                   ],
-                  "description": "When the cirricula item was created",
+                  "description": "When the Curricula item was created",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
                     "json": "created_at",
@@ -9881,7 +9829,7 @@ const AcademySchema = {
                       "x-go-type-skip-optional-pointer": true
                     }
                   ],
-                  "description": "When the cirricula was last updated",
+                  "description": "When the Curricula was last updated",
                   "x-go-type": "core.Time",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
@@ -9913,7 +9861,7 @@ const AcademySchema = {
                 },
                 "metadata": {
                   "type": "object",
-                  "description": "Additional metadata about the cirricula",
+                  "description": "Additional metadata about the Curricula",
                   "additionalProperties": true,
                   "x-go-type": "core.Map",
                   "x-go-type-skip-optional-pointer": true,
@@ -10162,7 +10110,7 @@ const AcademySchema = {
         "properties": {
           "total": {
             "type": "integer",
-            "description": "Total number of cirricula",
+            "description": "Total number of Curricula",
             "example": 7
           },
           "data": {
@@ -10176,7 +10124,7 @@ const AcademySchema = {
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Id of the cirricula",
+                      "description": "Id of the Curricula",
                       "example": "923458-3490394-934893",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
@@ -10208,7 +10156,7 @@ const AcademySchema = {
                       }
                     },
                     "visibility": {
-                      "description": "Visibility of the cirricula",
+                      "description": "Visibility of the Curricula",
                       "x-go-type": "Visibility",
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
@@ -10223,7 +10171,7 @@ const AcademySchema = {
                     },
                     "status": {
                       "example": "ready",
-                      "description": "Status of the cirricula",
+                      "description": "Status of the Curricula",
                       "x-go-type": "Status",
                       "x-oapi-codegen-extra-tags": {
                         "db": "status",
@@ -10239,11 +10187,11 @@ const AcademySchema = {
                     },
                     "slug": {
                       "type": "string",
-                      "description": "slug of the cirricula",
+                      "description": "slug of the Curricula",
                       "example": "intro-kubernetes-course"
                     },
                     "level": {
-                      "description": "Level of the cirricula",
+                      "description": "Level of the Curricula",
                       "x-go-type": "Level",
                       "x-oapi-codegen-extra-tags": {
                         "db": "level",
@@ -10258,18 +10206,14 @@ const AcademySchema = {
                       ]
                     },
                     "badge_id": {
-                      "allOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                          "x-go-type": "uuid.UUID",
-                          "x-go-type-import": {
-                            "path": "github.com/gofrs/uuid"
-                          }
-                        }
-                      ],
+                      "type": "string",
+                      "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
+                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                        "name": "corev1alpha1"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
                         "json": "badge_id",
@@ -10288,7 +10232,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the invite associated with this cirricula",
+                      "description": "ID of the invite associated with this Curricula",
                       "x-oapi-codegen-extra-tags": {
                         "db": "invite_id",
                         "json": "invite_id",
@@ -10307,7 +10251,7 @@ const AcademySchema = {
                           }
                         }
                       ],
-                      "description": "ID of the workspace to which this cirricula belongs",
+                      "description": "ID of the workspace to which this Curricula belongs",
                       "x-oapi-codegen-extra-tags": {
                         "db": "workspace_id",
                         "json": "workspace_id",
@@ -10322,7 +10266,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula item was created",
+                      "description": "When the Curricula item was created",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
                         "json": "created_at",
@@ -10337,7 +10281,7 @@ const AcademySchema = {
                           "x-go-type-skip-optional-pointer": true
                         }
                       ],
-                      "description": "When the cirricula was last updated",
+                      "description": "When the Curricula was last updated",
                       "x-go-type": "core.Time",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
@@ -10369,7 +10313,7 @@ const AcademySchema = {
                     },
                     "metadata": {
                       "type": "object",
-                      "description": "Additional metadata about the cirricula",
+                      "description": "Additional metadata about the Curricula",
                       "additionalProperties": true,
                       "x-go-type": "core.Map",
                       "x-go-type-skip-optional-pointer": true,
@@ -12550,7 +12494,7 @@ const AcademySchema = {
           "data"
         ]
       },
-      "CirriculaCurrentItemData": {
+      "CurriculaCurrentItemData": {
         "type": "object",
         "required": [
           "id",
@@ -12576,7 +12520,7 @@ const AcademySchema = {
           }
         }
       },
-      "CirriculaProgressTracker": {
+      "CurriculaProgressTracker": {
         "type": "object",
         "required": [
           "current_item",
@@ -12589,7 +12533,7 @@ const AcademySchema = {
           "current_item": {
             "type": "object",
             "additionalProperties": {
-              "x-go-type": "CirriculaCurrentItemData",
+              "x-go-type": "CurriculaCurrentItemData",
               "type": "object",
               "required": [
                 "id",
@@ -13034,7 +12978,7 @@ const AcademySchema = {
             "x-go-type": "ContentType"
           },
           "item_data": {
-            "x-go-type": "CirriculaCurrentItemData",
+            "x-go-type": "CurriculaCurrentItemData",
             "type": "object",
             "required": [
               "id",
@@ -14930,6 +14874,6 @@ const AcademySchema = {
       }
     }
   }
-} as const satisfies Record<string, unknown>;
+};
 
 export default AcademySchema;

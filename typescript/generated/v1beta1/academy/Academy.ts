@@ -4,17 +4,17 @@
  */
 
 export interface paths {
-  "/api/academy/cirricula/registered": {
+  "/api/academy/Curricula/registered": {
     /** Returns a list of academy content registered by the user with optional filtering. */
-    get: operations["getMyAcademyCirricula"];
+    get: operations["getMyAcademyCurricula"];
   };
   "/api/academy/curricula": {
     /** Creates a new academy curricula with the provided details. */
     post: operations["createAcademyCurricula"];
   };
-  "/api/academy/cirricula": {
+  "/api/academy/Curricula": {
     /** Returns a list of academy content with optional filtering. */
-    get: operations["getAcademyCirricula"];
+    get: operations["getAcademyCurricula"];
   };
   "/api/academy/{type}/{orgId}/{slug}": {
     /** Returns a learning path identified by type, orgId, and slug. */
@@ -32,7 +32,7 @@ export interface paths {
           content: {
             "application/json": {
               /**
-               * @description Id of the cirricula
+               * @description Id of the Curricula
                * @example 923458-3490394-934893
                */
               id: string;
@@ -44,38 +44,41 @@ export interface paths {
                */
               orgId: string;
               /**
-               * @description Visibility of the cirricula
+               * @description Visibility of the Curricula
                * @enum {string}
                */
               visibility: "public" | "private";
               /**
-               * @description Status of the cirricula
+               * @description Status of the Curricula
                * @example ready
                * @enum {string}
                */
               status: "ready" | "archived" | "not_ready";
               /**
-               * @description slug of the cirricula
+               * @description slug of the Curricula
                * @example intro-kubernetes-course
                */
               slug: string;
               /**
-               * @description Level of the cirricula
+               * @description Level of the Curricula
                * @enum {string}
                */
               level: "beginner" | "intermediate" | "advanced";
-              /** @description ID of the badge to be awarded on completion of this curricula */
+              /**
+               * Format: uuid
+               * @description ID of the badge to be awarded on completion of this curricula
+               */
               badge_id?: string;
-              /** @description ID of the invite associated with this cirricula */
+              /** @description ID of the invite associated with this Curricula */
               invite_id?: string;
-              /** @description ID of the workspace to which this cirricula belongs */
+              /** @description ID of the workspace to which this Curricula belongs */
               workspace_id?: string;
-              /** @description When the cirricula item was created */
+              /** @description When the Curricula item was created */
               createdAt: string;
-              /** @description When the cirricula was last updated */
+              /** @description When the Curricula was last updated */
               updatedAt: string;
               deletedAt: string;
-              /** @description Additional metadata about the cirricula */
+              /** @description Additional metadata about the Curricula */
               metadata: {
                 /**
                  * @description Title of the learning path
@@ -421,20 +424,20 @@ export interface components {
      * @description Organization ID that owns this learning path
      * @example layer5
      */
-    AcademyCirriculaOrgId: string;
+    AcademyCurriculaOrgId: string;
     /** @description ID of the badge to be awarded on completion of this curricula */
-    AcademyCirriculaBadgeId: string;
-    /** @description ID of the invite associated with this cirricula */
-    AcademyCirriculaInviteId: string;
-    /** @description ID of the workspace to which this cirricula belongs */
-    AcademyCirriculaWorkspaceId: string;
-    /** @description When the cirricula item was created */
-    AcademyCirriculaCreatedAt: string;
-    /** @description When the cirricula was last updated */
-    AcademyCirriculaUpdatedAt: string;
-    AcademyCirriculaDeletedAt: string;
-    /** @description Additional metadata about the cirricula */
-    AcademyCirriculaMetadata: {
+    AcademyCurriculaBadgeId: string;
+    /** @description ID of the invite associated with this Curricula */
+    AcademyCurriculaInviteId: string;
+    /** @description ID of the workspace to which this Curricula belongs */
+    AcademyCurriculaWorkspaceId: string;
+    /** @description When the Curricula item was created */
+    AcademyCurriculaCreatedAt: string;
+    /** @description When the Curricula was last updated */
+    AcademyCurriculaUpdatedAt: string;
+    AcademyCurriculaDeletedAt: string;
+    /** @description Additional metadata about the Curricula */
+    AcademyCurriculaMetadata: {
       /**
        * @description Title of the learning path
        * @example Mastering Kubernetes for Engineers
@@ -593,9 +596,9 @@ export interface components {
     Level: "beginner" | "intermediate" | "advanced";
     /** @enum {string} */
     Status: "ready" | "archived" | "not_ready";
-    AcademyCirricula: {
+    AcademyCurricula: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -607,38 +610,41 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
-      /** @description ID of the invite associated with this cirricula */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /** @description ID of the workspace to which this cirricula belongs */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /** @description When the cirricula item was created */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /** @description When the cirricula was last updated */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -783,7 +789,7 @@ export interface components {
     };
     SingleAcademyCurriculaResponse: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -795,38 +801,41 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
-      /** @description ID of the invite associated with this cirricula */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /** @description ID of the workspace to which this cirricula belongs */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /** @description When the cirricula item was created */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /** @description When the cirricula was last updated */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -1039,9 +1048,12 @@ export interface components {
        * @example layer5
        */
       orgId: string;
-      /** @description ID of the workspace to which this cirricula belongs */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id: string;
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
       /**
        * Format: uuid
@@ -1055,7 +1067,7 @@ export interface components {
        * @enum {string}
        */
       access_status: "enabled" | "disabled";
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -1200,7 +1212,7 @@ export interface components {
     };
     AcademyCurriculaWithMetrics: {
       /**
-       * @description Id of the cirricula
+       * @description Id of the Curricula
        * @example 923458-3490394-934893
        */
       id: string;
@@ -1212,38 +1224,41 @@ export interface components {
        */
       orgId: string;
       /**
-       * @description Visibility of the cirricula
+       * @description Visibility of the Curricula
        * @enum {string}
        */
       visibility: "public" | "private";
       /**
-       * @description Status of the cirricula
+       * @description Status of the Curricula
        * @example ready
        * @enum {string}
        */
       status: "ready" | "archived" | "not_ready";
       /**
-       * @description slug of the cirricula
+       * @description slug of the Curricula
        * @example intro-kubernetes-course
        */
       slug: string;
       /**
-       * @description Level of the cirricula
+       * @description Level of the Curricula
        * @enum {string}
        */
       level: "beginner" | "intermediate" | "advanced";
-      /** @description ID of the badge to be awarded on completion of this curricula */
+      /**
+       * Format: uuid
+       * @description ID of the badge to be awarded on completion of this curricula
+       */
       badge_id?: string;
-      /** @description ID of the invite associated with this cirricula */
+      /** @description ID of the invite associated with this Curricula */
       invite_id?: string;
-      /** @description ID of the workspace to which this cirricula belongs */
+      /** @description ID of the workspace to which this Curricula belongs */
       workspace_id?: string;
-      /** @description When the cirricula item was created */
+      /** @description When the Curricula item was created */
       createdAt: string;
-      /** @description When the cirricula was last updated */
+      /** @description When the Curricula was last updated */
       updatedAt: string;
       deletedAt: string;
-      /** @description Additional metadata about the cirricula */
+      /** @description Additional metadata about the Curricula */
       metadata: {
         /**
          * @description Title of the learning path
@@ -1388,15 +1403,15 @@ export interface components {
     } & {
       RegistrationCount: number;
     };
-    AcademyCirriculaListResponse: {
+    AcademyCurriculaListResponse: {
       /**
-       * @description Total number of cirricula
+       * @description Total number of Curricula
        * @example 7
        */
       total: number;
       data: {
         /**
-         * @description Id of the cirricula
+         * @description Id of the Curricula
          * @example 923458-3490394-934893
          */
         id: string;
@@ -1408,38 +1423,41 @@ export interface components {
          */
         orgId: string;
         /**
-         * @description Visibility of the cirricula
+         * @description Visibility of the Curricula
          * @enum {string}
          */
         visibility: "public" | "private";
         /**
-         * @description Status of the cirricula
+         * @description Status of the Curricula
          * @example ready
          * @enum {string}
          */
         status: "ready" | "archived" | "not_ready";
         /**
-         * @description slug of the cirricula
+         * @description slug of the Curricula
          * @example intro-kubernetes-course
          */
         slug: string;
         /**
-         * @description Level of the cirricula
+         * @description Level of the Curricula
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
-        /** @description ID of the badge to be awarded on completion of this curricula */
+        /**
+         * Format: uuid
+         * @description ID of the badge to be awarded on completion of this curricula
+         */
         badge_id?: string;
-        /** @description ID of the invite associated with this cirricula */
+        /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
-        /** @description ID of the workspace to which this cirricula belongs */
+        /** @description ID of the workspace to which this Curricula belongs */
         workspace_id?: string;
-        /** @description When the cirricula item was created */
+        /** @description When the Curricula item was created */
         createdAt: string;
-        /** @description When the cirricula was last updated */
+        /** @description When the Curricula was last updated */
         updatedAt: string;
         deletedAt: string;
-        /** @description Additional metadata about the cirricula */
+        /** @description Additional metadata about the Curricula */
         metadata: {
           /**
            * @description Title of the learning path
@@ -1585,13 +1603,13 @@ export interface components {
     };
     AcademyCurriculaWithMetricsListResponse: {
       /**
-       * @description Total number of cirricula
+       * @description Total number of Curricula
        * @example 7
        */
       total: number;
       data: ({
         /**
-         * @description Id of the cirricula
+         * @description Id of the Curricula
          * @example 923458-3490394-934893
          */
         id: string;
@@ -1603,38 +1621,41 @@ export interface components {
          */
         orgId: string;
         /**
-         * @description Visibility of the cirricula
+         * @description Visibility of the Curricula
          * @enum {string}
          */
         visibility: "public" | "private";
         /**
-         * @description Status of the cirricula
+         * @description Status of the Curricula
          * @example ready
          * @enum {string}
          */
         status: "ready" | "archived" | "not_ready";
         /**
-         * @description slug of the cirricula
+         * @description slug of the Curricula
          * @example intro-kubernetes-course
          */
         slug: string;
         /**
-         * @description Level of the cirricula
+         * @description Level of the Curricula
          * @enum {string}
          */
         level: "beginner" | "intermediate" | "advanced";
-        /** @description ID of the badge to be awarded on completion of this curricula */
+        /**
+         * Format: uuid
+         * @description ID of the badge to be awarded on completion of this curricula
+         */
         badge_id?: string;
-        /** @description ID of the invite associated with this cirricula */
+        /** @description ID of the invite associated with this Curricula */
         invite_id?: string;
-        /** @description ID of the workspace to which this cirricula belongs */
+        /** @description ID of the workspace to which this Curricula belongs */
         workspace_id?: string;
-        /** @description When the cirricula item was created */
+        /** @description When the Curricula item was created */
         createdAt: string;
-        /** @description When the cirricula was last updated */
+        /** @description When the Curricula was last updated */
         updatedAt: string;
         deletedAt: string;
-        /** @description Additional metadata about the cirricula */
+        /** @description Additional metadata about the Curricula */
         metadata: {
           /**
            * @description Title of the learning path
@@ -2750,14 +2771,14 @@ export interface components {
         test_submissions: unknown;
       })[];
     };
-    CirriculaCurrentItemData: {
+    CurriculaCurrentItemData: {
       id: string;
       /** Format: date-time */
       last_opened: string;
       /** @enum {string} */
       content_type: "learning-path" | "challenge" | "certification";
     };
-    CirriculaProgressTracker: {
+    CurriculaProgressTracker: {
       current_item: {
         [key: string]: {
           id: string;
@@ -3445,7 +3466,7 @@ export interface components {
 
 export interface operations {
   /** Returns a list of academy content registered by the user with optional filtering. */
-  getMyAcademyCirricula: {
+  getMyAcademyCurricula: {
     parameters: {
       query: {
         /** Filter content by content types */
@@ -3463,7 +3484,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -3475,38 +3496,41 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
-            /** @description ID of the invite associated with this cirricula */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /** @description ID of the workspace to which this cirricula belongs */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /** @description When the cirricula item was created */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /** @description When the cirricula was last updated */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -3674,9 +3698,12 @@ export interface operations {
            * @example layer5
            */
           orgId: string;
-          /** @description ID of the workspace to which this cirricula belongs */
+          /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
-          /** @description ID of the badge to be awarded on completion of this curricula */
+          /**
+           * Format: uuid
+           * @description ID of the badge to be awarded on completion of this curricula
+           */
           badge_id?: string;
           /**
            * Format: uuid
@@ -3690,7 +3717,7 @@ export interface operations {
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the Curricula */
           metadata: {
             /**
              * @description Title of the learning path
@@ -3837,7 +3864,7 @@ export interface operations {
     };
   };
   /** Returns a list of academy content with optional filtering. */
-  getAcademyCirricula: {
+  getAcademyCurricula: {
     parameters: {
       query: {
         /** Filter content by content types */
@@ -4151,7 +4178,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -4163,38 +4190,41 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
-            /** @description ID of the invite associated with this cirricula */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /** @description ID of the workspace to which this cirricula belongs */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /** @description When the cirricula item was created */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /** @description When the cirricula was last updated */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -4415,7 +4445,7 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description Id of the cirricula
+             * @description Id of the Curricula
              * @example 923458-3490394-934893
              */
             id: string;
@@ -4427,38 +4457,41 @@ export interface operations {
              */
             orgId: string;
             /**
-             * @description Visibility of the cirricula
+             * @description Visibility of the Curricula
              * @enum {string}
              */
             visibility: "public" | "private";
             /**
-             * @description Status of the cirricula
+             * @description Status of the Curricula
              * @example ready
              * @enum {string}
              */
             status: "ready" | "archived" | "not_ready";
             /**
-             * @description slug of the cirricula
+             * @description slug of the Curricula
              * @example intro-kubernetes-course
              */
             slug: string;
             /**
-             * @description Level of the cirricula
+             * @description Level of the Curricula
              * @enum {string}
              */
             level: "beginner" | "intermediate" | "advanced";
-            /** @description ID of the badge to be awarded on completion of this curricula */
+            /**
+             * Format: uuid
+             * @description ID of the badge to be awarded on completion of this curricula
+             */
             badge_id?: string;
-            /** @description ID of the invite associated with this cirricula */
+            /** @description ID of the invite associated with this Curricula */
             invite_id?: string;
-            /** @description ID of the workspace to which this cirricula belongs */
+            /** @description ID of the workspace to which this Curricula belongs */
             workspace_id?: string;
-            /** @description When the cirricula item was created */
+            /** @description When the Curricula item was created */
             createdAt: string;
-            /** @description When the cirricula was last updated */
+            /** @description When the Curricula was last updated */
             updatedAt: string;
             deletedAt: string;
-            /** @description Additional metadata about the cirricula */
+            /** @description Additional metadata about the Curricula */
             metadata: {
               /**
                * @description Title of the learning path
@@ -4682,9 +4715,12 @@ export interface operations {
            * @example layer5
            */
           orgId: string;
-          /** @description ID of the workspace to which this cirricula belongs */
+          /** @description ID of the workspace to which this Curricula belongs */
           workspace_id: string;
-          /** @description ID of the badge to be awarded on completion of this curricula */
+          /**
+           * Format: uuid
+           * @description ID of the badge to be awarded on completion of this curricula
+           */
           badge_id?: string;
           /**
            * Format: uuid
@@ -4698,7 +4734,7 @@ export interface operations {
            * @enum {string}
            */
           access_status: "enabled" | "disabled";
-          /** @description Additional metadata about the cirricula */
+          /** @description Additional metadata about the Curricula */
           metadata: {
             /**
              * @description Title of the learning path
