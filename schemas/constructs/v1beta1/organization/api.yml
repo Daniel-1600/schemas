@@ -202,7 +202,8 @@ paths:
         "500":
           description: Internal server error
 
-    delete:
+  /api/identity/orgs/{orgId}/teams/{teamId}/remove:
+    post:
       security:
         - jwt: []
       summary: Remove team from organization
