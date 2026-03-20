@@ -162,7 +162,7 @@ const BAD_PATH_PARAM_RE = /\{([^}]+)\}/g;
 
 function isBadPathParam(param) {
   // Flag SCREAMING_CASE suffix: ends with ID (two uppercase letters)
-  if (/ID$/.test(param)) return true;
+  if (param.endsWith("ID")) return true;
   // Flag snake_case: contains underscore
   if (/_/.test(param)) return true;
   return false;
@@ -177,6 +177,8 @@ function validatePathParams(filePath, doc) {
     while ((match = BAD_PATH_PARAM_RE.exec(routePath)) !== null) {
       const param = match[1];
       if (isBadPathParam(param)) {
+        // Apply both transformations in sequence so mixed-case violations like {org_ID}
+        // are normalized correctly to {orgId} (snake_case fix, then SCREAMING_CASE fix).
         const suggestion = param
           .replace(/_([a-z])/g, (_, c) => c.toUpperCase()) // snake → camel
           .replace(/ID$/, "Id"); // SCREAMING → camelCase

@@ -136,7 +136,7 @@ Every element in the API has exactly one correct casing. The table below is the 
 |---|---|---|---|
 | Schema property names (non-DB) | camelCase | `schemaVersion`, `displayName` | ~~`schema_version`~~, ~~`SchemaVersion`~~ |
 | ID-suffix properties | camelCase + `Id` | `modelId`, `registrantId` | ~~`modelID`~~, ~~`model_id`~~ |
-| DB-mirrored fields | snake\_case | `created_at`, `updated_at`, `user_id` | ~~`createdAt`~~ |
+| DB-mirrored fields | snake_case | `created_at`, `updated_at`, `user_id` | ~~`createdAt`~~ |
 | Enum values | lowercase | `enabled`, `ignored` | ~~`Enabled`~~, ~~`ENABLED`~~ |
 | `components/schemas` names | PascalCase | `ModelDefinition`, `KeychainPayload` | ~~`modelDefinition`~~ |
 | File and folder names | lowercase | `api.yml`, `keychain.yaml` | ~~`Keychain.yaml`~~ |
