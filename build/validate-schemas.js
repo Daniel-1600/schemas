@@ -131,8 +131,9 @@ function validateApiSpec(filePath, doc) {
 
 // ─── Rule 3: operationId must be lower camelCase ──────────────────────────────
 
-// Matches operationIds that start with an uppercase letter (PascalCase).
-const PASCAL_CASE_RE = /^[A-Z]/;
+// Enforce lower camelCase verbNoun identifiers such as getPatterns.
+// This rejects PascalCase, underscores, punctuation, and single-word lowercase IDs.
+const OPERATION_ID_RE = /^[a-z][a-z0-9]*(?:[A-Z][a-z0-9]*)+$/;
 
 function validateOperationIds(filePath, doc) {
   if (!doc?.paths) return;
@@ -142,11 +143,11 @@ function validateOperationIds(filePath, doc) {
       const op = pathItem[method];
       if (!op?.operationId) continue;
 
-      if (PASCAL_CASE_RE.test(op.operationId)) {
+      if (!OPERATION_ID_RE.test(op.operationId)) {
         warn(
           filePath,
           `${method.toUpperCase()} ${routePath} — operationId "${op.operationId}" ` +
-            `starts with an uppercase letter. Use lower camelCase verbNoun (e.g. "${op.operationId[0].toLowerCase()}${op.operationId.slice(1)}"). ` +
+            `must use lower camelCase verbNoun without underscores or other separators (e.g. "getPatterns"). ` +
             `See AGENTS.md § "Naming conventions".`,
         );
       }
@@ -156,16 +157,32 @@ function validateOperationIds(filePath, doc) {
 
 // ─── Rule 4: path parameters must be camelCase with Id suffix ─────────────────
 
-// Matches {somethingID} or {something_id} — both are wrong.
-// Correct form is {somethingId} (camelCase, capital I, lowercase d).
-const BAD_PATH_PARAM_RE = /\{([^}]+)\}/g;
+// Matches all path parameters like {somethingId}; actual validity checks happen in
+// isBadPathParam, which flags forms like {somethingID} and {something_id}.
+const PATH_PARAM_RE = /\{([^}]+)\}/g;
 
 function isBadPathParam(param) {
+  // Path params should use lower camelCase.
+  if (/^[A-Z]/.test(param)) return true;
   // Flag SCREAMING_CASE suffix: ends with ID (two uppercase letters)
   if (param.endsWith("ID")) return true;
+  // Keep plain legacy {id} allowed, but flag lowercase id suffixes like orgid;
+  // canonical form for multiword names is orgId.
+  if (param === "id") return false;
+  if (/id$/.test(param) && !param.endsWith("Id")) return true;
   // Flag snake_case: contains underscore
   if (/_/.test(param)) return true;
   return false;
+}
+
+function suggestPathParam(param) {
+  if (param === "id") return param;
+
+  const normalized = param
+    .replace(/[_-]+([a-zA-Z0-9])/g, (_, c) => c.toUpperCase())
+    .replace(/^([A-Z])/, (match) => match.toLowerCase());
+
+  return normalized.replace(/(?:ID|id)$/, "Id");
 }
 
 function validatePathParams(filePath, doc) {
@@ -173,15 +190,11 @@ function validatePathParams(filePath, doc) {
 
   for (const routePath of Object.keys(doc.paths)) {
     let match;
-    BAD_PATH_PARAM_RE.lastIndex = 0;
-    while ((match = BAD_PATH_PARAM_RE.exec(routePath)) !== null) {
+    PATH_PARAM_RE.lastIndex = 0;
+    while ((match = PATH_PARAM_RE.exec(routePath)) !== null) {
       const param = match[1];
       if (isBadPathParam(param)) {
-        // Apply both transformations in sequence so mixed-case violations like {org_ID}
-        // are normalized correctly to {orgId} (snake_case fix, then SCREAMING_CASE fix).
-        const suggestion = param
-          .replace(/_([a-z])/g, (_, c) => c.toUpperCase()) // snake → camel
-          .replace(/ID$/, "Id"); // SCREAMING → camelCase
+        const suggestion = suggestPathParam(param);
         warn(
           filePath,
           `Path "${routePath}" — parameter {${param}} uses incorrect casing. ` +
