@@ -79,10 +79,9 @@ paths:
       tags:
         - tokens
       summary: Delete token
-      operationId: deleteUserTokens
+      operationId: deleteUserToken
       description: Deletes a specific token for the authenticated user.
       parameters:
-        - $ref: "#/components/parameters/tokenName"
         - $ref: "#/components/parameters/tokenId"
       responses:
         "200":
@@ -197,13 +196,6 @@ components:
       name: purpose
       in: query
       description: Purpose for which the token is generated.
-      schema:
-        type: string
-    tokenName:
-      name: token_name
-      in: query
-      description: Name of the token.
-      required: true
       schema:
         type: string
     tokenId:
