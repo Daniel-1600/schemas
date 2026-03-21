@@ -352,7 +352,7 @@ case nil:
 If you're unsure about any schema modification:
 
 1. Check existing schemas for patterns (e.g., `environment.yaml`, `connection.yaml`)
-2. Look at `v1alpha1/core/api.yml` for available core schema definitions
+2. Look at `schemas/constructs/v1alpha1/core/api.yml` for available core schema definitions
 3. Examine any construct's `api.yml` to see how subschemas are referenced and endpoints are defined
 4. Check generated `.d.ts` files for actual type/property names
 5. Review this document for guidelines
