@@ -34,13 +34,13 @@ paths:
           required: false
           description: UUID of User. Pass user_id for fetching public and published designs.
           schema:
-            type: string
+            $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
         - name: orgID
           in: query
           required: false
           description: User's organization ID.
           schema:
-            type: string
+            $ref: "../../v1alpha1/core/api.yml#/components/schemas/organization_id"
         - name: metrics
           in: query
           required: false
@@ -50,7 +50,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: "../../v1alpha1/core/api.yml#/components/schemas/workspace_id"
         - name: populate
           in: query
           required: false

@@ -4119,7 +4119,7 @@ export type GetPatternsApiArg = {
   order?: string;
   /** Filter by visibility (public, private, published) */
   visibility?: string;
-  /** UUID of User. Use `userId` to fetch public and published designs (mapped to the `user_id` query parameter). */
+  /** UUID of User. Use `userId` to fetch public and published designs; it maps to the `user_id` query parameter. */
   userId?: string;
   /** User's organization ID. */
   orgId?: string;
