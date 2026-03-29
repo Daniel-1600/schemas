@@ -197,10 +197,10 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 },
                                 "description": "Name of the plan",
                                 "enum": [
-                                  "free",
-                                  "team designer",
-                                  "team operator",
-                                  "enterprise"
+                                  "Free",
+                                  "Team Designer",
+                                  "Team Operator",
+                                  "Enterprise"
                                 ]
                               },
                               "cadence": {
@@ -528,10 +528,10 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 },
                                 "description": "Name of the plan",
                                 "enum": [
-                                  "free",
-                                  "team designer",
-                                  "team operator",
-                                  "enterprise"
+                                  "Free",
+                                  "Team Designer",
+                                  "Team Operator",
+                                  "Enterprise"
                                 ]
                               },
                               "cadence": {
@@ -982,10 +982,10 @@ const SubscriptionSchema: Record<string, unknown> = {
                           },
                           "description": "Name of the plan",
                           "enum": [
-                            "free",
-                            "team designer",
-                            "team operator",
-                            "enterprise"
+                            "Free",
+                            "Team Designer",
+                            "Team Operator",
+                            "Enterprise"
                           ]
                         },
                         "cadence": {
@@ -1196,7 +1196,7 @@ const SubscriptionSchema: Record<string, unknown> = {
         }
       }
     },
-    "/api/entitlement/subscriptions/{subscriptionId}/upgrade-preview": {
+    "/api/entitlement/subscriptions/{subscriptionId}/upgradePreview": {
       "post": {
         "x-internal": [
           "cloud"
@@ -1663,10 +1663,10 @@ const SubscriptionSchema: Record<string, unknown> = {
                       },
                       "description": "Name of the plan",
                       "enum": [
-                        "free",
-                        "team designer",
-                        "team operator",
-                        "enterprise"
+                        "Free",
+                        "Team Designer",
+                        "Team Operator",
+                        "Enterprise"
                       ]
                     },
                     "cadence": {
@@ -1910,10 +1910,10 @@ const SubscriptionSchema: Record<string, unknown> = {
                 },
                 "description": "Name of the plan",
                 "enum": [
-                  "free",
-                  "team designer",
-                  "team operator",
-                  "enterprise"
+                  "Free",
+                  "Team Designer",
+                  "Team Operator",
+                  "Enterprise"
                 ]
               },
               "cadence": {

@@ -119,10 +119,10 @@ const FeatureSchema: Record<string, unknown> = {
                             },
                             "description": "Name of the plan",
                             "enum": [
-                              "free",
-                              "team designer",
-                              "team operator",
-                              "enterprise"
+                              "Free",
+                              "Team Designer",
+                              "Team Operator",
+                              "Enterprise"
                             ]
                           },
                           "cadence": {
@@ -200,12 +200,12 @@ const FeatureSchema: Record<string, unknown> = {
                         },
                         "type": "string",
                         "enum": [
-                          "componentsindesign",
-                          "relationshipsindesign",
-                          "designsinworkspace",
-                          "workspacesinorganization",
-                          "imagesizeindesign",
-                          "sizeperdesign"
+                          "ComponentsInDesign",
+                          "RelationshipsInDesign",
+                          "DesignsInWorkspace",
+                          "WorkspacesInOrganization",
+                          "ImageSizeInDesign",
+                          "SizePerDesign"
                         ],
                         "description": "Enumeration of possible feature types"
                       },
@@ -376,10 +376,10 @@ const FeatureSchema: Record<string, unknown> = {
                             },
                             "description": "Name of the plan",
                             "enum": [
-                              "free",
-                              "team designer",
-                              "team operator",
-                              "enterprise"
+                              "Free",
+                              "Team Designer",
+                              "Team Operator",
+                              "Enterprise"
                             ]
                           },
                           "cadence": {
@@ -457,12 +457,12 @@ const FeatureSchema: Record<string, unknown> = {
                         },
                         "type": "string",
                         "enum": [
-                          "componentsindesign",
-                          "relationshipsindesign",
-                          "designsinworkspace",
-                          "workspacesinorganization",
-                          "imagesizeindesign",
-                          "sizeperdesign"
+                          "ComponentsInDesign",
+                          "RelationshipsInDesign",
+                          "DesignsInWorkspace",
+                          "WorkspacesInOrganization",
+                          "ImageSizeInDesign",
+                          "SizePerDesign"
                         ],
                         "description": "Enumeration of possible feature types"
                       },
@@ -638,10 +638,10 @@ const FeatureSchema: Record<string, unknown> = {
                   },
                   "description": "Name of the plan",
                   "enum": [
-                    "free",
-                    "team designer",
-                    "team operator",
-                    "enterprise"
+                    "Free",
+                    "Team Designer",
+                    "Team Operator",
+                    "Enterprise"
                   ]
                 },
                 "cadence": {
@@ -719,12 +719,12 @@ const FeatureSchema: Record<string, unknown> = {
               },
               "type": "string",
               "enum": [
-                "componentsindesign",
-                "relationshipsindesign",
-                "designsinworkspace",
-                "workspacesinorganization",
-                "imagesizeindesign",
-                "sizeperdesign"
+                "ComponentsInDesign",
+                "RelationshipsInDesign",
+                "DesignsInWorkspace",
+                "WorkspacesInOrganization",
+                "ImageSizeInDesign",
+                "SizePerDesign"
               ],
               "description": "Enumeration of possible feature types"
             },
@@ -758,12 +758,12 @@ const FeatureSchema: Record<string, unknown> = {
       "FeatureName": {
         "type": "string",
         "enum": [
-          "componentsindesign",
-          "relationshipsindesign",
-          "designsinworkspace",
-          "workspacesinorganization",
-          "imagesizeindesign",
-          "sizeperdesign"
+          "ComponentsInDesign",
+          "RelationshipsInDesign",
+          "DesignsInWorkspace",
+          "WorkspacesInOrganization",
+          "ImageSizeInDesign",
+          "SizePerDesign"
         ],
         "description": "Enumeration of possible feature types"
       },
@@ -837,10 +837,10 @@ const FeatureSchema: Record<string, unknown> = {
                 },
                 "description": "Name of the plan",
                 "enum": [
-                  "free",
-                  "team designer",
-                  "team operator",
-                  "enterprise"
+                  "Free",
+                  "Team Designer",
+                  "Team Operator",
+                  "Enterprise"
                 ]
               },
               "cadence": {
@@ -918,12 +918,12 @@ const FeatureSchema: Record<string, unknown> = {
             },
             "type": "string",
             "enum": [
-              "componentsindesign",
-              "relationshipsindesign",
-              "designsinworkspace",
-              "workspacesinorganization",
-              "imagesizeindesign",
-              "sizeperdesign"
+              "ComponentsInDesign",
+              "RelationshipsInDesign",
+              "DesignsInWorkspace",
+              "WorkspacesInOrganization",
+              "ImageSizeInDesign",
+              "SizePerDesign"
             ],
             "description": "Enumeration of possible feature types"
           },

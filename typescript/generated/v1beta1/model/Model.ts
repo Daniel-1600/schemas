@@ -476,7 +476,7 @@ export interface components {
        * @description Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online.
        * @enum {string}
        */
-      uploadType: "file" | "urlimport" | "csv" | "url";
+      uploadType: "file" | "urlImport" | "csv" | "url";
       register: boolean;
     };
     ImportBody:
@@ -612,7 +612,7 @@ export interface operations {
            * @description Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online.
            * @enum {string}
            */
-          uploadType: "file" | "urlimport" | "csv" | "url";
+          uploadType: "file" | "urlImport" | "csv" | "url";
           register: boolean;
         };
       };

@@ -25,7 +25,7 @@ export interface components {
          * @description Name of the plan
          * @enum {string}
          */
-        name: "free" | "team designer" | "team operator" | "enterprise";
+        name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
         /** @enum {string} */
         cadence: "monthly" | "yearly";
         /** @enum {string} */
@@ -50,7 +50,7 @@ export interface components {
        * @description Name of the plan
        * @enum {string}
        */
-      name: "free" | "team designer" | "team operator" | "enterprise";
+      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
       /** @enum {string} */
       cadence: "monthly" | "yearly";
       /** @enum {string} */
@@ -68,7 +68,7 @@ export interface components {
      * @description Name of the plan
      * @enum {string}
      */
-    PlanName: "free" | "team designer" | "team operator" | "enterprise";
+    PlanName: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
     /** @enum {string} */
     PlanCadence: "monthly" | "yearly";
     /** @enum {string} */
@@ -96,24 +96,10 @@ export interface components {
       };
     };
   };
-  parameters: {
-    /** @description Get responses by page */
-    page: string;
-    /** @description Get responses by pagesize */
-    pagesize: string;
-  };
 }
 
 export interface operations {
   getPlans: {
-    parameters: {
-      query: {
-        /** Get responses by page */
-        page?: string;
-        /** Get responses by pagesize */
-        pagesize?: string;
-      };
-    };
     responses: {
       /** Plans response */
       200: {
@@ -128,7 +114,7 @@ export interface operations {
              * @description Name of the plan
              * @enum {string}
              */
-            name: "free" | "team designer" | "team operator" | "enterprise";
+            name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
             /** @enum {string} */
             cadence: "monthly" | "yearly";
             /** @enum {string} */

@@ -21,7 +21,7 @@ const (
 	Csv       ImportRequestUploadType = "csv"
 	File      ImportRequestUploadType = "file"
 	Url       ImportRequestUploadType = "url"
-	Urlimport ImportRequestUploadType = "urlimport"
+	UrlImport ImportRequestUploadType = "urlImport"
 )
 
 // Valid indicates whether the value is a known member of the ImportRequestUploadType enum.
@@ -33,7 +33,7 @@ func (e ImportRequestUploadType) Valid() bool {
 		return true
 	case Url:
 		return true
-	case Urlimport:
+	case UrlImport:
 		return true
 	default:
 		return false

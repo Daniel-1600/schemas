@@ -148,7 +148,7 @@ const ModelSchema: Record<string, unknown> = {
                     "title": "Upload method",
                     "enum": [
                       "file",
-                      "urlimport",
+                      "urlImport",
                       "csv",
                       "url"
                     ],
@@ -1628,7 +1628,7 @@ const ModelSchema: Record<string, unknown> = {
             "title": "Upload method",
             "enum": [
               "file",
-              "urlimport",
+              "urlImport",
               "csv",
               "url"
             ],

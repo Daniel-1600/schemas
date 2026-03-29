@@ -42,10 +42,10 @@ func (e PlanCadence) Valid() bool {
 
 // Defines values for PlanName.
 const (
-	PlanNameEnterprise   PlanName = "enterprise"
-	PlanNameFree         PlanName = "free"
-	PlanNameTeamDesigner PlanName = "team designer"
-	PlanNameTeamOperator PlanName = "team operator"
+	PlanNameEnterprise   PlanName = "Enterprise"
+	PlanNameFree         PlanName = "Free"
+	PlanNameTeamDesigner PlanName = "Team Designer"
+	PlanNameTeamOperator PlanName = "Team Operator"
 )
 
 // Valid indicates whether the value is a known member of the PlanName enum.
@@ -120,9 +120,3 @@ type PlanPage struct {
 
 // PlanUnit defines model for PlanUnit.
 type PlanUnit string
-
-// Page defines model for page.
-type Page = string
-
-// Pagesize defines model for pagesize.
-type Pagesize = string

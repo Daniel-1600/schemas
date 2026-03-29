@@ -36,7 +36,7 @@ const injectedRtkApi = api
     endpoints: (build) => ({
       getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/curricula/registered`,
+          url: `/api/academy/Curricula/registered`,
           params: {
             contentType: queryArg.contentType,
             orgId: queryArg.orgId,
@@ -44,9 +44,13 @@ const injectedRtkApi = api
         }),
         providesTags: ["Academy_API_Academy"],
       }),
+      createAcademyCurricula: build.mutation<CreateAcademyCurriculaApiResponse, CreateAcademyCurriculaApiArg>({
+        query: (queryArg) => ({ url: `/api/academy/curricula`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Academy_API_Academy"],
+      }),
       getAcademyCurricula: build.query<GetAcademyCurriculaApiResponse, GetAcademyCurriculaApiArg>({
         query: (queryArg) => ({
-          url: `/api/academy/curricula`,
+          url: `/api/academy/Curricula`,
           params: {
             contentType: queryArg.contentType,
             visibility: queryArg.visibility,
@@ -62,10 +66,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Academy_API_Academy"],
-      }),
-      createAcademyCurricula: build.mutation<CreateAcademyCurriculaApiResponse, CreateAcademyCurriculaApiArg>({
-        query: (queryArg) => ({ url: `/api/academy/curricula`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Academy_API_Academy"],
       }),
       getApiAcademyByTypeAndOrgIdSlug: build.query<
         GetApiAcademyByTypeAndOrgIdSlugApiResponse,
@@ -912,13 +912,7 @@ const injectedRtkApi = api
         invalidatesTags: ["Organization_other"],
       }),
       getPlans: build.query<GetPlansApiResponse, GetPlansApiArg>({
-        query: (queryArg) => ({
-          url: `/api/entitlement/plans`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-          },
-        }),
+        query: () => ({ url: `/api/entitlement/plans` }),
         providesTags: ["Plan_Plans"],
       }),
       addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
@@ -1055,7 +1049,7 @@ const injectedRtkApi = api
         PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiArg
       >({
         query: (queryArg) => ({
-          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade-preview`,
+          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgradePreview`,
           method: "POST",
           body: queryArg.body,
         }),
@@ -1155,7 +1149,7 @@ const injectedRtkApi = api
           url: `/api/identity/tokens`,
           method: "DELETE",
           params: {
-            tokenId: queryArg.tokenId,
+            token_id: queryArg.tokenId,
           },
         }),
         invalidatesTags: ["token_tokens"],
@@ -1171,7 +1165,7 @@ const injectedRtkApi = api
         query: (queryArg) => ({
           url: `/api/identity/tokens/infinite`,
           params: {
-            userId: queryArg.userId,
+            user_id: queryArg.userId,
             provider: queryArg.provider,
           },
         }),
@@ -1460,124 +1454,6 @@ export type GetMyAcademyCurriculaApiArg = {
   /** Filter content by organization IDs */
   orgId?: string[];
 };
-export type GetAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
-  /** Total number of Curricula */
-  total: number;
-  data: ({
-    /** Id of the Curricula */
-    id: string;
-    type: "learning-path" | "challenge" | "certification";
-    /** Organization ID that owns this learning path */
-    orgId: string;
-    /** Visibility of the Curricula */
-    visibility: "public" | "private";
-    /** Status of the Curricula */
-    status: "ready" | "archived" | "not_ready";
-    /** slug of the Curricula */
-    slug: string;
-    /** Level of the Curricula */
-    level: "beginner" | "intermediate" | "advanced";
-    /** ID of the badge to be awarded on completion of this curricula */
-    badge_id?: string;
-    /** ID of the invite associated with this Curricula */
-    inviteId?: string;
-    /** ID of the workspace to which this Curricula belongs */
-    workspace_id?: string;
-    /** When the Curricula item was created */
-    createdAt: string;
-    /** When the Curricula was last updated */
-    updatedAt: string;
-    deletedAt: string;
-    /** Additional metadata about the Curricula */
-    metadata: {
-      /** Title of the learning path */
-      title: string;
-      /** Short description of the curricula */
-      description: string;
-      /** Detailed description of the curricula */
-      detailedDescription?: string;
-      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-      banner?: string | null;
-      /** Canonical URL for the learning path */
-      permalink: string;
-      certificate?: {
-        /** Unique identifier for the certificate */
-        id: string;
-        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-        orgId: string;
-        /** ID of the recipient (user) who received the certificate */
-        recipientId: string;
-        /** Name of the recipient (user) who received the certificate */
-        recipientName: string;
-        /** Title of the certificate */
-        title: string;
-        /** Description of the certificate */
-        description: string;
-        /** List of issuing authorities for the certificate */
-        issuingAuthorities: {
-          /** Name of the issuing authority */
-          name: string;
-          /** Role of the issuing authority */
-          role?: string;
-          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
-          signatureUrl?: string;
-        }[];
-        /** Date when the certificate was issued */
-        issuedDate: string;
-        /** Date when the certificate expires (optional) */
-        expirationDate?: string;
-        /** Number of months after which the certificate expires */
-        expiresIn?: number;
-      };
-      /** List of children items in the top-level curricula */
-      children?: {
-        /** Unique identifier for the course */
-        id: string;
-        /** Title of the course */
-        title: string;
-        /** URL to the course content */
-        permalink: string;
-        /** Course description */
-        description: string;
-        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
-        weight?: number;
-        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
-        banner?: string | null;
-        /** Type of the content (e.g., learning-path, challenge, certification) */
-        type?: "learning-path" | "challenge" | "certification";
-        /** List of child nodes (sub-courses or modules) */
-        children?: object[];
-      }[];
-      [key: string]: any;
-    };
-  } & {
-    registration_count: number;
-  })[];
-};
-export type GetAcademyCurriculaApiArg = {
-  /** Filter content by content types */
-  contentType?: string[];
-  /** Filter content by visibility (public/private) */
-  visibility?: string[];
-  /** Filter content by difficulty level */
-  level?: string[];
-  /** Filter content by organization IDs */
-  orgId?: string[];
-  /** Filter content by categories */
-  category?: string[];
-  /** Filter by registration status */
-  status?: string[];
-  /** Search content by title */
-  search?: string;
-  /** Sort results by a specific field (e.g., title, createdAt) */
-  sort?: string;
-  /** Order of sorting (asc or desc) */
-  order?: "asc" | "desc";
-  /** Number of results per page */
-  pagesize?: number;
-  /** Page number */
-  page?: number;
-};
 export type CreateAcademyCurriculaApiResponse = /** status 201 created the curricula */ {
   /** Id of the Curricula */
   id: string;
@@ -1747,6 +1623,124 @@ export type CreateAcademyCurriculaApiArg = {
       [key: string]: any;
     };
   };
+};
+export type GetAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
+  /** Total number of Curricula */
+  total: number;
+  data: ({
+    /** Id of the Curricula */
+    id: string;
+    type: "learning-path" | "challenge" | "certification";
+    /** Organization ID that owns this learning path */
+    orgId: string;
+    /** Visibility of the Curricula */
+    visibility: "public" | "private";
+    /** Status of the Curricula */
+    status: "ready" | "archived" | "not_ready";
+    /** slug of the Curricula */
+    slug: string;
+    /** Level of the Curricula */
+    level: "beginner" | "intermediate" | "advanced";
+    /** ID of the badge to be awarded on completion of this curricula */
+    badge_id?: string;
+    /** ID of the invite associated with this Curricula */
+    inviteId?: string;
+    /** ID of the workspace to which this Curricula belongs */
+    workspace_id?: string;
+    /** When the Curricula item was created */
+    createdAt: string;
+    /** When the Curricula was last updated */
+    updatedAt: string;
+    deletedAt: string;
+    /** Additional metadata about the Curricula */
+    metadata: {
+      /** Title of the learning path */
+      title: string;
+      /** Short description of the curricula */
+      description: string;
+      /** Detailed description of the curricula */
+      detailedDescription?: string;
+      /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+      banner?: string | null;
+      /** Canonical URL for the learning path */
+      permalink: string;
+      certificate?: {
+        /** Unique identifier for the certificate */
+        id: string;
+        /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+        orgId: string;
+        /** ID of the recipient (user) who received the certificate */
+        recipientId: string;
+        /** Name of the recipient (user) who received the certificate */
+        recipientName: string;
+        /** Title of the certificate */
+        title: string;
+        /** Description of the certificate */
+        description: string;
+        /** List of issuing authorities for the certificate */
+        issuingAuthorities: {
+          /** Name of the issuing authority */
+          name: string;
+          /** Role of the issuing authority */
+          role?: string;
+          /** URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format */
+          signatureUrl?: string;
+        }[];
+        /** Date when the certificate was issued */
+        issuedDate: string;
+        /** Date when the certificate expires (optional) */
+        expirationDate?: string;
+        /** Number of months after which the certificate expires */
+        expiresIn?: number;
+      };
+      /** List of children items in the top-level curricula */
+      children?: {
+        /** Unique identifier for the course */
+        id: string;
+        /** Title of the course */
+        title: string;
+        /** URL to the course content */
+        permalink: string;
+        /** Course description */
+        description: string;
+        /** A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title. */
+        weight?: number;
+        /** Filename of the banner image, which should be placed in the same directory as the _index.md file */
+        banner?: string | null;
+        /** Type of the content (e.g., learning-path, challenge, certification) */
+        type?: "learning-path" | "challenge" | "certification";
+        /** List of child nodes (sub-courses or modules) */
+        children?: object[];
+      }[];
+      [key: string]: any;
+    };
+  } & {
+    registration_count: number;
+  })[];
+};
+export type GetAcademyCurriculaApiArg = {
+  /** Filter content by content types */
+  contentType?: string[];
+  /** Filter content by visibility (public/private) */
+  visibility?: string[];
+  /** Filter content by difficulty level */
+  level?: string[];
+  /** Filter content by organization IDs */
+  orgId?: string[];
+  /** Filter content by categories */
+  category?: string[];
+  /** Filter by registration status */
+  status?: string[];
+  /** Search content by title */
+  search?: string;
+  /** Sort results by a specific field (e.g., title, createdAt) */
+  sort?: string;
+  /** Order of sorting (asc or desc) */
+  order?: "asc" | "desc";
+  /** Number of results per page */
+  pagesize?: number;
+  /** Page number */
+  page?: number;
 };
 export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single academy content */ {
   /** Id of the Curricula */
@@ -2364,10 +2358,10 @@ export type UpdateCurrentItemInProgressTrackerApiResponse = /** status 200 Progr
       [key: string]: {
         score: number;
         passed: boolean;
-        percentageScored: number;
-        totalMarks: number;
-        passPercentage: number;
-        correctSubmissions: {
+        percentage_scored: number;
+        total_marks: number;
+        pass_percentage: number;
+        correct_submissions: {
           [key: string]: boolean;
         };
         quiz: {
@@ -2387,12 +2381,12 @@ export type UpdateCurrentItemInProgressTrackerApiResponse = /** status 200 Progr
           date: string;
           lastmod: string;
           draft: boolean;
-          filePath: string;
-          passPercentage: number;
+          file_path: string;
+          pass_percentage: number;
           /** Time limit for the quiz in minutes. A value of 0 indicates no time limit. */
-          timeLimit: string;
+          time_limit: string;
           /** Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts. */
-          maxAttempts: number;
+          max_attempts: number;
           questions: {
             id: string;
             text: string;
@@ -2406,10 +2400,10 @@ export type UpdateCurrentItemInProgressTrackerApiResponse = /** status 200 Progr
             }[];
             correctAnswer: string;
           }[];
-          totalQuestions: number;
-          totalQuestionsInBank: number;
-          totalQuestionSets: number;
-          totalMarks: number;
+          total_questions: number;
+          total_questions_in_bank: number;
+          total_question_sets: number;
+          total_marks: number;
           prerequisites: {
             id: string;
             title: string;
@@ -2422,14 +2416,14 @@ export type UpdateCurrentItemInProgressTrackerApiResponse = /** status 200 Progr
             relPermalink: string;
             type: string;
           };
-          nextPage: {
+          next_page: {
             id: string;
             title: string;
             relPermalink: string;
             type: string;
           };
         };
-        attemptedAt: string;
+        attempted_at: string;
         attempts: number;
       };
     };
@@ -2487,12 +2481,12 @@ export type GetTestByAbsPathApiResponse = /** status 200 A single test */ {
   date: string;
   lastmod: string;
   draft: boolean;
-  filePath: string;
-  passPercentage: number;
+  file_path: string;
+  pass_percentage: number;
   /** Time limit for the quiz in minutes. A value of 0 indicates no time limit. */
-  timeLimit: string;
+  time_limit: string;
   /** Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts. */
-  maxAttempts: number;
+  max_attempts: number;
   questions: {
     id: string;
     text: string;
@@ -2506,10 +2500,10 @@ export type GetTestByAbsPathApiResponse = /** status 200 A single test */ {
     }[];
     correctAnswer: string;
   }[];
-  totalQuestions: number;
-  totalQuestionsInBank: number;
-  totalQuestionSets: number;
-  totalMarks: number;
+  total_questions: number;
+  total_questions_in_bank: number;
+  total_question_sets: number;
+  total_marks: number;
   prerequisites: {
     id: string;
     title: string;
@@ -2522,7 +2516,7 @@ export type GetTestByAbsPathApiResponse = /** status 200 A single test */ {
     relPermalink: string;
     type: string;
   };
-  nextPage: {
+  next_page: {
     id: string;
     title: string;
     relPermalink: string;
@@ -2550,12 +2544,12 @@ export type StartTestByIdApiResponse = /** status 200 A single test */ {
   date: string;
   lastmod: string;
   draft: boolean;
-  filePath: string;
-  passPercentage: number;
+  file_path: string;
+  pass_percentage: number;
   /** Time limit for the quiz in minutes. A value of 0 indicates no time limit. */
-  timeLimit: string;
+  time_limit: string;
   /** Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts. */
-  maxAttempts: number;
+  max_attempts: number;
   questions: {
     id: string;
     text: string;
@@ -2569,10 +2563,10 @@ export type StartTestByIdApiResponse = /** status 200 A single test */ {
     }[];
     correctAnswer: string;
   }[];
-  totalQuestions: number;
-  totalQuestionsInBank: number;
-  totalQuestionSets: number;
-  totalMarks: number;
+  total_questions: number;
+  total_questions_in_bank: number;
+  total_question_sets: number;
+  total_marks: number;
   prerequisites: {
     id: string;
     title: string;
@@ -2585,7 +2579,7 @@ export type StartTestByIdApiResponse = /** status 200 A single test */ {
     relPermalink: string;
     type: string;
   };
-  nextPage: {
+  next_page: {
     id: string;
     title: string;
     relPermalink: string;
@@ -2602,10 +2596,10 @@ export type GetAllTestSessionsForRegistrationApiResponse =
   /** status 200 A list of tests for the specified registration */ {
     score: number;
     passed: boolean;
-    percentageScored: number;
-    totalMarks: number;
-    passPercentage: number;
-    correctSubmissions: {
+    percentage_scored: number;
+    total_marks: number;
+    pass_percentage: number;
+    correct_submissions: {
       [key: string]: boolean;
     };
     quiz: {
@@ -2625,12 +2619,12 @@ export type GetAllTestSessionsForRegistrationApiResponse =
       date: string;
       lastmod: string;
       draft: boolean;
-      filePath: string;
-      passPercentage: number;
+      file_path: string;
+      pass_percentage: number;
       /** Time limit for the quiz in minutes. A value of 0 indicates no time limit. */
-      timeLimit: string;
+      time_limit: string;
       /** Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts. */
-      maxAttempts: number;
+      max_attempts: number;
       questions: {
         id: string;
         text: string;
@@ -2644,10 +2638,10 @@ export type GetAllTestSessionsForRegistrationApiResponse =
         }[];
         correctAnswer: string;
       }[];
-      totalQuestions: number;
-      totalQuestionsInBank: number;
-      totalQuestionSets: number;
-      totalMarks: number;
+      total_questions: number;
+      total_questions_in_bank: number;
+      total_question_sets: number;
+      total_marks: number;
       prerequisites: {
         id: string;
         title: string;
@@ -2660,14 +2654,14 @@ export type GetAllTestSessionsForRegistrationApiResponse =
         relPermalink: string;
         type: string;
       };
-      nextPage: {
+      next_page: {
         id: string;
         title: string;
         relPermalink: string;
         type: string;
       };
     };
-    attemptedAt: string;
+    attempted_at: string;
     attempts: number;
   }[][];
 export type GetAllTestSessionsForRegistrationApiArg = {
@@ -2683,10 +2677,10 @@ export type GetAllTestSessionsForRegistrationApiArg = {
 export type SubmitQuizApiResponse = /** status 200 Progress tracker updated */ {
   score: number;
   passed: boolean;
-  percentageScored: number;
-  totalMarks: number;
-  passPercentage: number;
-  correctSubmissions: {
+  percentage_scored: number;
+  total_marks: number;
+  pass_percentage: number;
+  correct_submissions: {
     [key: string]: boolean;
   };
   quiz: {
@@ -2706,12 +2700,12 @@ export type SubmitQuizApiResponse = /** status 200 Progress tracker updated */ {
     date: string;
     lastmod: string;
     draft: boolean;
-    filePath: string;
-    passPercentage: number;
+    file_path: string;
+    pass_percentage: number;
     /** Time limit for the quiz in minutes. A value of 0 indicates no time limit. */
-    timeLimit: string;
+    time_limit: string;
     /** Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts. */
-    maxAttempts: number;
+    max_attempts: number;
     questions: {
       id: string;
       text: string;
@@ -2725,10 +2719,10 @@ export type SubmitQuizApiResponse = /** status 200 Progress tracker updated */ {
       }[];
       correctAnswer: string;
     }[];
-    totalQuestions: number;
-    totalQuestionsInBank: number;
-    totalQuestionSets: number;
-    totalMarks: number;
+    total_questions: number;
+    total_questions_in_bank: number;
+    total_question_sets: number;
+    total_marks: number;
     prerequisites: {
       id: string;
       title: string;
@@ -2741,14 +2735,14 @@ export type SubmitQuizApiResponse = /** status 200 Progress tracker updated */ {
       relPermalink: string;
       type: string;
     };
-    nextPage: {
+    next_page: {
       id: string;
       title: string;
       relPermalink: string;
       type: string;
     };
   };
-  attemptedAt: string;
+  attempted_at: string;
   attempts: number;
 };
 export type SubmitQuizApiArg = {
@@ -10051,7 +10045,7 @@ export type GetFeaturesApiResponse = /** status 200 Features response */ {
     /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
     /** Name of the plan */
-    name: "free" | "team designer" | "team operator" | "enterprise";
+    name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
     cadence: "monthly" | "yearly";
     unit: "user" | "free";
     /** Minimum number of units required for the plan */
@@ -10062,12 +10056,12 @@ export type GetFeaturesApiResponse = /** status 200 Features response */ {
   };
   /** Enumeration of possible feature types */
   name?:
-    | "componentsindesign"
-    | "relationshipsindesign"
-    | "designsinworkspace"
-    | "workspacesinorganization"
-    | "imagesizeindesign"
-    | "sizeperdesign";
+    | "ComponentsInDesign"
+    | "RelationshipsInDesign"
+    | "DesignsInWorkspace"
+    | "WorkspacesInOrganization"
+    | "ImageSizeInDesign"
+    | "SizePerDesign";
   /** Quantity of the feature allowed, use 9999999999 for unlimited */
   quantity: number;
   created_at?: string;
@@ -10083,7 +10077,7 @@ export type GetFeaturesByOrganizationApiResponse = /** status 200 Features respo
     /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
     /** Name of the plan */
-    name: "free" | "team designer" | "team operator" | "enterprise";
+    name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
     cadence: "monthly" | "yearly";
     unit: "user" | "free";
     /** Minimum number of units required for the plan */
@@ -10094,12 +10088,12 @@ export type GetFeaturesByOrganizationApiResponse = /** status 200 Features respo
   };
   /** Enumeration of possible feature types */
   name?:
-    | "componentsindesign"
-    | "relationshipsindesign"
-    | "designsinworkspace"
-    | "workspacesinorganization"
-    | "imagesizeindesign"
-    | "sizeperdesign";
+    | "ComponentsInDesign"
+    | "RelationshipsInDesign"
+    | "DesignsInWorkspace"
+    | "WorkspacesInOrganization"
+    | "ImageSizeInDesign"
+    | "SizePerDesign";
   /** Quantity of the feature allowed, use 9999999999 for unlimited */
   quantity: number;
   created_at?: string;
@@ -10694,7 +10688,7 @@ export type RegisterMeshmodelsApiArg = {
           url: string;
         };
     /** Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online. */
-    uploadType: "file" | "urlimport" | "csv" | "url";
+    uploadType: "file" | "urlImport" | "csv" | "url";
     register: boolean;
   };
 };
@@ -11223,7 +11217,7 @@ export type GetPlansApiResponse = /** status 200 Plans response */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
   /** Name of the plan */
-  name: "free" | "team designer" | "team operator" | "enterprise";
+  name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
   cadence: "monthly" | "yearly";
   unit: "user" | "free";
   /** Minimum number of units required for the plan */
@@ -11232,12 +11226,7 @@ export type GetPlansApiResponse = /** status 200 Plans response */ {
   price_per_unit: number;
   currency: "usd";
 }[];
-export type GetPlansApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-};
+export type GetPlansApiArg = void;
 export type AddRoleHolderApiResponse = unknown;
 export type AddRoleHolderApiArg = {
   body: {
@@ -11500,7 +11489,7 @@ export type GetSubscriptionsApiResponse = /** status 200 Get subscription respon
       /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       id: string;
       /** Name of the plan */
-      name: "free" | "team designer" | "team operator" | "enterprise";
+      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
       cadence: "monthly" | "yearly";
       unit: "user" | "free";
       /** Minimum number of units required for the plan */
@@ -11546,7 +11535,7 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse = /
       /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
       id: string;
       /** Name of the plan */
-      name: "free" | "team designer" | "team operator" | "enterprise";
+      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
       cadence: "monthly" | "yearly";
       unit: "user" | "free";
       /** Minimum number of units required for the plan */
@@ -11602,7 +11591,7 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse = 
     /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
     id: string;
     /** Name of the plan */
-    name: "free" | "team designer" | "team operator" | "enterprise";
+    name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
     cadence: "monthly" | "yearly";
     unit: "user" | "free";
     /** Minimum number of units required for the plan */
@@ -13835,8 +13824,8 @@ export type UnassignViewFromWorkspaceApiArg = {
 };
 export const {
   useGetMyAcademyCurriculaQuery,
-  useGetAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
+  useGetAcademyCurriculaQuery,
   useGetApiAcademyByTypeAndOrgIdSlugQuery,
   useRegisterToAcademyContentMutation,
   useWithdrawFromAcademyContentMutation,

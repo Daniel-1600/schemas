@@ -11,28 +11,28 @@ import (
 
 // Defines values for FeatureName.
 const (
-	Componentsindesign       FeatureName = "componentsindesign"
-	Designsinworkspace       FeatureName = "designsinworkspace"
-	Imagesizeindesign        FeatureName = "imagesizeindesign"
-	Relationshipsindesign    FeatureName = "relationshipsindesign"
-	Sizeperdesign            FeatureName = "sizeperdesign"
-	Workspacesinorganization FeatureName = "workspacesinorganization"
+	ComponentsInDesign       FeatureName = "ComponentsInDesign"
+	DesignsInWorkspace       FeatureName = "DesignsInWorkspace"
+	ImageSizeInDesign        FeatureName = "ImageSizeInDesign"
+	RelationshipsInDesign    FeatureName = "RelationshipsInDesign"
+	SizePerDesign            FeatureName = "SizePerDesign"
+	WorkspacesInOrganization FeatureName = "WorkspacesInOrganization"
 )
 
 // Valid indicates whether the value is a known member of the FeatureName enum.
 func (e FeatureName) Valid() bool {
 	switch e {
-	case Componentsindesign:
+	case ComponentsInDesign:
 		return true
-	case Designsinworkspace:
+	case DesignsInWorkspace:
 		return true
-	case Imagesizeindesign:
+	case ImageSizeInDesign:
 		return true
-	case Relationshipsindesign:
+	case RelationshipsInDesign:
 		return true
-	case Sizeperdesign:
+	case SizePerDesign:
 		return true
-	case Workspacesinorganization:
+	case WorkspacesInOrganization:
 		return true
 	default:
 		return false

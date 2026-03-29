@@ -41,24 +41,6 @@ const PlanSchema: Record<string, unknown> = {
           "Plans"
         ],
         "summary": "Get all plans supported by the system",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Get responses by page",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pagesize",
-            "in": "query",
-            "description": "Get responses by pagesize",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Plans response",
@@ -93,10 +75,10 @@ const PlanSchema: Record<string, unknown> = {
                         },
                         "description": "Name of the plan",
                         "enum": [
-                          "free",
-                          "team designer",
-                          "team operator",
-                          "enterprise"
+                          "Free",
+                          "Team Designer",
+                          "Team Operator",
+                          "Enterprise"
                         ]
                       },
                       "cadence": {
@@ -238,24 +220,6 @@ const PlanSchema: Record<string, unknown> = {
         }
       }
     },
-    "parameters": {
-      "page": {
-        "name": "page",
-        "in": "query",
-        "description": "Get responses by page",
-        "schema": {
-          "type": "string"
-        }
-      },
-      "pagesize": {
-        "name": "pagesize",
-        "in": "query",
-        "description": "Get responses by pagesize",
-        "schema": {
-          "type": "string"
-        }
-      }
-    },
     "securitySchemes": {
       "jwt": {
         "type": "http",
@@ -311,10 +275,10 @@ const PlanSchema: Record<string, unknown> = {
                   },
                   "description": "Name of the plan",
                   "enum": [
-                    "free",
-                    "team designer",
-                    "team operator",
-                    "enterprise"
+                    "Free",
+                    "Team Designer",
+                    "Team Operator",
+                    "Enterprise"
                   ]
                 },
                 "cadence": {
@@ -416,10 +380,10 @@ const PlanSchema: Record<string, unknown> = {
             },
             "description": "Name of the plan",
             "enum": [
-              "free",
-              "team designer",
-              "team operator",
-              "enterprise"
+              "Free",
+              "Team Designer",
+              "Team Operator",
+              "Enterprise"
             ]
           },
           "cadence": {
@@ -494,10 +458,10 @@ const PlanSchema: Record<string, unknown> = {
         "type": "string",
         "description": "Name of the plan",
         "enum": [
-          "free",
-          "team designer",
-          "team operator",
-          "enterprise"
+          "Free",
+          "Team Designer",
+          "Team Operator",
+          "Enterprise"
         ]
       },
       "PlanCadence": {

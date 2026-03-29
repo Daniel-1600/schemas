@@ -25,7 +25,7 @@ const AcademySchema: Record<string, unknown> = {
     }
   ],
   "paths": {
-    "/api/academy/curricula/registered": {
+    "/api/academy/Curricula/registered": {
       "get": {
         "x-internal": [
           "cloud"
@@ -530,633 +530,6 @@ const AcademySchema: Record<string, unknown> = {
       }
     },
     "/api/academy/curricula": {
-      "get": {
-        "x-internal": [
-          "cloud"
-        ],
-        "tags": [
-          "Academy"
-        ],
-        "operationId": "getAcademyCurricula",
-        "summary": "Get academy content",
-        "description": "Returns a list of academy content with optional filtering.",
-        "parameters": [
-          {
-            "name": "contentType",
-            "in": "query",
-            "description": "Filter content by content types",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "visibility",
-            "in": "query",
-            "description": "Filter content by visibility (public/private)",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "level",
-            "in": "query",
-            "description": "Filter content by difficulty level",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "orgId",
-            "in": "query",
-            "description": "Filter content by organization IDs",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter content by categories",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Filter by registration status",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search content by title",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort results by a specific field (e.g., title, createdAt)",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Order of sorting (asc or desc)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
-            }
-          },
-          {
-            "name": "pagesize",
-            "in": "query",
-            "description": "Number of results per page",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of content with total count",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "total": {
-                      "type": "integer",
-                      "description": "Total number of Curricula",
-                      "example": 7
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "x-go-type": "AcademyCurriculaWithMetrics",
-                        "x-go-type-skip-optional-pointer": true,
-                        "allOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "description": "Id of the Curricula",
-                                "example": "923458-3490394-934893",
-                                "x-go-name": "ID",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "id",
-                                  "json": "id"
-                                }
-                              },
-                              "type": {
-                                "x-go-type": "ContentType",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "type"
-                                },
-                                "type": "string",
-                                "enum": [
-                                  "learning-path",
-                                  "challenge",
-                                  "certification"
-                                ]
-                              },
-                              "orgId": {
-                                "type": "string",
-                                "description": "Organization ID that owns this learning path",
-                                "example": "layer5",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "org_id",
-                                  "json": "org_id"
-                                }
-                              },
-                              "visibility": {
-                                "description": "Visibility of the Curricula",
-                                "x-go-type": "Visibility",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "visibility",
-                                  "json": "visibility"
-                                },
-                                "type": "string",
-                                "enum": [
-                                  "public",
-                                  "private"
-                                ]
-                              },
-                              "status": {
-                                "example": "ready",
-                                "description": "Status of the Curricula",
-                                "x-go-type": "Status",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "status",
-                                  "json": "status"
-                                },
-                                "type": "string",
-                                "enum": [
-                                  "ready",
-                                  "archived",
-                                  "not_ready"
-                                ]
-                              },
-                              "slug": {
-                                "type": "string",
-                                "description": "slug of the Curricula",
-                                "example": "intro-kubernetes-course"
-                              },
-                              "level": {
-                                "description": "Level of the Curricula",
-                                "x-go-type": "Level",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "level",
-                                  "json": "level"
-                                },
-                                "type": "string",
-                                "enum": [
-                                  "beginner",
-                                  "intermediate",
-                                  "advanced"
-                                ]
-                              },
-                              "badge_id": {
-                                "type": "string",
-                                "format": "uuid",
-                                "description": "ID of the badge to be awarded on completion of this curricula",
-                                "x-go-type": "corev1alpha1.Uuid",
-                                "x-go-type-import": {
-                                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                                  "name": "corev1alpha1"
-                                },
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "badge_id",
-                                  "json": "badge_id"
-                                }
-                              },
-                              "inviteId": {
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                                    "x-go-type": "uuid.UUID",
-                                    "x-go-type-import": {
-                                      "path": "github.com/gofrs/uuid"
-                                    }
-                                  }
-                                ],
-                                "description": "ID of the invite associated with this Curricula",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "invite_id",
-                                  "json": "invite_id"
-                                }
-                              },
-                              "workspace_id": {
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                                    "x-go-type": "uuid.UUID",
-                                    "x-go-type-import": {
-                                      "path": "github.com/gofrs/uuid"
-                                    }
-                                  }
-                                ],
-                                "description": "ID of the workspace to which this Curricula belongs",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "workspace_id",
-                                  "json": "workspace_id"
-                                }
-                              },
-                              "createdAt": {
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "x-go-type-skip-optional-pointer": true
-                                  }
-                                ],
-                                "description": "When the Curricula item was created",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "created_at",
-                                  "json": "created_at"
-                                }
-                              },
-                              "updatedAt": {
-                                "allOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "x-go-type-skip-optional-pointer": true
-                                  }
-                                ],
-                                "description": "When the Curricula was last updated",
-                                "x-go-type": "core.Time",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "updated_at",
-                                  "json": "updated_at"
-                                }
-                              },
-                              "deletedAt": {
-                                "allOf": [
-                                  {
-                                    "description": "Timestamp when the resource was deleted.",
-                                    "x-go-type": "NullTime",
-                                    "type": "string",
-                                    "format": "date-time",
-                                    "x-go-name": "DeletedAt",
-                                    "x-oapi-codegen-extra-tags": {
-                                      "db": "deleted_at",
-                                      "yaml": "deleted_at"
-                                    },
-                                    "x-go-type-skip-optional-pointer": true
-                                  }
-                                ],
-                                "x-go-type": "core.NullTime",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "deleted_at",
-                                  "json": "deleted_at"
-                                }
-                              },
-                              "metadata": {
-                                "type": "object",
-                                "description": "Additional metadata about the Curricula",
-                                "additionalProperties": true,
-                                "x-go-type": "core.Map",
-                                "x-go-type-skip-optional-pointer": true,
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "metadata",
-                                  "json": "metadata"
-                                },
-                                "oneOf": [
-                                  {
-                                    "x-go-type": "CurriculaMetadata",
-                                    "type": "object",
-                                    "properties": {
-                                      "title": {
-                                        "type": "string",
-                                        "description": "Title of the learning path",
-                                        "example": "Mastering Kubernetes for Engineers"
-                                      },
-                                      "description": {
-                                        "type": "string",
-                                        "description": "Short description of the curricula",
-                                        "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
-                                      },
-                                      "detailedDescription": {
-                                        "type": "string",
-                                        "description": "Detailed description of the curricula",
-                                        "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
-                                      },
-                                      "banner": {
-                                        "type": "string",
-                                        "format": "uri",
-                                        "nullable": true,
-                                        "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                        "example": "kubernetes-icon.svg"
-                                      },
-                                      "permalink": {
-                                        "type": "string",
-                                        "format": "uri",
-                                        "description": "Canonical URL for the learning path",
-                                        "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
-                                      },
-                                      "certificate": {
-                                        "x-go-type": "Certificate",
-                                        "type": "object",
-                                        "required": [
-                                          "id",
-                                          "orgId",
-                                          "title",
-                                          "description",
-                                          "issuingAuthorities",
-                                          "issuedDate",
-                                          "recipientId",
-                                          "recipientName"
-                                        ],
-                                        "properties": {
-                                          "id": {
-                                            "type": "string",
-                                            "description": "Unique identifier for the certificate",
-                                            "example": "1234567890abcdef",
-                                            "x-go-name": "ID"
-                                          },
-                                          "orgId": {
-                                            "type": "string",
-                                            "format": "uuid",
-                                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-                                            "x-go-type": "uuid.UUID",
-                                            "x-go-type-import": {
-                                              "path": "github.com/gofrs/uuid"
-                                            }
-                                          },
-                                          "recipientId": {
-                                            "type": "string",
-                                            "description": "ID of the recipient (user) who received the certificate",
-                                            "example": "1234567890abcdef"
-                                          },
-                                          "recipientName": {
-                                            "type": "string",
-                                            "description": "Name of the recipient (user) who received the certificate",
-                                            "example": "John Doe"
-                                          },
-                                          "title": {
-                                            "type": "string",
-                                            "description": "Title of the certificate",
-                                            "example": "Kubernetes Expert Certification"
-                                          },
-                                          "description": {
-                                            "type": "string",
-                                            "description": "Description of the certificate",
-                                            "example": "Awarded for successfully completing the Kubernetes Expert course"
-                                          },
-                                          "issuingAuthorities": {
-                                            "type": "array",
-                                            "items": {
-                                              "x-go-type": "CertificateIssuingAuthority",
-                                              "type": "object",
-                                              "required": [
-                                                "name",
-                                                "url"
-                                              ],
-                                              "properties": {
-                                                "name": {
-                                                  "type": "string",
-                                                  "description": "Name of the issuing authority",
-                                                  "example": "Cloud Native Foundation"
-                                                },
-                                                "role": {
-                                                  "type": "string",
-                                                  "description": "Role of the issuing authority",
-                                                  "example": "COO"
-                                                },
-                                                "signatureUrl": {
-                                                  "type": "string",
-                                                  "format": "uri",
-                                                  "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
-                                                  "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
-                                                }
-                                              }
-                                            },
-                                            "description": "List of issuing authorities for the certificate"
-                                          },
-                                          "issuedDate": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "description": "Date when the certificate was issued",
-                                            "example": "2023-10-01T12:00:00Z"
-                                          },
-                                          "expirationDate": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "description": "Date when the certificate expires (optional)",
-                                            "example": "2025-10-01T12:00:00Z"
-                                          },
-                                          "expiresIn": {
-                                            "type": "integer",
-                                            "description": "Number of months after which the certificate expires",
-                                            "example": 24
-                                          }
-                                        }
-                                      },
-                                      "children": {
-                                        "type": "array",
-                                        "description": "List of children items in the top-level curricula",
-                                        "items": {
-                                          "x-go-type": "ChildNode",
-                                          "type": "object",
-                                          "properties": {
-                                            "id": {
-                                              "type": "string",
-                                              "description": "Unique identifier for the course",
-                                              "example": "1234567890abcdef",
-                                              "x-go-name": "ID",
-                                              "x-oapi-codegen-extra-tags": {
-                                                "db": "id",
-                                                "json": "id"
-                                              }
-                                            },
-                                            "title": {
-                                              "type": "string",
-                                              "description": "Title of the course",
-                                              "example": "Kubernetes Basics"
-                                            },
-                                            "permalink": {
-                                              "type": "string",
-                                              "format": "uri",
-                                              "description": "URL to the course content",
-                                              "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
-                                            },
-                                            "description": {
-                                              "type": "string",
-                                              "description": "Course description",
-                                              "example": "Learn the basics of Kubernetes"
-                                            },
-                                            "weight": {
-                                              "type": "number",
-                                              "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
-                                              "example": "eg 1 , 2"
-                                            },
-                                            "banner": {
-                                              "type": "string",
-                                              "format": "uri",
-                                              "nullable": true,
-                                              "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
-                                              "example": "kubernetes-icon.svg"
-                                            },
-                                            "type": {
-                                              "x-go-type": "ContentType",
-                                              "description": "Type of the content (e.g., learning-path, challenge, certification)",
-                                              "type": "string",
-                                              "enum": [
-                                                "learning-path",
-                                                "challenge",
-                                                "certification"
-                                              ]
-                                            },
-                                            "children": {
-                                              "type": "array",
-                                              "description": "List of child nodes (sub-courses or modules)",
-                                              "items": {
-                                                "type": "object",
-                                                "x-go-type": "ChildNode"
-                                              }
-                                            }
-                                          },
-                                          "required": [
-                                            "title",
-                                            "description",
-                                            "id",
-                                            "permalink"
-                                          ]
-                                        }
-                                      }
-                                    },
-                                    "required": [
-                                      "title",
-                                      "description",
-                                      "permalink"
-                                    ]
-                                  }
-                                ]
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "type",
-                              "orgId",
-                              "visibility",
-                              "status",
-                              "slug",
-                              "createdAt",
-                              "updatedAt",
-                              "deletedAt",
-                              "metadata",
-                              "level"
-                            ]
-                          },
-                          {
-                            "type": "object",
-                            "required": [
-                              "registration_count"
-                            ],
-                            "properties": {
-                              "registration_count": {
-                                "type": "number",
-                                "x-oapi-codegen-extra-tags": {
-                                  "db": "registration_count,omitempty",
-                                  "json": "registration_count,omitempty"
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "total",
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters"
-          },
-          "401": {
-            "description": "Expired JWT token used or insufficient privilege",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
-      },
       "post": {
         "x-internal": [
           "cloud"
@@ -1263,7 +636,7 @@ const AcademySchema: Record<string, unknown> = {
                     "description": "Expiry time for curricula access",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "accessExpiresAt",
+                      "json": "access_expires_at",
                       "db": "access_expires_at"
                     }
                   },
@@ -1942,6 +1315,635 @@ const AcademySchema: Record<string, unknown> = {
                     "deletedAt",
                     "metadata",
                     "level"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Expired JWT token used or insufficient privilege",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/academy/Curricula": {
+      "get": {
+        "x-internal": [
+          "cloud"
+        ],
+        "tags": [
+          "Academy"
+        ],
+        "operationId": "getAcademyCurricula",
+        "summary": "Get academy content",
+        "description": "Returns a list of academy content with optional filtering.",
+        "parameters": [
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "Filter content by content types",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "visibility",
+            "in": "query",
+            "description": "Filter content by visibility (public/private)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "description": "Filter content by difficulty level",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "orgId",
+            "in": "query",
+            "description": "Filter content by organization IDs",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter content by categories",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by registration status",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search content by title",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort results by a specific field (e.g., title, createdAt)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Order of sorting (asc or desc)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "pagesize",
+            "in": "query",
+            "description": "Number of results per page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of content with total count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of Curricula",
+                      "example": 7
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "x-go-type": "AcademyCurriculaWithMetrics",
+                        "x-go-type-skip-optional-pointer": true,
+                        "allOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Id of the Curricula",
+                                "example": "923458-3490394-934893",
+                                "x-go-name": "ID",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "id",
+                                  "json": "id"
+                                }
+                              },
+                              "type": {
+                                "x-go-type": "ContentType",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "type"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "learning-path",
+                                  "challenge",
+                                  "certification"
+                                ]
+                              },
+                              "orgId": {
+                                "type": "string",
+                                "description": "Organization ID that owns this learning path",
+                                "example": "layer5",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "org_id",
+                                  "json": "org_id"
+                                }
+                              },
+                              "visibility": {
+                                "description": "Visibility of the Curricula",
+                                "x-go-type": "Visibility",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "visibility",
+                                  "json": "visibility"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "public",
+                                  "private"
+                                ]
+                              },
+                              "status": {
+                                "example": "ready",
+                                "description": "Status of the Curricula",
+                                "x-go-type": "Status",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "status",
+                                  "json": "status"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "ready",
+                                  "archived",
+                                  "not_ready"
+                                ]
+                              },
+                              "slug": {
+                                "type": "string",
+                                "description": "slug of the Curricula",
+                                "example": "intro-kubernetes-course"
+                              },
+                              "level": {
+                                "description": "Level of the Curricula",
+                                "x-go-type": "Level",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "level",
+                                  "json": "level"
+                                },
+                                "type": "string",
+                                "enum": [
+                                  "beginner",
+                                  "intermediate",
+                                  "advanced"
+                                ]
+                              },
+                              "badge_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "description": "ID of the badge to be awarded on completion of this curricula",
+                                "x-go-type": "corev1alpha1.Uuid",
+                                "x-go-type-import": {
+                                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
+                                  "name": "corev1alpha1"
+                                },
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "badge_id",
+                                  "json": "badge_id"
+                                }
+                              },
+                              "inviteId": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                    "x-go-type": "uuid.UUID",
+                                    "x-go-type-import": {
+                                      "path": "github.com/gofrs/uuid"
+                                    }
+                                  }
+                                ],
+                                "description": "ID of the invite associated with this Curricula",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "invite_id",
+                                  "json": "invite_id"
+                                }
+                              },
+                              "workspace_id": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                    "x-go-type": "uuid.UUID",
+                                    "x-go-type-import": {
+                                      "path": "github.com/gofrs/uuid"
+                                    }
+                                  }
+                                ],
+                                "description": "ID of the workspace to which this Curricula belongs",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "workspace_id",
+                                  "json": "workspace_id"
+                                }
+                              },
+                              "createdAt": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "description": "When the Curricula item was created",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "created_at",
+                                  "json": "created_at"
+                                }
+                              },
+                              "updatedAt": {
+                                "allOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "description": "When the Curricula was last updated",
+                                "x-go-type": "core.Time",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "updated_at",
+                                  "json": "updated_at"
+                                }
+                              },
+                              "deletedAt": {
+                                "allOf": [
+                                  {
+                                    "description": "Timestamp when the resource was deleted.",
+                                    "x-go-type": "NullTime",
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-go-name": "DeletedAt",
+                                    "x-oapi-codegen-extra-tags": {
+                                      "db": "deleted_at",
+                                      "yaml": "deleted_at"
+                                    },
+                                    "x-go-type-skip-optional-pointer": true
+                                  }
+                                ],
+                                "x-go-type": "core.NullTime",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "deleted_at",
+                                  "json": "deleted_at"
+                                }
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "description": "Additional metadata about the Curricula",
+                                "additionalProperties": true,
+                                "x-go-type": "core.Map",
+                                "x-go-type-skip-optional-pointer": true,
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "metadata",
+                                  "json": "metadata"
+                                },
+                                "oneOf": [
+                                  {
+                                    "x-go-type": "CurriculaMetadata",
+                                    "type": "object",
+                                    "properties": {
+                                      "title": {
+                                        "type": "string",
+                                        "description": "Title of the learning path",
+                                        "example": "Mastering Kubernetes for Engineers"
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "description": "Short description of the curricula",
+                                        "example": "Learn how to configure your Kubernetes clusters and manage the lifecycle of your workloads"
+                                      },
+                                      "detailedDescription": {
+                                        "type": "string",
+                                        "description": "Detailed description of the curricula",
+                                        "example": "This learning path covers everything from Kubernetes architecture to advanced deployment strategies, including hands-on labs and real-world scenarios."
+                                      },
+                                      "banner": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "nullable": true,
+                                        "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                        "example": "kubernetes-icon.svg"
+                                      },
+                                      "permalink": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "Canonical URL for the learning path",
+                                        "example": "http://localhost:9876/academy/learning-paths/layer5/mastering-kubernetes-for-engineers/"
+                                      },
+                                      "certificate": {
+                                        "x-go-type": "Certificate",
+                                        "type": "object",
+                                        "required": [
+                                          "id",
+                                          "orgId",
+                                          "title",
+                                          "description",
+                                          "issuingAuthorities",
+                                          "issuedDate",
+                                          "recipientId",
+                                          "recipientName"
+                                        ],
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the certificate",
+                                            "example": "1234567890abcdef",
+                                            "x-go-name": "ID"
+                                          },
+                                          "orgId": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                            "x-go-type": "uuid.UUID",
+                                            "x-go-type-import": {
+                                              "path": "github.com/gofrs/uuid"
+                                            }
+                                          },
+                                          "recipientId": {
+                                            "type": "string",
+                                            "description": "ID of the recipient (user) who received the certificate",
+                                            "example": "1234567890abcdef"
+                                          },
+                                          "recipientName": {
+                                            "type": "string",
+                                            "description": "Name of the recipient (user) who received the certificate",
+                                            "example": "John Doe"
+                                          },
+                                          "title": {
+                                            "type": "string",
+                                            "description": "Title of the certificate",
+                                            "example": "Kubernetes Expert Certification"
+                                          },
+                                          "description": {
+                                            "type": "string",
+                                            "description": "Description of the certificate",
+                                            "example": "Awarded for successfully completing the Kubernetes Expert course"
+                                          },
+                                          "issuingAuthorities": {
+                                            "type": "array",
+                                            "items": {
+                                              "x-go-type": "CertificateIssuingAuthority",
+                                              "type": "object",
+                                              "required": [
+                                                "name",
+                                                "url"
+                                              ],
+                                              "properties": {
+                                                "name": {
+                                                  "type": "string",
+                                                  "description": "Name of the issuing authority",
+                                                  "example": "Cloud Native Foundation"
+                                                },
+                                                "role": {
+                                                  "type": "string",
+                                                  "description": "Role of the issuing authority",
+                                                  "example": "COO"
+                                                },
+                                                "signatureUrl": {
+                                                  "type": "string",
+                                                  "format": "uri",
+                                                  "description": "URL to the signature image of the issuing authority should be a publicly accessible URL and transparent PNG or SVG format",
+                                                  "example": "http://localhost:9876/signatures/cloud-native-foundation.png"
+                                                }
+                                              }
+                                            },
+                                            "description": "List of issuing authorities for the certificate"
+                                          },
+                                          "issuedDate": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Date when the certificate was issued",
+                                            "example": "2023-10-01T12:00:00Z"
+                                          },
+                                          "expirationDate": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Date when the certificate expires (optional)",
+                                            "example": "2025-10-01T12:00:00Z"
+                                          },
+                                          "expiresIn": {
+                                            "type": "integer",
+                                            "description": "Number of months after which the certificate expires",
+                                            "example": 24
+                                          }
+                                        }
+                                      },
+                                      "children": {
+                                        "type": "array",
+                                        "description": "List of children items in the top-level curricula",
+                                        "items": {
+                                          "x-go-type": "ChildNode",
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "string",
+                                              "description": "Unique identifier for the course",
+                                              "example": "1234567890abcdef",
+                                              "x-go-name": "ID",
+                                              "x-oapi-codegen-extra-tags": {
+                                                "db": "id",
+                                                "json": "id"
+                                              }
+                                            },
+                                            "title": {
+                                              "type": "string",
+                                              "description": "Title of the course",
+                                              "example": "Kubernetes Basics"
+                                            },
+                                            "permalink": {
+                                              "type": "string",
+                                              "format": "uri",
+                                              "description": "URL to the course content",
+                                              "example": "http://localhost:9876/academy/learning-paths/layer5/intro-kubernetes-course/kubernetes/"
+                                            },
+                                            "description": {
+                                              "type": "string",
+                                              "description": "Course description",
+                                              "example": "Learn the basics of Kubernetes"
+                                            },
+                                            "weight": {
+                                              "type": "number",
+                                              "description": "A numeric value to determine the display order. A smaller number appears first. If not specified, items will be sorted alphabetically by title.",
+                                              "example": "eg 1 , 2"
+                                            },
+                                            "banner": {
+                                              "type": "string",
+                                              "format": "uri",
+                                              "nullable": true,
+                                              "description": "Filename of the banner image, which should be placed in the same directory as the _index.md file",
+                                              "example": "kubernetes-icon.svg"
+                                            },
+                                            "type": {
+                                              "x-go-type": "ContentType",
+                                              "description": "Type of the content (e.g., learning-path, challenge, certification)",
+                                              "type": "string",
+                                              "enum": [
+                                                "learning-path",
+                                                "challenge",
+                                                "certification"
+                                              ]
+                                            },
+                                            "children": {
+                                              "type": "array",
+                                              "description": "List of child nodes (sub-courses or modules)",
+                                              "items": {
+                                                "type": "object",
+                                                "x-go-type": "ChildNode"
+                                              }
+                                            }
+                                          },
+                                          "required": [
+                                            "title",
+                                            "description",
+                                            "id",
+                                            "permalink"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "title",
+                                      "description",
+                                      "permalink"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "orgId",
+                              "visibility",
+                              "status",
+                              "slug",
+                              "createdAt",
+                              "updatedAt",
+                              "deletedAt",
+                              "metadata",
+                              "level"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "registration_count"
+                            ],
+                            "properties": {
+                              "registration_count": {
+                                "type": "number",
+                                "x-oapi-codegen-extra-tags": {
+                                  "db": "registration_count,omitempty",
+                                  "json": "registration_count,omitempty"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "data"
                   ]
                 }
               }
@@ -3133,7 +3135,7 @@ const AcademySchema: Record<string, unknown> = {
                     "description": "Expiry time for curricula access",
                     "x-go-type": "*time.Time",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "accessExpiresAt",
+                      "json": "access_expires_at",
                       "db": "access_expires_at"
                     }
                   },
@@ -5148,13 +5150,13 @@ const AcademySchema: Record<string, unknown> = {
                             "required": [
                               "score",
                               "passed",
-                              "totalMarks",
-                              "passPercentage",
+                              "total_marks",
+                              "pass_percentage",
                               "quiz",
-                              "attemptedAt",
+                              "attempted_at",
                               "attempts",
-                              "percentageScored",
-                              "correctSubmissions"
+                              "percentage_scored",
+                              "correct_submissions"
                             ],
                             "properties": {
                               "score": {
@@ -5163,18 +5165,18 @@ const AcademySchema: Record<string, unknown> = {
                               "passed": {
                                 "type": "boolean"
                               },
-                              "percentageScored": {
+                              "percentage_scored": {
                                 "type": "number",
                                 "format": "float"
                               },
-                              "totalMarks": {
+                              "total_marks": {
                                 "type": "integer"
                               },
-                              "passPercentage": {
+                              "pass_percentage": {
                                 "type": "number",
                                 "format": "float"
                               },
-                              "correctSubmissions": {
+                              "correct_submissions": {
                                 "type": "object",
                                 "additionalProperties": {
                                   "type": "boolean"
@@ -5199,17 +5201,17 @@ const AcademySchema: Record<string, unknown> = {
                                   "final",
                                   "lastmod",
                                   "draft",
-                                  "filePath",
-                                  "passPercentage",
-                                  "timeLimit",
-                                  "maxAttempts",
+                                  "file_path",
+                                  "pass_percentage",
+                                  "time_limit",
+                                  "max_attempts",
                                   "questions",
-                                  "totalQuestions",
-                                  "totalQuestionsInBank",
-                                  "totalQuestionSets",
-                                  "totalMarks",
+                                  "total_questions",
+                                  "total_questions_in_bank",
+                                  "total_question_sets",
+                                  "total_marks",
                                   "prerequisites",
-                                  "nextPage"
+                                  "next_page"
                                 ],
                                 "properties": {
                                   "id": {
@@ -5268,18 +5270,18 @@ const AcademySchema: Record<string, unknown> = {
                                   "draft": {
                                     "type": "boolean"
                                   },
-                                  "filePath": {
+                                  "file_path": {
                                     "type": "string"
                                   },
-                                  "passPercentage": {
+                                  "pass_percentage": {
                                     "type": "number",
                                     "format": "float"
                                   },
-                                  "timeLimit": {
+                                  "time_limit": {
                                     "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                                     "type": "string"
                                   },
-                                  "maxAttempts": {
+                                  "max_attempts": {
                                     "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                                     "type": "integer"
                                   },
@@ -5354,16 +5356,16 @@ const AcademySchema: Record<string, unknown> = {
                                       }
                                     }
                                   },
-                                  "totalQuestions": {
+                                  "total_questions": {
                                     "type": "integer"
                                   },
-                                  "totalQuestionsInBank": {
+                                  "total_questions_in_bank": {
                                     "type": "integer"
                                   },
-                                  "totalQuestionSets": {
+                                  "total_question_sets": {
                                     "type": "integer"
                                   },
-                                  "totalMarks": {
+                                  "total_marks": {
                                     "type": "integer"
                                   },
                                   "prerequisites": {
@@ -5417,7 +5419,7 @@ const AcademySchema: Record<string, unknown> = {
                                       }
                                     }
                                   },
-                                  "nextPage": {
+                                  "next_page": {
                                     "x-go-type": "Parent",
                                     "type": "object",
                                     "required": [
@@ -5443,7 +5445,7 @@ const AcademySchema: Record<string, unknown> = {
                                   }
                                 }
                               },
-                              "attemptedAt": {
+                              "attempted_at": {
                                 "type": "string",
                                 "format": "date-time"
                               },
@@ -5653,17 +5655,17 @@ const AcademySchema: Record<string, unknown> = {
                     "final",
                     "lastmod",
                     "draft",
-                    "filePath",
-                    "passPercentage",
-                    "timeLimit",
-                    "maxAttempts",
+                    "file_path",
+                    "pass_percentage",
+                    "time_limit",
+                    "max_attempts",
                     "questions",
-                    "totalQuestions",
-                    "totalQuestionsInBank",
-                    "totalQuestionSets",
-                    "totalMarks",
+                    "total_questions",
+                    "total_questions_in_bank",
+                    "total_question_sets",
+                    "total_marks",
                     "prerequisites",
-                    "nextPage"
+                    "next_page"
                   ],
                   "properties": {
                     "id": {
@@ -5722,18 +5724,18 @@ const AcademySchema: Record<string, unknown> = {
                     "draft": {
                       "type": "boolean"
                     },
-                    "filePath": {
+                    "file_path": {
                       "type": "string"
                     },
-                    "passPercentage": {
+                    "pass_percentage": {
                       "type": "number",
                       "format": "float"
                     },
-                    "timeLimit": {
+                    "time_limit": {
                       "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                       "type": "string"
                     },
-                    "maxAttempts": {
+                    "max_attempts": {
                       "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                       "type": "integer"
                     },
@@ -5808,16 +5810,16 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "totalQuestions": {
+                    "total_questions": {
                       "type": "integer"
                     },
-                    "totalQuestionsInBank": {
+                    "total_questions_in_bank": {
                       "type": "integer"
                     },
-                    "totalQuestionSets": {
+                    "total_question_sets": {
                       "type": "integer"
                     },
-                    "totalMarks": {
+                    "total_marks": {
                       "type": "integer"
                     },
                     "prerequisites": {
@@ -5871,7 +5873,7 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "nextPage": {
+                    "next_page": {
                       "x-go-type": "Parent",
                       "type": "object",
                       "required": [
@@ -5978,17 +5980,17 @@ const AcademySchema: Record<string, unknown> = {
                     "final",
                     "lastmod",
                     "draft",
-                    "filePath",
-                    "passPercentage",
-                    "timeLimit",
-                    "maxAttempts",
+                    "file_path",
+                    "pass_percentage",
+                    "time_limit",
+                    "max_attempts",
                     "questions",
-                    "totalQuestions",
-                    "totalQuestionsInBank",
-                    "totalQuestionSets",
-                    "totalMarks",
+                    "total_questions",
+                    "total_questions_in_bank",
+                    "total_question_sets",
+                    "total_marks",
                     "prerequisites",
-                    "nextPage"
+                    "next_page"
                   ],
                   "properties": {
                     "id": {
@@ -6047,18 +6049,18 @@ const AcademySchema: Record<string, unknown> = {
                     "draft": {
                       "type": "boolean"
                     },
-                    "filePath": {
+                    "file_path": {
                       "type": "string"
                     },
-                    "passPercentage": {
+                    "pass_percentage": {
                       "type": "number",
                       "format": "float"
                     },
-                    "timeLimit": {
+                    "time_limit": {
                       "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                       "type": "string"
                     },
-                    "maxAttempts": {
+                    "max_attempts": {
                       "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                       "type": "integer"
                     },
@@ -6133,16 +6135,16 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "totalQuestions": {
+                    "total_questions": {
                       "type": "integer"
                     },
-                    "totalQuestionsInBank": {
+                    "total_questions_in_bank": {
                       "type": "integer"
                     },
-                    "totalQuestionSets": {
+                    "total_question_sets": {
                       "type": "integer"
                     },
-                    "totalMarks": {
+                    "total_marks": {
                       "type": "integer"
                     },
                     "prerequisites": {
@@ -6196,7 +6198,7 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "nextPage": {
+                    "next_page": {
                       "x-go-type": "Parent",
                       "type": "object",
                       "required": [
@@ -6309,13 +6311,13 @@ const AcademySchema: Record<string, unknown> = {
                       "required": [
                         "score",
                         "passed",
-                        "totalMarks",
-                        "passPercentage",
+                        "total_marks",
+                        "pass_percentage",
                         "quiz",
-                        "attemptedAt",
+                        "attempted_at",
                         "attempts",
-                        "percentageScored",
-                        "correctSubmissions"
+                        "percentage_scored",
+                        "correct_submissions"
                       ],
                       "properties": {
                         "score": {
@@ -6324,18 +6326,18 @@ const AcademySchema: Record<string, unknown> = {
                         "passed": {
                           "type": "boolean"
                         },
-                        "percentageScored": {
+                        "percentage_scored": {
                           "type": "number",
                           "format": "float"
                         },
-                        "totalMarks": {
+                        "total_marks": {
                           "type": "integer"
                         },
-                        "passPercentage": {
+                        "pass_percentage": {
                           "type": "number",
                           "format": "float"
                         },
-                        "correctSubmissions": {
+                        "correct_submissions": {
                           "type": "object",
                           "additionalProperties": {
                             "type": "boolean"
@@ -6360,17 +6362,17 @@ const AcademySchema: Record<string, unknown> = {
                             "final",
                             "lastmod",
                             "draft",
-                            "filePath",
-                            "passPercentage",
-                            "timeLimit",
-                            "maxAttempts",
+                            "file_path",
+                            "pass_percentage",
+                            "time_limit",
+                            "max_attempts",
                             "questions",
-                            "totalQuestions",
-                            "totalQuestionsInBank",
-                            "totalQuestionSets",
-                            "totalMarks",
+                            "total_questions",
+                            "total_questions_in_bank",
+                            "total_question_sets",
+                            "total_marks",
                             "prerequisites",
-                            "nextPage"
+                            "next_page"
                           ],
                           "properties": {
                             "id": {
@@ -6429,18 +6431,18 @@ const AcademySchema: Record<string, unknown> = {
                             "draft": {
                               "type": "boolean"
                             },
-                            "filePath": {
+                            "file_path": {
                               "type": "string"
                             },
-                            "passPercentage": {
+                            "pass_percentage": {
                               "type": "number",
                               "format": "float"
                             },
-                            "timeLimit": {
+                            "time_limit": {
                               "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                               "type": "string"
                             },
-                            "maxAttempts": {
+                            "max_attempts": {
                               "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                               "type": "integer"
                             },
@@ -6515,16 +6517,16 @@ const AcademySchema: Record<string, unknown> = {
                                 }
                               }
                             },
-                            "totalQuestions": {
+                            "total_questions": {
                               "type": "integer"
                             },
-                            "totalQuestionsInBank": {
+                            "total_questions_in_bank": {
                               "type": "integer"
                             },
-                            "totalQuestionSets": {
+                            "total_question_sets": {
                               "type": "integer"
                             },
-                            "totalMarks": {
+                            "total_marks": {
                               "type": "integer"
                             },
                             "prerequisites": {
@@ -6578,7 +6580,7 @@ const AcademySchema: Record<string, unknown> = {
                                 }
                               }
                             },
-                            "nextPage": {
+                            "next_page": {
                               "x-go-type": "Parent",
                               "type": "object",
                               "required": [
@@ -6604,7 +6606,7 @@ const AcademySchema: Record<string, unknown> = {
                             }
                           }
                         },
-                        "attemptedAt": {
+                        "attempted_at": {
                           "type": "string",
                           "format": "date-time"
                         },
@@ -6723,13 +6725,13 @@ const AcademySchema: Record<string, unknown> = {
                   "required": [
                     "score",
                     "passed",
-                    "totalMarks",
-                    "passPercentage",
+                    "total_marks",
+                    "pass_percentage",
                     "quiz",
-                    "attemptedAt",
+                    "attempted_at",
                     "attempts",
-                    "percentageScored",
-                    "correctSubmissions"
+                    "percentage_scored",
+                    "correct_submissions"
                   ],
                   "properties": {
                     "score": {
@@ -6738,18 +6740,18 @@ const AcademySchema: Record<string, unknown> = {
                     "passed": {
                       "type": "boolean"
                     },
-                    "percentageScored": {
+                    "percentage_scored": {
                       "type": "number",
                       "format": "float"
                     },
-                    "totalMarks": {
+                    "total_marks": {
                       "type": "integer"
                     },
-                    "passPercentage": {
+                    "pass_percentage": {
                       "type": "number",
                       "format": "float"
                     },
-                    "correctSubmissions": {
+                    "correct_submissions": {
                       "type": "object",
                       "additionalProperties": {
                         "type": "boolean"
@@ -6774,17 +6776,17 @@ const AcademySchema: Record<string, unknown> = {
                         "final",
                         "lastmod",
                         "draft",
-                        "filePath",
-                        "passPercentage",
-                        "timeLimit",
-                        "maxAttempts",
+                        "file_path",
+                        "pass_percentage",
+                        "time_limit",
+                        "max_attempts",
                         "questions",
-                        "totalQuestions",
-                        "totalQuestionsInBank",
-                        "totalQuestionSets",
-                        "totalMarks",
+                        "total_questions",
+                        "total_questions_in_bank",
+                        "total_question_sets",
+                        "total_marks",
                         "prerequisites",
-                        "nextPage"
+                        "next_page"
                       ],
                       "properties": {
                         "id": {
@@ -6843,18 +6845,18 @@ const AcademySchema: Record<string, unknown> = {
                         "draft": {
                           "type": "boolean"
                         },
-                        "filePath": {
+                        "file_path": {
                           "type": "string"
                         },
-                        "passPercentage": {
+                        "pass_percentage": {
                           "type": "number",
                           "format": "float"
                         },
-                        "timeLimit": {
+                        "time_limit": {
                           "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                           "type": "string"
                         },
-                        "maxAttempts": {
+                        "max_attempts": {
                           "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                           "type": "integer"
                         },
@@ -6929,16 +6931,16 @@ const AcademySchema: Record<string, unknown> = {
                             }
                           }
                         },
-                        "totalQuestions": {
+                        "total_questions": {
                           "type": "integer"
                         },
-                        "totalQuestionsInBank": {
+                        "total_questions_in_bank": {
                           "type": "integer"
                         },
-                        "totalQuestionSets": {
+                        "total_question_sets": {
                           "type": "integer"
                         },
-                        "totalMarks": {
+                        "total_marks": {
                           "type": "integer"
                         },
                         "prerequisites": {
@@ -6992,7 +6994,7 @@ const AcademySchema: Record<string, unknown> = {
                             }
                           }
                         },
-                        "nextPage": {
+                        "next_page": {
                           "x-go-type": "Parent",
                           "type": "object",
                           "required": [
@@ -7018,7 +7020,7 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "attemptedAt": {
+                    "attempted_at": {
                       "type": "string",
                       "format": "date-time"
                     },
@@ -7910,7 +7912,7 @@ const AcademySchema: Record<string, unknown> = {
         "description": "Expiry time for curricula access",
         "x-go-type": "*time.Time",
         "x-oapi-codegen-extra-tags": {
-          "json": "accessExpiresAt",
+          "json": "access_expires_at",
           "db": "access_expires_at"
         }
       },
@@ -9086,7 +9088,7 @@ const AcademySchema: Record<string, unknown> = {
             "description": "Expiry time for curricula access",
             "x-go-type": "*time.Time",
             "x-oapi-codegen-extra-tags": {
-              "json": "accessExpiresAt",
+              "json": "access_expires_at",
               "db": "access_expires_at"
             }
           },
@@ -11661,13 +11663,13 @@ const AcademySchema: Record<string, unknown> = {
             "required": [
               "score",
               "passed",
-              "totalMarks",
-              "passPercentage",
+              "total_marks",
+              "pass_percentage",
               "quiz",
-              "attemptedAt",
+              "attempted_at",
               "attempts",
-              "percentageScored",
-              "correctSubmissions"
+              "percentage_scored",
+              "correct_submissions"
             ],
             "properties": {
               "score": {
@@ -11676,18 +11678,18 @@ const AcademySchema: Record<string, unknown> = {
               "passed": {
                 "type": "boolean"
               },
-              "percentageScored": {
+              "percentage_scored": {
                 "type": "number",
                 "format": "float"
               },
-              "totalMarks": {
+              "total_marks": {
                 "type": "integer"
               },
-              "passPercentage": {
+              "pass_percentage": {
                 "type": "number",
                 "format": "float"
               },
-              "correctSubmissions": {
+              "correct_submissions": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "boolean"
@@ -11712,17 +11714,17 @@ const AcademySchema: Record<string, unknown> = {
                   "final",
                   "lastmod",
                   "draft",
-                  "filePath",
-                  "passPercentage",
-                  "timeLimit",
-                  "maxAttempts",
+                  "file_path",
+                  "pass_percentage",
+                  "time_limit",
+                  "max_attempts",
                   "questions",
-                  "totalQuestions",
-                  "totalQuestionsInBank",
-                  "totalQuestionSets",
-                  "totalMarks",
+                  "total_questions",
+                  "total_questions_in_bank",
+                  "total_question_sets",
+                  "total_marks",
                   "prerequisites",
-                  "nextPage"
+                  "next_page"
                 ],
                 "properties": {
                   "id": {
@@ -11781,18 +11783,18 @@ const AcademySchema: Record<string, unknown> = {
                   "draft": {
                     "type": "boolean"
                   },
-                  "filePath": {
+                  "file_path": {
                     "type": "string"
                   },
-                  "passPercentage": {
+                  "pass_percentage": {
                     "type": "number",
                     "format": "float"
                   },
-                  "timeLimit": {
+                  "time_limit": {
                     "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                     "type": "string"
                   },
-                  "maxAttempts": {
+                  "max_attempts": {
                     "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                     "type": "integer"
                   },
@@ -11867,16 +11869,16 @@ const AcademySchema: Record<string, unknown> = {
                       }
                     }
                   },
-                  "totalQuestions": {
+                  "total_questions": {
                     "type": "integer"
                   },
-                  "totalQuestionsInBank": {
+                  "total_questions_in_bank": {
                     "type": "integer"
                   },
-                  "totalQuestionSets": {
+                  "total_question_sets": {
                     "type": "integer"
                   },
-                  "totalMarks": {
+                  "total_marks": {
                     "type": "integer"
                   },
                   "prerequisites": {
@@ -11930,7 +11932,7 @@ const AcademySchema: Record<string, unknown> = {
                       }
                     }
                   },
-                  "nextPage": {
+                  "next_page": {
                     "x-go-type": "Parent",
                     "type": "object",
                     "required": [
@@ -11956,7 +11958,7 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "attemptedAt": {
+              "attempted_at": {
                 "type": "string",
                 "format": "date-time"
               },
@@ -11976,13 +11978,13 @@ const AcademySchema: Record<string, unknown> = {
           "required": [
             "score",
             "passed",
-            "totalMarks",
-            "passPercentage",
+            "total_marks",
+            "pass_percentage",
             "quiz",
-            "attemptedAt",
+            "attempted_at",
             "attempts",
-            "percentageScored",
-            "correctSubmissions"
+            "percentage_scored",
+            "correct_submissions"
           ],
           "properties": {
             "score": {
@@ -11991,18 +11993,18 @@ const AcademySchema: Record<string, unknown> = {
             "passed": {
               "type": "boolean"
             },
-            "percentageScored": {
+            "percentage_scored": {
               "type": "number",
               "format": "float"
             },
-            "totalMarks": {
+            "total_marks": {
               "type": "integer"
             },
-            "passPercentage": {
+            "pass_percentage": {
               "type": "number",
               "format": "float"
             },
-            "correctSubmissions": {
+            "correct_submissions": {
               "type": "object",
               "additionalProperties": {
                 "type": "boolean"
@@ -12027,17 +12029,17 @@ const AcademySchema: Record<string, unknown> = {
                 "final",
                 "lastmod",
                 "draft",
-                "filePath",
-                "passPercentage",
-                "timeLimit",
-                "maxAttempts",
+                "file_path",
+                "pass_percentage",
+                "time_limit",
+                "max_attempts",
                 "questions",
-                "totalQuestions",
-                "totalQuestionsInBank",
-                "totalQuestionSets",
-                "totalMarks",
+                "total_questions",
+                "total_questions_in_bank",
+                "total_question_sets",
+                "total_marks",
                 "prerequisites",
-                "nextPage"
+                "next_page"
               ],
               "properties": {
                 "id": {
@@ -12096,18 +12098,18 @@ const AcademySchema: Record<string, unknown> = {
                 "draft": {
                   "type": "boolean"
                 },
-                "filePath": {
+                "file_path": {
                   "type": "string"
                 },
-                "passPercentage": {
+                "pass_percentage": {
                   "type": "number",
                   "format": "float"
                 },
-                "timeLimit": {
+                "time_limit": {
                   "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                   "type": "string"
                 },
-                "maxAttempts": {
+                "max_attempts": {
                   "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                   "type": "integer"
                 },
@@ -12182,16 +12184,16 @@ const AcademySchema: Record<string, unknown> = {
                     }
                   }
                 },
-                "totalQuestions": {
+                "total_questions": {
                   "type": "integer"
                 },
-                "totalQuestionsInBank": {
+                "total_questions_in_bank": {
                   "type": "integer"
                 },
-                "totalQuestionSets": {
+                "total_question_sets": {
                   "type": "integer"
                 },
-                "totalMarks": {
+                "total_marks": {
                   "type": "integer"
                 },
                 "prerequisites": {
@@ -12245,7 +12247,7 @@ const AcademySchema: Record<string, unknown> = {
                     }
                   }
                 },
-                "nextPage": {
+                "next_page": {
                   "x-go-type": "Parent",
                   "type": "object",
                   "required": [
@@ -12271,7 +12273,7 @@ const AcademySchema: Record<string, unknown> = {
                 }
               }
             },
-            "attemptedAt": {
+            "attempted_at": {
               "type": "string",
               "format": "date-time"
             },
@@ -12659,13 +12661,13 @@ const AcademySchema: Record<string, unknown> = {
               "required": [
                 "score",
                 "passed",
-                "totalMarks",
-                "passPercentage",
+                "total_marks",
+                "pass_percentage",
                 "quiz",
-                "attemptedAt",
+                "attempted_at",
                 "attempts",
-                "percentageScored",
-                "correctSubmissions"
+                "percentage_scored",
+                "correct_submissions"
               ],
               "properties": {
                 "score": {
@@ -12674,18 +12676,18 @@ const AcademySchema: Record<string, unknown> = {
                 "passed": {
                   "type": "boolean"
                 },
-                "percentageScored": {
+                "percentage_scored": {
                   "type": "number",
                   "format": "float"
                 },
-                "totalMarks": {
+                "total_marks": {
                   "type": "integer"
                 },
-                "passPercentage": {
+                "pass_percentage": {
                   "type": "number",
                   "format": "float"
                 },
-                "correctSubmissions": {
+                "correct_submissions": {
                   "type": "object",
                   "additionalProperties": {
                     "type": "boolean"
@@ -12710,17 +12712,17 @@ const AcademySchema: Record<string, unknown> = {
                     "final",
                     "lastmod",
                     "draft",
-                    "filePath",
-                    "passPercentage",
-                    "timeLimit",
-                    "maxAttempts",
+                    "file_path",
+                    "pass_percentage",
+                    "time_limit",
+                    "max_attempts",
                     "questions",
-                    "totalQuestions",
-                    "totalQuestionsInBank",
-                    "totalQuestionSets",
-                    "totalMarks",
+                    "total_questions",
+                    "total_questions_in_bank",
+                    "total_question_sets",
+                    "total_marks",
                     "prerequisites",
-                    "nextPage"
+                    "next_page"
                   ],
                   "properties": {
                     "id": {
@@ -12779,18 +12781,18 @@ const AcademySchema: Record<string, unknown> = {
                     "draft": {
                       "type": "boolean"
                     },
-                    "filePath": {
+                    "file_path": {
                       "type": "string"
                     },
-                    "passPercentage": {
+                    "pass_percentage": {
                       "type": "number",
                       "format": "float"
                     },
-                    "timeLimit": {
+                    "time_limit": {
                       "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                       "type": "string"
                     },
-                    "maxAttempts": {
+                    "max_attempts": {
                       "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                       "type": "integer"
                     },
@@ -12865,16 +12867,16 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "totalQuestions": {
+                    "total_questions": {
                       "type": "integer"
                     },
-                    "totalQuestionsInBank": {
+                    "total_questions_in_bank": {
                       "type": "integer"
                     },
-                    "totalQuestionSets": {
+                    "total_question_sets": {
                       "type": "integer"
                     },
-                    "totalMarks": {
+                    "total_marks": {
                       "type": "integer"
                     },
                     "prerequisites": {
@@ -12928,7 +12930,7 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "nextPage": {
+                    "next_page": {
                       "x-go-type": "Parent",
                       "type": "object",
                       "required": [
@@ -12954,7 +12956,7 @@ const AcademySchema: Record<string, unknown> = {
                     }
                   }
                 },
-                "attemptedAt": {
+                "attempted_at": {
                   "type": "string",
                   "format": "date-time"
                 },
@@ -13130,17 +13132,17 @@ const AcademySchema: Record<string, unknown> = {
           "final",
           "lastmod",
           "draft",
-          "filePath",
-          "passPercentage",
-          "timeLimit",
-          "maxAttempts",
+          "file_path",
+          "pass_percentage",
+          "time_limit",
+          "max_attempts",
           "questions",
-          "totalQuestions",
-          "totalQuestionsInBank",
-          "totalQuestionSets",
-          "totalMarks",
+          "total_questions",
+          "total_questions_in_bank",
+          "total_question_sets",
+          "total_marks",
           "prerequisites",
-          "nextPage"
+          "next_page"
         ],
         "properties": {
           "id": {
@@ -13199,18 +13201,18 @@ const AcademySchema: Record<string, unknown> = {
           "draft": {
             "type": "boolean"
           },
-          "filePath": {
+          "file_path": {
             "type": "string"
           },
-          "passPercentage": {
+          "pass_percentage": {
             "type": "number",
             "format": "float"
           },
-          "timeLimit": {
+          "time_limit": {
             "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
             "type": "string"
           },
-          "maxAttempts": {
+          "max_attempts": {
             "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
             "type": "integer"
           },
@@ -13285,16 +13287,16 @@ const AcademySchema: Record<string, unknown> = {
               }
             }
           },
-          "totalQuestions": {
+          "total_questions": {
             "type": "integer"
           },
-          "totalQuestionsInBank": {
+          "total_questions_in_bank": {
             "type": "integer"
           },
-          "totalQuestionSets": {
+          "total_question_sets": {
             "type": "integer"
           },
-          "totalMarks": {
+          "total_marks": {
             "type": "integer"
           },
           "prerequisites": {
@@ -13348,7 +13350,7 @@ const AcademySchema: Record<string, unknown> = {
               }
             }
           },
-          "nextPage": {
+          "next_page": {
             "x-go-type": "Parent",
             "type": "object",
             "required": [
@@ -13783,13 +13785,13 @@ const AcademySchema: Record<string, unknown> = {
             "required": [
               "score",
               "passed",
-              "totalMarks",
-              "passPercentage",
+              "total_marks",
+              "pass_percentage",
               "quiz",
-              "attemptedAt",
+              "attempted_at",
               "attempts",
-              "percentageScored",
-              "correctSubmissions"
+              "percentage_scored",
+              "correct_submissions"
             ],
             "properties": {
               "score": {
@@ -13798,18 +13800,18 @@ const AcademySchema: Record<string, unknown> = {
               "passed": {
                 "type": "boolean"
               },
-              "percentageScored": {
+              "percentage_scored": {
                 "type": "number",
                 "format": "float"
               },
-              "totalMarks": {
+              "total_marks": {
                 "type": "integer"
               },
-              "passPercentage": {
+              "pass_percentage": {
                 "type": "number",
                 "format": "float"
               },
-              "correctSubmissions": {
+              "correct_submissions": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "boolean"
@@ -13834,17 +13836,17 @@ const AcademySchema: Record<string, unknown> = {
                   "final",
                   "lastmod",
                   "draft",
-                  "filePath",
-                  "passPercentage",
-                  "timeLimit",
-                  "maxAttempts",
+                  "file_path",
+                  "pass_percentage",
+                  "time_limit",
+                  "max_attempts",
                   "questions",
-                  "totalQuestions",
-                  "totalQuestionsInBank",
-                  "totalQuestionSets",
-                  "totalMarks",
+                  "total_questions",
+                  "total_questions_in_bank",
+                  "total_question_sets",
+                  "total_marks",
                   "prerequisites",
-                  "nextPage"
+                  "next_page"
                 ],
                 "properties": {
                   "id": {
@@ -13903,18 +13905,18 @@ const AcademySchema: Record<string, unknown> = {
                   "draft": {
                     "type": "boolean"
                   },
-                  "filePath": {
+                  "file_path": {
                     "type": "string"
                   },
-                  "passPercentage": {
+                  "pass_percentage": {
                     "type": "number",
                     "format": "float"
                   },
-                  "timeLimit": {
+                  "time_limit": {
                     "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                     "type": "string"
                   },
-                  "maxAttempts": {
+                  "max_attempts": {
                     "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                     "type": "integer"
                   },
@@ -13989,16 +13991,16 @@ const AcademySchema: Record<string, unknown> = {
                       }
                     }
                   },
-                  "totalQuestions": {
+                  "total_questions": {
                     "type": "integer"
                   },
-                  "totalQuestionsInBank": {
+                  "total_questions_in_bank": {
                     "type": "integer"
                   },
-                  "totalQuestionSets": {
+                  "total_question_sets": {
                     "type": "integer"
                   },
-                  "totalMarks": {
+                  "total_marks": {
                     "type": "integer"
                   },
                   "prerequisites": {
@@ -14052,7 +14054,7 @@ const AcademySchema: Record<string, unknown> = {
                       }
                     }
                   },
-                  "nextPage": {
+                  "next_page": {
                     "x-go-type": "Parent",
                     "type": "object",
                     "required": [
@@ -14078,7 +14080,7 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "attemptedAt": {
+              "attempted_at": {
                 "type": "string",
                 "format": "date-time"
               },
@@ -14109,17 +14111,17 @@ const AcademySchema: Record<string, unknown> = {
               "final",
               "lastmod",
               "draft",
-              "filePath",
-              "passPercentage",
-              "timeLimit",
-              "maxAttempts",
+              "file_path",
+              "pass_percentage",
+              "time_limit",
+              "max_attempts",
               "questions",
-              "totalQuestions",
-              "totalQuestionsInBank",
-              "totalQuestionSets",
-              "totalMarks",
+              "total_questions",
+              "total_questions_in_bank",
+              "total_question_sets",
+              "total_marks",
               "prerequisites",
-              "nextPage"
+              "next_page"
             ],
             "properties": {
               "id": {
@@ -14178,18 +14180,18 @@ const AcademySchema: Record<string, unknown> = {
               "draft": {
                 "type": "boolean"
               },
-              "filePath": {
+              "file_path": {
                 "type": "string"
               },
-              "passPercentage": {
+              "pass_percentage": {
                 "type": "number",
                 "format": "float"
               },
-              "timeLimit": {
+              "time_limit": {
                 "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                 "type": "string"
               },
-              "maxAttempts": {
+              "max_attempts": {
                 "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                 "type": "integer"
               },
@@ -14264,16 +14266,16 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "totalQuestions": {
+              "total_questions": {
                 "type": "integer"
               },
-              "totalQuestionsInBank": {
+              "total_questions_in_bank": {
                 "type": "integer"
               },
-              "totalQuestionSets": {
+              "total_question_sets": {
                 "type": "integer"
               },
-              "totalMarks": {
+              "total_marks": {
                 "type": "integer"
               },
               "prerequisites": {
@@ -14327,7 +14329,7 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "nextPage": {
+              "next_page": {
                 "x-go-type": "Parent",
                 "type": "object",
                 "required": [
@@ -14361,13 +14363,13 @@ const AcademySchema: Record<string, unknown> = {
         "required": [
           "score",
           "passed",
-          "totalMarks",
-          "passPercentage",
+          "total_marks",
+          "pass_percentage",
           "quiz",
-          "attemptedAt",
+          "attempted_at",
           "attempts",
-          "percentageScored",
-          "correctSubmissions"
+          "percentage_scored",
+          "correct_submissions"
         ],
         "properties": {
           "score": {
@@ -14376,18 +14378,18 @@ const AcademySchema: Record<string, unknown> = {
           "passed": {
             "type": "boolean"
           },
-          "percentageScored": {
+          "percentage_scored": {
             "type": "number",
             "format": "float"
           },
-          "totalMarks": {
+          "total_marks": {
             "type": "integer"
           },
-          "passPercentage": {
+          "pass_percentage": {
             "type": "number",
             "format": "float"
           },
-          "correctSubmissions": {
+          "correct_submissions": {
             "type": "object",
             "additionalProperties": {
               "type": "boolean"
@@ -14412,17 +14414,17 @@ const AcademySchema: Record<string, unknown> = {
               "final",
               "lastmod",
               "draft",
-              "filePath",
-              "passPercentage",
-              "timeLimit",
-              "maxAttempts",
+              "file_path",
+              "pass_percentage",
+              "time_limit",
+              "max_attempts",
               "questions",
-              "totalQuestions",
-              "totalQuestionsInBank",
-              "totalQuestionSets",
-              "totalMarks",
+              "total_questions",
+              "total_questions_in_bank",
+              "total_question_sets",
+              "total_marks",
               "prerequisites",
-              "nextPage"
+              "next_page"
             ],
             "properties": {
               "id": {
@@ -14481,18 +14483,18 @@ const AcademySchema: Record<string, unknown> = {
               "draft": {
                 "type": "boolean"
               },
-              "filePath": {
+              "file_path": {
                 "type": "string"
               },
-              "passPercentage": {
+              "pass_percentage": {
                 "type": "number",
                 "format": "float"
               },
-              "timeLimit": {
+              "time_limit": {
                 "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                 "type": "string"
               },
-              "maxAttempts": {
+              "max_attempts": {
                 "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                 "type": "integer"
               },
@@ -14567,16 +14569,16 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "totalQuestions": {
+              "total_questions": {
                 "type": "integer"
               },
-              "totalQuestionsInBank": {
+              "total_questions_in_bank": {
                 "type": "integer"
               },
-              "totalQuestionSets": {
+              "total_question_sets": {
                 "type": "integer"
               },
-              "totalMarks": {
+              "total_marks": {
                 "type": "integer"
               },
               "prerequisites": {
@@ -14630,7 +14632,7 @@ const AcademySchema: Record<string, unknown> = {
                   }
                 }
               },
-              "nextPage": {
+              "next_page": {
                 "x-go-type": "Parent",
                 "type": "object",
                 "required": [
@@ -14656,7 +14658,7 @@ const AcademySchema: Record<string, unknown> = {
               }
             }
           },
-          "attemptedAt": {
+          "attempted_at": {
             "type": "string",
             "format": "date-time"
           },
@@ -15015,13 +15017,13 @@ const AcademySchema: Record<string, unknown> = {
                   "required": [
                     "score",
                     "passed",
-                    "totalMarks",
-                    "passPercentage",
+                    "total_marks",
+                    "pass_percentage",
                     "quiz",
-                    "attemptedAt",
+                    "attempted_at",
                     "attempts",
-                    "percentageScored",
-                    "correctSubmissions"
+                    "percentage_scored",
+                    "correct_submissions"
                   ],
                   "properties": {
                     "score": {
@@ -15030,18 +15032,18 @@ const AcademySchema: Record<string, unknown> = {
                     "passed": {
                       "type": "boolean"
                     },
-                    "percentageScored": {
+                    "percentage_scored": {
                       "type": "number",
                       "format": "float"
                     },
-                    "totalMarks": {
+                    "total_marks": {
                       "type": "integer"
                     },
-                    "passPercentage": {
+                    "pass_percentage": {
                       "type": "number",
                       "format": "float"
                     },
-                    "correctSubmissions": {
+                    "correct_submissions": {
                       "type": "object",
                       "additionalProperties": {
                         "type": "boolean"
@@ -15066,17 +15068,17 @@ const AcademySchema: Record<string, unknown> = {
                         "final",
                         "lastmod",
                         "draft",
-                        "filePath",
-                        "passPercentage",
-                        "timeLimit",
-                        "maxAttempts",
+                        "file_path",
+                        "pass_percentage",
+                        "time_limit",
+                        "max_attempts",
                         "questions",
-                        "totalQuestions",
-                        "totalQuestionsInBank",
-                        "totalQuestionSets",
-                        "totalMarks",
+                        "total_questions",
+                        "total_questions_in_bank",
+                        "total_question_sets",
+                        "total_marks",
                         "prerequisites",
-                        "nextPage"
+                        "next_page"
                       ],
                       "properties": {
                         "id": {
@@ -15135,18 +15137,18 @@ const AcademySchema: Record<string, unknown> = {
                         "draft": {
                           "type": "boolean"
                         },
-                        "filePath": {
+                        "file_path": {
                           "type": "string"
                         },
-                        "passPercentage": {
+                        "pass_percentage": {
                           "type": "number",
                           "format": "float"
                         },
-                        "timeLimit": {
+                        "time_limit": {
                           "description": "Time limit for the quiz in minutes. A value of 0 indicates no time limit.",
                           "type": "string"
                         },
-                        "maxAttempts": {
+                        "max_attempts": {
                           "description": "Maximum number of attempts allowed for the quiz. A value of 0 indicates unlimited attempts.",
                           "type": "integer"
                         },
@@ -15221,16 +15223,16 @@ const AcademySchema: Record<string, unknown> = {
                             }
                           }
                         },
-                        "totalQuestions": {
+                        "total_questions": {
                           "type": "integer"
                         },
-                        "totalQuestionsInBank": {
+                        "total_questions_in_bank": {
                           "type": "integer"
                         },
-                        "totalQuestionSets": {
+                        "total_question_sets": {
                           "type": "integer"
                         },
-                        "totalMarks": {
+                        "total_marks": {
                           "type": "integer"
                         },
                         "prerequisites": {
@@ -15284,7 +15286,7 @@ const AcademySchema: Record<string, unknown> = {
                             }
                           }
                         },
-                        "nextPage": {
+                        "next_page": {
                           "x-go-type": "Parent",
                           "type": "object",
                           "required": [
@@ -15310,7 +15312,7 @@ const AcademySchema: Record<string, unknown> = {
                         }
                       }
                     },
-                    "attemptedAt": {
+                    "attempted_at": {
                       "type": "string",
                       "format": "date-time"
                     },

@@ -50,10 +50,10 @@ export interface paths {
                    * @enum {string}
                    */
                   name:
-                    | "free"
-                    | "team designer"
-                    | "team operator"
-                    | "enterprise";
+                    | "Free"
+                    | "Team Designer"
+                    | "Team Operator"
+                    | "Enterprise";
                   /** @enum {string} */
                   cadence: "monthly" | "yearly";
                   /** @enum {string} */
@@ -217,7 +217,7 @@ export interface paths {
                  * @description Name of the plan
                  * @enum {string}
                  */
-                name: "free" | "team designer" | "team operator" | "enterprise";
+                name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
                 /** @enum {string} */
                 cadence: "monthly" | "yearly";
                 /** @enum {string} */
@@ -302,7 +302,7 @@ export interface paths {
       };
     };
   };
-  "/api/entitlement/subscriptions/{subscriptionId}/upgrade-preview": {
+  "/api/entitlement/subscriptions/{subscriptionId}/upgradePreview": {
     post: {
       parameters: {
         path: {
@@ -484,7 +484,7 @@ export interface components {
            * @description Name of the plan
            * @enum {string}
            */
-          name: "free" | "team designer" | "team operator" | "enterprise";
+          name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
           /** @enum {string} */
           cadence: "monthly" | "yearly";
           /** @enum {string} */
@@ -551,7 +551,7 @@ export interface components {
          * @description Name of the plan
          * @enum {string}
          */
-        name: "free" | "team designer" | "team operator" | "enterprise";
+        name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
         /** @enum {string} */
         cadence: "monthly" | "yearly";
         /** @enum {string} */
@@ -693,7 +693,7 @@ export interface operations {
                  * @description Name of the plan
                  * @enum {string}
                  */
-                name: "free" | "team designer" | "team operator" | "enterprise";
+                name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
                 /** @enum {string} */
                 cadence: "monthly" | "yearly";
                 /** @enum {string} */

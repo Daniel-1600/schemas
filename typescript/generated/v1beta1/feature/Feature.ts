@@ -35,7 +35,7 @@ export interface components {
          * @description Name of the plan
          * @enum {string}
          */
-        name: "free" | "team designer" | "team operator" | "enterprise";
+        name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
         /** @enum {string} */
         cadence: "monthly" | "yearly";
         /** @enum {string} */
@@ -54,12 +54,12 @@ export interface components {
        * @enum {string}
        */
       name?:
-        | "componentsindesign"
-        | "relationshipsindesign"
-        | "designsinworkspace"
-        | "workspacesinorganization"
-        | "imagesizeindesign"
-        | "sizeperdesign";
+        | "ComponentsInDesign"
+        | "RelationshipsInDesign"
+        | "DesignsInWorkspace"
+        | "WorkspacesInOrganization"
+        | "ImageSizeInDesign"
+        | "SizePerDesign";
       /** @description Quantity of the feature allowed, use 9999999999 for unlimited */
       quantity: number;
       /** Format: date-time */
@@ -74,12 +74,12 @@ export interface components {
      * @enum {string}
      */
     FeatureName:
-      | "componentsindesign"
-      | "relationshipsindesign"
-      | "designsinworkspace"
-      | "workspacesinorganization"
-      | "imagesizeindesign"
-      | "sizeperdesign";
+      | "ComponentsInDesign"
+      | "RelationshipsInDesign"
+      | "DesignsInWorkspace"
+      | "WorkspacesInOrganization"
+      | "ImageSizeInDesign"
+      | "SizePerDesign";
     Feature: {
       /**
        * Format: uuid
@@ -101,7 +101,7 @@ export interface components {
          * @description Name of the plan
          * @enum {string}
          */
-        name: "free" | "team designer" | "team operator" | "enterprise";
+        name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
         /** @enum {string} */
         cadence: "monthly" | "yearly";
         /** @enum {string} */
@@ -120,12 +120,12 @@ export interface components {
        * @enum {string}
        */
       name?:
-        | "componentsindesign"
-        | "relationshipsindesign"
-        | "designsinworkspace"
-        | "workspacesinorganization"
-        | "imagesizeindesign"
-        | "sizeperdesign";
+        | "ComponentsInDesign"
+        | "RelationshipsInDesign"
+        | "DesignsInWorkspace"
+        | "WorkspacesInOrganization"
+        | "ImageSizeInDesign"
+        | "SizePerDesign";
       /** @description Quantity of the feature allowed, use 9999999999 for unlimited */
       quantity: number;
       /** Format: date-time */
@@ -169,7 +169,7 @@ export interface operations {
                * @description Name of the plan
                * @enum {string}
                */
-              name: "free" | "team designer" | "team operator" | "enterprise";
+              name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
               /** @enum {string} */
               cadence: "monthly" | "yearly";
               /** @enum {string} */
@@ -188,12 +188,12 @@ export interface operations {
              * @enum {string}
              */
             name?:
-              | "componentsindesign"
-              | "relationshipsindesign"
-              | "designsinworkspace"
-              | "workspacesinorganization"
-              | "imagesizeindesign"
-              | "sizeperdesign";
+              | "ComponentsInDesign"
+              | "RelationshipsInDesign"
+              | "DesignsInWorkspace"
+              | "WorkspacesInOrganization"
+              | "ImageSizeInDesign"
+              | "SizePerDesign";
             /** @description Quantity of the feature allowed, use 9999999999 for unlimited */
             quantity: number;
             /** Format: date-time */
@@ -257,7 +257,7 @@ export interface operations {
                * @description Name of the plan
                * @enum {string}
                */
-              name: "free" | "team designer" | "team operator" | "enterprise";
+              name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
               /** @enum {string} */
               cadence: "monthly" | "yearly";
               /** @enum {string} */
@@ -276,12 +276,12 @@ export interface operations {
              * @enum {string}
              */
             name?:
-              | "componentsindesign"
-              | "relationshipsindesign"
-              | "designsinworkspace"
-              | "workspacesinorganization"
-              | "imagesizeindesign"
-              | "sizeperdesign";
+              | "ComponentsInDesign"
+              | "RelationshipsInDesign"
+              | "DesignsInWorkspace"
+              | "WorkspacesInOrganization"
+              | "ImageSizeInDesign"
+              | "SizePerDesign";
             /** @description Quantity of the feature allowed, use 9999999999 for unlimited */
             quantity: number;
             /** Format: date-time */
