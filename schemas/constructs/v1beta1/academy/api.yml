@@ -813,7 +813,7 @@ components:
       description: Expiry time for curricula access
       x-go-type: "*time.Time"
       x-oapi-codegen-extra-tags:
-        json: "accessExpiresAt"
+        json: "access_expires_at"
         db: "access_expires_at"
 
     RegisterToAcademyContentRequest:

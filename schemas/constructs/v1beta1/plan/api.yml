@@ -24,9 +24,6 @@ paths:
       tags:
         - Plans
       summary: Get all plans supported by the system
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/pagesize"
       responses:
         "200":
           description: Plans response
