@@ -251,13 +251,13 @@ components:
 
   responses:
     400:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+      $ref: "../core/api.yml#/components/responses/400"
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
     404:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+      $ref: "../core/api.yml#/components/responses/404"
     500:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+      $ref: "../core/api.yml#/components/responses/500"
 
   parameters:
     id:
@@ -266,38 +266,38 @@ components:
       description: Role ID
       required: true
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
     orgId:
       name: orgId
       in: path
       description: Organization ID
       required: true
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
     roleId:
       name: roleId
       in: path
       description: Role ID
       required: true
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
     keychainId:
       name: keychainId
       in: path
       description: Keychain ID
       required: true
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
     page:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/page"
+      $ref: "../core/api.yml#/components/parameters/page"
     pagesize:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/pagesize"
+      $ref: "../core/api.yml#/components/parameters/pagesize"
     search:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/search"
+      $ref: "../core/api.yml#/components/parameters/search"
     order:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/order"
+      $ref: "../core/api.yml#/components/parameters/order"
     all:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/all"
+      $ref: "../core/api.yml#/components/parameters/all"
     selector:
       name: selector
       in: query
@@ -309,7 +309,7 @@ components:
       in: query
       description: Team ID used when selector is team.
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
 
   schemas:
     Role:
@@ -320,7 +320,7 @@ components:
         - description
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: Unique identifier for the role.
           x-order: 1
           x-oapi-codegen-extra-tags:
@@ -338,13 +338,13 @@ components:
           x-oapi-codegen-extra-tags:
             db: "description"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
+          $ref: "../core/api.yml#/components/schemas/created_at"
           x-order: 4
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
+          $ref: "../core/api.yml#/components/schemas/updated_at"
           x-order: 5
         deleted_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/nullTime"
+          $ref: "../core/api.yml#/components/schemas/nullTime"
           description: Timestamp when the role was soft-deleted.
           x-order: 6
           x-oapi-codegen-extra-tags:
@@ -389,30 +389,30 @@ components:
         - updated_at
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-order: 1
           x-oapi-codegen-extra-tags:
             db: "id"
         keychain_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: UUID of the associated keychain.
           x-order: 2
           x-oapi-codegen-extra-tags:
             db: "keychain_id"
         role_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: UUID of the associated role.
           x-order: 3
           x-oapi-codegen-extra-tags:
             db: "role_id"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
+          $ref: "../core/api.yml#/components/schemas/created_at"
           x-order: 4
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
+          $ref: "../core/api.yml#/components/schemas/updated_at"
           x-order: 5
         deleted_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/nullTime"
+          $ref: "../core/api.yml#/components/schemas/nullTime"
           x-order: 6
           x-oapi-codegen-extra-tags:
             db: "deleted_at"
@@ -441,10 +441,10 @@ components:
       description: Request to update role assignments for a user.
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-order: 1
         user_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-order: 2
         username:
           type: string
@@ -468,13 +468,13 @@ components:
             type: string
           x-order: 8
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-order: 9
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-order: 10
         deleted_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/nullTime"
+          $ref: "../core/api.yml#/components/schemas/nullTime"
           x-order: 11
 
     Preference:

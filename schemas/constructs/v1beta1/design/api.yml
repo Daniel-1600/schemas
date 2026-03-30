@@ -832,13 +832,13 @@ components:
 
   responses:
     400:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+      $ref: "../core/api.yml#/components/responses/400"
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
     404:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+      $ref: "../core/api.yml#/components/responses/404"
     500:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+      $ref: "../core/api.yml#/components/responses/500"
 
   parameters:
     id:
@@ -847,24 +847,24 @@ components:
       description: Design (Pattern) ID
       required: true
       schema:
-        $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+        $ref: "../core/api.yml#/components/schemas/uuid"
     page:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/page"
+      $ref: "../core/api.yml#/components/parameters/page"
     pagesize:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/pagesize"
+      $ref: "../core/api.yml#/components/parameters/pagesize"
     search:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/search"
+      $ref: "../core/api.yml#/components/parameters/search"
     order:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/order"
+      $ref: "../core/api.yml#/components/parameters/order"
 
   schemas:
     DeletePatternModel:
       type: object
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Id"
+          $ref: "../core/api.yml#/components/schemas/Id"
         name:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Text"
+          $ref: "../core/api.yml#/components/schemas/Text"
 
     PatternFile:
       $ref: "./design.yaml"
@@ -873,30 +873,30 @@ components:
       type: object
       properties:
         catalogData:
-          $ref: "../../v1alpha2/catalog/api.yml#/components/schemas/CatalogData"
-          x-go-type: catalogv1alpha2.CatalogData
+          $ref: "../catalog/api.yml#/components/schemas/CatalogData"
+          x-go-type: catalogv1beta1.CatalogData
           x-go-type-import:
-            path: github.com/meshery/schemas/models/v1alpha2/catalog
-            name: catalogv1alpha2
+            path: github.com/meshery/schemas/models/v1beta1/catalog
+            name: catalogv1beta1
 
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
         user_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Id"
+          $ref: "../core/api.yml#/components/schemas/Id"
         location:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/MapObject"
+          $ref: "../core/api.yml#/components/schemas/MapObject"
         name:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Text"
+          $ref: "../core/api.yml#/components/schemas/Text"
         patternFile:
           $ref: "#/components/schemas/PatternFile"
           x-go-type: PatternFile
 
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Id"
+          $ref: "../core/api.yml#/components/schemas/Id"
         visibility:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Text"
+          $ref: "../core/api.yml#/components/schemas/Text"
 
     MesheryPatternPage:
       type: object
@@ -929,14 +929,14 @@ components:
       type: object
       properties:
         path:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Text"
+          $ref: "../core/api.yml#/components/schemas/Text"
         patternData:
           $ref: "#/components/schemas/MesheryPattern"
           x-go-type: MesheryPattern
         save:
           type: boolean
         url:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Endpoint"
+          $ref: "../core/api.yml#/components/schemas/Endpoint"
         name:
           type: string
 

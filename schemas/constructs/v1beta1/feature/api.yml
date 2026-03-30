@@ -34,11 +34,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FeaturesPage"
         "400":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+          $ref: "../core/api.yml#/components/responses/400"
         "401":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+          $ref: "../core/api.yml#/components/responses/401"
         "500":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+          $ref: "../core/api.yml#/components/responses/500"
 
   /api/entitlement/subscriptions/organizations/{organizationId}/features:
     get:
@@ -59,13 +59,13 @@ paths:
                 $ref: "#/components/schemas/FeaturesPage"
 
         "400":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+          $ref: "../core/api.yml#/components/responses/400"
         "404":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+          $ref: "../core/api.yml#/components/responses/404"
         "401":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+          $ref: "../core/api.yml#/components/responses/401"
         "500":
-          $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+          $ref: "../core/api.yml#/components/responses/500"
 
 components:
   securitySchemes:
@@ -115,11 +115,11 @@ components:
         - feature
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-oapi-codegen-extra-tags:
             db: "id"
         plan_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-oapi-codegen-extra-tags:
             db: "plan_id"
         plan:
@@ -143,11 +143,11 @@ components:
           x-oapi-codegen-extra-tags:
             db: "quantity"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "created_at"
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "updated_at"
       additionalProperties: false

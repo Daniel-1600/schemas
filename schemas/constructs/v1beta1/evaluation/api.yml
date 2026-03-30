@@ -43,7 +43,7 @@ paths:
 components:
   responses:
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
 
   securitySchemes:
     jwt:

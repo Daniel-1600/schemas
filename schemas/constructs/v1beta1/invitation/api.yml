@@ -234,11 +234,11 @@ paths:
         - Invitation
       summary: Get signup requests
       parameters:
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/page"
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/pagesize"
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/search"
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/order"
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/filter"
+        - $ref: "../core/api.yml#/components/parameters/page"
+        - $ref: "../core/api.yml#/components/parameters/pagesize"
+        - $ref: "../core/api.yml#/components/parameters/search"
+        - $ref: "../core/api.yml#/components/parameters/order"
+        - $ref: "../core/api.yml#/components/parameters/filter"
       responses:
         "200":
           description: Signup requests page
@@ -336,13 +336,13 @@ components:
 
   responses:
     400:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+      $ref: "../core/api.yml#/components/responses/400"
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
     404:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+      $ref: "../core/api.yml#/components/responses/404"
     500:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+      $ref: "../core/api.yml#/components/responses/500"
 
   securitySchemes:
     jwt:
@@ -352,7 +352,7 @@ components:
 
   schemas:
     Uuid:
-      $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+      $ref: "../core/api.yml#/components/schemas/uuid"
 
     InvitationsPage:
       type: object
@@ -407,14 +407,14 @@ components:
         - status
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-go-name: ID
           description: Existing invitation ID for updates; omit on create.
           x-oapi-codegen-extra-tags:
             json: "id,omitempty"
 
         owner_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: ID of the user who created the invitation.
           x-oapi-codegen-extra-tags:
             db: "owner_id"
@@ -512,12 +512,12 @@ components:
         - deleted_at
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-go-name: ID
           description: Unique identifier for the invitation , is also used as the invitation code
 
         owner_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: "ID of the user who created the invitation,
             this is used to track who created the invitation and can be used for auditing purposes"
 

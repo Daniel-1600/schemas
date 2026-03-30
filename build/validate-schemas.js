@@ -79,8 +79,8 @@ const ADVISORY_BASELINE_FILE = path.join(ROOT, "build", "validate-schemas.adviso
 // Fields that are always server-generated and should never be required in write payloads.
 const SERVER_GENERATED_FIELDS = new Set(["id", "created_at", "updated_at", "deleted_at"]);
 
-// Only validate these versions (alpha schemas predate the pattern).
-const VALIDATED_VERSIONS = ["v1beta1", "v1beta2-draft"];
+// Validated API versions. Alpha schemas are legacy (kept for backward compat).
+const VALIDATED_VERSIONS = ["v1beta1", "v1beta2", "v1beta2-draft"];
 
 // Known contract-stable snake_case fields that may not carry explicit db tags.
 const DB_MIRRORED_FIELDS = new Set([
@@ -985,17 +985,28 @@ function validateXInternal(filePath, doc) {
 // ─── Rules 15-16: cross-construct $ref must have x-go-type + matching alias ──
 
 /**
+ * Shared base schemas that are bundled into each construct's OpenAPI spec
+ * by the build pipeline. Refs to these are resolved inline by oapi-codegen
+ * and do NOT require x-go-type / x-go-type-import annotations.
+ */
+const BUNDLED_BASE_SCHEMAS = new Set(["core", "capability", "selector"]);
+
+/**
  * Checks whether a $ref points to a different construct (sibling package),
- * as opposed to the same api.yml or to v1alpha1/core.
+ * as opposed to the same api.yml or to a shared base schema.
  */
 function isCrossConstructRef(ref) {
   if (!ref || typeof ref !== "string") return false;
   // Local refs within same file
   if (ref.startsWith("#/")) return false;
-  // Refs to core schemas (v1alpha1/core) are handled by the generator automatically
+  // Legacy refs to v1alpha1/core (backward compat — still present in alpha dirs)
   if (ref.includes("v1alpha1/core/")) return false;
+  // Refs to bundled base schemas (core, capability, selector) are resolved
+  // inline by the generator and don't need Go type annotations.
+  const siblingMatch = ref.match(/\.\.\/([a-z_-]+)\/api\.yml/);
+  if (siblingMatch && BUNDLED_BASE_SCHEMAS.has(siblingMatch[1])) return false;
   // Refs to sibling constructs: "../<construct>/api.yml#/..."
-  if (/\.\.\/[a-z]+\/api\.yml#\/components\/schemas\//.test(ref)) return true;
+  if (/\.\.\/[a-z_-]+\/api\.yml#\/components\/schemas\//.test(ref)) return true;
   return false;
 }
 

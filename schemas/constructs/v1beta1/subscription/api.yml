@@ -194,16 +194,16 @@ paths:
 components:
   responses:
     400:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+      $ref: "../core/api.yml#/components/responses/400"
 
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
 
     404:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+      $ref: "../core/api.yml#/components/responses/404"
 
     500:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+      $ref: "../core/api.yml#/components/responses/500"
 
   securitySchemes:
     jwt:
@@ -221,14 +221,14 @@ components:
         type: string
 
     page:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/page"
+      $ref: "../core/api.yml#/components/parameters/page"
     pagesize:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/pagesize"
+      $ref: "../core/api.yml#/components/parameters/pagesize"
 
     pagesizeWithAll:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/pagesizeWithAll"
+      $ref: "../core/api.yml#/components/parameters/pagesizeWithAll"
     order:
-      $ref: "../../v1alpha1/core/api.yml#/components/parameters/order"
+      $ref: "../core/api.yml#/components/parameters/order"
 
   schemas:
     PaymentProcessor:
@@ -265,10 +265,10 @@ components:
       type: object
       properties:
         oldPlanId:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: Old Plan id that is being changed
         newPlanId:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: New Plan id that is being changed to
 
     CreateSubscriptionResponse:
@@ -321,15 +321,15 @@ components:
       type: object
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-oapi-codegen-extra-tags:
             db: "id"
         org_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-oapi-codegen-extra-tags:
             db: "org_id"
         plan_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-oapi-codegen-extra-tags:
             db: "plan_id"
         plan:
@@ -349,11 +349,11 @@ components:
           x-oapi-codegen-extra-tags:
             db: "quantity"
         start_date:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "start_date"
         end_date:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "end_date"
         status:
@@ -362,15 +362,15 @@ components:
           x-oapi-codegen-extra-tags:
             db: "status"
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "created_at"
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/Time"
+          $ref: "../core/api.yml#/components/schemas/Time"
           x-oapi-codegen-extra-tags:
             db: "updated_at"
         deleted_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/SqlNullTime"
+          $ref: "../core/api.yml#/components/schemas/SqlNullTime"
           x-oapi-codegen-extra-tags:
             db: "deleted_at"
         billing_id:

@@ -26,7 +26,7 @@ paths:
         - Badge
       summary: Delete a badge by its ID
       parameters:
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/id"
+        - $ref: "../core/api.yml#/components/parameters/id"
 
       responses:
         "204":
@@ -45,7 +45,7 @@ paths:
         - Badge
       summary: Get a badge by its ID
       parameters:
-        - $ref: "../../v1alpha1/core/api.yml#/components/parameters/id"
+        - $ref: "../core/api.yml#/components/parameters/id"
 
       responses:
         "200":
@@ -138,13 +138,13 @@ paths:
 components:
   responses:
     400:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
+      $ref: "../core/api.yml#/components/responses/400"
     401:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
+      $ref: "../core/api.yml#/components/responses/401"
     404:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
+      $ref: "../core/api.yml#/components/responses/404"
     500:
-      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
+      $ref: "../core/api.yml#/components/responses/500"
 
   securitySchemes:
     jwt:
@@ -164,7 +164,7 @@ components:
         - image_url
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-go-name: ID
           description: Existing badge ID for updates; omit on create.
           x-oapi-codegen-extra-tags:
@@ -172,7 +172,7 @@ components:
             json: "id,omitempty"
 
         org_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: The ID of the organization in which this badge is available.
           x-oapi-codegen-extra-tags:
             db: "org_id"
@@ -225,14 +225,14 @@ components:
         - deleted_at
       properties:
         id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           x-go-name: ID
           x-oapi-codegen-extra-tags:
             db: "id"
             json: "id"
 
         org_id:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/uuid"
+          $ref: "../core/api.yml#/components/schemas/uuid"
           description: The ID of the organization in which this badge is available .
           x-oapi-codegen-extra-tags:
             db: "org_id"
@@ -272,10 +272,10 @@ components:
             json: "image_url"
 
         created_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/created_at"
+          $ref: "../core/api.yml#/components/schemas/created_at"
 
         updated_at:
-          $ref: "../../v1alpha1/core/api.yml#/components/schemas/updated_at"
+          $ref: "../core/api.yml#/components/schemas/updated_at"
 
         deleted_at:
           type: string
