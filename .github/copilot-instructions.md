@@ -24,9 +24,18 @@ Pagination envelope fields use `page_size` and `total_count` (snake_case) as a p
 
 Files with `x-deprecated: true` in their `info` section are intentionally kept for backward compatibility. They contain known style/casing violations that are fixed in the v1beta2 replacement. Do not flag issues in deprecated constructs.
 
-## Casing Rules
+### 6. `deleted_at` in entity `required` lists
 
-See `specs/casing-rules.md` and `AGENTS.md` for the definitive casing reference. Key rules:
+Some entity schemas (e.g., `AcademyCurricula`) list `deleted_at`/`deletedAt` as required. This is intentional — server-generated fields that are always present in API responses belong in `required` per AGENTS.md, even when the value is null for non-deleted resources.
+
+## Schema Validation Rules
+
+This repository enforces 33 schema validation rules via `build/validate-schemas.js`. For full details, see:
+- `AGENTS.md` — casing rules, HTTP design principles, dual-schema pattern
+- `specs/casing-rules.md` — definitive casing reference with ORM implications
+- `build/validate-schemas.js` — rule implementations (header comments document each rule)
+
+Key casing rules:
 - DB-backed fields: exact snake_case matching the database column name
 - Non-DB fields: camelCase
 - Schema component names: PascalCase

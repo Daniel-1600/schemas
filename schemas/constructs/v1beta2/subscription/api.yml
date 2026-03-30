@@ -29,7 +29,7 @@ paths:
     get:
       x-internal: ["cloud"]
       tags:
-        - subscription
+        - Subscriptions
       description: Returns all subscriptions for the organization
       operationId: getSubscriptions
       summary: Read subscriptions
@@ -67,7 +67,7 @@ paths:
   /api/entitlement/subscriptions/{subscriptionId}/cancel:
     post:
       x-internal: ["cloud"]
-      summary: Cancel an existing subscription . The subscription will remain active until the end of the billing period and then it will be canceled.
+      summary: Cancel an existing subscription. The subscription will remain active until the end of the billing period and then it will be canceled.
       security:
         - jwt: []
 

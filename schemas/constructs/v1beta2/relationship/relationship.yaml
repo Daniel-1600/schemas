@@ -37,7 +37,6 @@ components:
         patchStrategy allows you to make specific changes to a resource using a standard JSON Patch format (RFC 6902).
 
         add: Inserts a value into an array or adds a member to an object.
-        replace: Replaces a value.
         merge: Combines the values of the target location with the values from the patch. If the target location doesn't exist, it is created.
         strategic: specific to Kubernetes and understands the structure of Kubernetes objects.
         remove: Removes a value.
@@ -153,7 +152,7 @@ components:
           x-oapi-codegen-extra-tags:
             yaml: "match,omitempty"
             json: "match,omitempty"
-        match_strategy_matrix:
+        matchStrategyMatrix:
           description: Match strategy matrix for the selector
           type: array
           items:
@@ -161,8 +160,8 @@ components:
             items:
               type: string
           x-oapi-codegen-extra-tags:
-            yaml: "match_strategy_matrix"
-            json: "match_strategy_matrix"
+            yaml: "matchStrategyMatrix"
+            json: "matchStrategyMatrix"
         model:
           $ref: "../../v1beta1/model/api.yml#/components/schemas/ModelReference"
           x-go-type: "modelv1beta1.ModelReference"

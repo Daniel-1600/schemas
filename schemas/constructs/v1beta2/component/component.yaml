@@ -31,7 +31,7 @@ properties:
   displayName:
     $ref: ../core/api.yml#/components/schemas/InputString
     x-order: 4
-    description: Name of the component in human-readible format.
+    description: Name of the component in human-readable format.
     x-oapi-codegen-extra-tags:
       yaml: displayName
       json: displayName
@@ -135,7 +135,7 @@ properties:
       - schemaVersion: capability.meshery.io/v1beta1
         version: 0.7.0
         displayName: Labels and Annotations Configuration
-        description: "Configure Labels And Annotations for  the component "
+        description: "Configure Labels And Annotations for the component"
         kind: mutate
         type: configuration
         subType: labels-and-annotations
@@ -249,7 +249,7 @@ properties:
       isNamespaced:
         x-order: 3
         type: boolean
-        description: Identifies whether the component is scoped to namespace or clsuter wide.
+        description: Identifies whether the component is scoped to namespace or cluster wide.
       published:
         x-order: 4
         type: boolean

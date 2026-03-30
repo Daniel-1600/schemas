@@ -36,6 +36,7 @@ properties:
   type:
     type: string
     title: Type
+    x-enum-casing-exempt: true
     enum:
       - Deployment
       - Observability

@@ -130,7 +130,7 @@ components:
     Endpoint:
       $ref: "#/components/schemas/Text"
       description: endpoint
-      format": "uri"
+      format: uri
       pattern: "^https?://"
       x-go-type-skip-optional-pointer: true
 
