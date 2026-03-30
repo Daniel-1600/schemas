@@ -153,10 +153,10 @@ components:
       type: string
       description: "Name of the plan"
       enum:
-        - "Free"
-        - "Team Designer"
-        - "Team Operator"
-        - "Enterprise"
+        - "free"
+        - "team designer"
+        - "team operator"
+        - "enterprise"
 
     PlanCadence:
       type: string
