@@ -2042,7 +2042,7 @@ function validateOperationTags(filePath, doc) {
           filePath,
           `${method.toUpperCase()} ${routePath} — operation is missing \`tags\`. ` +
             `Every operation must have at least one tag for consistent API documentation and client generation. ` +
-            `See CLAUDE.md § "Checklist for Schema Changes".`,
+            `See AGENTS.md § "Checklist for Schema Changes".`,
         );
       }
     }

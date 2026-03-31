@@ -15,6 +15,9 @@ info:
 
 security:
   - jwt: []
+tags:
+  - name: designs
+    description: Operations related to designs and infrastructure patterns
 paths:
   /api/content/patterns:
     get:

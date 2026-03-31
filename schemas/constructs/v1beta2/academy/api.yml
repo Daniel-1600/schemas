@@ -12,6 +12,9 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 security:
 - jwt: []
+tags:
+- name: Academy
+  description: Operations related to Meshery Academy content and curriculum
 paths:
   /api/academy/curricula/registered:
     get:
