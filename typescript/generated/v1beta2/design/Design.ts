@@ -18333,7 +18333,7 @@ export interface operations {
   approveCatalogRequest: {
     responses: {
       /** Request approved */
-      201: {
+      200: {
         content: {
           "application/json": { [key: string]: unknown };
         };
@@ -18368,7 +18368,7 @@ export interface operations {
   denyCatalogRequest: {
     responses: {
       /** Request denied */
-      201: {
+      200: {
         content: {
           "application/json": { [key: string]: unknown };
         };

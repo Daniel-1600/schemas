@@ -648,11 +648,12 @@ const ConnectionSchema: Record<string, unknown> = {
                     },
                     "maxLength": 255
                   },
-                  "subType": {
+                  "sub_type": {
                     "type": "string",
                     "description": "Connection sub-type",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "subType"
+                      "db": "sub_type",
+                      "json": "sub_type"
                     },
                     "maxLength": 255
                   },
@@ -702,7 +703,7 @@ const ConnectionSchema: Record<string, unknown> = {
                   "name",
                   "kind",
                   "type",
-                  "subType",
+                  "sub_type",
                   "status"
                 ]
               }
@@ -1633,11 +1634,12 @@ const ConnectionSchema: Record<string, unknown> = {
                     },
                     "maxLength": 255
                   },
-                  "subType": {
+                  "sub_type": {
                     "type": "string",
                     "description": "Connection sub-type",
                     "x-oapi-codegen-extra-tags": {
-                      "json": "subType"
+                      "db": "sub_type",
+                      "json": "sub_type"
                     },
                     "maxLength": 255
                   },
@@ -1687,7 +1689,7 @@ const ConnectionSchema: Record<string, unknown> = {
                   "name",
                   "kind",
                   "type",
-                  "subType",
+                  "sub_type",
                   "status"
                 ]
               }
@@ -3429,13 +3431,13 @@ const ConnectionSchema: Record<string, unknown> = {
             },
             "maxLength": 255
           },
-          "subType": {
+          "sub_type": {
             "type": "string",
             "description": "Connection sub-type",
             "x-oapi-codegen-extra-tags": {
-              "json": "subType"
-            },
-            "maxLength": 255
+              "db": "sub_type",
+              "json": "sub_type"
+            }
           },
           "credentialSecret": {
             "type": "object",
@@ -3483,7 +3485,7 @@ const ConnectionSchema: Record<string, unknown> = {
           "name",
           "kind",
           "type",
-          "subType",
+          "sub_type",
           "status"
         ]
       },

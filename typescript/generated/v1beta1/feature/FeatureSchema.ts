@@ -55,7 +55,7 @@ const FeatureSchema: Record<string, unknown> = {
                       "id",
                       "plan_id",
                       "quantity",
-                      "feature"
+                      "name"
                     ],
                     "properties": {
                       "id": {
@@ -189,7 +189,6 @@ const FeatureSchema: Record<string, unknown> = {
                           "unit",
                           "price_per_unit",
                           "minimum_units",
-                          "price_id",
                           "currency"
                         ]
                       },
@@ -314,7 +313,7 @@ const FeatureSchema: Record<string, unknown> = {
                       "id",
                       "plan_id",
                       "quantity",
-                      "feature"
+                      "name"
                     ],
                     "properties": {
                       "id": {
@@ -448,7 +447,6 @@ const FeatureSchema: Record<string, unknown> = {
                           "unit",
                           "price_per_unit",
                           "minimum_units",
-                          "price_id",
                           "currency"
                         ]
                       },
@@ -578,7 +576,7 @@ const FeatureSchema: Record<string, unknown> = {
             "id",
             "plan_id",
             "quantity",
-            "feature"
+            "name"
           ],
           "properties": {
             "id": {
@@ -712,7 +710,6 @@ const FeatureSchema: Record<string, unknown> = {
                 "unit",
                 "price_per_unit",
                 "minimum_units",
-                "price_id",
                 "currency"
               ]
             },
@@ -780,7 +777,7 @@ const FeatureSchema: Record<string, unknown> = {
           "id",
           "plan_id",
           "quantity",
-          "feature"
+          "name"
         ],
         "properties": {
           "id": {
@@ -914,7 +911,6 @@ const FeatureSchema: Record<string, unknown> = {
               "unit",
               "price_per_unit",
               "minimum_units",
-              "price_id",
               "currency"
             ]
           },

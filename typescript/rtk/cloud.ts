@@ -7,8 +7,8 @@ export const addTagTypes = [
   "Key_users",
   "Key_Key",
   "Keychain_Keychain",
-  "Model_other",
-  "Organization_other",
+  "Model_Models",
+  "Organization_Organizations",
   "Team_teams",
   "role_roles",
   "schedule_scheduler",
@@ -17,15 +17,13 @@ export const addTagTypes = [
   "Workspace_designs",
   "Workspace_views",
   "Academy_API_Academy",
-  "Academy_API_other",
   "Connection_API_Connections",
   "Design_designs",
-  "Design_other",
   "Events_events",
   "Invitation_Invitation",
   "Plan_Plans",
   "Subscription_Subscriptions",
-  "Subscription_other",
+  "Subscription_Payment Processors",
   "token_tokens",
 ] as const;
 const injectedRtkApi = api
@@ -240,7 +238,7 @@ const injectedRtkApi = api
       }),
       registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
         query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Model_other"],
+        invalidatesTags: ["Model_Models"],
       }),
       getMeshModelModels: build.query<GetMeshModelModelsApiResponse, GetMeshModelModelsApiArg>({
         query: (queryArg) => ({
@@ -252,7 +250,7 @@ const injectedRtkApi = api
             order: queryArg.order,
           },
         }),
-        providesTags: ["Model_other"],
+        providesTags: ["Model_Models"],
       }),
       getOrgs: build.query<GetOrgsApiResponse, GetOrgsApiArg>({
         query: (queryArg) => ({
@@ -265,11 +263,11 @@ const injectedRtkApi = api
             all: queryArg.all,
           },
         }),
-        providesTags: ["Organization_other"],
+        providesTags: ["Organization_Organizations"],
       }),
       createOrg: build.mutation<CreateOrgApiResponse, CreateOrgApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       getOrgByDomain: build.query<GetOrgByDomainApiResponse, GetOrgByDomainApiArg>({
         query: (queryArg) => ({
@@ -278,23 +276,23 @@ const injectedRtkApi = api
             domain: queryArg.domain,
           },
         }),
-        providesTags: ["Organization_other"],
+        providesTags: ["Organization_Organizations"],
       }),
       getOrg: build.query<GetOrgApiResponse, GetOrgApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}` }),
-        providesTags: ["Organization_other"],
+        providesTags: ["Organization_Organizations"],
       }),
       deleteOrg: build.mutation<DeleteOrgApiResponse, DeleteOrgApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}`, method: "DELETE" }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       handleUpdateOrg: build.mutation<HandleUpdateOrgApiResponse, HandleUpdateOrgApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       getOrgPreferences: build.query<GetOrgPreferencesApiResponse, GetOrgPreferencesApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/preferences` }),
-        providesTags: ["Organization_other"],
+        providesTags: ["Organization_Organizations"],
       }),
       addTeamToOrg: build.mutation<AddTeamToOrgApiResponse, AddTeamToOrgApiArg>({
         query: (queryArg) => ({
@@ -302,7 +300,7 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       getTeamById: build.query<GetTeamByIdApiResponse, GetTeamByIdApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}` }),
@@ -328,18 +326,18 @@ const injectedRtkApi = api
           url: `/api/identity/orgs/${queryArg.orgId}/teams/${queryArg.teamId}/remove`,
           method: "POST",
         }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       addUserToOrg: build.mutation<AddUserToOrgApiResponse, AddUserToOrgApiArg>({
         query: (queryArg) => ({ url: `/api/identity/orgs/${queryArg.orgId}/users/${queryArg.userId}`, method: "POST" }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       deleteUserFromOrg: build.mutation<DeleteUserFromOrgApiResponse, DeleteUserFromOrgApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/users/${queryArg.userId}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["Organization_other"],
+        invalidatesTags: ["Organization_Organizations"],
       }),
       addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
         query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
@@ -702,12 +700,9 @@ const injectedRtkApi = api
         }),
         providesTags: ["Academy_API_Academy"],
       }),
-      getApiAcademyByTypeAndOrgIdSlug: build.query<
-        GetApiAcademyByTypeAndOrgIdSlugApiResponse,
-        GetApiAcademyByTypeAndOrgIdSlugApiArg
-      >({
+      getAcademyContent: build.query<GetAcademyContentApiResponse, GetAcademyContentApiArg>({
         query: (queryArg) => ({ url: `/api/academy/${queryArg["type"]}/${queryArg.orgId}/${queryArg.slug}` }),
-        providesTags: ["Academy_API_other"],
+        providesTags: ["Academy_API_Academy"],
       }),
       registerToAcademyContent: build.mutation<RegisterToAcademyContentApiResponse, RegisterToAcademyContentApiArg>({
         query: (queryArg) => ({ url: `/api/academy/register`, method: "POST", body: queryArg.body }),
@@ -971,7 +966,7 @@ const injectedRtkApi = api
       }),
       importDesign: build.mutation<ImportDesignApiResponse, ImportDesignApiArg>({
         query: (queryArg) => ({ url: `/api/pattern/import`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Design_other"],
+        invalidatesTags: ["Design_designs"],
       }),
       getCatalogContent: build.query<GetCatalogContentApiResponse, GetCatalogContentApiArg>({
         query: (queryArg) => ({
@@ -1261,51 +1256,39 @@ const injectedRtkApi = api
         }),
         providesTags: ["Subscription_Subscriptions"],
       }),
-      postApiEntitlementSubscriptionsBySubscriptionIdCancel: build.mutation<
-        PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse,
-        PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiArg
-      >({
+      cancelSubscription: build.mutation<CancelSubscriptionApiResponse, CancelSubscriptionApiArg>({
         query: (queryArg) => ({
           url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/cancel`,
           method: "POST",
         }),
-        invalidatesTags: ["Subscription_other"],
+        invalidatesTags: ["Subscription_Subscriptions"],
       }),
-      postApiEntitlementSubscriptionsCreate: build.mutation<
-        PostApiEntitlementSubscriptionsCreateApiResponse,
-        PostApiEntitlementSubscriptionsCreateApiArg
-      >({
+      createSubscription: build.mutation<CreateSubscriptionApiResponse, CreateSubscriptionApiArg>({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/create`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Subscription_other"],
+        invalidatesTags: ["Subscription_Subscriptions"],
       }),
-      postApiEntitlementSubscriptionsBySubscriptionIdUpgrade: build.mutation<
-        PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse,
-        PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiArg
-      >({
+      upgradeSubscription: build.mutation<UpgradeSubscriptionApiResponse, UpgradeSubscriptionApiArg>({
         query: (queryArg) => ({
           url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade`,
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["Subscription_other"],
+        invalidatesTags: ["Subscription_Subscriptions"],
       }),
-      postApiEntitlementSubscriptionsBySubscriptionIdUpgradePreview: build.mutation<
-        PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiResponse,
-        PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiArg
+      previewSubscriptionUpgrade: build.mutation<
+        PreviewSubscriptionUpgradeApiResponse,
+        PreviewSubscriptionUpgradeApiArg
       >({
         query: (queryArg) => ({
           url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade-preview`,
           method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ["Subscription_other"],
+        invalidatesTags: ["Subscription_Subscriptions"],
       }),
-      postApiEntitlementSubscriptionsWebhooks: build.mutation<
-        PostApiEntitlementSubscriptionsWebhooksApiResponse,
-        PostApiEntitlementSubscriptionsWebhooksApiArg
-      >({
+      handleSubscriptionWebhook: build.mutation<HandleSubscriptionWebhookApiResponse, HandleSubscriptionWebhookApiArg>({
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Subscription_other"],
+        invalidatesTags: ["Subscription_Payment Processors"],
       }),
       getUserTokens: build.query<GetUserTokensApiResponse, GetUserTokensApiArg>({
         query: (queryArg) => ({
@@ -1803,7 +1786,7 @@ export type GetFeaturesApiResponse = /** status 200 Features response */ {
     currency: "usd";
   };
   /** Enumeration of possible feature types */
-  name?:
+  name:
     | "ComponentsInDesign"
     | "RelationshipsInDesign"
     | "DesignsInWorkspace"
@@ -1835,7 +1818,7 @@ export type GetFeaturesByOrganizationApiResponse = /** status 200 Features respo
     currency: "usd";
   };
   /** Enumeration of possible feature types */
-  name?:
+  name:
     | "ComponentsInDesign"
     | "RelationshipsInDesign"
     | "DesignsInWorkspace"
@@ -5575,7 +5558,7 @@ export type GetAcademyCurriculaApiArg = {
   /** Page number */
   page?: number;
 };
-export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single academy content */ {
+export type GetAcademyContentApiResponse = /** status 200 A single academy content */ {
   /** Id of the Curricula */
   id: string;
   type: "learning-path" | "challenge" | "certification";
@@ -5663,7 +5646,7 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single
     [key: string]: any;
   };
 };
-export type GetApiAcademyByTypeAndOrgIdSlugApiArg = {
+export type GetAcademyContentApiArg = {
   type: string;
   orgId: string;
   slug: string;
@@ -7105,7 +7088,7 @@ export type RegisterConnectionApiArg = {
     /** Connection type */
     type: string;
     /** Connection sub-type */
-    subType: string;
+    sub_type: string;
     /** Credential secret data */
     credentialSecret?: object;
     /** Connection metadata */
@@ -7247,7 +7230,7 @@ export type UpdateConnectionApiArg = {
     /** Connection type */
     type: string;
     /** Connection sub-type */
-    subType: string;
+    sub_type: string;
     /** Credential secret data */
     credentialSecret?: object;
     /** Connection metadata */
@@ -13674,7 +13657,7 @@ export type GetCatalogContentClassesApiArg = {
   /** Get responses by pagesize */
   pagesize?: string;
 };
-export type ApproveCatalogRequestApiResponse = /** status 201 Request approved */ {
+export type ApproveCatalogRequestApiResponse = /** status 200 Request approved */ {
   [key: string]: any;
 };
 export type ApproveCatalogRequestApiArg = {
@@ -13682,7 +13665,7 @@ export type ApproveCatalogRequestApiArg = {
     [key: string]: any;
   };
 };
-export type DenyCatalogRequestApiResponse = /** status 201 Request denied */ {
+export type DenyCatalogRequestApiResponse = /** status 200 Request denied */ {
   [key: string]: any;
 };
 export type DenyCatalogRequestApiArg = {
@@ -14329,6 +14312,7 @@ export type GetSubscriptionsApiArg = {
 };
 export type PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse = /** status 200 undefined */ {
   /** Current page number of the result set. */
+export type CancelSubscriptionApiResponse = /** status 200 undefined */ {
   page: number;
   /** Number of items per page. */
   page_size: number;
@@ -14369,17 +14353,18 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiResponse = /
     billing_id: string;
   }[];
 };
-export type PostApiEntitlementSubscriptionsBySubscriptionIdCancelApiArg = {
+export type CancelSubscriptionApiArg = {
   /** Subscription ID */
   subscriptionId: string;
 };
 export type PostApiEntitlementSubscriptionsCreateApiResponse = /** status 201 A new subscription has been created */ {
   /** ID of the associated subscription. */
+export type CreateSubscriptionApiResponse = /** status 201 A new subscription has been created */ {
   subscriptionId?: string;
   /** The client secret of the createsubscriptionresponse. */
   clientSecret?: string;
 };
-export type PostApiEntitlementSubscriptionsCreateApiArg = {
+export type CreateSubscriptionApiArg = {
   body: {
     /** Organization ID */
     orgId?: string;
@@ -14395,7 +14380,7 @@ export type PostApiEntitlementSubscriptionsCreateApiArg = {
     paymentProcessor?: "stripe" | "paypal" | "braintree";
   };
 };
-export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse = /** status 200 undefined */ {
+export type UpgradeSubscriptionApiResponse = /** status 200 undefined */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
@@ -14428,7 +14413,7 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiResponse = 
   /** Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe */
   billing_id: string;
 };
-export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiArg = {
+export type UpgradeSubscriptionApiArg = {
   /** Subscription ID */
   subscriptionId: string;
   body: {
@@ -14438,9 +14423,9 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradeApiArg = {
     newPlanId?: string;
   };
 };
-export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiResponse =
+export type PreviewSubscriptionUpgradeApiResponse =
   /** status 200 Preview of the upgraded subscription invoice */ object;
-export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiArg = {
+export type PreviewSubscriptionUpgradeApiArg = {
   /** Subscription ID */
   subscriptionId: string;
   body: {
@@ -14450,8 +14435,8 @@ export type PostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewApiArg 
     newPlanId?: string;
   };
 };
-export type PostApiEntitlementSubscriptionsWebhooksApiResponse = unknown;
-export type PostApiEntitlementSubscriptionsWebhooksApiArg = {
+export type HandleSubscriptionWebhookApiResponse = unknown;
+export type HandleSubscriptionWebhookApiArg = {
   body: object;
 };
 export type GetUserTokensApiResponse = /** status 200 Tokens response */ {
@@ -14722,7 +14707,7 @@ export const {
   useGetMyAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
   useGetAcademyCurriculaQuery,
-  useGetApiAcademyByTypeAndOrgIdSlugQuery,
+  useGetAcademyContentQuery,
   useRegisterToAcademyContentMutation,
   useWithdrawFromAcademyContentMutation,
   useUpdateAcademyCurriculaByIdMutation,
@@ -14797,11 +14782,11 @@ export const {
   useGetSignupRequestNotificationQuery,
   useGetPlansQuery,
   useGetSubscriptionsQuery,
-  usePostApiEntitlementSubscriptionsBySubscriptionIdCancelMutation,
-  usePostApiEntitlementSubscriptionsCreateMutation,
-  usePostApiEntitlementSubscriptionsBySubscriptionIdUpgradeMutation,
-  usePostApiEntitlementSubscriptionsBySubscriptionIdUpgradePreviewMutation,
-  usePostApiEntitlementSubscriptionsWebhooksMutation,
+  useCancelSubscriptionMutation,
+  useCreateSubscriptionMutation,
+  useUpgradeSubscriptionMutation,
+  usePreviewSubscriptionUpgradeMutation,
+  useHandleSubscriptionWebhookMutation,
   useGetUserTokensQuery,
   useGenerateTokenMutation,
   useDeleteUserTokenMutation,
