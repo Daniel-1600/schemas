@@ -196,7 +196,7 @@ components:
           x-oapi-codegen-extra-tags:
             db: "user_id"
             json: "user_id"
-          format: uuid
+          x-id-format: external
         provider:
           type: string
           maxLength: 100
