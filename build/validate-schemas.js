@@ -2113,7 +2113,7 @@ function walk(dir) {
           const entityPath = path.join(constructDir, file);
           validateEntitySchema(entityPath);
 
-          // Rule 20: entity completeness
+          // Rule 20: entity completeness + Rule 32 on entity files with components
           let entityDoc;
           try {
             entityDoc = yaml.load(fs.readFileSync(entityPath, "utf-8"));
@@ -2122,6 +2122,12 @@ function walk(dir) {
           }
           if (entityDoc) {
             validateEntityCompleteness(entityPath, entityDoc);
+            // Entity files like relationship.yaml may have components.schemas
+            // with DB-backed properties that validateEntitySchema skips
+            // (because root type is not "object"). Run Rule 32 explicitly.
+            if (entityDoc.components?.schemas) {
+              validateDbBackedPropertyNames(entityPath, entityDoc);
+            }
           }
         }
       }

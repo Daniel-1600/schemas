@@ -689,7 +689,7 @@ components:
             yaml: "model"
             json: "model"
             gorm: "type:bytes;serializer:json"
-        modelId:
+        model_id:
           $ref: "../core/api.yml#/components/schemas/Uuid"
           x-go-type-skip-optional-pointer: true
           x-go-name: ModelId
