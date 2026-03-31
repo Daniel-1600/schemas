@@ -46,7 +46,7 @@
  *   Rule 33 — Pagination envelopes must use page, page_size, total_count.
  *   Rule 34 — Template file values must match schema property types.
  *   Rule 35 — x-go-type alias must match x-go-type-import.name, and import path must match alias.
- *   Rule 36 — Every operation must define at least one OpenAPI tag; tags must be declared in document-root `tags:` section.
+ *   Rule 36 — Every operation must define at least one OpenAPI tag, and when document-root `tags:` are declared operation tags must reference one of those definitions.
  *
  * USAGE:
  *   node build/validate-schemas.js          # exits 0 if no blocking violations found
@@ -74,6 +74,7 @@ const {
 } = require("./lib/consistency-policy");
 const { findNewNonLowercaseEnumValues } = require("./lib/enum-validation");
 const { detectPostCreate, isSingleResourceDelete } = require("./lib/response-code-semantics");
+const { findOperationTagIssues } = require("./lib/operation-tags");
 
 const ROOT = path.resolve(__dirname, "..");
 const CONSTRUCTS_DIR = path.join(ROOT, "schemas", "constructs");
@@ -2030,42 +2031,27 @@ function validateResponseCodeSemantics(filePath, doc) {
 // ─── Rule 36: every operation must have tags ──────────────────────────────────
 
 function validateOperationTags(filePath, doc) {
-  if (!doc?.paths) return;
+  for (const issue of findOperationTagIssues(doc)) {
+    if (issue.type === "missing-tags") {
+      reportDesignAdvisory(
+        filePath,
+        `${issue.method.toUpperCase()} ${issue.routePath} — operation is missing \`tags\`. ` +
+          `Every operation must have at least one tag for consistent API documentation and client generation. ` +
+          `See AGENTS.md § "Checklist for Schema Changes".`,
+      );
+      continue;
+    }
 
-  // Build a set of declared tag names from the document-root `tags:` section.
-  // Only cross-check when the section is present; files that omit it entirely
-  // are not penalised here (the missing-tags check below handles that case).
-  const declaredTags = Array.isArray(doc.tags)
-    ? new Set(doc.tags.map((t) => t.name).filter(Boolean))
-    : null;
-
-  for (const [routePath, pathItem] of Object.entries(doc.paths)) {
-    for (const method of HTTP_METHODS) {
-      const op = pathItem[method];
-      if (!op) continue;
-
-      if (!Array.isArray(op.tags) || op.tags.length === 0) {
-        reportDesignAdvisory(
-          filePath,
-          `${method.toUpperCase()} ${routePath} — operation is missing \`tags\`. ` +
-            `Every operation must have at least one tag for consistent API documentation and client generation. ` +
-            `See AGENTS.md § "Checklist for Schema Changes".`,
-        );
-      } else if (declaredTags !== null) {
-        for (const tag of op.tags) {
-          if (!declaredTags.has(tag)) {
-            reportDesignAdvisory(
-              filePath,
-              `${method.toUpperCase()} ${routePath} — operation tag \`${tag}\` is not declared in the document-root \`tags\` section. ` +
-                `Add \`- name: ${tag}\` under the top-level \`tags:\` list to prevent typos and ensure consistent API documentation.`,
-            );
-          }
-        }
-      }
+    if (issue.type === "undefined-tag") {
+      reportDesignAdvisory(
+        filePath,
+        `${issue.method.toUpperCase()} ${issue.routePath} — operation tag \`${issue.tagName}\` is not declared in the document-root \`tags:\` section. ` +
+          `Declare the tag at the top level or use one of the existing tag definitions so API docs and generated clients stay consistently grouped. ` +
+          `See AGENTS.md § "Checklist for Schema Changes".`,
+      );
     }
   }
 }
-
 // ─── Rule 29: detect duplicate schemas across constructs ──────────────────────
 
 /**

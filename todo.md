@@ -39,7 +39,7 @@ Cross-reference audit performed 2026-03-31 against `meshery-cloud/database/migra
 **Files**: `schemas/constructs/v1beta1/plan/api.yml`, `schemas/constructs/v1beta2/plan/api.yml`
 
 - v1beta1 uses `yearly`; v1beta2 uses `annually` and adds `none`
-- **Why not fixed**: This is a deliberate API version migration. v1beta1 is the published wire format; v1beta2 introduces the corrected naming. Per CLAUDE.md, published enum values are not recased within the same API version.
+- **Why not fixed**: This is a deliberate API version migration. v1beta1 is the published wire format; v1beta2 introduces the corrected naming. Per AGENTS.md, published enum values are not recased within the same API version.
 
 ## Organization Schema — Optional `invite_id`
 
