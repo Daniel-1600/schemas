@@ -32,7 +32,7 @@ The shared query parameters defined in `core/api.yml` (`page`, `pagesize`, `sear
 
 Files with `x-deprecated: true` in their `info` section are intentionally kept for backward compatibility. They contain known style/casing violations that are fixed in the v1beta2 replacement. Do not flag issues in deprecated constructs.
 
-### 6. `deleted_at` in entity `required` lists
+### 7. `deleted_at` in entity `required` lists
 
 Some entity schemas (e.g., `AcademyCurricula`) list `deleted_at`/`deletedAt` as required. This is intentional — server-generated fields that are always present in API responses belong in `required` per AGENTS.md, even when the value is null for non-deleted resources.
 
