@@ -45,6 +45,7 @@
  *   Rule 32 — DB-backed property names must exactly match snake_case db tags.
  *   Rule 33 — Pagination envelopes must use page, page_size, total_count.
  *   Rule 34 — Template file values must match schema property types.
+ *   Rule 35 — x-go-type alias must match x-go-type-import.name, and import path must match alias.
  *
  * USAGE:
  *   node build/validate-schemas.js          # exits 0 if no blocking violations found
@@ -1185,6 +1186,115 @@ function checkPropsForCrossRefs(filePath, schemaName, properties) {
   }
 }
 
+// ─── Rule 35: x-go-type / x-go-type-import consistency ───────────────────────
+
+/**
+ * Validates that x-go-type, x-go-type-import.name, and x-go-type-import.path
+ * are mutually consistent on ALL properties — not just cross-construct refs.
+ *
+ * Catches:
+ * - x-go-type alias prefix doesn't match x-go-type-import.name
+ * - x-go-type-import.path doesn't contain the package matching the alias
+ */
+function validateGoTypeImportConsistency(filePath, doc) {
+  if (!doc?.components?.schemas) return;
+
+  function checkProps(schemaName, properties) {
+    if (!properties || typeof properties !== "object") return;
+
+    for (const [propName, propDef] of Object.entries(properties)) {
+      if (!propDef || typeof propDef !== "object") continue;
+
+      // Check the property itself and also items (for array types)
+      const targets = [propDef];
+      if (propDef.items && typeof propDef.items === "object") {
+        targets.push(propDef.items);
+      }
+
+      for (const target of targets) {
+        const goType = typeof target["x-go-type"] === "string" ? target["x-go-type"] : null;
+        const goImport = target["x-go-type-import"];
+        if (!goType || !goImport) continue;
+
+      const importName = typeof goImport.name === "string" ? goImport.name : null;
+      const importPath = typeof goImport.path === "string" ? goImport.path : null;
+
+      // Extract the alias prefix from x-go-type (e.g., "capabilityv1alpha1" from "capabilityv1alpha1.Capability")
+      // Also handle map types like "map[string]core.ResolvedAlias"
+      const typeStr = goType.replace(/^(?:map\[[^\]]*\]|\[\])*\*?/, "");
+      const dotIdx = typeStr.indexOf(".");
+      if (dotIdx <= 0) continue; // no package qualifier — skip (same-package type)
+
+      const aliasPrefix = typeStr.substring(0, dotIdx);
+
+      // Check: alias prefix must match import name
+      if (importName && aliasPrefix !== importName) {
+        warn(
+          filePath,
+          `Schema "${schemaName}" — property "${propName}" has x-go-type alias "${aliasPrefix}" ` +
+            `but x-go-type-import.name is "${importName}". These must match.`,
+        );
+      }
+
+      // Check: import path's last segment should be derivable from the alias
+      // e.g., alias "capabilityv1alpha1" with path ".../models/v1alpha1/capability" is valid
+      // but alias "capabilityv1alpha1" with path ".../models/v1beta1/capability" is suspicious
+      if (importPath && importName) {
+        const pathParts = importPath.split("/");
+        const lastSegment = pathParts[pathParts.length - 1];
+        // The alias typically encodes package+version: "capabilityv1alpha1" → "capability" + "v1alpha1"
+        const versionMatch = importName.match(/(v\d+(?:alpha|beta)\d*)$/);
+        const baseFromAlias = importName.replace(/v\d+(?:alpha|beta)\d*$/, "");
+
+        // Check package name matches
+        if (baseFromAlias && lastSegment !== baseFromAlias && !lastSegment.startsWith(baseFromAlias)) {
+          warn(
+            filePath,
+            `Schema "${schemaName}" — property "${propName}" has x-go-type-import alias "${importName}" ` +
+              `but import path ends with "${lastSegment}". The path's package name should match ` +
+              `the alias base "${baseFromAlias}".`,
+          );
+        }
+
+        // Check version in alias matches version in path
+        // e.g., alias "capabilityv1alpha1" should have "v1alpha1" in the path
+        if (versionMatch && baseFromAlias !== importName) {
+          const aliasVersion = versionMatch[1];
+          if (!importPath.includes(`/${aliasVersion}/`)) {
+            warn(
+              filePath,
+              `Schema "${schemaName}" — property "${propName}" has x-go-type-import alias "${importName}" ` +
+                `(version ${aliasVersion}) but import path "${importPath}" does not contain "/${aliasVersion}/". ` +
+                `The alias version and import path version must match.`,
+            );
+          }
+        }
+      }
+      } // end for target of targets
+    }
+  }
+
+  for (const [schemaName, schemaDef] of Object.entries(doc.components.schemas)) {
+    if (!schemaDef || typeof schemaDef !== "object") continue;
+    checkProps(schemaName, schemaDef.properties);
+    for (const combiner of ["allOf", "oneOf", "anyOf"]) {
+      if (Array.isArray(schemaDef[combiner])) {
+        for (const sub of schemaDef[combiner]) {
+          checkProps(schemaName, sub?.properties);
+        }
+      }
+    }
+  }
+}
+
+// Also check entity yaml files (they may have x-go-type annotations)
+function validateGoTypeImportConsistencyForEntity(filePath, doc) {
+  if (!doc || typeof doc !== "object" || !doc.properties) return;
+
+  const fakeSchemas = { "(entity root)": doc };
+  validateGoTypeImportConsistency(filePath, { components: { schemas: fakeSchemas } });
+}
+
 // ─── Rule 17: core.Map must pair with x-go-type-skip-optional-pointer ────────
 
 function validateCoreMapAnnotation(filePath, doc) {
@@ -2154,6 +2264,11 @@ function walk(dir) {
             // of structure, since validateEntitySchema only reaches Rule 32
             // for plain JSON Schema entities.
             validateDbBackedPropertyNames(entityPath, entityDoc);
+            // Rule 35: x-go-type / x-go-type-import consistency
+            validateGoTypeImportConsistencyForEntity(entityPath, entityDoc);
+            if (entityDoc.components?.schemas) {
+              validateGoTypeImportConsistency(entityPath, entityDoc);
+            }
           }
         }
       }
@@ -2188,6 +2303,7 @@ function walk(dir) {
           validateInfoFields(apiYml, doc);
           validateXInternal(apiYml, doc);
           validateCrossConstructRefs(apiYml, doc);
+          validateGoTypeImportConsistency(apiYml, doc);
           validateCoreMapAnnotation(apiYml, doc);
           validateNoUnnecessaryAllOf(apiYml, doc);
           validateGetResponseSchemas(apiYml, doc);
