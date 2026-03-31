@@ -4995,7 +4995,7 @@ export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content 
         }[];
         /** Date when the certificate was issued */
         issuedDate: string;
-        /** Date when the certificate expires (optional) */
+        /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
         expirationDate?: string;
         /** Number of months after which the certificate expires */
         expiresIn?: number;
@@ -5090,7 +5090,7 @@ export type CreateAcademyCurriculaApiResponse = /** status 201 created the curri
       }[];
       /** Date when the certificate was issued */
       issuedDate: string;
-      /** Date when the certificate expires (optional) */
+      /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
       expirationDate?: string;
       /** Number of months after which the certificate expires */
       expiresIn?: number;
@@ -5171,7 +5171,7 @@ export type CreateAcademyCurriculaApiArg = {
         }[];
         /** Date when the certificate was issued */
         issuedDate: string;
-        /** Date when the certificate expires (optional) */
+        /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
         expirationDate?: string;
         /** Number of months after which the certificate expires */
         expiresIn?: number;
@@ -5263,7 +5263,7 @@ export type GetAcademyCurriculaApiResponse = /** status 200 A list of content wi
         }[];
         /** Date when the certificate was issued */
         issuedDate: string;
-        /** Date when the certificate expires (optional) */
+        /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
         expirationDate?: string;
         /** Number of months after which the certificate expires */
         expiresIn?: number;
@@ -5378,7 +5378,7 @@ export type GetApiAcademyByTypeAndOrgIdSlugApiResponse = /** status 200 A single
       }[];
       /** Date when the certificate was issued */
       issuedDate: string;
-      /** Date when the certificate expires (optional) */
+      /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
       expirationDate?: string;
       /** Number of months after which the certificate expires */
       expiresIn?: number;
@@ -5452,7 +5452,7 @@ export type RegisterToAcademyContentApiResponse = /** status 201 registered cont
     }[];
     /** Date when the certificate was issued */
     issuedDate: string;
-    /** Date when the certificate expires (optional) */
+    /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
     expirationDate?: string;
     /** Number of months after which the certificate expires */
     expiresIn?: number;
@@ -5513,7 +5513,7 @@ export type WithdrawFromAcademyContentApiResponse = /** status 200 registered co
     }[];
     /** Date when the certificate was issued */
     issuedDate: string;
-    /** Date when the certificate expires (optional) */
+    /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
     expirationDate?: string;
     /** Number of months after which the certificate expires */
     expiresIn?: number;
@@ -5588,7 +5588,7 @@ export type UpdateAcademyCurriculaByIdApiResponse = /** status 200 updated the c
       }[];
       /** Date when the certificate was issued */
       issuedDate: string;
-      /** Date when the certificate expires (optional) */
+      /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
       expirationDate?: string;
       /** Number of months after which the certificate expires */
       expiresIn?: number;
@@ -5704,7 +5704,7 @@ export type UpdateAcademyCurriculaByIdApiArg = {
         }[];
         /** Date when the certificate was issued */
         issuedDate: string;
-        /** Date when the certificate expires (optional) */
+        /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
         expirationDate?: string;
         /** Number of months after which the certificate expires */
         expiresIn?: number;
@@ -5798,7 +5798,7 @@ export type GetAcademyCurriculaByIdApiResponse = /** status 200 A single curricu
       }[];
       /** Date when the certificate was issued */
       issuedDate: string;
-      /** Date when the certificate expires (optional) */
+      /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
       expirationDate?: string;
       /** Number of months after which the certificate expires */
       expiresIn?: number;
@@ -5905,7 +5905,7 @@ export type GetApiAcademyRegistrationsByContentIdApiResponse =
       }[];
       /** Date when the certificate was issued */
       issuedDate: string;
-      /** Date when the certificate expires (optional) */
+      /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
       expirationDate?: string;
       /** Number of months after which the certificate expires */
       expiresIn?: number;
@@ -6406,7 +6406,7 @@ export type GetCertificateByIdApiResponse = /** status 200 A single certificate 
   }[];
   /** Date when the certificate was issued */
   issuedDate: string;
-  /** Date when the certificate expires (optional) */
+  /** Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors. */
   expirationDate?: string;
   /** Number of months after which the certificate expires */
   expiresIn?: number;

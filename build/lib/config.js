@@ -221,8 +221,19 @@ function getBundledOutputPath(pkg) {
  * @param {Object} pkg - Package definition
  * @returns {string} Path to Go output file (relative to project root)
  */
+/**
+ * Go output path overrides for packages where the Go models should be
+ * generated at a different location than the default version-scoped path.
+ */
+const goOutputPathOverrides = {
+  // Core types are unversioned — generated to models/core/ alongside
+  // manual utility types (Map, NullTime, MapObject, helpers).
+  "v1alpha1/core": "models/core/core.go",
+};
+
 function getGoOutputPath(pkg) {
-  return `${paths.modelsDir}/${pkg.version}/${pkg.name}/${pkg.name}.go`;
+  const key = `${pkg.version}/${pkg.dirName}`;
+  return goOutputPathOverrides[key] || `${paths.modelsDir}/${pkg.version}/${pkg.name}/${pkg.name}.go`;
 }
 
 /**

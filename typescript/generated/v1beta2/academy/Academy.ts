@@ -165,7 +165,7 @@ export interface paths {
                   issuedDate: string;
                   /**
                    * Format: date-time
-                   * @description Date when the certificate expires (optional)
+                   * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                    * @example 2025-10-01T12:00:00Z
                    */
                   expirationDate?: string;
@@ -370,7 +370,7 @@ export interface paths {
                 issuedDate: string;
                 /**
                  * Format: date-time
-                 * @description Date when the certificate expires (optional)
+                 * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                  * @example 2025-10-01T12:00:00Z
                  */
                 expirationDate?: string;
@@ -539,7 +539,7 @@ export interface components {
         issuedDate: string;
         /**
          * Format: date-time
-         * @description Date when the certificate expires (optional)
+         * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
          * @example 2025-10-01T12:00:00Z
          */
         expirationDate?: string;
@@ -750,7 +750,7 @@ export interface components {
           issuedDate: string;
           /**
            * Format: date-time
-           * @description Date when the certificate expires (optional)
+           * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
            * @example 2025-10-01T12:00:00Z
            */
           expirationDate?: string;
@@ -941,7 +941,7 @@ export interface components {
           issuedDate: string;
           /**
            * Format: date-time
-           * @description Date when the certificate expires (optional)
+           * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
            * @example 2025-10-01T12:00:00Z
            */
           expirationDate?: string;
@@ -1173,7 +1173,7 @@ export interface components {
           issuedDate: string;
           /**
            * Format: date-time
-           * @description Date when the certificate expires (optional)
+           * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
            * @example 2025-10-01T12:00:00Z
            */
           expirationDate?: string;
@@ -1364,7 +1364,7 @@ export interface components {
           issuedDate: string;
           /**
            * Format: date-time
-           * @description Date when the certificate expires (optional)
+           * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
            * @example 2025-10-01T12:00:00Z
            */
           expirationDate?: string;
@@ -1563,7 +1563,7 @@ export interface components {
             issuedDate: string;
             /**
              * Format: date-time
-             * @description Date when the certificate expires (optional)
+             * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
              * @example 2025-10-01T12:00:00Z
              */
             expirationDate?: string;
@@ -1761,7 +1761,7 @@ export interface components {
             issuedDate: string;
             /**
              * Format: date-time
-             * @description Date when the certificate expires (optional)
+             * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
              * @example 2025-10-01T12:00:00Z
              */
             expirationDate?: string;
@@ -1906,7 +1906,7 @@ export interface components {
         issuedDate: string;
         /**
          * Format: date-time
-         * @description Date when the certificate expires (optional)
+         * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
          * @example 2025-10-01T12:00:00Z
          */
         expirationDate?: string;
@@ -2047,7 +2047,7 @@ export interface components {
         issuedDate: string;
         /**
          * Format: date-time
-         * @description Date when the certificate expires (optional)
+         * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
          * @example 2025-10-01T12:00:00Z
          */
         expirationDate?: string;
@@ -2180,7 +2180,7 @@ export interface components {
       issuedDate: string;
       /**
        * Format: date-time
-       * @description Date when the certificate expires (optional)
+       * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
        * @example 2025-10-01T12:00:00Z
        */
       expirationDate?: string;
@@ -2278,7 +2278,7 @@ export interface components {
         issuedDate: string;
         /**
          * Format: date-time
-         * @description Date when the certificate expires (optional)
+         * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
          * @example 2025-10-01T12:00:00Z
          */
         expirationDate?: string;
@@ -2439,7 +2439,7 @@ export interface components {
         issuedDate: string;
         /**
          * Format: date-time
-         * @description Date when the certificate expires (optional)
+         * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
          * @example 2025-10-01T12:00:00Z
          */
         expirationDate?: string;
@@ -2770,7 +2770,7 @@ export interface components {
           issuedDate: string;
           /**
            * Format: date-time
-           * @description Date when the certificate expires (optional)
+           * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
            * @example 2025-10-01T12:00:00Z
            */
           expirationDate?: string;
@@ -3793,7 +3793,7 @@ export interface operations {
                   issuedDate: string;
                   /**
                    * Format: date-time
-                   * @description Date when the certificate expires (optional)
+                   * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                    * @example 2025-10-01T12:00:00Z
                    */
                   expirationDate?: string;
@@ -4037,7 +4037,7 @@ export interface operations {
                   issuedDate: string;
                   /**
                    * Format: date-time
-                   * @description Date when the certificate expires (optional)
+                   * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                    * @example 2025-10-01T12:00:00Z
                    */
                   expirationDate?: string;
@@ -4251,7 +4251,7 @@ export interface operations {
                 issuedDate: string;
                 /**
                  * Format: date-time
-                 * @description Date when the certificate expires (optional)
+                 * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                  * @example 2025-10-01T12:00:00Z
                  */
                 expirationDate?: string;
@@ -4444,7 +4444,7 @@ export interface operations {
               issuedDate: string;
               /**
                * Format: date-time
-               * @description Date when the certificate expires (optional)
+               * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                * @example 2025-10-01T12:00:00Z
                */
               expirationDate?: string;
@@ -4605,7 +4605,7 @@ export interface operations {
               issuedDate: string;
               /**
                * Format: date-time
-               * @description Date when the certificate expires (optional)
+               * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                * @example 2025-10-01T12:00:00Z
                */
               expirationDate?: string;
@@ -4757,7 +4757,7 @@ export interface operations {
               issuedDate: string;
               /**
                * Format: date-time
-               * @description Date when the certificate expires (optional)
+               * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                * @example 2025-10-01T12:00:00Z
                */
               expirationDate?: string;
@@ -4939,7 +4939,7 @@ export interface operations {
                 issuedDate: string;
                 /**
                  * Format: date-time
-                 * @description Date when the certificate expires (optional)
+                 * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                  * @example 2025-10-01T12:00:00Z
                  */
                 expirationDate?: string;
@@ -5212,7 +5212,7 @@ export interface operations {
                 issuedDate: string;
                 /**
                  * Format: date-time
-                 * @description Date when the certificate expires (optional)
+                 * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                  * @example 2025-10-01T12:00:00Z
                  */
                 expirationDate?: string;
@@ -5461,7 +5461,7 @@ export interface operations {
               issuedDate: string;
               /**
                * Format: date-time
-               * @description Date when the certificate expires (optional)
+               * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
                * @example 2025-10-01T12:00:00Z
                */
               expirationDate?: string;
@@ -6380,7 +6380,7 @@ export interface operations {
             issuedDate: string;
             /**
              * Format: date-time
-             * @description Date when the certificate expires (optional)
+             * @description Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.
              * @example 2025-10-01T12:00:00Z
              */
             expirationDate?: string;

@@ -167,10 +167,10 @@ const AcademySchema: Record<string, unknown> = {
                             "type": "string",
                             "format": "uuid",
                             "description": "ID of the badge to be awarded on completion of this curricula",
-                            "x-go-type": "corev1alpha1.Uuid",
+                            "x-go-type": "core.Uuid",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                              "name": "corev1alpha1"
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
                             },
                             "x-oapi-codegen-extra-tags": {
                               "db": "badge_id",
@@ -394,7 +394,7 @@ const AcademySchema: Record<string, unknown> = {
                                       "expirationDate": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "description": "Date when the certificate expires (optional)",
+                                        "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                         "example": "2025-10-01T12:00:00Z"
                                       },
                                       "expiresIn": {
@@ -601,10 +601,10 @@ const AcademySchema: Record<string, unknown> = {
                     "type": "string",
                     "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
-                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type": "core.Uuid",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                      "name": "corev1alpha1"
+                      "path": "github.com/meshery/schemas/models/core",
+                      "name": "core"
                     },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
@@ -789,7 +789,7 @@ const AcademySchema: Record<string, unknown> = {
                               "expirationDate": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Date when the certificate expires (optional)",
+                                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                 "example": "2025-10-01T12:00:00Z"
                               },
                               "expiresIn": {
@@ -984,10 +984,10 @@ const AcademySchema: Record<string, unknown> = {
                       "type": "string",
                       "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
-                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type": "core.Uuid",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                        "name": "corev1alpha1"
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
                       },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
@@ -1211,7 +1211,7 @@ const AcademySchema: Record<string, unknown> = {
                                 "expirationDate": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "description": "Date when the certificate expires (optional)",
+                                  "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                   "example": "2025-10-01T12:00:00Z"
                                 },
                                 "expiresIn": {
@@ -1587,10 +1587,10 @@ const AcademySchema: Record<string, unknown> = {
                                 "type": "string",
                                 "format": "uuid",
                                 "description": "ID of the badge to be awarded on completion of this curricula",
-                                "x-go-type": "corev1alpha1.Uuid",
+                                "x-go-type": "core.Uuid",
                                 "x-go-type-import": {
-                                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                                  "name": "corev1alpha1"
+                                  "path": "github.com/meshery/schemas/models/core",
+                                  "name": "core"
                                 },
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "badge_id",
@@ -1814,7 +1814,7 @@ const AcademySchema: Record<string, unknown> = {
                                           "expirationDate": {
                                             "type": "string",
                                             "format": "date-time",
-                                            "description": "Date when the certificate expires (optional)",
+                                            "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                             "example": "2025-10-01T12:00:00Z"
                                           },
                                           "expiresIn": {
@@ -2089,10 +2089,10 @@ const AcademySchema: Record<string, unknown> = {
                       "type": "string",
                       "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
-                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type": "core.Uuid",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                        "name": "corev1alpha1"
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
                       },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
@@ -2316,7 +2316,7 @@ const AcademySchema: Record<string, unknown> = {
                                 "expirationDate": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "description": "Date when the certificate expires (optional)",
+                                  "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                   "example": "2025-10-01T12:00:00Z"
                                 },
                                 "expiresIn": {
@@ -2698,7 +2698,7 @@ const AcademySchema: Record<string, unknown> = {
                         "expirationDate": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Date when the certificate expires (optional)",
+                          "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                           "example": "2025-10-01T12:00:00Z"
                         },
                         "expiresIn": {
@@ -2964,7 +2964,7 @@ const AcademySchema: Record<string, unknown> = {
                         "expirationDate": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Date when the certificate expires (optional)",
+                          "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                           "example": "2025-10-01T12:00:00Z"
                         },
                         "expiresIn": {
@@ -3101,10 +3101,10 @@ const AcademySchema: Record<string, unknown> = {
                     "type": "string",
                     "format": "uuid",
                     "description": "ID of the badge to be awarded on completion of this curricula",
-                    "x-go-type": "corev1alpha1.Uuid",
+                    "x-go-type": "core.Uuid",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                      "name": "corev1alpha1"
+                      "path": "github.com/meshery/schemas/models/core",
+                      "name": "core"
                     },
                     "x-oapi-codegen-extra-tags": {
                       "db": "badge_id",
@@ -3289,7 +3289,7 @@ const AcademySchema: Record<string, unknown> = {
                               "expirationDate": {
                                 "type": "string",
                                 "format": "date-time",
-                                "description": "Date when the certificate expires (optional)",
+                                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                 "example": "2025-10-01T12:00:00Z"
                               },
                               "expiresIn": {
@@ -3487,10 +3487,10 @@ const AcademySchema: Record<string, unknown> = {
                           "type": "string",
                           "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
-                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type": "core.Uuid",
                           "x-go-type-import": {
-                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                            "name": "corev1alpha1"
+                            "path": "github.com/meshery/schemas/models/core",
+                            "name": "core"
                           },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
@@ -3714,7 +3714,7 @@ const AcademySchema: Record<string, unknown> = {
                                     "expirationDate": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Date when the certificate expires (optional)",
+                                      "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                       "example": "2025-10-01T12:00:00Z"
                                     },
                                     "expiresIn": {
@@ -4196,10 +4196,10 @@ const AcademySchema: Record<string, unknown> = {
                           "type": "string",
                           "format": "uuid",
                           "description": "ID of the badge to be awarded on completion of this curricula",
-                          "x-go-type": "corev1alpha1.Uuid",
+                          "x-go-type": "core.Uuid",
                           "x-go-type-import": {
-                            "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                            "name": "corev1alpha1"
+                            "path": "github.com/meshery/schemas/models/core",
+                            "name": "core"
                           },
                           "x-oapi-codegen-extra-tags": {
                             "db": "badge_id",
@@ -4423,7 +4423,7 @@ const AcademySchema: Record<string, unknown> = {
                                     "expirationDate": {
                                       "type": "string",
                                       "format": "date-time",
-                                      "description": "Date when the certificate expires (optional)",
+                                      "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                       "example": "2025-10-01T12:00:00Z"
                                     },
                                     "expiresIn": {
@@ -4977,7 +4977,7 @@ const AcademySchema: Record<string, unknown> = {
                         "expirationDate": {
                           "type": "string",
                           "format": "date-time",
-                          "description": "Date when the certificate expires (optional)",
+                          "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                           "example": "2025-10-01T12:00:00Z"
                         },
                         "expiresIn": {
@@ -7474,7 +7474,7 @@ const AcademySchema: Record<string, unknown> = {
                     "expirationDate": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Date when the certificate expires (optional)",
+                      "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                       "example": "2025-10-01T12:00:00Z"
                     },
                     "expiresIn": {
@@ -7816,7 +7816,7 @@ const AcademySchema: Record<string, unknown> = {
                   "expirationDate": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Date when the certificate expires (optional)",
+                    "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                     "example": "2025-10-01T12:00:00Z"
                   },
                   "expiresIn": {
@@ -8064,10 +8064,10 @@ const AcademySchema: Record<string, unknown> = {
             "type": "string",
             "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
-            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type": "core.Uuid",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1alpha1/core",
-              "name": "corev1alpha1"
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
             },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
@@ -8291,7 +8291,7 @@ const AcademySchema: Record<string, unknown> = {
                       "expirationDate": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date when the certificate expires (optional)",
+                        "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                         "example": "2025-10-01T12:00:00Z"
                       },
                       "expiresIn": {
@@ -8485,10 +8485,10 @@ const AcademySchema: Record<string, unknown> = {
                 "type": "string",
                 "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
-                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type": "core.Uuid",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                  "name": "corev1alpha1"
+                  "path": "github.com/meshery/schemas/models/core",
+                  "name": "core"
                 },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
@@ -8712,7 +8712,7 @@ const AcademySchema: Record<string, unknown> = {
                           "expirationDate": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Date when the certificate expires (optional)",
+                            "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                             "example": "2025-10-01T12:00:00Z"
                           },
                           "expiresIn": {
@@ -9067,10 +9067,10 @@ const AcademySchema: Record<string, unknown> = {
             "type": "string",
             "format": "uuid",
             "description": "ID of the badge to be awarded on completion of this curricula",
-            "x-go-type": "corev1alpha1.Uuid",
+            "x-go-type": "core.Uuid",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1alpha1/core",
-              "name": "corev1alpha1"
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
             },
             "x-oapi-codegen-extra-tags": {
               "db": "badge_id",
@@ -9255,7 +9255,7 @@ const AcademySchema: Record<string, unknown> = {
                       "expirationDate": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date when the certificate expires (optional)",
+                        "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                         "example": "2025-10-01T12:00:00Z"
                       },
                       "expiresIn": {
@@ -9444,10 +9444,10 @@ const AcademySchema: Record<string, unknown> = {
                 "type": "string",
                 "format": "uuid",
                 "description": "ID of the badge to be awarded on completion of this curricula",
-                "x-go-type": "corev1alpha1.Uuid",
+                "x-go-type": "core.Uuid",
                 "x-go-type-import": {
-                  "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                  "name": "corev1alpha1"
+                  "path": "github.com/meshery/schemas/models/core",
+                  "name": "core"
                 },
                 "x-oapi-codegen-extra-tags": {
                   "db": "badge_id",
@@ -9671,7 +9671,7 @@ const AcademySchema: Record<string, unknown> = {
                           "expirationDate": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Date when the certificate expires (optional)",
+                            "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                             "example": "2025-10-01T12:00:00Z"
                           },
                           "expiresIn": {
@@ -9890,10 +9890,10 @@ const AcademySchema: Record<string, unknown> = {
                   "type": "string",
                   "format": "uuid",
                   "description": "ID of the badge to be awarded on completion of this curricula",
-                  "x-go-type": "corev1alpha1.Uuid",
+                  "x-go-type": "core.Uuid",
                   "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                    "name": "corev1alpha1"
+                    "path": "github.com/meshery/schemas/models/core",
+                    "name": "core"
                   },
                   "x-oapi-codegen-extra-tags": {
                     "db": "badge_id",
@@ -10117,7 +10117,7 @@ const AcademySchema: Record<string, unknown> = {
                             "expirationDate": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "Date when the certificate expires (optional)",
+                              "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                               "example": "2025-10-01T12:00:00Z"
                             },
                             "expiresIn": {
@@ -10329,10 +10329,10 @@ const AcademySchema: Record<string, unknown> = {
                       "type": "string",
                       "format": "uuid",
                       "description": "ID of the badge to be awarded on completion of this curricula",
-                      "x-go-type": "corev1alpha1.Uuid",
+                      "x-go-type": "core.Uuid",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1alpha1/core",
-                        "name": "corev1alpha1"
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
                       },
                       "x-oapi-codegen-extra-tags": {
                         "db": "badge_id",
@@ -10556,7 +10556,7 @@ const AcademySchema: Record<string, unknown> = {
                                 "expirationDate": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "description": "Date when the certificate expires (optional)",
+                                  "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                                   "example": "2025-10-01T12:00:00Z"
                                 },
                                 "expiresIn": {
@@ -10806,7 +10806,7 @@ const AcademySchema: Record<string, unknown> = {
               "expirationDate": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Date when the certificate expires (optional)",
+                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                 "example": "2025-10-01T12:00:00Z"
               },
               "expiresIn": {
@@ -11015,7 +11015,7 @@ const AcademySchema: Record<string, unknown> = {
               "expirationDate": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Date when the certificate expires (optional)",
+                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                 "example": "2025-10-01T12:00:00Z"
               },
               "expiresIn": {
@@ -11216,7 +11216,7 @@ const AcademySchema: Record<string, unknown> = {
           "expirationDate": {
             "type": "string",
             "format": "date-time",
-            "description": "Date when the certificate expires (optional)",
+            "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
             "example": "2025-10-01T12:00:00Z"
           },
           "expiresIn": {
@@ -11345,7 +11345,7 @@ const AcademySchema: Record<string, unknown> = {
               "expirationDate": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Date when the certificate expires (optional)",
+                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                 "example": "2025-10-01T12:00:00Z"
               },
               "expiresIn": {
@@ -11643,7 +11643,7 @@ const AcademySchema: Record<string, unknown> = {
               "expirationDate": {
                 "type": "string",
                 "format": "date-time",
-                "description": "Date when the certificate expires (optional)",
+                "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                 "example": "2025-10-01T12:00:00Z"
               },
               "expiresIn": {
@@ -12569,7 +12569,7 @@ const AcademySchema: Record<string, unknown> = {
                     "expirationDate": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Date when the certificate expires (optional)",
+                      "description": "Date when the certificate expires. Dynamically calculated from issued_date and expires_in; not specified by instructors.",
                       "example": "2025-10-01T12:00:00Z"
                     },
                     "expiresIn": {

@@ -1320,10 +1320,10 @@ const ComponentSchema: Record<string, unknown> = {
               "yaml": "styles",
               "json": "styles"
             },
-            "x-go-type": "corev1alpha1.ComponentStyles",
+            "x-go-type": "core.ComponentStyles",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1alpha1/core",
-              "name": "corev1alpha1"
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
             },
             "x-order": 8,
             "type": "object",
