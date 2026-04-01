@@ -6,14 +6,24 @@ import { components as CapabilityComponents } from "./generated/v1alpha1/capabil
 import { components as CatalogComponents } from "./generated/v1alpha2/catalog/Catalog";
 
 // v1beta1
+import { components as CapabilityV1Beta1Components } from "./generated/v1beta1/capability/Capability";
 import { components as ComponentComponents } from "./generated/v1beta1/component/Component";
-import { components as ModelComponents } from "./generated/v1beta1/model/Model";
 import { components as ConnectionComponents } from "./generated/v1beta1/connection/Connection";
+import { components as CredentialComponents } from "./generated/v1beta1/credential/Credential";
+import { components as ModelComponents } from "./generated/v1beta1/model/Model";
 import { components as UserComponents } from "./generated/v1beta1/user/User";
 import { components as PatternComponents } from "./generated/v1beta1/pattern/Pattern";
 import { components as CategoryComponents } from "./generated/v1beta1/category/Category";
 import { components as SubcategoryComponents } from "./generated/v1beta1/subcategory/Subcategory";
 import { components as EnvironmentComponents } from "./generated/v1beta1/environment/Environment";
+import { components as EvaluationComponents } from "./generated/v1beta1/evaluation/Evaluation";
+import { components as FeatureComponents } from "./generated/v1beta1/feature/Feature";
+import { components as KeyComponents } from "./generated/v1beta1/key/Key";
+import { components as KeychainComponents } from "./generated/v1beta1/keychain/Keychain";
+import { components as OrganizationComponents } from "./generated/v1beta1/organization/Organization";
+import { components as RoleComponents } from "./generated/v1beta1/role/Role";
+import { components as ScheduleComponents } from "./generated/v1beta1/schedule/Schedule";
+import { components as TeamComponents } from "./generated/v1beta1/team/Team";
 import { components as WorkspaceComponents } from "./generated/v1beta1/workspace/Workspace";
 import { components as InvitationComponents } from "./generated/v1beta1/invitation/Invitation";
 import { components as BadgeComponents } from "./generated/v1beta1/badge/Badge";
@@ -110,18 +120,33 @@ export namespace v1alpha2 {
 }
 
 export namespace v1beta1 {
-  export type Component = ComponentComponents["schemas"]["ComponentDefinition"];
-  export type Model = ModelComponents["schemas"]["ModelDefinition"];
-  export type Design = PatternComponents["schemas"]["PatternFile"];
-  export type Connection = ConnectionComponents["schemas"]["Connection"];
-  export type User = UserComponents["schemas"]["User"];
+  export type Badge = BadgeComponents["schemas"]["Badge"];
+  export type Capability =
+    CapabilityV1Beta1Components["schemas"]["Capability"];
   export type Category = CategoryComponents["schemas"]["CategoryDefinition"];
+  export type Component = ComponentComponents["schemas"]["ComponentDefinition"];
+  export type Connection = ConnectionComponents["schemas"]["Connection"];
+  export type Credential = CredentialComponents["schemas"]["Credential"];
+  export type Design = PatternComponents["schemas"]["PatternFile"];
+  export type Environment = EnvironmentComponents["schemas"]["Environment"];
+  export type EvaluationRequest =
+    EvaluationComponents["schemas"]["EvaluationRequest"];
+  export type EvaluationResponse =
+    EvaluationComponents["schemas"]["EvaluationResponse"];
+  export type Feature = FeatureComponents["schemas"]["Feature"];
+  export type Invitation = InvitationComponents["schemas"]["Invitation"];
+  export type Key = KeyComponents["schemas"]["Key"];
+  export type Keychain = KeychainComponents["schemas"]["Keychain"];
+  export type Model = ModelComponents["schemas"]["ModelDefinition"];
+  export type Organization =
+    OrganizationComponents["schemas"]["Organization"];
+  export type Role = RoleComponents["schemas"]["Role"];
+  export type Schedule = ScheduleComponents["schemas"]["Schedule"];
   export type Subcategory =
     SubcategoryComponents["schemas"]["SubCategoryDefinition"];
-  export type Environment = EnvironmentComponents["schemas"]["Environment"];
+  export type Team = TeamComponents["schemas"]["Team"];
+  export type User = UserComponents["schemas"]["User"];
   export type Workspace = WorkspaceComponents["schemas"]["Workspace"];
-  export type Invitation = InvitationComponents["schemas"]["Invitation"];
-  export type Badge = BadgeComponents["schemas"]["Badge"];
 }
 
 export namespace v1beta2 {
