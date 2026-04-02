@@ -432,7 +432,6 @@ components:
           type: string
           description: Connection sub-type
           x-oapi-codegen-extra-tags:
-            db: "sub_type"
             json: "subType"
           maxLength: 255
         credentialSecret:

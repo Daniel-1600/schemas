@@ -1,8 +1,8 @@
 id: 00000000-0000-0000-0000-000000000000
 name: ''
-credentialId: 00000000-0000-0000-0000-000000000000
+credential_id: 00000000-0000-0000-0000-000000000000
 type: platform
-subType: orchestration
+sub_type: orchestration
 kind: kubernetes
 metadata: {}
 status: discovered
@@ -12,4 +12,3 @@ updated_at: '0001-01-01T00:00:00Z'
 deleted_at: null
 environments: []
 schemaVersion: connections.meshery.io/v1beta2
-
