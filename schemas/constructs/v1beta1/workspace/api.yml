@@ -914,6 +914,7 @@ components:
         visibility:
           type: string
           description: Visibility of the view.
+          maxLength: 100
           x-go-type-skip-optional-pointer: true
           x-oapi-codegen-extra-tags:
             db: visibility
