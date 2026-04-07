@@ -689,7 +689,7 @@ models/v1alpha1/capability/capability.go
 
 The OpenAPI bundle is passed to a codegen tool to generate RTK Query clients. Include relevant paths using `x-internal` annotations and define request/response schemas appropriately.
 
-You can control this in `generate.sh` like:
+You can build the OpenAPI bundles with:
 
 ```bash
 # Build per-construct bundles, merge them, and emit cloud/meshery OpenAPI specs
