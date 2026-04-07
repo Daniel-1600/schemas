@@ -49,8 +49,8 @@ type MesheryViewWithLocation struct {
 	// CreatedAt Timestamp when the resource was created.
 	CreatedAt core.CreatedAt `db:"created_at" json:"created_at,omitempty" yaml:"created_at,omitempty"`
 
-	// DeletedAt Timestamp when the resource was deleted.
-	DeletedAt core.DeletedAt `db:"deleted_at" json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
+	// DeletedAt SQL null Timestamp to handle null values of time.
+	DeletedAt core.NullTime `json:"deleted_at,omitempty" yaml:"deleted_at,omitempty"`
 
 	// Filters Filter configuration for this view.
 	Filters core.Map               `db:"filters" json:"filters,omitempty" yaml:"filters,omitempty"`
