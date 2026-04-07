@@ -9,7 +9,7 @@ description: 'Create OpenAPI schemas from Golang models in Layer5 Cloud, generat
 
 This skill guides you through creating OpenAPI schemas from existing Golang models in Layer5 Cloud (layer5io/meshery-cloud), with the generated schemas stored in Meshery Schemas (meshery/schemas). This cross-repository workflow ensures consistent API contracts between the two projects.
 
-**meshery/schemas is the single, authoritative source of truth.** Golang models in `layer5io/meshery-cloud` may be referenced for field discovery, but the design principles, naming conventions, type patterns, and structural rules defined in meshery/schemas take precedence. If a downstream implementation diverges from the conventions here, make the schema correct and open issues in affected repositories documenting the required migration.
+**Source of truth depends on migration stage.** While a construct is being migrated from `layer5io/meshery-cloud`, the downstream Golang models are the reference for field discovery (field names, types, JSON tags, DB column mappings). Once the construct has been fully migrated and its schema is defined in meshery/schemas, **this repository becomes the permanent, authoritative source of truth.** From that point, the design principles, naming conventions, type patterns, and structural rules defined here take precedence. If a downstream implementation diverges from the conventions here, make the schema correct and open issues in affected repositories documenting the required migration.
 
 ## Prerequisites
 
@@ -24,8 +24,8 @@ Both repositories must be locally cloned and available:
 
 1. Read the `meshery/schemas` README.md and uphold all directives, including naming conventions
 2. Read AGENTS.md in both repositories
-3. **meshery/schemas is the source of truth** — its design principles, naming conventions, and type patterns take precedence over downstream implementations in `layer5io/meshery-cloud`
-4. Reference Golang models in `layer5io/meshery-cloud` for field discovery, but apply meshery/schemas conventions to the resulting schema design
+3. **During migration**, treat the Golang models in `layer5io/meshery-cloud` as the reference for field discovery (field names, types, JSON tags, DB mappings)
+4. **After migration**, meshery/schemas becomes the permanent source of truth — apply its design principles, naming conventions, and type patterns even when they conflict with downstream implementations
 5. When cross-construct consistency requires a breaking change to downstream code, make the change here and document the breakage in an issue on the affected repository
 
 ## Naming Conventions

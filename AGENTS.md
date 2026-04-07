@@ -4,12 +4,16 @@ This is the central schema repository for the Meshery platform. Schemas here dri
 
 ## Source of Truth
 
-**meshery/schemas is the single, authoritative source of truth for all API contracts, entity schemas, and design principles in the Meshery ecosystem.** Downstream repositories — including `layer5io/meshery-cloud`, `meshery/meshery`, and all other consumers — must conform to the schemas and conventions defined here, not the reverse.
+The source of truth for a construct's API contract depends on where it is in the migration lifecycle:
+
+1. **Pre-migration** — While a construct is being migrated from a downstream repository (e.g., `layer5io/meshery-cloud`) into meshery/schemas, the downstream implementation is the reference for field discovery: field names, types, JSON tags, and database column mappings.
+2. **Post-migration** — Once a construct has been fully migrated and its schema is defined here, **meshery/schemas becomes the permanent, authoritative source of truth.** Downstream repositories must conform to the contract defined here, not the reverse.
+
+For constructs that have been migrated:
 
 - When a downstream repository's implementation diverges from the schema contract defined here, **this repository is correct** and the downstream code must be updated.
 - When cross-construct consistency requires a change that conflicts with current downstream implementation, make the breaking change here and open issues in affected repositories documenting the required migration.
 - Do not weaken schema contracts, skip validation rules, or introduce inconsistent patterns to accommodate legacy downstream code.
-- Golang models in `layer5io/meshery-cloud` may be referenced for field discovery when creating new constructs, but the design principles, naming conventions, type patterns, and structural rules defined in this repository take precedence over any downstream implementation detail.
 
 ## Build
 
