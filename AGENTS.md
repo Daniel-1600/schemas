@@ -2,6 +2,15 @@
 
 This is the central schema repository for the Meshery platform. Schemas here drive Go struct generation, TypeScript type generation, and RTK Query client generation. Mistakes in schema design propagate into generated code across multiple downstream repos (meshery/meshery, layer5io/meshery-cloud).
 
+## Source of Truth
+
+**meshery/schemas is the single, authoritative source of truth for all API contracts, entity schemas, and design principles in the Meshery ecosystem.** Downstream repositories — including `layer5io/meshery-cloud`, `meshery/meshery`, and all other consumers — must conform to the schemas and conventions defined here, not the reverse.
+
+- When a downstream repository's implementation diverges from the schema contract defined here, **this repository is correct** and the downstream code must be updated.
+- When cross-construct consistency requires a change that conflicts with current downstream implementation, make the breaking change here and open issues in affected repositories documenting the required migration.
+- Do not weaken schema contracts, skip validation rules, or introduce inconsistent patterns to accommodate legacy downstream code.
+- Golang models in `layer5io/meshery-cloud` may be referenced for field discovery when creating new constructs, but the design principles, naming conventions, type patterns, and structural rules defined in this repository take precedence over any downstream implementation detail.
+
 ## Build
 
 ```bash
