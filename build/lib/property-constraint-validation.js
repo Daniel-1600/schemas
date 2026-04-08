@@ -148,11 +148,12 @@ function validateFormatValues(issues, properties, scope) {
     if (!propDef || typeof propDef !== "object") continue;
     if (propDef.$ref) continue;
     if (propDef.format === undefined) continue;
+    if (typeof propDef.format !== "string") continue;
 
     if (!KNOWN_FORMATS.has(propDef.format)) {
       issues.push(
         `${formatContext(scope)}property "${propName}" uses unknown format "${propDef.format}". ` +
-          `Known formats: ${KNOWN_FORMATS_LIST}.`,
+          `Use a standard OpenAPI 3.0 / JSON Schema format (e.g. date-time, email, uri, uuid, int32).`,
       );
     }
   }

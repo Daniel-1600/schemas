@@ -178,7 +178,7 @@ test("accepts known format values without issues", () => {
     },
   });
 
-  assert.equal(issues.some((issue) => issue.includes("unknown format")), false);
+  assert.equal(issues.length, 0, "expected no issues for known formats, got: " + JSON.stringify(issues));
 });
 
 test("skips format validation for $ref properties", () => {
@@ -198,7 +198,7 @@ test("skips format validation for $ref properties", () => {
     },
   });
 
-  assert.equal(issues.some((issue) => issue.includes("unknown format")), false);
+  assert.equal(issues.length, 0, "expected no issues for $ref properties, got: " + JSON.stringify(issues));
 });
 
 test("does not treat arbitrary lowercase id suffixes as ID fields", () => {
