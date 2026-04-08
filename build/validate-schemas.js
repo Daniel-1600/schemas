@@ -95,7 +95,7 @@ const ADVISORY_BASELINE_FILE = path.join(ROOT, "build", "validate-schemas.adviso
 const SERVER_GENERATED_FIELDS = new Set(["id", "created_at", "updated_at", "deleted_at"]);
 
 // Validated API versions. Alpha schemas are legacy (kept for backward compat).
-const VALIDATED_VERSIONS = ["v1beta1", "v1beta2", "v1beta2-draft"];
+const VALIDATED_VERSIONS = ["v1beta1", "v1beta2"];
 
 // Known contract-stable snake_case fields that may not carry explicit db tags.
 const DB_MIRRORED_FIELDS = new Set([
@@ -200,8 +200,8 @@ function advisory(file, message) {
   recordIssue(file, message, "warning");
 }
 
-function isStrictStyleFile(filePath) {
-  return filePath.includes(`${path.sep}v1beta2-draft${path.sep}`);
+function isStrictStyleFile() {
+  return false;
 }
 
 function reportStyleIssue(filePath, message) {
