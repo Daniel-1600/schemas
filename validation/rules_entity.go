@@ -332,17 +332,32 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 		return nil
 	}
 	var out []Violation
-	for propName, propDef := range entity.Properties {
+	walkEntityPropertyConstraints(filePath, "entity", entity.Properties, entity.raw, opts, &out)
+	return out
+}
+
+// walkEntityPropertyConstraints recursively walks entity schema properties,
+// including nested objects, items, and allOf/oneOf/anyOf combiners.
+func walkEntityPropertyConstraints(filePath, scope string, properties map[string]*propertyDef,
+	rawParent map[string]any, opts AuditOptions, out *[]Violation) {
+
+	rawProps, _ := rawParent["properties"].(map[string]any)
+
+	for propName, propDef := range properties {
 		if propDef == nil {
 			continue
 		}
-		raw := entityRawProp(entity, propName)
+		var raw map[string]any
+		if rawProps != nil {
+			raw, _ = rawProps[propName].(map[string]any)
+		}
 
-		// Rule 36: description. Check both the parsed struct and the raw map
-		// because description may sit alongside a $ref in the YAML source.
+		fullScope := scope + "." + propName
+
+		// Rule 36: description.
 		rawDesc, _ := rawMapString(raw, "description")
 		if propDef.Description == "" && rawDesc == "" {
-			out = append(out, Violation{File: filePath,
+			*out = append(*out, Violation{File: filePath,
 				Message:  fmt.Sprintf(`Entity property %q is missing a description.`, propName),
 				Severity: classifyDesignIssue(opts), RuleNumber: 36})
 		}
@@ -352,7 +367,7 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 			hasConstraint := propDef.MinLength != nil || propDef.MaxLength != nil ||
 				propDef.Pattern != "" || propDef.Format != ""
 			if !hasConstraint {
-				out = append(out, Violation{File: filePath,
+				*out = append(*out, Violation{File: filePath,
 					Message:  fmt.Sprintf(`Entity string property %q has no validation constraint (minLength, maxLength, pattern, or format).`, propName),
 					Severity: classifyDesignIssue(opts), RuleNumber: 38})
 			}
@@ -361,7 +376,7 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 		// Rule 39: numeric bounds.
 		if propDef.Type == "integer" || propDef.Type == "number" {
 			if propDef.Minimum == nil && propDef.Maximum == nil && len(propDef.Enum) == 0 {
-				out = append(out, Violation{File: filePath,
+				*out = append(*out, Violation{File: filePath,
 					Message:  fmt.Sprintf(`Entity %s property %q has no bounds (minimum/maximum).`, propDef.Type, propName),
 					Severity: classifyDesignIssue(opts), RuleNumber: 39})
 			}
@@ -370,8 +385,7 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 		// Rule 40: ID properties need format: uuid.
 		if idPropertyRE.MatchString(propName) {
 			if propDef.Type != "" && propDef.Type != "string" {
-				// Non-string typed IDs (e.g. integer foreign keys) do not need
-				// format: uuid — the type itself is the constraint.
+				// Non-string typed IDs skip format: uuid check.
 			} else if propDef.Ref != "" || propDef.Format == "uuid" {
 				// $ref or explicit format -- OK.
 			} else if entityPropHasCompositionRef(propDef) {
@@ -379,7 +393,7 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 			} else {
 				xIDFormat, _ := rawMapString(raw, "x-id-format")
 				if xIDFormat != "external" {
-					out = append(out, Violation{File: filePath,
+					*out = append(*out, Violation{File: filePath,
 						Message: fmt.Sprintf(`Entity ID property %q should have format: uuid, use a $ref to a UUID schema, or add x-id-format: external.`,
 							propName),
 						Severity: classifyDesignIssue(opts), RuleNumber: 40})
@@ -390,13 +404,76 @@ func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts 
 		// Rule 41: page-size minimum.
 		if pageSizeNames[propName] && (propDef.Type == "integer" || propDef.Type == "number") {
 			if propDef.Minimum == nil || *propDef.Minimum < 1.0 {
-				out = append(out, Violation{File: filePath,
+				*out = append(*out, Violation{File: filePath,
 					Message:  fmt.Sprintf(`Entity page-size property %q must have minimum: 1.`, propName),
 					Severity: classifyDesignIssue(opts), RuleNumber: 41})
 			}
 		}
+
+		// Recurse into nested properties.
+		if propDef.Properties != nil {
+			rawNested := raw
+			if rawNested == nil {
+				rawNested = make(map[string]any)
+			}
+			walkEntityPropertyConstraints(filePath, fullScope, propDef.Properties, rawNested, opts, out)
+		}
+
+		// Recurse into items.
+		if propDef.Items != nil && propDef.Items.Properties != nil {
+			rawItems, _ := raw["items"].(map[string]any)
+			if rawItems == nil {
+				rawItems = make(map[string]any)
+			}
+			walkEntityPropertyConstraints(filePath, fullScope+".items", propDef.Items.Properties, rawItems, opts, out)
+		}
+
+		// Recurse into allOf/oneOf/anyOf.
+		for _, combo := range []struct {
+			name string
+			defs []map[string]any
+		}{
+			{"allOf", propDef.AllOf},
+			{"oneOf", propDef.OneOf},
+			{"anyOf", propDef.AnyOf},
+		} {
+			for i, entry := range combo.defs {
+				if subProps, ok := entry["properties"].(map[string]any); ok {
+					subDefs := parseRawProperties(subProps)
+					walkEntityPropertyConstraints(filePath,
+						fmt.Sprintf("%s.%s[%d]", fullScope, combo.name, i),
+						subDefs, entry, opts, out)
+				}
+			}
+		}
 	}
-	return out
+}
+
+// parseRawProperties converts raw YAML property maps to propertyDef structs.
+func parseRawProperties(rawProps map[string]any) map[string]*propertyDef {
+	result := make(map[string]*propertyDef)
+	for name, val := range rawProps {
+		m, ok := val.(map[string]any)
+		if !ok {
+			continue
+		}
+		p := &propertyDef{}
+		if t, ok := m["type"].(string); ok {
+			p.Type = t
+		}
+		if r, ok := m["$ref"].(string); ok {
+			p.Ref = r
+		}
+		if d, ok := m["description"].(string); ok {
+			p.Description = d
+		}
+		if f, ok := m["format"].(string); ok {
+			p.Format = f
+		}
+		p.raw = m
+		result[name] = p
+	}
+	return result
 }
 
 // rawMapString returns a string value from a raw map by key, or ("", false).

@@ -27,7 +27,7 @@ func checkRule1(filePath string, entity *entitySchema, _ AuditOptions) []Violati
 
 // --- Rule 2: POST/PUT requestBody must not require server-generated fields ---
 
-func checkRule2(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
+func checkRule2(filePath string, doc *openapi3.T, opts AuditOptions) []Violation {
 	if doc == nil || doc.Paths == nil {
 		return nil
 	}
@@ -41,7 +41,26 @@ func checkRule2(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
 				continue
 			}
 			for _, media := range pair.op.RequestBody.Value.Content {
-				if media.Schema == nil || media.Schema.Value == nil {
+				if media.Schema == nil {
+					continue
+				}
+				// Check $ref schema name: POST/PUT requestBody should reference a *Payload schema.
+				if media.Schema.Ref != "" {
+					name := refTail(media.Schema.Ref)
+					if !strings.HasSuffix(name, "Payload") {
+						out = append(out, Violation{
+							File: filePath,
+							Message: fmt.Sprintf(
+								`%s %s — requestBody references %q, which is not a *Payload schema. `+
+									`POST/PUT requestBody should reference a dedicated *Payload schema with only client-settable fields. `+
+									`See AGENTS.md § "The Dual-Schema Pattern".`,
+								pair.method, path, name),
+							Severity:   classifyDesignIssue(opts),
+							RuleNumber: 2,
+						})
+					}
+				}
+				if media.Schema.Value == nil {
 					continue
 				}
 				for _, req := range media.Schema.Value.Required {

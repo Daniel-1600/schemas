@@ -10,6 +10,7 @@ on:
       - 'validation/**'
       - 'cmd/validate-schemas/**'
       - 'schemas/**'
+      - 'models/**'
       - 'go.mod'
       - 'go.sum'
   push:
@@ -22,6 +23,7 @@ on:
       - 'validation/**'
       - 'cmd/validate-schemas/**'
       - 'schemas/**'
+      - 'models/**'
       - 'go.mod'
       - 'go.sum'
 
