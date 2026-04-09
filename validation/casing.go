@@ -120,9 +120,15 @@ func ToCamelCase(s string) string {
 		}
 	}
 
-	// Replace "ID" suffix with "Id"
+	// Replace screaming "ID" with "Id" only at word boundaries (suffix or
+	// followed by an uppercase letter), not inside words like "IDENTITY".
 	out := result.String()
-	out = strings.ReplaceAll(out, "ID", "Id")
+	out = regexp.MustCompile(`ID(?:[A-Z0-9]|$)`).ReplaceAllStringFunc(out, func(m string) string {
+		if len(m) > 2 {
+			return "Id" + m[2:]
+		}
+		return "Id"
+	})
 	return out
 }
 
