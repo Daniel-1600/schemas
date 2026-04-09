@@ -180,3 +180,246 @@ func checkRule34(relDir, constructDir string, _ AuditOptions) []Violation {
 	}
 	return out
 }
+
+// --- Entity-schema check helpers ---
+
+// entityRawProp returns the raw YAML map for a named property in an entity schema.
+func entityRawProp(entity *entitySchema, propName string) map[string]any {
+	if entity == nil || entity.raw == nil {
+		return nil
+	}
+	props, ok := entity.raw["properties"].(map[string]any)
+	if !ok {
+		return nil
+	}
+	raw, _ := props[propName].(map[string]any)
+	return raw
+}
+
+// entityRawPropExtraTags returns the x-oapi-codegen-extra-tags map for a property.
+func entityRawPropExtraTags(entity *entitySchema, propName string) map[string]any {
+	raw := entityRawProp(entity, propName)
+	if raw == nil {
+		return nil
+	}
+	tags, _ := raw["x-oapi-codegen-extra-tags"].(map[string]any)
+	return tags
+}
+
+// entityRawPropTag returns a specific tag value from x-oapi-codegen-extra-tags.
+// Options after a comma are stripped (e.g. "name,omitempty" -> "name").
+func entityRawPropTag(entity *entitySchema, propName, tagName string) string {
+	tags := entityRawPropExtraTags(entity, propName)
+	if tags == nil {
+		return ""
+	}
+	val, _ := tags[tagName].(string)
+	if idx := strings.Index(val, ","); idx >= 0 {
+		val = val[:idx]
+	}
+	return val
+}
+
+// entityRawPropGormColumn returns the gorm column from a property's gorm tag.
+func entityRawPropGormColumn(entity *entitySchema, propName string) string {
+	gormTag := entityRawPropTag(entity, propName, "gorm")
+	for _, part := range strings.Split(gormTag, ";") {
+		part = strings.TrimSpace(part)
+		if strings.HasPrefix(part, "column:") {
+			return strings.TrimPrefix(part, "column:")
+		}
+	}
+	return ""
+}
+
+// --- Rule 6 for entity schemas: property name casing ---
+
+func checkRule6ForEntity(filePath string, entity *entitySchema, opts AuditOptions) []Violation {
+	sev := classifyStyleIssue(opts)
+	if sev == nil || entity == nil || entity.Properties == nil {
+		return nil
+	}
+	var out []Violation
+	for propName := range entity.Properties {
+		if strings.HasPrefix(propName, "$") {
+			continue
+		}
+		dbTag := entityRawPropTag(entity, propName, "db")
+		gormCol := entityRawPropGormColumn(entity, propName)
+		issues := GetCamelCaseIssues(propName, true, dbTag, gormCol)
+		if len(issues) > 0 {
+			descs := make([]string, len(issues))
+			for i, iss := range issues {
+				descs[i] = iss.Description
+			}
+			suggestion := GetCamelCaseSuggestion(propName)
+			msg := fmt.Sprintf(`Entity property %q %s.`, propName, strings.Join(descs, "; "))
+			if suggestion != "" {
+				msg += fmt.Sprintf(` Use: %q.`, suggestion)
+			}
+			msg += ` See AGENTS.md § "Casing rules at a glance".`
+			out = append(out, Violation{File: filePath, Message: msg, Severity: *sev, RuleNumber: 6})
+		}
+	}
+	return out
+}
+
+// --- Rule 32 for entity schemas: DB-backed property names must match db tags ---
+
+func checkRule32ForEntity(filePath string, entity *entitySchema, _ AuditOptions) []Violation {
+	if entity == nil || entity.Properties == nil {
+		return nil
+	}
+	var out []Violation
+	for propName := range entity.Properties {
+		dbTag := entityRawPropTag(entity, propName, "db")
+		gormCol := entityRawPropGormColumn(entity, propName)
+		col := dbTag
+		if col == "" {
+			col = gormCol
+		}
+		if col == "" || !IsValidDBTag(col) || !HasUnderscore(col) {
+			continue
+		}
+		if propName != col {
+			jsonTag := entityRawPropTag(entity, propName, "json")
+			if jsonTag != "" && jsonTag != "-" && jsonTag == col {
+				continue // deliberate semantic alias
+			}
+			src := "db"
+			if dbTag == "" {
+				src = "gorm column"
+			}
+			out = append(out, Violation{File: filePath,
+				Message: fmt.Sprintf(`Entity property %q maps to database column %q (via %s tag). DB-backed property names must use the exact snake_case db name.`,
+					propName, col, src),
+				Severity: SeverityBlocking, RuleNumber: 32})
+		}
+	}
+	return out
+}
+
+// --- Rule 35 for entity schemas: x-go-type / x-go-type-import consistency ---
+
+func checkRule35ForEntity(filePath string, entity *entitySchema, _ AuditOptions) []Violation {
+	if entity == nil || entity.Properties == nil {
+		return nil
+	}
+	var out []Violation
+	for propName := range entity.Properties {
+		raw := entityRawProp(entity, propName)
+		if raw == nil {
+			continue
+		}
+		goType, _ := raw["x-go-type"].(string)
+		goImport, _ := raw["x-go-type-import"].(map[string]any)
+		if goType == "" || goImport == nil {
+			continue
+		}
+		ext := map[string]any{
+			"x-go-type":        goType,
+			"x-go-type-import": goImport,
+		}
+		out = append(out, checkGoTypeConsistency(filePath, "(entity)", propName, ext)...)
+	}
+	return out
+}
+
+// --- Property constraint advisories for entity schemas (Rules 36-41) ---
+
+func checkEntityPropertyConstraints(filePath string, entity *entitySchema, opts AuditOptions) []Violation {
+	if entity == nil || entity.Properties == nil {
+		return nil
+	}
+	var out []Violation
+	for propName, propDef := range entity.Properties {
+		if propDef == nil {
+			continue
+		}
+		raw := entityRawProp(entity, propName)
+
+		// Rule 36: description. Check both the parsed struct and the raw map
+		// because description may sit alongside a $ref in the YAML source.
+		rawDesc, _ := rawMapString(raw, "description")
+		if propDef.Description == "" && rawDesc == "" {
+			out = append(out, Violation{File: filePath,
+				Message:  fmt.Sprintf(`Entity property %q is missing a description.`, propName),
+				Severity: classifyDesignIssue(opts), RuleNumber: 36})
+		}
+
+		// Rule 38: string constraints.
+		if propDef.Type == "string" && propDef.Ref == "" && len(propDef.Enum) == 0 {
+			hasConstraint := propDef.MinLength != nil || propDef.MaxLength != nil ||
+				propDef.Pattern != "" || propDef.Format != ""
+			if !hasConstraint {
+				out = append(out, Violation{File: filePath,
+					Message:  fmt.Sprintf(`Entity string property %q has no validation constraint (minLength, maxLength, pattern, or format).`, propName),
+					Severity: classifyDesignIssue(opts), RuleNumber: 38})
+			}
+		}
+
+		// Rule 39: numeric bounds.
+		if propDef.Type == "integer" || propDef.Type == "number" {
+			if propDef.Minimum == nil && propDef.Maximum == nil && len(propDef.Enum) == 0 {
+				out = append(out, Violation{File: filePath,
+					Message:  fmt.Sprintf(`Entity %s property %q has no bounds (minimum/maximum).`, propDef.Type, propName),
+					Severity: classifyDesignIssue(opts), RuleNumber: 39})
+			}
+		}
+
+		// Rule 40: ID properties need format: uuid.
+		if idPropertyRE.MatchString(propName) {
+			if propDef.Type != "" && propDef.Type != "string" {
+				// Non-string typed IDs (e.g. integer foreign keys) do not need
+				// format: uuid — the type itself is the constraint.
+			} else if propDef.Ref != "" || propDef.Format == "uuid" {
+				// $ref or explicit format -- OK.
+			} else if entityPropHasCompositionRef(propDef) {
+				// allOf/anyOf/oneOf $ref -- OK.
+			} else {
+				xIDFormat, _ := rawMapString(raw, "x-id-format")
+				if xIDFormat != "external" {
+					out = append(out, Violation{File: filePath,
+						Message: fmt.Sprintf(`Entity ID property %q should have format: uuid, use a $ref to a UUID schema, or add x-id-format: external.`,
+							propName),
+						Severity: classifyDesignIssue(opts), RuleNumber: 40})
+				}
+			}
+		}
+
+		// Rule 41: page-size minimum.
+		if pageSizeNames[propName] && (propDef.Type == "integer" || propDef.Type == "number") {
+			if propDef.Minimum == nil || *propDef.Minimum < 1.0 {
+				out = append(out, Violation{File: filePath,
+					Message:  fmt.Sprintf(`Entity page-size property %q must have minimum: 1.`, propName),
+					Severity: classifyDesignIssue(opts), RuleNumber: 41})
+			}
+		}
+	}
+	return out
+}
+
+// rawMapString returns a string value from a raw map by key, or ("", false).
+func rawMapString(m map[string]any, key string) (string, bool) {
+	if m == nil {
+		return "", false
+	}
+	v, ok := m[key].(string)
+	return v, ok
+}
+
+// entityPropHasCompositionRef returns true if any allOf/anyOf/oneOf entry in a
+// propertyDef has a "$ref" key.
+func entityPropHasCompositionRef(p *propertyDef) bool {
+	if p == nil {
+		return false
+	}
+	for _, combo := range [][]map[string]any{p.AllOf, p.AnyOf, p.OneOf} {
+		for _, entry := range combo {
+			if _, ok := entry["$ref"]; ok {
+				return true
+			}
+		}
+	}
+	return false
+}

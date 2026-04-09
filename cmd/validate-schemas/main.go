@@ -27,10 +27,10 @@ func main() {
 	contractDebt := flag.Bool("contract-debt", false, "Include legacy contract debt")
 	strict := flag.Bool("strict-consistency", false, "Fail on all style/design/contract debt")
 
-	// Accept legacy flag aliases.
-	flag.Bool("legacy-style", false, "Alias for --style-debt")
-	flag.Bool("compat-debt", false, "Alias for --contract-debt")
-	flag.Bool("strict-debt", false, "Alias for --strict-consistency")
+	// Accept legacy flag aliases — bound to the same variables as their canonical counterparts.
+	flag.BoolVar(styleDebt, "legacy-style", false, "Alias for --style-debt")
+	flag.BoolVar(contractDebt, "compat-debt", false, "Alias for --contract-debt")
+	flag.BoolVar(strict, "strict-debt", false, "Alias for --strict-consistency")
 
 	flag.Parse()
 

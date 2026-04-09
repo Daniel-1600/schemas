@@ -167,6 +167,26 @@ func auditEntitySchemas(constructDir string, opts AuditOptions,
 		for _, v := range checkRule20(relPath, entity, opts) {
 			addViolation(result, v, baseline)
 		}
+
+		// Rule 6: entity property casing must match contract/DB-backed rules.
+		for _, v := range checkRule6ForEntity(relPath, entity, opts) {
+			addViolation(result, v, baseline)
+		}
+
+		// Rule 32: DB-backed fields must use the exact snake_case db column name.
+		for _, v := range checkRule32ForEntity(relPath, entity, opts) {
+			addViolation(result, v, baseline)
+		}
+
+		// Rule 35: entity property x-go-type / x-go-type-import consistency.
+		for _, v := range checkRule35ForEntity(relPath, entity, opts) {
+			addViolation(result, v, baseline)
+		}
+
+		// Rules 36–41: property-constraint advisories.
+		for _, v := range checkEntityPropertyConstraints(relPath, entity, opts) {
+			addViolation(result, v, baseline)
+		}
 	}
 }
 

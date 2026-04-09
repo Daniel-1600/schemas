@@ -161,7 +161,7 @@ func checkCoreMapInSchema(filePath, schemaName string, s *openapi3.Schema) []Vio
 
 // --- Rule 27: x-oapi-codegen-extra-tags consistency ---
 
-func checkRule27(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
+func checkRule27(filePath string, doc *openapi3.T, opts AuditOptions) []Violation {
 	if doc == nil || doc.Components == nil || doc.Components.Schemas == nil {
 		return nil
 	}
@@ -215,7 +215,7 @@ func checkRule27(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
 			if _, ok := tags["yaml"]; ok {
 				out = append(out, Violation{File: filePath,
 					Message:  fmt.Sprintf(`Schema %q — property %q has a manual yaml: tag. YAML struct tags are automatically added by the Go generator — remove this.`, name, propName),
-					Severity: classifyDesignIssue(AuditOptions{}), RuleNumber: 27})
+					Severity: classifyDesignIssue(opts), RuleNumber: 27})
 			}
 		}
 	}

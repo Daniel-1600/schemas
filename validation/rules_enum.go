@@ -24,7 +24,7 @@ func checkRule8(filePath, relFile string, doc *openapi3.T, opts AuditOptions, ba
 		return nil
 	}
 
-	baselineDoc := loadBaselineDoc(filePath, relFile, baselineRef)
+	baselineDoc := loadBaselineDoc(opts.RootDir, relFile, baselineRef)
 	baselineEnums := collectEnumValuesByPath(baselineDoc)
 	var violations []Violation
 
@@ -32,8 +32,9 @@ func checkRule8(filePath, relFile string, doc *openapi3.T, opts AuditOptions, ba
 		if schemaRef == nil || schemaRef.Value == nil {
 			continue
 		}
+		// Use relFile (repo-relative) so that violations match advisory baseline keys.
 		visitEnumsInSchema(schemaRef.Value, fmt.Sprintf("Schema %q", schemaName),
-			baselineEnums, *sev, filePath, &violations)
+			baselineEnums, *sev, relFile, &violations)
 	}
 
 	return violations
@@ -86,13 +87,20 @@ func visitEnumsInSchema(schema *openapi3.Schema, path string,
 			baselineEnums, sev, filePath, violations)
 	}
 
-	// Recurse into allOf/oneOf/anyOf.
-	for _, combiner := range []openapi3.SchemaRefs{schema.AllOf, schema.OneOf, schema.AnyOf} {
-		for i, ref := range combiner {
+	// Recurse into allOf/oneOf/anyOf using the correct combiner name in the path.
+	for _, combiner := range []struct {
+		name string
+		refs openapi3.SchemaRefs
+	}{
+		{name: "allOf", refs: schema.AllOf},
+		{name: "oneOf", refs: schema.OneOf},
+		{name: "anyOf", refs: schema.AnyOf},
+	} {
+		for i, ref := range combiner.refs {
 			if ref == nil || ref.Value == nil {
 				continue
 			}
-			visitEnumsInSchema(ref.Value, fmt.Sprintf("%s.allOf[%d]", path, i),
+			visitEnumsInSchema(ref.Value, fmt.Sprintf("%s.%s[%d]", path, combiner.name, i),
 				baselineEnums, sev, filePath, violations)
 		}
 	}
@@ -179,12 +187,16 @@ func getNestedMap(doc map[string]any, keys ...string) (map[string]any, bool) {
 }
 
 // loadBaselineDoc loads the baseline version of an api.yml file from git.
-func loadBaselineDoc(filePath, relFile, baselineRef string) map[string]any {
+// rootDir is the repository root; it is set as the working directory for git
+// so that the command works correctly regardless of the process's cwd.
+func loadBaselineDoc(rootDir, relFile, baselineRef string) map[string]any {
 	if baselineRef == "" {
 		return nil
 	}
 
-	out, err := exec.Command("git", "show", baselineRef+":"+relFile).Output()
+	cmd := exec.Command("git", "show", baselineRef+":"+relFile)
+	cmd.Dir = rootDir
+	out, err := cmd.Output()
 	if err != nil {
 		return nil
 	}
