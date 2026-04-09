@@ -176,7 +176,7 @@ All alpha versions eliminated. Every construct is beta.
 - [ ] For v1beta2 constructs: update Pop model field access if applicable
 
 ### meshery/schemas
-- [ ] Update `VALIDATED_VERSIONS` in validate-schemas.js to include v1beta2
+- [x] ~~Update `VALIDATED_VERSIONS` in validate-schemas.js to include v1beta2~~ — Validator migrated to Go (`validation/` package); v1beta2 already included in `validatedVersions`
 - [ ] Update `build/lib/config.js` exclusion list for promoted constructs
 - [ ] Update `DB_MIRRORED_FIELDS` if pagination fields change
 - [ ] Update advisory baseline for v1beta2 known issues

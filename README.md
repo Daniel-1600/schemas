@@ -885,7 +885,7 @@ make validate-schemas
 
 ### Schema Validation Modes
 
-`build/validate-schemas.js` enforces 33 rules organized into four issue tiers. Different `make` targets control which tiers are visible and whether violations block the build.
+The `validation/` Go package (invoked via `go run ./cmd/validate-schemas`) enforces 41 rules organized into four issue tiers. Different `make` targets control which tiers are visible and whether violations block the build.
 
 | Mode | Command | Blocking | Style | Design | Contract |
 | --- | --- | --- | --- | --- | --- |
@@ -904,7 +904,7 @@ make validate-schemas
 Run unit tests for the validation logic:
 
 ```bash
-npm run test:validate-schemas
+go test ./validation/...
 ```
 
 ### Build Pipeline
@@ -915,8 +915,8 @@ npm run test:validate-schemas
 schemas/constructs/          (OpenAPI YAML source files)
         |
         v
-[1] validate-schemas         node build/validate-schemas.js
-        |                    34 rules: casing, dual-schema, templates, pagination
+[1] validate-schemas         go run ./cmd/validate-schemas
+        |                    41 rules: casing, dual-schema, templates, pagination
         v
 [2] bundle-openapi           node build/bundle-openapi.js
         |                    Per-construct: in-repo dereference to merged-openapi.json
