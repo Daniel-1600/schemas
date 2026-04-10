@@ -148,11 +148,12 @@ func walkSchemaConstraints(filePath, scope string, schema *openapi3.Schema, opts
 				}
 			}
 
-			// Rule 39: numeric bounds.
+			// Rule 39: numeric bounds. A `const` value is inherently bounded.
 			if p.Type != nil && (p.Type.Is("integer") || p.Type.Is("number")) {
+				_, hasConst := p.Extensions["const"]
 				hasBound := p.Min != nil || p.Max != nil ||
 					p.ExclusiveMin || p.ExclusiveMax ||
-					len(p.Enum) > 0
+					len(p.Enum) > 0 || hasConst
 				if !hasBound {
 					*out = append(*out, Violation{File: filePath,
 						Message:  fmt.Sprintf(`Schema %q — %s property %q has no bounds (minimum/maximum).`, scope, p.Type.Slice()[0], propName),
@@ -210,6 +211,10 @@ func walkSchemaConstraints(filePath, scope string, schema *openapi3.Schema, opts
 	}
 	if schema.Items != nil && schema.Items.Value != nil {
 		walkSchemaConstraints(filePath, scope+".items", schema.Items.Value, opts, out)
+	}
+	// Recurse into additionalProperties schema (for map/object value types).
+	if schema.AdditionalProperties.Schema != nil && schema.AdditionalProperties.Schema.Value != nil {
+		walkSchemaConstraints(filePath, scope+".additionalProperties", schema.AdditionalProperties.Schema.Value, opts, out)
 	}
 }
 

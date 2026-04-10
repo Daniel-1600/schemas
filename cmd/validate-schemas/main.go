@@ -34,7 +34,9 @@ func main() {
 
 	flag.Parse()
 
-	// Resolve repository root from the binary's location.
+	// Resolve repository root by walking up from the current working
+	// directory looking for go.mod. This means validate-schemas must be
+	// run from within the repository tree.
 	rootDir, err := findRepoRoot()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: could not find repository root: %v\n", err)

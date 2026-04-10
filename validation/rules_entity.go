@@ -373,9 +373,9 @@ func walkEntityPropertyConstraints(filePath, scope string, properties map[string
 			}
 		}
 
-		// Rule 39: numeric bounds.
+		// Rule 39: numeric bounds. A `const` value is inherently bounded.
 		if propDef.Type == "integer" || propDef.Type == "number" {
-			if propDef.Minimum == nil && propDef.Maximum == nil && len(propDef.Enum) == 0 {
+			if propDef.Minimum == nil && propDef.Maximum == nil && len(propDef.Enum) == 0 && propDef.Const == nil {
 				*out = append(*out, Violation{File: filePath,
 					Message:  fmt.Sprintf(`Entity %s property %q has no bounds (minimum/maximum).`, propDef.Type, propName),
 					Severity: classifyDesignIssue(opts), RuleNumber: 39})

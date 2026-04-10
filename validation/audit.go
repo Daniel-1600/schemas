@@ -74,11 +74,23 @@ func Audit(opts AuditOptions) AuditResult {
 				continue
 			}
 			constructDir := filepath.Join(versionDir, cEntry.Name())
-
-			// Skip deprecated constructs.
 			apiYmlPath := filepath.Join(constructDir, "api.yml")
-			if isDeprecatedConstruct(apiYmlPath) {
-				continue
+
+			// Load api.yml once and check deprecation from the same doc to
+			// avoid redundant file I/O. If the file doesn't exist or fails to
+			// load, we still run entity/template audits.
+			var apiDoc *openapi3.T
+			apiExists := false
+			if _, err := os.Stat(apiYmlPath); err == nil {
+				apiExists = true
+				doc, loadErr := loadAPISpec(apiYmlPath)
+				if loadErr == nil {
+					// Skip deprecated constructs entirely.
+					if isDeprecatedDoc(doc) {
+						continue
+					}
+					apiDoc = doc
+				}
 			}
 
 			// Validate entity schemas (*.yaml, not api.yml).
@@ -88,9 +100,9 @@ func Audit(opts AuditOptions) AuditResult {
 			auditTemplateFiles(constructDir, cEntry.Name(), opts, baseline, &result)
 
 			// Validate api.yml if it exists.
-			if _, err := os.Stat(apiYmlPath); err == nil {
+			if apiExists {
 				auditAPISpec(apiYmlPath, constructDir, opts, baseline, &result,
-					fingerprints, enumBaselineRef)
+					fingerprints, enumBaselineRef, apiDoc)
 			}
 		}
 	}
@@ -116,17 +128,12 @@ func shouldValidateVersion(version string) bool {
 	return false
 }
 
-// isDeprecatedConstruct checks if an api.yml has x-deprecated: true.
-func isDeprecatedConstruct(apiYmlPath string) bool {
-	doc, err := loadYAMLDoc(apiYmlPath)
-	if err != nil {
+// isDeprecatedDoc checks if a loaded api.yml has x-deprecated: true in info.
+func isDeprecatedDoc(doc *openapi3.T) bool {
+	if doc == nil || doc.Info == nil {
 		return false
 	}
-	info, ok := doc["info"].(map[string]any)
-	if !ok {
-		return false
-	}
-	deprecated, _ := info["x-deprecated"].(bool)
+	deprecated, _ := doc.Info.Extensions["x-deprecated"].(bool)
 	return deprecated
 }
 
@@ -207,19 +214,21 @@ func auditTemplateFiles(constructDir, constructName string, opts AuditOptions,
 	}
 }
 
-// auditAPISpec validates an api.yml file using kin-openapi.
+// auditAPISpec validates an api.yml file using kin-openapi. The doc is
+// preloaded by the caller to avoid redundant file I/O — pass nil if the
+// file failed to load, and this function will report it as blocking.
 func auditAPISpec(apiYmlPath, constructDir string, opts AuditOptions,
 	baseline map[string]bool, result *AuditResult,
-	fingerprints map[string][]schemaLocation, enumBaselineRef string) {
+	fingerprints map[string][]schemaLocation, enumBaselineRef string,
+	doc *openapi3.T) {
 
 	relPath := relativeToRoot(apiYmlPath, opts.RootDir)
 
-	doc, err := loadAPISpec(apiYmlPath)
-	if err != nil {
+	if doc == nil {
 		// Structural load failure — report as blocking.
 		addViolation(result, Violation{
 			File:       relPath,
-			Message:    "Failed to load api.yml: " + err.Error(),
+			Message:    "Failed to load api.yml",
 			Severity:   SeverityBlocking,
 			RuleNumber: 12,
 		}, baseline)

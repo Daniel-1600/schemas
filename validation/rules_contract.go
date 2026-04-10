@@ -73,7 +73,7 @@ func fingerprintSchema(schema *openapi3.Schema) string {
 			if idx := strings.LastIndex(refName, "/"); idx >= 0 {
 				refName = refName[idx+1:]
 			}
-			parts = append(parts, fmt.Sprintf("$ref:%s", refName))
+			parts = append(parts, fmt.Sprintf("%s:$ref:%s", k, refName))
 			continue
 		}
 
