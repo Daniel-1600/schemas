@@ -1,0 +1,273 @@
+package validation
+
+import (
+	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"regexp"
+	"strings"
+)
+
+// echoConstResolver maps the small set of package-qualified constants that
+// appear inside fmt.Sprintf-built route paths in meshery-cloud's router.
+// Adding to this table is the right move when a new constant shows up in a
+// route registration; the alternative — full type-aware constant resolution
+// — is significant scope creep relative to the audit's needs.
+var echoConstResolver = map[string]string{
+	// models.KUBERNETES is used in
+	// meshery-cloud/server/router/router.go:824 to build the
+	// /integrations/connections/kubernetes/:connectionID/context route.
+	"models.KUBERNETES": "kubernetes",
+}
+
+// echoRouterFiles are the well-known files where meshery-cloud registers
+// Echo routes. The parser scans them in order; missing files are treated as
+// empty (the consumer repo may not be available).
+var echoRouterFiles = []string{
+	"server/router/router.go",
+	"server/handlers/invitations/handlers.go",
+	"server/handlers/badges/handler.go",
+}
+
+// echoVerbs are the verb-named methods that Echo's router exposes.
+var echoVerbs = map[string]bool{
+	"GET":     true,
+	"POST":    true,
+	"PUT":     true,
+	"PATCH":   true,
+	"DELETE":  true,
+	"OPTIONS": true,
+	"HEAD":    true,
+	"Any":     true, // .Any() — wildcard
+}
+
+// echoGroupPrefixes maps known group/router variable identifiers to the
+// prefix they apply to all routes registered through them.
+//
+// In the meshery-cloud router these are aliases for the same /api group;
+// the architecture doc lists them explicitly so the parser is deterministic.
+var echoGroupPrefixes = map[string]string{
+	"authedAPI":               "/api",
+	"authByPasskeyAPI":        "/api",
+	"authedORSpecialTokenAPI": "/api",
+	"authedGroup":             "/api",
+	"authedApiGroup":          "/api",
+	"s.e":                     "",
+	"e":                       "",
+}
+
+// echoParamRE matches Echo's `:paramName` placeholders. The character class
+// includes `-` because the cloud router uses kebab-cased param names like
+// `:meshery-version` (see meshery-cloud/server/router/router.go:578).
+var echoParamRE = regexp.MustCompile(`:([A-Za-z0-9_\-]+)`)
+
+// parseEchoRoutes parses meshery-cloud's Echo router files and returns the
+// registered routes as consumerEndpoints.
+func parseEchoRoutes(tree sourceTree) ([]consumerEndpoint, error) {
+	if tree == nil {
+		return nil, nil
+	}
+
+	var endpoints []consumerEndpoint
+	for _, path := range echoRouterFiles {
+		data, err := tree.ReadFile(path)
+		if err != nil {
+			continue
+		}
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, data, parser.ParseComments)
+		if err != nil {
+			continue
+		}
+		eps := extractEchoEndpoints(file, fset, path)
+		endpoints = append(endpoints, eps...)
+	}
+
+	for i := range endpoints {
+		endpoints[i].Repo = "meshery-cloud"
+	}
+
+	sortConsumerEndpoints(endpoints)
+	return endpoints, nil
+}
+
+// extractEchoEndpoints walks an AST file and pulls out every echo route
+// registration call (Pattern E1, E2, E3, E4 from the architecture doc).
+func extractEchoEndpoints(file *ast.File, fset *token.FileSet, routerFile string) []consumerEndpoint {
+	var endpoints []consumerEndpoint
+
+	ast.Inspect(file, func(n ast.Node) bool {
+		call, ok := n.(*ast.CallExpr)
+		if !ok {
+			return true
+		}
+		sel, ok := call.Fun.(*ast.SelectorExpr)
+		if !ok || sel.Sel == nil {
+			return true
+		}
+
+		method := sel.Sel.Name
+		if !echoVerbs[method] {
+			return true
+		}
+
+		// Receiver may be an Ident (authedAPI) or SelectorExpr (s.e).
+		recv := receiverString(sel.X)
+		prefix, known := echoGroupPrefixes[recv]
+		if !known {
+			// Unknown receiver — try a simple heuristic: if the receiver
+			// ends in "API" or matches a Group(...) creator we have not
+			// declared, fall back to no prefix.
+			prefix = ""
+		}
+
+		if len(call.Args) < 1 {
+			return true
+		}
+		path, ok := resolveEchoPathArg(call.Args[0])
+		if !ok {
+			return true
+		}
+		path = normalizeEchoPath(prefix, path)
+
+		var handlerExpr ast.Expr
+		if len(call.Args) >= 2 {
+			handlerExpr = call.Args[1]
+		}
+		handlerName := extractHandlerName(handlerExpr)
+		notes := []string(nil)
+		if handlerName == "" {
+			handlerName = "(anonymous)"
+		}
+		if handlerName == "(anonymous)" {
+			notes = append(notes, "anonymous handler; cannot determine schema usage")
+		}
+
+		verb := strings.ToUpper(method)
+		if method == "Any" {
+			verb = "ANY"
+		}
+
+		ep := consumerEndpoint{
+			Method:      verb,
+			Path:        path,
+			HandlerName: handlerName,
+			RouterFile:  routerFile,
+			Notes:       notes,
+		}
+		if call.Pos().IsValid() && fset != nil {
+			ep.RouterLine = fset.Position(call.Pos()).Line
+		}
+		endpoints = append(endpoints, ep)
+
+		return true
+	})
+
+	return endpoints
+}
+
+// receiverString turns a receiver expression into a flat dotted identifier
+// suitable for matching against echoGroupPrefixes (e.g. s.e or authedAPI).
+func receiverString(expr ast.Expr) string {
+	switch e := expr.(type) {
+	case *ast.Ident:
+		return e.Name
+	case *ast.SelectorExpr:
+		left := receiverString(e.X)
+		if left == "" {
+			return ""
+		}
+		if e.Sel == nil {
+			return left
+		}
+		return left + "." + e.Sel.Name
+	}
+	return ""
+}
+
+// resolveEchoPathArg attempts to extract a string path from the first arg
+// of an Echo route registration. It handles:
+//
+//   - "literal/path" — string literal
+//   - fmt.Sprintf("/.../%s/...", models.X) — format string + identifier args
+//     resolved through echoConstResolver
+//
+// The boolean return distinguishes "resolved successfully" from
+// "couldn't resolve, skip this route". Returning false silently drops the
+// registration (matching prior behavior); returning true with an empty
+// string never happens.
+func resolveEchoPathArg(expr ast.Expr) (string, bool) {
+	if s := stringLit(expr); s != "" {
+		return s, true
+	}
+	call, ok := expr.(*ast.CallExpr)
+	if !ok {
+		return "", false
+	}
+	if !isCalledFunc(call, "Sprintf") || len(call.Args) < 1 {
+		return "", false
+	}
+	format := stringLit(call.Args[0])
+	if format == "" {
+		return "", false
+	}
+	args := call.Args[1:]
+	resolved := make([]any, 0, len(args))
+	for _, a := range args {
+		v, ok := resolveEchoConst(a)
+		if !ok {
+			return "", false
+		}
+		resolved = append(resolved, v)
+	}
+	return fmt.Sprintf(format, resolved...), true
+}
+
+// resolveEchoConst maps a single fmt.Sprintf argument to its string value.
+// Only literal strings and the small known-constant table are supported —
+// anything else returns false so the caller can drop the registration rather
+// than emit a misleading path.
+func resolveEchoConst(expr ast.Expr) (string, bool) {
+	if s := stringLit(expr); s != "" {
+		return s, true
+	}
+	if sel, ok := expr.(*ast.SelectorExpr); ok {
+		if id, ok := sel.X.(*ast.Ident); ok && sel.Sel != nil {
+			key := id.Name + "." + sel.Sel.Name
+			if v, ok := echoConstResolver[key]; ok {
+				return v, true
+			}
+		}
+	}
+	if id, ok := expr.(*ast.Ident); ok {
+		if v, ok := echoConstResolver[id.Name]; ok {
+			return v, true
+		}
+	}
+	return "", false
+}
+
+// normalizeEchoPath applies the group prefix and rewrites Echo's :param style
+// to the {param} form used in OpenAPI specs.
+func normalizeEchoPath(prefix, path string) string {
+	if path == "" {
+		return path
+	}
+	full := path
+	if prefix != "" {
+		// Avoid double-prefixing if the user already wrote the absolute path.
+		if !strings.HasPrefix(full, prefix+"/") && full != prefix {
+			full = strings.TrimRight(prefix, "/") + "/" + strings.TrimLeft(full, "/")
+		}
+	}
+	if !strings.HasPrefix(full, "/") {
+		full = "/" + full
+	}
+	full = echoParamRE.ReplaceAllString(full, "{$1}")
+	// Strip trailing slash unless the path is just "/".
+	if len(full) > 1 {
+		full = strings.TrimRight(full, "/")
+	}
+	return full
+}
