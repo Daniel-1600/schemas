@@ -6,12 +6,9 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
-// sourceTree abstracts access to a consumer repo's source files. It exists
-// so the AST parsers can be exercised against in-memory fixtures during
-// tests instead of requiring a real checkout on disk.
+// sourceTree abstracts access to a consumer repo's source files.
 type sourceTree interface {
 	// ReadFile returns the contents of a file at the given path
 	// (relative to the repo root).
@@ -78,47 +75,4 @@ func (t localTree) Walk(dir string, fn func(path string) error) error {
 
 func (t localTree) Ref() string {
 	return "local:" + t.root
-}
-
-// mapTree is an in-memory sourceTree used by tests.
-type mapTree struct {
-	files map[string][]byte
-	label string
-}
-
-func (t mapTree) ReadFile(path string) ([]byte, error) {
-	data, ok := t.files[path]
-	if !ok {
-		return nil, fs.ErrNotExist
-	}
-	return data, nil
-}
-
-func (t mapTree) Walk(dir string, fn func(path string) error) error {
-	prefix := strings.TrimSuffix(dir, "/")
-	if prefix != "" {
-		prefix += "/"
-	}
-
-	var paths []string
-	for p := range t.files {
-		if prefix == "" || strings.HasPrefix(p, prefix) {
-			paths = append(paths, p)
-		}
-	}
-	sort.Strings(paths)
-
-	for _, p := range paths {
-		if err := fn(p); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (t mapTree) Ref() string {
-	if t.label == "" {
-		return "map:in-memory"
-	}
-	return "map:" + t.label
 }
