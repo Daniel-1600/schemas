@@ -406,23 +406,62 @@ func isCalledFunc(call *ast.CallExpr, name string) bool {
 	return false
 }
 
-// middlewareNameFragments are common substrings of middleware function names
-// that should be skipped while looking for the real handler.
-var middlewareNameFragments = []string{
-	"Middleware",
-	"AuthGuard",
-	"WithAuth",
-	"WithSession",
-	"Authorization",
+// middlewareNamePrefixes / middlewareNameSuffixes / middlewareNameExact are
+// CamelCase fragments matched positionally to identify middleware functions
+// that should be skipped while looking for the real handler. Positional
+// matching (start/end as a CamelCase token) avoids false positives such as
+// "GetAuthorization" being classified as middleware simply because it
+// contains the substring "Authorization".
+var middlewareNamePrefixes = []string{"With", "Require", "Ensure"}
+var middlewareNameSuffixes = []string{"Middleware", "AuthGuard"}
+var middlewareNameExact = map[string]struct{}{
+	"Authorization": {},
+	"WithAuth":      {},
+	"WithSession":   {},
 }
 
 func isMiddlewareName(name string) bool {
-	for _, frag := range middlewareNameFragments {
-		if strings.Contains(name, frag) {
+	if _, ok := middlewareNameExact[name]; ok {
+		return true
+	}
+	for _, p := range middlewareNamePrefixes {
+		if hasCamelPrefix(name, p) {
+			return true
+		}
+	}
+	for _, s := range middlewareNameSuffixes {
+		if hasCamelSuffix(name, s) {
 			return true
 		}
 	}
 	return false
+}
+
+// hasCamelPrefix reports whether name starts with prefix and the prefix
+// terminates at a CamelCase boundary (uppercase letter or end-of-string).
+func hasCamelPrefix(name, prefix string) bool {
+	if !strings.HasPrefix(name, prefix) {
+		return false
+	}
+	if len(name) == len(prefix) {
+		return true
+	}
+	next := name[len(prefix)]
+	return next >= 'A' && next <= 'Z'
+}
+
+// hasCamelSuffix reports whether name ends with suffix and the suffix
+// starts at a CamelCase word boundary (preceded by a lowercase letter or
+// digit, or matches the entire name).
+func hasCamelSuffix(name, suffix string) bool {
+	if !strings.HasSuffix(name, suffix) {
+		return false
+	}
+	if len(name) == len(suffix) {
+		return true
+	}
+	prev := name[len(name)-len(suffix)-1]
+	return (prev >= 'a' && prev <= 'z') || (prev >= '0' && prev <= '9')
 }
 
 // scanFuncLitForHandler walks a function literal body and returns the first
@@ -797,7 +836,8 @@ func identifyArgType(expr ast.Expr) *goTypeInfo {
 	case *ast.CompositeLit:
 		return typeFromExpr(e.Type)
 	case *ast.CallExpr:
-		// new(T) / make(T)
+		// new(T). make(T) is intentionally not handled — slices/maps passed to
+		// Decode/Encode are resolved via the local-var map instead.
 		if id, ok := e.Fun.(*ast.Ident); ok && id.Name == "new" && len(e.Args) == 1 {
 			return typeFromExpr(e.Args[0])
 		}

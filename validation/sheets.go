@@ -160,11 +160,7 @@ func rowsToSheetRows(rows []ConsumerAuditRow) [][]string {
 
 // readSheet pulls every value out of the first sheet (range "A1:Z10000") of
 // the given spreadsheet. The returned rows are exactly what reconcile expects.
-func readSheet(ctx context.Context, sheetID string, creds []byte) ([][]string, error) {
-	srv, err := newSheetsService(ctx, creds)
-	if err != nil {
-		return nil, err
-	}
+func readSheet(ctx context.Context, srv *sheets.Service, sheetID string) ([][]string, error) {
 	resp, err := srv.Spreadsheets.Values.Get(sheetID, "A1:Z10000").Context(ctx).Do()
 	if err != nil {
 		return nil, fmt.Errorf("read sheet: %w", err)
@@ -183,12 +179,8 @@ func readSheet(ctx context.Context, sheetID string, creds []byte) ([][]string, e
 // writeSheet clears the destination sheet and writes the reconciled rows to
 // it. Deleted rows are preserved with a "-removed" change log so the sheet
 // retains historical state.
-func writeSheet(ctx context.Context, sheetID string, creds []byte, tracked []TrackedEndpoint) error {
-	srv, err := newSheetsService(ctx, creds)
-	if err != nil {
-		return err
-	}
-	_, err = srv.Spreadsheets.Values.Clear(sheetID, "A1:Z10000", &sheets.ClearValuesRequest{}).
+func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, tracked []TrackedEndpoint) error {
+	_, err := srv.Spreadsheets.Values.Clear(sheetID, "A1:Z10000", &sheets.ClearValuesRequest{}).
 		Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("clear sheet: %w", err)
@@ -240,13 +232,20 @@ func reconcileFromOpts(opts ConsumerAuditOptions, result *ConsumerAuditResult) e
 	}
 
 	if opts.SheetID != "" {
-		ctx := context.Background()
-		previous, err := readSheet(ctx, opts.SheetID, opts.SheetsCredentials)
+		// Cap each Sheets round-trip so a stalled Google API call cannot
+		// hang CI or local runs indefinitely.
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+		srv, err := newSheetsService(ctx, opts.SheetsCredentials)
+		if err != nil {
+			return err
+		}
+		previous, err := readSheet(ctx, srv, opts.SheetID)
 		if err != nil {
 			return err
 		}
 		tracked := reconcile(result.Rows, previous)
-		if err := writeSheet(ctx, opts.SheetID, opts.SheetsCredentials, tracked); err != nil {
+		if err := writeSheet(ctx, srv, opts.SheetID, tracked); err != nil {
 			return err
 		}
 		result.Tracked = tracked

@@ -415,11 +415,11 @@ func computeEndpointStatus(schemaPresent, mApplies, cApplies, mActive, cActive b
 	case mActive && cActive:
 		return "Active - Both"
 	case mActive && cApplies:
-		return "Active Meshery Server, Unimplemented Meshery Cloud"
+		return "Active - Meshery Server, Unimplemented Meshery Cloud"
 	case mActive:
 		return "Active - Meshery Server"
 	case cActive && mApplies:
-		return "Active Meshery Cloud, Unimplemented Meshery Server"
+		return "Active - Meshery Cloud, Unimplemented Meshery Server"
 	case cActive:
 		return "Active - Meshery Cloud"
 	case mApplies && cApplies:
