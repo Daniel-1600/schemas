@@ -1,10 +1,97 @@
 package validation
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
 )
+
+// Sheet layout constants. Cols 0..12 are the primary human-facing view
+// (A..M); cols 13..24 (N..Y) are intentionally left blank so the sheet
+// looks uncluttered; col 25 (Z) holds machine-only metadata as JSON.
+const (
+	metadataColumnIndex = 25
+	totalColumns        = 26
+)
+
+// RowMetadata is the opaque JSON blob stored in column Z of each data
+// row. It is machine-only — no human reads column Z directly.
+type RowMetadata struct {
+	State          string   `json:"state,omitempty"`
+	ChangedColumns []string `json:"changed_columns,omitempty"`
+	FirstSeen      string   `json:"first_seen,omitempty"`
+	LastReconciled string   `json:"last_reconciled,omitempty"`
+}
+
+// isZero reports whether no metadata fields are set.
+func (m RowMetadata) isZero() bool {
+	return m.State == "" && len(m.ChangedColumns) == 0 && m.FirstSeen == "" && m.LastReconciled == ""
+}
+
+// encode serializes the metadata to compact JSON. Empty metadata
+// encodes to an empty string rather than "{}" so the sheet cell stays
+// clean for rows that have no recorded history.
+func (m RowMetadata) encode() string {
+	if m.isZero() {
+		return ""
+	}
+	b, err := json.Marshal(m)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+// decodeRowMetadata parses a column-Z cell. An empty or malformed blob
+// yields a zero RowMetadata — the reconciler will repopulate it.
+func decodeRowMetadata(s string) RowMetadata {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return RowMetadata{}
+	}
+	var m RowMetadata
+	if err := json.Unmarshal([]byte(s), &m); err != nil {
+		return RowMetadata{}
+	}
+	return m
+}
+
+// DeletionRecord is one entry in the deletion ledger kept in row 1 of
+// column Z. The ledger is append-only and machine-only.
+type DeletionRecord struct {
+	Endpoint      string `json:"endpoint"`
+	Method        string `json:"method"`
+	RemovedAt     string `json:"removed_at"`
+	LastChangeLog string `json:"last_change_log,omitempty"`
+}
+
+// encodeDeletionLedger serializes the ledger for storage in Z1. An
+// empty ledger encodes to an empty string.
+func encodeDeletionLedger(ledger []DeletionRecord) string {
+	if len(ledger) == 0 {
+		return ""
+	}
+	b, err := json.Marshal(ledger)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+// decodeDeletionLedger parses Z1. Unparseable content yields an empty
+// ledger; the reconciler will rebuild it.
+func decodeDeletionLedger(s string) []DeletionRecord {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return nil
+	}
+	var out []DeletionRecord
+	if err := json.Unmarshal([]byte(s), &out); err != nil {
+		return nil
+	}
+	return out
+}
 
 // ConsumerAuditOptions configures a single consumer-audit run.
 type ConsumerAuditOptions struct {
@@ -18,8 +105,6 @@ type ConsumerAuditOptions struct {
 	// Google Sheets update. Empty = no sheet interaction (dry run).
 	SheetID           string
 	SheetsCredentials []byte
-
-	Verbose bool
 }
 
 // ConsumerAuditResult is the output of RunConsumerAudit.
@@ -30,6 +115,16 @@ type ConsumerAuditResult struct {
 
 	// Reconciled state (nil if no previous state was provided).
 	Tracked []TrackedEndpoint
+
+	// NewDeletions are endpoints detected as removed on this run. They
+	// have been appended to DeletionLedger already; this slice exists so
+	// the CLI can surface them separately in the diff.
+	NewDeletions []DeletionRecord
+
+	// DeletionLedger is the full updated ledger that will be written to
+	// Z1 of the sheet. Includes NewDeletions plus everything previously
+	// recorded.
+	DeletionLedger []DeletionRecord
 
 	// Output rows for sheet serialization (sorted, deterministic).
 	Rows []AuditRow
@@ -48,54 +143,67 @@ type ConsumerAuditRow struct {
 	XAnnotated          string
 	SchemaBackedMeshery string
 	SchemaBackedCloud   string
-	SchemaCompleteness  string
 	SchemaDrivenMeshery string
 	SchemaDrivenCloud   string
 	Notes               string
-	ChangeLog           string
+	// ChangeLog is the UTC timestamp of the last state transition
+	// (new / changed) for this row, in format "YYYY-MM-DD HH:MM:SS UTC".
+	// Empty on rows that have never been touched by reconciliation.
+	ChangeLog string
+	// Metadata is machine-only data serialized as JSON in column Z.
+	Metadata RowMetadata
 }
 
 // AuditRow remains a short alias used throughout the validation package.
 type AuditRow = ConsumerAuditRow
 
-// auditHeader is the canonical header for sheet row output.
-var auditHeader = []string{
-	"Category",
-	"Sub-Category",
-	"Endpoint",
-	"Method",
-	"Endpoint Status",
-	"x-annotated",
-	"Schema-Backed (Meshery)",
-	"Schema-Backed (Cloud)",
-	"Schema Completeness",
-	"Schema-Driven (Meshery)",
-	"Schema-Driven (Cloud)",
-	"Notes",
-	"Change Log",
-}
+// auditHeader is the canonical header for sheet row output. Columns
+// N..Y are blank spacers; column Z holds the deletion ledger in row 1
+// and per-row metadata in all other rows.
+var auditHeader = func() []string {
+	h := make([]string, totalColumns)
+	h[0] = "Category"
+	h[1] = "Sub-Category"
+	h[2] = "Endpoint"
+	h[3] = "Method"
+	h[4] = "Endpoint Status"
+	h[5] = "x-annotated"
+	h[6] = "Schema-Backed (Meshery)"
+	h[7] = "Schema-Backed (Cloud)"
+	h[8] = "Schema-Driven (Meshery)"
+	h[9] = "Schema-Driven (Cloud)"
+	h[10] = "Notes"
+	h[11] = "Change Log"
+	h[metadataColumnIndex] = "__metadata__"
+	return h
+}()
 
-// toRow converts the audit row to its serialized string slice.
+// toRow converts the audit row to its serialized string slice. The
+// returned slice is always totalColumns wide, with N..Y padded empty
+// and Z carrying the JSON-encoded metadata.
 func (r ConsumerAuditRow) toRow() []string {
-	return []string{
-		r.Category,
-		r.SubCategory,
-		r.Endpoint,
-		r.Method,
-		r.EndpointStatus,
-		r.XAnnotated,
-		r.SchemaBackedMeshery,
-		r.SchemaBackedCloud,
-		r.SchemaCompleteness,
-		r.SchemaDrivenMeshery,
-		r.SchemaDrivenCloud,
-		r.Notes,
-		r.ChangeLog,
-	}
+	cells := make([]string, totalColumns)
+	cells[0] = r.Category
+	cells[1] = r.SubCategory
+	cells[2] = r.Endpoint
+	cells[3] = r.Method
+	cells[4] = r.EndpointStatus
+	cells[5] = r.XAnnotated
+	cells[6] = r.SchemaBackedMeshery
+	cells[7] = r.SchemaBackedCloud
+	cells[8] = r.SchemaDrivenMeshery
+	cells[9] = r.SchemaDrivenCloud
+	cells[10] = r.Notes
+	cells[11] = r.ChangeLog
+	cells[metadataColumnIndex] = r.Metadata.encode()
+	return cells
 }
 
 // rowFromStrings reconstructs an AuditRow from a serialized string slice.
-// Missing trailing columns are tolerated.
+// Missing trailing columns are tolerated. Legacy Change Log prefixes
+// ("+added YYYY-MM-DD", "~changed ...", "-removed ...") are recognized
+// and migrated on-the-fly: the date is promoted to an RFC3339 timestamp
+// and any missing metadata fields are seeded.
 func rowFromStrings(cols []string) ConsumerAuditRow {
 	get := func(i int) string {
 		if i < len(cols) {
@@ -103,40 +211,100 @@ func rowFromStrings(cols []string) ConsumerAuditRow {
 		}
 		return ""
 	}
-	return ConsumerAuditRow{
+	row := ConsumerAuditRow{
 		Category:            get(0),
 		SubCategory:         get(1),
 		Endpoint:            get(2),
-		Method:              get(3),
+		Method:               get(3),
 		EndpointStatus:      get(4),
 		XAnnotated:          get(5),
 		SchemaBackedMeshery: get(6),
 		SchemaBackedCloud:   get(7),
-		SchemaCompleteness:  get(8),
-		SchemaDrivenMeshery: get(9),
-		SchemaDrivenCloud:   get(10),
-		Notes:               get(11),
-		ChangeLog:           get(12),
+		SchemaDrivenMeshery: get(8),
+		SchemaDrivenCloud:   get(9),
+		Notes:               get(10),
+		ChangeLog:           get(11),
+		Metadata:            decodeRowMetadata(get(metadataColumnIndex)),
 	}
+	row.ChangeLog, row.Metadata = normalizeLegacyChangeLog(row.ChangeLog, row.Metadata)
+	return row
 }
 
-// EndpointState enumerates the four reconciliation states an audit row can
-// be in. Declaring the type here keeps the result surface self-contained.
+// isLegacyTombstone reports whether a row loaded from the sheet is a
+// "-removed ..." tombstone from the previous schema. Callers use this
+// to migrate the tombstone into the deletion ledger and drop the row.
+func isLegacyTombstone(changeLog string) bool {
+	return strings.HasPrefix(strings.TrimSpace(changeLog), "-removed")
+}
+
+// normalizeLegacyChangeLog rewrites the legacy "+added YYYY-MM-DD",
+// "~changed YYYY-MM-DD: Col1, Col2" formats into the new readable UTC
+// timestamp and seeds any missing metadata fields derived from the
+// prefix. Rows already in the new format are returned unchanged.
+func normalizeLegacyChangeLog(changeLog string, meta RowMetadata) (string, RowMetadata) {
+	trimmed := strings.TrimSpace(changeLog)
+	if trimmed == "" {
+		return changeLog, meta
+	}
+	var state, rest string
+	switch {
+	case strings.HasPrefix(trimmed, "+added "):
+		state = "new"
+		rest = strings.TrimPrefix(trimmed, "+added ")
+	case strings.HasPrefix(trimmed, "~changed "):
+		state = "changed"
+		rest = strings.TrimPrefix(trimmed, "~changed ")
+	case strings.HasPrefix(trimmed, "-removed "):
+		state = "removed"
+		rest = strings.TrimPrefix(trimmed, "-removed ")
+	default:
+		return changeLog, meta
+	}
+	date := rest
+	var changedCols []string
+	if idx := strings.Index(rest, ":"); idx >= 0 {
+		date = strings.TrimSpace(rest[:idx])
+		for _, c := range strings.Split(rest[idx+1:], ",") {
+			if c = strings.TrimSpace(c); c != "" {
+				changedCols = append(changedCols, c)
+			}
+		}
+	} else {
+		date = strings.TrimSpace(date)
+	}
+	ts := date + " 00:00:00 UTC"
+	if meta.State == "" {
+		meta.State = state
+	}
+	if meta.FirstSeen == "" {
+		meta.FirstSeen = ts
+	}
+	if len(meta.ChangedColumns) == 0 && len(changedCols) > 0 {
+		meta.ChangedColumns = changedCols
+	}
+	return ts, meta
+}
+
+// EndpointState enumerates the reconciliation states a live audit row
+// can be in. Deletions are tracked separately in the deletion ledger
+// and never appear as a TrackedEndpoint.
 type EndpointState int
 
 const (
 	StateNew EndpointState = iota
 	StateExisting
 	StateChanged
-	StateDeleted
 )
 
 // TrackedEndpoint is one reconciled row with state transition. The CLI
-// consumes this to render the diff section; fields are intentionally simple.
+// consumes this to render the diff section. The Row already carries
+// the authoritative ChangeLog timestamp and Metadata blob.
 type TrackedEndpoint struct {
-	Row       ConsumerAuditRow
-	State     EndpointState
-	ChangeLog string
+	Row   ConsumerAuditRow
+	State EndpointState
+	// Prev is the row as it appeared on the previous run. Populated only
+	// when State == StateChanged, so the CLI can render before/after diffs.
+	Prev *ConsumerAuditRow
 }
 
 // auditSummary captures the high-level counts shown in the terminal table.
@@ -146,13 +314,19 @@ type auditSummary struct {
 	CloudEndpoints       int
 	Matched              int
 	SchemaOnly           int
+	SchemaOnlyMeshery    int
+	SchemaOnlyCloud      int
 	ConsumerOnly         int
 	ConsumerOnlyMeshery  int
 	ConsumerOnlyCloud    int
-	SchemaCompletenessOK int
-	SchemaCompletenessNo int
-	Meshery              repoTally
-	Cloud                repoTally
+	Meshery repoTally
+	Cloud   repoTally
+
+	// Action-item counters surfaced in the terminal action-items table.
+	// "Not Schema Driven" comes from repoTally.DriftTrue; only annotation
+	// mismatches need their own dedicated counters.
+	AnnotationMismatchMeshery int
+	AnnotationMismatchCloud   int
 }
 
 // SheetRows returns the audit output as header-plus-rows [][]string suitable
@@ -164,9 +338,9 @@ func (r *ConsumerAuditResult) SheetRows() [][]string {
 		return [][]string{append([]string(nil), auditHeader...)}
 	}
 	if len(r.Tracked) > 0 {
-		return trackedToSheetRows(r.Tracked)
+		return trackedToSheetRows(r.Tracked, r.DeletionLedger)
 	}
-	return rowsToSheetRows(r.Rows)
+	return rowsToSheetRows(r.Rows, r.DeletionLedger)
 }
 
 // RunConsumerAudit is the single entry point for the consumer audit pipeline.
@@ -303,8 +477,7 @@ func newSchemaRow(ep schemaEndpoint, consumers []consumerEndpoint, mesheryProvid
 	mesheryAllowed := xInternalAllows(ep.XInternal, "meshery")
 	cloudAllowed := xInternalAllows(ep.XInternal, "cloud")
 
-	completeness, schemaNote := classifySchemaCompleteness(ep)
-	row.SchemaCompleteness = completeness
+	schemaNote := classifySchemaNote(ep)
 
 	mesheryConsumers := filterConsumersByRepo(consumers, "meshery")
 	cloudConsumers := filterConsumersByRepo(consumers, "meshery-cloud")
@@ -315,24 +488,17 @@ func newSchemaRow(ep schemaEndpoint, consumers []consumerEndpoint, mesheryProvid
 	row.SchemaBackedMeshery = schemaBackedFor(mesheryProvided, mesheryAllowed, mesheryConsumers)
 	row.SchemaBackedCloud = schemaBackedFor(cloudProvided, cloudAllowed, cloudConsumers)
 
-	// When the schema itself has neither a comparable request nor response
-	// shape (e.g. no $ref-backed 2xx, no requestBody), Schema-Driven cannot
-	// be evaluated regardless of the consumer. Leave those cells blank so
-	// schema-incomplete rows are not miscounted as consumer-side drift.
+	// Schema-Driven is only meaningful when the handler actually imports
+	// the schema (Schema-Backed == TRUE). If the handler doesn't, the
+	// "drift" is just that it was never wired to the schema — nothing for
+	// an auditor to act on in this column. Also blank the cell when the
+	// schema itself has neither a comparable request nor response shape.
 	bothShapesMissing := ep.RequestShape == nil && ep.ResponseShape == nil
-	if mesheryProvided && mesheryAllowed {
-		status := normalizeDrivenStatus(mesheryAssessment.Status)
-		if status == "Not Audited" && bothShapesMissing {
-			status = ""
-		}
-		row.SchemaDrivenMeshery = status
+	if row.SchemaBackedMeshery == "TRUE" && !bothShapesMissing {
+		row.SchemaDrivenMeshery = normalizeDrivenStatus(mesheryAssessment.Status)
 	}
-	if cloudProvided && cloudAllowed {
-		status := normalizeDrivenStatus(cloudAssessment.Status)
-		if status == "Not Audited" && bothShapesMissing {
-			status = ""
-		}
-		row.SchemaDrivenCloud = status
+	if row.SchemaBackedCloud == "TRUE" && !bothShapesMissing {
+		row.SchemaDrivenCloud = normalizeDrivenStatus(cloudAssessment.Status)
 	}
 
 	row.Notes = buildLabeledNotes(schemaNote, mesheryAssessment, cloudAssessment)
@@ -616,16 +782,18 @@ func sortAuditRows(rows []ConsumerAuditRow) {
 	})
 }
 
-// repoTally holds per-repo schema-backed and schema-driven counts.
+// repoTally holds the per-repo counts surfaced in the terminal tables:
+// handlers known to import the schema package (BackedTrue), handlers whose
+// request/response shape diverges from the schema (DriftTrue, == Schema-
+// Driven == FALSE), and handlers we couldn't audit (DrivenNotAud).
 type repoTally struct {
 	BackedTrue   int
-	DrivenTrue   int
-	DrivenFalse  int
+	DriftTrue    int
 	DrivenNotAud int
 }
 
-// tallyRepo counts schema-backed and schema-driven metrics for a single repo.
-// backed / driven extract the repo-specific column values from each row.
+// tallyRepo derives a repoTally directly from row cells, so the action-item
+// counts cannot drift from what the sheet displays.
 func tallyRepo(rows []ConsumerAuditRow, backed, driven func(ConsumerAuditRow) string) repoTally {
 	var t repoTally
 	for _, r := range rows {
@@ -633,10 +801,8 @@ func tallyRepo(rows []ConsumerAuditRow, backed, driven func(ConsumerAuditRow) st
 			t.BackedTrue++
 		}
 		switch driven(r) {
-		case "TRUE":
-			t.DrivenTrue++
 		case "FALSE":
-			t.DrivenFalse++
+			t.DriftTrue++
 		case "Not Audited":
 			t.DrivenNotAud++
 		}
@@ -661,12 +827,20 @@ func computeSummary(
 		ConsumerOnlyMeshery: len(filterConsumersByRepo(match.ConsumerOnly, "meshery")),
 		ConsumerOnlyCloud:   len(filterConsumersByRepo(match.ConsumerOnly, "meshery-cloud")),
 	}
+	for _, ep := range match.SchemaOnly {
+		if xInternalAllows(ep.XInternal, "meshery") {
+			s.SchemaOnlyMeshery++
+		}
+		if xInternalAllows(ep.XInternal, "cloud") {
+			s.SchemaOnlyCloud++
+		}
+	}
 	for _, r := range rows {
-		switch r.SchemaCompleteness {
-		case "TRUE":
-			s.SchemaCompletenessOK++
-		case "FALSE":
-			s.SchemaCompletenessNo++
+		if r.XAnnotated == "Cloud only" && r.SchemaBackedMeshery != "" {
+			s.AnnotationMismatchMeshery++
+		}
+		if r.XAnnotated == "Meshery" && r.SchemaBackedCloud != "" {
+			s.AnnotationMismatchCloud++
 		}
 	}
 	if mesheryProvided {

@@ -3,7 +3,6 @@ package validation
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"golang.org/x/oauth2/google"
@@ -24,9 +23,21 @@ var auditedColumns = []auditedColumn{
 	{name: "x-annotated", get: func(r ConsumerAuditRow) string { return r.XAnnotated }},
 	{name: "Schema-Backed (Meshery)", get: func(r ConsumerAuditRow) string { return r.SchemaBackedMeshery }},
 	{name: "Schema-Backed (Cloud)", get: func(r ConsumerAuditRow) string { return r.SchemaBackedCloud }},
-	{name: "Schema Completeness", get: func(r ConsumerAuditRow) string { return r.SchemaCompleteness }},
 	{name: "Schema-Driven (Meshery)", get: func(r ConsumerAuditRow) string { return r.SchemaDrivenMeshery }},
 	{name: "Schema-Driven (Cloud)", get: func(r ConsumerAuditRow) string { return r.SchemaDrivenCloud }},
+}
+
+// AuditedColumnValue returns the cell value of a reconciled column by its
+// sheet-header name (e.g. "x-annotated"). Returns "" for an unknown column.
+// The CLI uses it to render before/after diffs without duplicating the
+// column list maintained here.
+func AuditedColumnValue(row ConsumerAuditRow, columnName string) string {
+	for _, c := range auditedColumns {
+		if c.name == columnName {
+			return c.get(row)
+		}
+	}
+	return ""
 }
 
 // reconcileKey for reconciliation: (Endpoint, Method) per architecture §10.2.
@@ -39,19 +50,28 @@ func keyOf(r ConsumerAuditRow) reconcileKey {
 	return reconcileKey{Endpoint: r.Endpoint, Method: r.Method}
 }
 
-// reconcile compares the current audit rows against a previous serialized
-// view from Google Sheets and produces tracked endpoints with
-// state transitions. It is pure logic — no I/O — so it is fully testable.
-func reconcile(current []ConsumerAuditRow, previous [][]string) []TrackedEndpoint {
-	today := time.Now().UTC().Format("2006-01-02")
+// reconcileOutput bundles the results of a reconcile pass: live rows
+// that belong in the sheet body, and the updated deletion ledger.
+type reconcileOutput struct {
+	Tracked        []TrackedEndpoint
+	DeletionLedger []DeletionRecord
+	NewDeletions   []DeletionRecord
+}
 
-	prevRows := parseSheetRows(previous)
+// reconcile compares the current audit rows against a previous serialized
+// view from Google Sheets. It returns live tracked rows plus the updated
+// deletion ledger (previous ledger + deletions detected on this run). It
+// is pure logic — no I/O — so it is fully testable.
+func reconcile(current []ConsumerAuditRow, previous [][]string) reconcileOutput {
+	now := time.Now().UTC().Format("2006-01-02 15:04:05 UTC")
+
+	prevRows, prevLedger := parseSheetRows(previous)
 	prevByKey := make(map[reconcileKey]ConsumerAuditRow, len(prevRows))
 	for _, r := range prevRows {
 		prevByKey[keyOf(r)] = r
 	}
 
-	tracked := make([]TrackedEndpoint, 0, len(current)+len(prevRows))
+	tracked := make([]TrackedEndpoint, 0, len(current))
 	seen := make(map[reconcileKey]bool, len(current))
 
 	for _, cur := range current {
@@ -59,65 +79,100 @@ func reconcile(current []ConsumerAuditRow, previous [][]string) []TrackedEndpoin
 		seen[key] = true
 		prev, exists := prevByKey[key]
 		if !exists {
-			tracked = append(tracked, TrackedEndpoint{
-				Row:       withChangeLog(cur, fmt.Sprintf("+added %s", today)),
-				State:     StateNew,
-				ChangeLog: fmt.Sprintf("+added %s", today),
-			})
+			cur.ChangeLog = now
+			cur.Metadata = RowMetadata{
+				State:          "new",
+				FirstSeen:      now,
+				LastReconciled: now,
+			}
+			tracked = append(tracked, TrackedEndpoint{Row: cur, State: StateNew})
 			continue
 		}
 		changed := changedColumns(prev, cur)
+		firstSeen := prev.Metadata.FirstSeen
+		if firstSeen == "" {
+			firstSeen = now
+		}
 		if len(changed) == 0 {
-			tracked = append(tracked, TrackedEndpoint{
-				Row:       withChangeLog(cur, prev.ChangeLog),
-				State:     StateExisting,
-				ChangeLog: prev.ChangeLog,
-			})
+			cur.ChangeLog = prev.ChangeLog
+			cur.Metadata = RowMetadata{
+				State:          "existing",
+				ChangedColumns: prev.Metadata.ChangedColumns,
+				FirstSeen:      firstSeen,
+				LastReconciled: now,
+			}
+			tracked = append(tracked, TrackedEndpoint{Row: cur, State: StateExisting})
 			continue
 		}
-		log := fmt.Sprintf("~changed %s: %s", today, strings.Join(changed, ", "))
-		tracked = append(tracked, TrackedEndpoint{
-			Row:       withChangeLog(cur, log),
-			State:     StateChanged,
-			ChangeLog: log,
-		})
+		cur.ChangeLog = now
+		cur.Metadata = RowMetadata{
+			State:          "changed",
+			ChangedColumns: changed,
+			FirstSeen:      firstSeen,
+			LastReconciled: now,
+		}
+		prevCopy := prev
+		tracked = append(tracked, TrackedEndpoint{Row: cur, State: StateChanged, Prev: &prevCopy})
 	}
 
-	// Carry over rows that are in previous but absent from current.
+	ledger := append([]DeletionRecord(nil), prevLedger...)
+	var newDeletions []DeletionRecord
 	for _, r := range prevRows {
 		if seen[keyOf(r)] {
 			continue
 		}
-		log := fmt.Sprintf("-removed %s", today)
-		tracked = append(tracked, TrackedEndpoint{
-			Row:       withChangeLog(r, log),
-			State:     StateDeleted,
-			ChangeLog: log,
-		})
+		rec := DeletionRecord{
+			Endpoint:      r.Endpoint,
+			Method:        r.Method,
+			RemovedAt:     now,
+			LastChangeLog: r.ChangeLog,
+		}
+		ledger = append(ledger, rec)
+		newDeletions = append(newDeletions, rec)
 	}
 
-	return tracked
+	return reconcileOutput{
+		Tracked:        tracked,
+		DeletionLedger: ledger,
+		NewDeletions:   newDeletions,
+	}
 }
 
-// parseSheetRows accepts the raw [][]string we received from a sheet read. It
-// strips a header row if present (first column == "Category", the canonical
-// header) and converts each row into an AuditRow.
-func parseSheetRows(rows [][]string) []ConsumerAuditRow {
+// parseSheetRows accepts the raw [][]string we received from a sheet read.
+// It returns the live rows and the deletion ledger stored in Z1. Legacy
+// "-removed" tombstone rows are converted into ledger entries and dropped
+// from the live set; legacy Change Log prefixes are normalized via
+// rowFromStrings.
+func parseSheetRows(rows [][]string) ([]ConsumerAuditRow, []DeletionRecord) {
 	if len(rows) == 0 {
-		return nil
+		return nil, nil
 	}
 	start := 0
+	var ledger []DeletionRecord
 	if len(rows[0]) > 0 && rows[0][0] == "Category" {
 		start = 1
+		if metadataColumnIndex < len(rows[0]) {
+			ledger = decodeDeletionLedger(rows[0][metadataColumnIndex])
+		}
 	}
-	out := make([]AuditRow, 0, len(rows)-start)
+	out := make([]ConsumerAuditRow, 0, len(rows)-start)
 	for _, r := range rows[start:] {
 		if len(r) == 0 {
 			continue
 		}
-		out = append(out, rowFromStrings(r))
+		row := rowFromStrings(r)
+		if isLegacyTombstone(row.ChangeLog) {
+			ledger = append(ledger, DeletionRecord{
+				Endpoint:      row.Endpoint,
+				Method:        row.Method,
+				RemovedAt:     row.ChangeLog,
+				LastChangeLog: "",
+			})
+			continue
+		}
+		out = append(out, row)
 	}
-	return out
+	return out, ledger
 }
 
 // changedColumns compares the audited columns of two rows and returns the
@@ -132,26 +187,28 @@ func changedColumns(a, b ConsumerAuditRow) []string {
 	return changed
 }
 
-func withChangeLog(r ConsumerAuditRow, log string) ConsumerAuditRow {
-	r.ChangeLog = log
-	return r
-}
-
 // trackedToSheetRows converts a slice of TrackedEndpoints back into the
 // [][]string shape that downstream sheet writers expect (header + rows).
-func trackedToSheetRows(tracked []TrackedEndpoint) [][]string {
+// The deletion ledger is serialized into Z1 of the header row.
+func trackedToSheetRows(tracked []TrackedEndpoint, ledger []DeletionRecord) [][]string {
 	rows := make([]ConsumerAuditRow, len(tracked))
 	for i, t := range tracked {
 		rows[i] = t.Row
 	}
-	return rowsToSheetRows(rows)
+	return rowsToSheetRows(rows, ledger)
 }
 
 // rowsToSheetRows converts plain audit rows (no reconciliation) into the
-// header+rows shape used by sheet writers.
-func rowsToSheetRows(rows []ConsumerAuditRow) [][]string {
+// header+rows shape used by sheet writers. The deletion ledger, if any,
+// is serialized into Z1.
+func rowsToSheetRows(rows []ConsumerAuditRow, ledger []DeletionRecord) [][]string {
 	out := make([][]string, 0, len(rows)+1)
-	out = append(out, append([]string(nil), auditHeader...))
+	header := append([]string(nil), auditHeader...)
+	header[metadataColumnIndex] = encodeDeletionLedger(ledger)
+	if header[metadataColumnIndex] == "" {
+		header[metadataColumnIndex] = "__metadata__"
+	}
+	out = append(out, header)
 	for _, r := range rows {
 		out = append(out, r.toRow())
 	}
@@ -177,16 +234,16 @@ func readSheet(ctx context.Context, srv *sheets.Service, sheetID string) ([][]st
 }
 
 // writeSheet clears the destination sheet and writes the reconciled rows to
-// it. Deleted rows are preserved with a "-removed" change log so the sheet
-// retains historical state.
-func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, tracked []TrackedEndpoint) error {
+// it. Deletion history is stored in Z1 as a JSON ledger; deleted rows do
+// not appear in the sheet body.
+func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, tracked []TrackedEndpoint, ledger []DeletionRecord) error {
 	_, err := srv.Spreadsheets.Values.Clear(sheetID, "A1:Z10000", &sheets.ClearValuesRequest{}).
 		Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("clear sheet: %w", err)
 	}
 
-	rows := trackedToSheetRows(tracked)
+	rows := trackedToSheetRows(tracked, ledger)
 	values := make([][]any, 0, len(rows))
 	for _, r := range rows {
 		row := make([]any, 0, len(r))
@@ -244,11 +301,13 @@ func reconcileFromOpts(opts ConsumerAuditOptions, result *ConsumerAuditResult) e
 		if err != nil {
 			return err
 		}
-		tracked := reconcile(result.Rows, previous)
-		if err := writeSheet(ctx, srv, opts.SheetID, tracked); err != nil {
+		out := reconcile(result.Rows, previous)
+		if err := writeSheet(ctx, srv, opts.SheetID, out.Tracked, out.DeletionLedger); err != nil {
 			return err
 		}
-		result.Tracked = tracked
+		result.Tracked = out.Tracked
+		result.DeletionLedger = out.DeletionLedger
+		result.NewDeletions = out.NewDeletions
 		return nil
 	}
 
