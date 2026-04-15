@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -66,6 +67,7 @@ func parseEchoRoutes(tree sourceTree) ([]consumerEndpoint, error) {
 	for _, path := range echoRouterFiles {
 		data, err := tree.ReadFile(path)
 		if err != nil {
+			log.Printf("consumer-audit: echo parser: could not read %s from %s: %v", path, tree.Ref(), err)
 			continue
 		}
 		fset := token.NewFileSet()
@@ -112,9 +114,10 @@ func extractEchoEndpoints(file *ast.File, fset *token.FileSet, routerFile string
 		recv := receiverString(sel.X)
 		prefix, known := echoGroupPrefixes[recv]
 		if !known {
-			// Unknown receiver — try a simple heuristic: if the receiver
-			// ends in "API" or matches a Group(...) creator we have not
-			// declared, fall back to no prefix.
+			// Unknown receiver — fall back to no prefix. Log so that new
+			// router variables added to meshery-cloud are surfaced rather
+			// than silently under-reported.
+			log.Printf("consumer-audit: echo parser: unknown receiver %q in %s (method %s); extend echoGroupPrefixes if routes are missing", recv, routerFile, method)
 			prefix = ""
 		}
 
@@ -126,7 +129,9 @@ func extractEchoEndpoints(file *ast.File, fset *token.FileSet, routerFile string
 			// Skip only the unresolved route so the consumer audit remains
 			// resilient as router path construction evolves. A single
 			// dynamic expression (e.g. fmt.Sprintf with a new variable)
-			// should not abort the entire audit.
+			// should not abort the entire audit. Log so that new dynamic
+			// route patterns can be added to echoConstResolver.
+			log.Printf("consumer-audit: echo parser: could not resolve path arg in %s at %s method=%s; add constant to echoConstResolver if needed", routerFile, fset.Position(call.Pos()), method)
 			return true
 		}
 		path = normalizeEchoPath(prefix, path)

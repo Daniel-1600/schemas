@@ -4,6 +4,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"log"
 	"path"
 	"reflect"
 	"sort"
@@ -77,17 +78,19 @@ func indexHandlers(tree sourceTree, endpoints []consumerEndpoint) []consumerEndp
 		"server/dao",
 	}
 	for _, dir := range walkDirs {
-		_ = tree.Walk(dir, func(p string) error {
+		if err := tree.Walk(dir, func(p string) error {
 			if !strings.HasSuffix(p, ".go") || strings.HasSuffix(p, "_test.go") {
 				return nil
 			}
 			data, err := tree.ReadFile(p)
 			if err != nil {
+				log.Printf("consumer-audit: indexHandlers: read %s: %v", p, err)
 				return nil
 			}
 			fset := token.NewFileSet()
 			file, err := parser.ParseFile(fset, p, data, parser.ParseComments)
 			if err != nil {
+				log.Printf("consumer-audit: indexHandlers: parse %s: %v", p, err)
 				return nil
 			}
 			ctxs = append(ctxs, fileCtx{
@@ -97,7 +100,9 @@ func indexHandlers(tree sourceTree, endpoints []consumerEndpoint) []consumerEndp
 				imports: collectImportMap(file),
 			})
 			return nil
-		})
+		}); err != nil {
+			log.Printf("consumer-audit: indexHandlers: walk %s: %v", dir, err)
+		}
 	}
 
 	// Per-package local type sets, indexed by directory of the handler

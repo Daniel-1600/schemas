@@ -10,13 +10,6 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 const sheetName = "Verification of API Endpoints - Combined"
 
 func sheetRange(r string) string {
@@ -201,7 +194,7 @@ func parseSheetRows(rows [][]string) ([]ConsumerAuditRow, []DeletionRecord) {
 			continue
 		}
 		row := rowFromStrings(r)
-		if isLegacyTombstone(row.ChangeLog) {
+		if isLegacyTombstone(row) {
 			ledger = append(ledger, DeletionRecord{
 				Endpoint:      row.Endpoint,
 				Method:        row.Method,

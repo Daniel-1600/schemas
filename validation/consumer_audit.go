@@ -3,6 +3,7 @@ package validation
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -149,7 +150,7 @@ type ConsumerAuditRow struct {
 	SchemaCompletenessCloud   string
 	Notes                     string
 	// ChangeLog is the UTC timestamp of the last state transition
-	// (new / changed) for this row, in format "YYYY-MM-DD HH:MM:SS UTC".
+	// (new / changed) for this row, in format "YYYY-MM-DD HH:MM:SS".
 	// Empty on rows that have never been touched by reconciliation.
 	ChangeLog string
 	// Metadata is machine-only data serialized as JSON in column Z.
@@ -239,10 +240,16 @@ func rowFromStrings(cols []string) ConsumerAuditRow {
 }
 
 // isLegacyTombstone reports whether a row loaded from the sheet is a
-// "-removed ..." tombstone from the previous schema. Callers use this
-// to migrate the tombstone into the deletion ledger and drop the row.
-func isLegacyTombstone(changeLog string) bool {
-	return strings.HasPrefix(strings.TrimSpace(changeLog), "-removed")
+// deletion tombstone. The primary signal is Metadata.State == "removed",
+// which is set by normalizeLegacyChangeLog when it encounters a legacy
+// "-removed YYYY-MM-DD" ChangeLog. The prefix check is kept as a fallback
+// for bare "-removed" entries that have no associated date (and thus no
+// metadata migration).
+func isLegacyTombstone(row ConsumerAuditRow) bool {
+	if row.Metadata.State == "removed" {
+		return true
+	}
+	return strings.HasPrefix(strings.TrimSpace(row.ChangeLog), "-removed")
 }
 
 // normalizeLegacyChangeLog rewrites the legacy "+added YYYY-MM-DD",
@@ -280,7 +287,7 @@ func normalizeLegacyChangeLog(changeLog string, meta RowMetadata) (string, RowMe
 	} else {
 		date = strings.TrimSpace(date)
 	}
-	ts := date + " 00:00:00 "
+	ts := date + " 00:00:00"
 	if meta.State == "" {
 		meta.State = state
 	}
@@ -842,7 +849,7 @@ func (i schemaCompletenessIndex) completeFor(version, construct string) bool {
 }
 
 func constructScopeForFile(file string) (constructScope, bool) {
-	parts := strings.Split(strings.Trim(filepathToSlash(file), "/"), "/")
+	parts := strings.Split(strings.Trim(filepath.ToSlash(file), "/"), "/")
 	for i, part := range parts {
 		if part != "constructs" || i+2 >= len(parts) {
 			continue
@@ -853,10 +860,6 @@ func constructScopeForFile(file string) (constructScope, bool) {
 		return constructScope{Version: parts[1], Construct: parts[2]}, true
 	}
 	return constructScope{}, false
-}
-
-func filepathToSlash(path string) string {
-	return strings.ReplaceAll(path, "\\", "/")
 }
 
 // tallyRepo derives a repoTally directly from row cells.
