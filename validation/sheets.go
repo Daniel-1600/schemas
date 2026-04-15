@@ -63,6 +63,8 @@ var auditedColumns = []auditedColumn{
 	{name: "Schema-Backed (Cloud)", get: func(r ConsumerAuditRow) string { return r.SchemaBackedCloud }},
 	{name: "Schema-Driven (Meshery)", get: func(r ConsumerAuditRow) string { return r.SchemaDrivenMeshery }},
 	{name: "Schema-Driven (Cloud)", get: func(r ConsumerAuditRow) string { return r.SchemaDrivenCloud }},
+	{name: "Schema Completeness (Meshery)", get: func(r ConsumerAuditRow) string { return r.SchemaCompletenessMeshery }},
+	{name: "Schema Completeness (Cloud)", get: func(r ConsumerAuditRow) string { return r.SchemaCompletenessCloud }},
 }
 
 // AuditedColumnValue returns the cell value of a reconciled column by its
@@ -289,7 +291,7 @@ func subsetValueRange(rows [][]string, start, end int) [][]any {
 
 // writeSheet clears the destination sheet and writes the reconciled rows to
 // it. Deletion history is stored in Z1 as a JSON ledger; deleted rows do
-// not appear in the sheet body. User-owned columns M..Y are left untouched.
+// not appear in the sheet body. User-owned columns O..Y are left untouched.
 func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, previous [][]string, tracked []TrackedEndpoint, ledger []DeletionRecord) error {
 	rows := trackedToSheetRows(tracked, ledger)
 	maxRows := max(len(previous), len(rows))
@@ -299,7 +301,7 @@ func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, previo
 
 	_, err := srv.Spreadsheets.Values.BatchClear(sheetID, &sheets.BatchClearValuesRequest{
 		Ranges: []string{
-			sheetRange(fmt.Sprintf("A1:L%d", maxRows)),
+			sheetRange(fmt.Sprintf("A1:N%d", maxRows)),
 			sheetRange(fmt.Sprintf("Z1:Z%d", maxRows)),
 		},
 	}).Context(ctx).Do()

@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-// Sheet layout constants. Cols 0..11 map to generated audit columns
-// (A..L); cols 12..24 (M..Y) are reserved for user-entered values or
+// Sheet layout constants. Cols 0..13 map to generated audit columns
+// (A..N); cols 14..24 (O..Y) are reserved for user-entered values or
 // formulas; col 25 (Z) holds machine-only metadata as JSON.
 const (
 	metadataColumnIndex  = 25
 	totalColumns         = 26
-	generatedColumnCount = 12
+	generatedColumnCount = 14
 )
 
 // RowMetadata is the opaque JSON blob stored in column Z of each data
@@ -135,17 +135,19 @@ type ConsumerAuditResult struct {
 
 // ConsumerAuditRow is one row of the audit output.
 type ConsumerAuditRow struct {
-	Category            string
-	SubCategory         string
-	Endpoint            string
-	Method              string
-	EndpointStatus      string
-	XAnnotated          string
-	SchemaBackedMeshery string
-	SchemaBackedCloud   string
-	SchemaDrivenMeshery string
-	SchemaDrivenCloud   string
-	Notes               string
+	Category                  string
+	SubCategory               string
+	Endpoint                  string
+	Method                    string
+	EndpointStatus            string
+	XAnnotated                string
+	SchemaBackedMeshery       string
+	SchemaBackedCloud         string
+	SchemaDrivenMeshery       string
+	SchemaDrivenCloud         string
+	SchemaCompletenessMeshery string
+	SchemaCompletenessCloud   string
+	Notes                     string
 	// ChangeLog is the UTC timestamp of the last state transition
 	// (new / changed) for this row, in format "YYYY-MM-DD HH:MM:SS UTC".
 	// Empty on rows that have never been touched by reconciliation.
@@ -172,8 +174,10 @@ var auditHeader = func() []string {
 	h[7] = "Schema-Backed (Cloud)"
 	h[8] = "Schema-Driven (Meshery)"
 	h[9] = "Schema-Driven (Cloud)"
-	h[10] = "Notes"
-	h[11] = "Change Log"
+	h[10] = "Schema Completeness (Meshery)"
+	h[11] = "Schema Completeness (Cloud)"
+	h[12] = "Notes"
+	h[13] = "Change Log"
 	h[metadataColumnIndex] = "__metadata__"
 	return h
 }()
@@ -193,8 +197,10 @@ func (r ConsumerAuditRow) toRow() []string {
 	cells[7] = r.SchemaBackedCloud
 	cells[8] = r.SchemaDrivenMeshery
 	cells[9] = r.SchemaDrivenCloud
-	cells[10] = r.Notes
-	cells[11] = r.ChangeLog
+	cells[10] = r.SchemaCompletenessMeshery
+	cells[11] = r.SchemaCompletenessCloud
+	cells[12] = r.Notes
+	cells[13] = r.ChangeLog
 	cells[metadataColumnIndex] = r.Metadata.encode()
 	return cells
 }
@@ -212,19 +218,21 @@ func rowFromStrings(cols []string) ConsumerAuditRow {
 		return ""
 	}
 	row := ConsumerAuditRow{
-		Category:            get(0),
-		SubCategory:         get(1),
-		Endpoint:            get(2),
-		Method:              get(3),
-		EndpointStatus:      get(4),
-		XAnnotated:          get(5),
-		SchemaBackedMeshery: get(6),
-		SchemaBackedCloud:   get(7),
-		SchemaDrivenMeshery: get(8),
-		SchemaDrivenCloud:   get(9),
-		Notes:               get(10),
-		ChangeLog:           get(11),
-		Metadata:            decodeRowMetadata(get(metadataColumnIndex)),
+		Category:                  get(0),
+		SubCategory:               get(1),
+		Endpoint:                  get(2),
+		Method:                    get(3),
+		EndpointStatus:            get(4),
+		XAnnotated:                get(5),
+		SchemaBackedMeshery:       get(6),
+		SchemaBackedCloud:         get(7),
+		SchemaDrivenMeshery:       get(8),
+		SchemaDrivenCloud:         get(9),
+		SchemaCompletenessMeshery: get(10),
+		SchemaCompletenessCloud:   get(11),
+		Notes:                     get(12),
+		ChangeLog:                 get(13),
+		Metadata:                  decodeRowMetadata(get(metadataColumnIndex)),
 	}
 	row.ChangeLog, row.Metadata = normalizeLegacyChangeLog(row.ChangeLog, row.Metadata)
 	return row
@@ -321,6 +329,15 @@ type auditSummary struct {
 	Cloud               repoTally
 }
 
+type constructScope struct {
+	Version   string
+	Construct string
+}
+
+type schemaCompletenessIndex struct {
+	Incomplete map[constructScope]bool
+}
+
 // RunConsumerAudit is the single entry point for the consumer audit pipeline.
 func RunConsumerAudit(opts ConsumerAuditOptions) (*ConsumerAuditResult, error) {
 	return runConsumerAudit(opts, nil, nil)
@@ -364,11 +381,12 @@ func runConsumerAudit(opts ConsumerAuditOptions, mesheryTree, cloudTree sourceTr
 	}
 
 	match := matchEndpoints(idx, mesheryEndpoints, cloudEndpoints)
+	completeness := buildSchemaCompletenessIndex(opts.RootDir)
 
 	mesheryProvided := mesheryTree != nil
 	cloudProvided := cloudTree != nil
 
-	rows := buildAuditRows(idx, match, mesheryProvided, cloudProvided)
+	rows := buildAuditRows(idx, match, mesheryProvided, cloudProvided, completeness)
 	sortAuditRows(rows)
 
 	summary := computeSummary(idx, mesheryEndpoints, cloudEndpoints, match, rows, mesheryProvided, cloudProvided)
@@ -393,6 +411,7 @@ func buildAuditRows(
 	idx *schemaIndex,
 	match *matchResult,
 	mesheryProvided, cloudProvided bool,
+	completeness schemaCompletenessIndex,
 ) []ConsumerAuditRow {
 	rows := make([]AuditRow, 0, len(idx.Endpoints)+len(match.ConsumerOnly))
 	matchIndex := make(map[schemaRowKey]endpointMatch, len(match.Matched))
@@ -418,7 +437,7 @@ func buildAuditRows(
 			consumers = append(consumers, extra...)
 			delete(consumerOnlyByKey, key)
 		}
-		row := newSchemaRow(ep, consumers, mesheryProvided, cloudProvided)
+		row := newSchemaRow(ep, consumers, mesheryProvided, cloudProvided, completeness)
 		rows = append(rows, row)
 	}
 
@@ -441,7 +460,12 @@ func schemaRowKeyOf(ep schemaEndpoint) schemaRowKey {
 	return schemaRowKey{SourceFile: ep.SourceFile, Method: ep.Method, Path: ep.Path}
 }
 
-func newSchemaRow(ep schemaEndpoint, consumers []consumerEndpoint, mesheryProvided, cloudProvided bool) ConsumerAuditRow {
+func newSchemaRow(
+	ep schemaEndpoint,
+	consumers []consumerEndpoint,
+	mesheryProvided, cloudProvided bool,
+	completeness schemaCompletenessIndex,
+) ConsumerAuditRow {
 	row := ConsumerAuditRow{
 		Category:    categoryFromTags(ep.Tags),
 		SubCategory: ep.Construct,
@@ -454,6 +478,7 @@ func newSchemaRow(ep schemaEndpoint, consumers []consumerEndpoint, mesheryProvid
 	cloudAllowed := xInternalAllows(ep.XInternal, "cloud")
 
 	schemaNote := classifySchemaNote(ep)
+	schemaComplete := completeness.completeFor(ep.Version, ep.Construct)
 
 	mesheryConsumers := filterConsumersByRepo(consumers, "meshery")
 	cloudConsumers := filterConsumersByRepo(consumers, "meshery-cloud")
@@ -475,6 +500,13 @@ func newSchemaRow(ep schemaEndpoint, consumers []consumerEndpoint, mesheryProvid
 	}
 	if row.SchemaBackedCloud == "TRUE" && !bothShapesMissing {
 		row.SchemaDrivenCloud = cloudAssessment.Status
+	}
+
+	if mesheryAllowed {
+		row.SchemaCompletenessMeshery = boolAuditStatus(schemaComplete)
+	}
+	if cloudAllowed {
+		row.SchemaCompletenessCloud = boolAuditStatus(schemaComplete)
 	}
 
 	row.Notes = buildLabeledNotes(schemaNote, mesheryAssessment, cloudAssessment)
@@ -750,15 +782,84 @@ func sortAuditRows(rows []ConsumerAuditRow) {
 
 // repoTally holds the per-repo counts surfaced in the terminal report.
 type repoTally struct {
-	BackedTrue int
+	BackedTrue        int
+	CompletenessTrue  int
+	CompletenessFalse int
+}
+
+func boolAuditStatus(ok bool) string {
+	if ok {
+		return auditStatusTrue
+	}
+	return auditStatusFalse
+}
+
+func buildSchemaCompletenessIndex(rootDir string) schemaCompletenessIndex {
+	result := Audit(AuditOptions{
+		RootDir: rootDir,
+		Warn:    true,
+	})
+	index := schemaCompletenessIndex{
+		Incomplete: make(map[constructScope]bool),
+	}
+	for _, v := range result.Blocking {
+		index.add(v)
+	}
+	for _, v := range result.Advisory {
+		index.add(v)
+	}
+	return index
+}
+
+func (i *schemaCompletenessIndex) add(v Violation) {
+	scope, ok := constructScopeForFile(v.File)
+	if !ok {
+		return
+	}
+	i.Incomplete[scope] = true
+}
+
+func (i schemaCompletenessIndex) completeFor(version, construct string) bool {
+	return !i.Incomplete[constructScope{
+		Version:   version,
+		Construct: construct,
+	}]
+}
+
+func constructScopeForFile(file string) (constructScope, bool) {
+	parts := strings.Split(strings.Trim(filepathToSlash(file), "/"), "/")
+	for i, part := range parts {
+		if part != "constructs" || i+2 >= len(parts) {
+			continue
+		}
+		return constructScope{Version: parts[i+1], Construct: parts[i+2]}, true
+	}
+	if len(parts) >= 3 && parts[0] == "models" {
+		return constructScope{Version: parts[1], Construct: parts[2]}, true
+	}
+	return constructScope{}, false
+}
+
+func filepathToSlash(path string) string {
+	return strings.ReplaceAll(path, "\\", "/")
 }
 
 // tallyRepo derives a repoTally directly from row cells.
-func tallyRepo(rows []ConsumerAuditRow, backed func(ConsumerAuditRow) string) repoTally {
+func tallyRepo(
+	rows []ConsumerAuditRow,
+	backed func(ConsumerAuditRow) string,
+	completeness func(ConsumerAuditRow) string,
+) repoTally {
 	var t repoTally
 	for _, r := range rows {
 		if backed(r) == "TRUE" {
 			t.BackedTrue++
+		}
+		switch completeness(r) {
+		case auditStatusTrue:
+			t.CompletenessTrue++
+		case auditStatusFalse:
+			t.CompletenessFalse++
 		}
 	}
 	return t
@@ -789,11 +890,13 @@ func computeSummary(
 	}
 	if mesheryProvided {
 		s.Meshery = tallyRepo(rows,
-			func(r ConsumerAuditRow) string { return r.SchemaBackedMeshery })
+			func(r ConsumerAuditRow) string { return r.SchemaBackedMeshery },
+			func(r ConsumerAuditRow) string { return r.SchemaCompletenessMeshery })
 	}
 	if cloudProvided {
 		s.Cloud = tallyRepo(rows,
-			func(r ConsumerAuditRow) string { return r.SchemaBackedCloud })
+			func(r ConsumerAuditRow) string { return r.SchemaBackedCloud },
+			func(r ConsumerAuditRow) string { return r.SchemaCompletenessCloud })
 	}
 	return s
 }

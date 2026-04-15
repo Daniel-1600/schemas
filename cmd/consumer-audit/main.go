@@ -120,6 +120,8 @@ func printAuditReport(out io.Writer, result *validation.ConsumerAuditResult) {
 		"Category", "Schema", "Meshery", "Cloud")
 	t.AddRow("Total Endpoints", s.SchemaEndpoints, s.MesheryEndpoints, s.CloudEndpoints)
 	t.AddRow("Schema Backed", "-", s.Meshery.BackedTrue, s.Cloud.BackedTrue)
+	t.AddRow("Schema Completeness (TRUE)", "-", s.Meshery.CompletenessTrue, s.Cloud.CompletenessTrue)
+	t.AddRow("Schema Completeness (FALSE)", "-", s.Meshery.CompletenessFalse, s.Cloud.CompletenessFalse)
 	t.AddRow("Schema Only (Not Implemented)",
 		s.SchemaOnly,
 		cell(s.SchemaOnlyMeshery, s.MesheryEndpoints > 0),
