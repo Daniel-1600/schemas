@@ -121,7 +121,6 @@ func printAuditReport(out io.Writer, result *validation.ConsumerAuditResult) {
 	t.AddRow("Total Endpoints", s.SchemaEndpoints, s.MesheryEndpoints, s.CloudEndpoints)
 	t.AddRow("Schema Backed", "-", s.Meshery.BackedTrue, s.Cloud.BackedTrue)
 	t.AddRow("Schema Completeness (TRUE)", "-", s.Meshery.CompletenessTrue, s.Cloud.CompletenessTrue)
-	t.AddRow("Schema Completeness (FALSE)", "-", s.Meshery.CompletenessFalse, s.Cloud.CompletenessFalse)
 	t.AddRow("Schema Only (Not Implemented)",
 		s.SchemaOnly,
 		cell(s.SchemaOnlyMeshery, s.MesheryEndpoints > 0),
@@ -136,6 +135,7 @@ type consumerActionSummary struct {
 	totalEndpoints     int
 	schemaBacked       int
 	schemaDriven       int
+	schemaIncomplete   int
 	applicableSpecs    int
 	unimplemented      int
 	annotationMismatch int
@@ -178,7 +178,7 @@ func printActionItems(out io.Writer, result *validation.ConsumerAuditResult, mes
 		if summary.annotationMismatch > 0 {
 			fmt.Fprintf(
 				out,
-				"%s has %d active %s that match the shared spec but %s marked %s-only.\n",
+				"%s has %d active %s that match the schema but %s marked %s-only.\n",
 				summary.label,
 				summary.annotationMismatch,
 				pluralize("endpoint", summary.annotationMismatch),
@@ -197,7 +197,7 @@ func printActionItems(out io.Writer, result *validation.ConsumerAuditResult, mes
 		)
 		fmt.Fprintf(
 			out,
-			"Of those %d schema-backed %s, %d %s schema-driven.\n",
+			"Out of those %d schema-backed %s, %d %s schema-driven.\n",
 			summary.schemaBacked,
 			pluralize("endpoint", summary.schemaBacked),
 			summary.schemaDriven,
@@ -205,12 +205,21 @@ func printActionItems(out io.Writer, result *validation.ConsumerAuditResult, mes
 		)
 		fmt.Fprintf(
 			out,
-			"Of %d spec-defined %s %s, %d %s unimplemented.\n",
+			"Out of %d spec-defined %s %s, %d %s unimplemented.\n",
 			summary.applicableSpecs,
 			summary.label,
 			pluralize("endpoint", summary.applicableSpecs),
 			summary.unimplemented,
 			verbFor(summary.unimplemented),
+		)
+		fmt.Fprintf(
+			out,
+			"\n Note: \n Out of %d spec-defined %s %s, %d %s schema-audit violations. Run `make audit-schemas` for details.\n",
+			summary.applicableSpecs,
+			summary.label,
+			pluralize("endpoint", summary.applicableSpecs),
+			summary.schemaIncomplete,
+			verbFor(summary.schemaIncomplete),
 		)
 		if i < len(summaries)-1 {
 			fmt.Fprintln(out)
@@ -243,6 +252,9 @@ func buildConsumerActionSummary(
 			continue
 		}
 		summary.applicableSpecs++
+		if schemaCompletenessValue(row, consumer) == "FALSE" {
+			summary.schemaIncomplete++
+		}
 		if !isActiveInConsumer(row, consumer) {
 			summary.unimplemented++
 		}
@@ -308,6 +320,13 @@ func schemaDrivenValue(row validation.ConsumerAuditRow, consumer string) string 
 		return row.SchemaDrivenMeshery
 	}
 	return row.SchemaDrivenCloud
+}
+
+func schemaCompletenessValue(row validation.ConsumerAuditRow, consumer string) string {
+	if consumer == "meshery" {
+		return row.SchemaCompletenessMeshery
+	}
+	return row.SchemaCompletenessCloud
 }
 
 func pluralize(noun string, count int) string {

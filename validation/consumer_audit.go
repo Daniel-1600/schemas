@@ -477,7 +477,6 @@ func newSchemaRow(
 	mesheryAllowed := xInternalAllows(ep.XInternal, "meshery")
 	cloudAllowed := xInternalAllows(ep.XInternal, "cloud")
 
-	schemaNote := classifySchemaNote(ep)
 	schemaComplete := completeness.completeFor(ep.Version, ep.Construct)
 
 	mesheryConsumers := filterConsumersByRepo(consumers, "meshery")
@@ -509,7 +508,7 @@ func newSchemaRow(
 		row.SchemaCompletenessCloud = boolAuditStatus(schemaComplete)
 	}
 
-	row.Notes = buildLabeledNotes(schemaNote, mesheryAssessment, cloudAssessment)
+	row.Notes = buildLabeledNotes(mesheryAssessment, cloudAssessment)
 	return row
 }
 
@@ -541,9 +540,7 @@ func newConsumerOnlyRow(consumers []consumerEndpoint, mesheryProvided, cloudProv
 		row.SchemaBackedCloud = "FALSE"
 	}
 
-	mesheryAssessment := assessConsumers(mesheryProvided && len(mesheryConsumers) > 0, "meshery", mesheryConsumers, nil, nil)
-	cloudAssessment := assessConsumers(cloudProvided && len(cloudConsumers) > 0, "meshery-cloud", cloudConsumers, nil, nil)
-	row.Notes = buildConsumerOnlyAggregateNotes(mesheryAssessment, cloudAssessment)
+	row.Notes = ""
 	return row
 }
 
@@ -672,26 +669,18 @@ func deriveConsumerLocation(endpoint string) (string, string) {
 }
 
 // labeledNote is one actionable note paired with the source that produced it
-// (schema / meshery / cloud). Rendered as "[source] message" one per line.
+// (schema / meshery / cloud). The optional Kind groups related notes together
+// when rendered into the sheet Notes column.
 type labeledNote struct {
 	Source  string
+	Kind    string
 	Message string
 }
 
 // buildLabeledNotes produces the Notes column for a schema-backed row. Every
 // note is attributed to its source and joined by a newline so the sheet shows
 // one actionable line per issue.
-func buildLabeledNotes(schemaNote string, meshery, cloud consumerAssessment) string {
-	var notes []labeledNote
-	for _, n := range splitSchemaNote(schemaNote) {
-		notes = append(notes, labeledNote{Source: "schema", Message: n})
-	}
-	notes = append(notes, collectRepoNotes("meshery", "meshery", meshery)...)
-	notes = append(notes, collectRepoNotes("cloud", "meshery-cloud", cloud)...)
-	return joinLabeledNotes(notes)
-}
-
-func buildConsumerOnlyAggregateNotes(meshery, cloud consumerAssessment) string {
+func buildLabeledNotes(meshery, cloud consumerAssessment) string {
 	var notes []labeledNote
 	notes = append(notes, collectRepoNotes("meshery", "meshery", meshery)...)
 	notes = append(notes, collectRepoNotes("cloud", "meshery-cloud", cloud)...)
@@ -701,10 +690,18 @@ func buildConsumerOnlyAggregateNotes(meshery, cloud consumerAssessment) string {
 func collectRepoNotes(source, repo string, a consumerAssessment) []labeledNote {
 	var out []labeledNote
 	for _, n := range a.Notes {
-		out = append(out, labeledNote{Source: source, Message: stripRepoPrefix(n, repo)})
+		out = append(out, labeledNote{
+			Source:  source,
+			Kind:    "audit note",
+			Message: stripRepoPrefix(n, repo),
+		})
 	}
 	for _, n := range a.Drift {
-		out = append(out, labeledNote{Source: source, Message: stripRepoPrefix(n, repo)})
+		out = append(out, labeledNote{
+			Source:  source,
+			Kind:    "implementation drift",
+			Message: stripRepoPrefix(n, repo),
+		})
 	}
 	return out
 }
@@ -720,35 +717,53 @@ func stripRepoPrefix(note, repo string) string {
 	return note
 }
 
-func splitSchemaNote(joined string) []string {
-	if joined == "" {
-		return nil
-	}
-	parts := strings.Split(joined, "; ")
-	out := make([]string, 0, len(parts))
-	for _, p := range parts {
-		if p = strings.TrimSpace(p); p != "" {
-			out = append(out, p)
-		}
-	}
-	return out
-}
-
 func joinLabeledNotes(notes []labeledNote) string {
+	type groupKey struct {
+		Source string
+		Kind   string
+	}
 	seen := make(map[string]bool, len(notes))
-	out := make([]string, 0, len(notes))
+	groupOrder := make([]groupKey, 0, len(notes))
+	grouped := make(map[groupKey][]string, len(notes))
 	for _, n := range notes {
 		if n.Message == "" {
 			continue
 		}
-		line := fmt.Sprintf("[%s] %s", n.Source, n.Message)
-		if seen[line] {
+		dedupeKey := n.Source + "\x00" + n.Kind + "\x00" + n.Message
+		if seen[dedupeKey] {
 			continue
 		}
-		seen[line] = true
-		out = append(out, line)
+		seen[dedupeKey] = true
+		key := groupKey{Source: n.Source, Kind: n.Kind}
+		if _, ok := grouped[key]; !ok {
+			groupOrder = append(groupOrder, key)
+		}
+		grouped[key] = append(grouped[key], n.Message)
 	}
-	return strings.Join(out, "\n")
+	out := make([]string, 0, len(groupOrder))
+	for _, key := range groupOrder {
+		prefix := fmt.Sprintf("[%s]", key.Source)
+		if key.Kind != "" {
+			prefix += fmt.Sprintf(" [%s]", key.Kind)
+		}
+		messages := grouped[key]
+		if len(messages) == 1 {
+			out = append(out, prefix+" "+messages[0])
+			continue
+		}
+		var block strings.Builder
+		block.WriteString(prefix)
+		block.WriteString("\n")
+		for i, msg := range messages {
+			if i > 0 {
+				block.WriteString("\n")
+			}
+			block.WriteString("  ")
+			block.WriteString(msg)
+		}
+		out = append(out, block.String())
+	}
+	return strings.Join(out, "\n\n")
 }
 
 func uniqueStrings(in []string) []string {

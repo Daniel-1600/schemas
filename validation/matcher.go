@@ -232,27 +232,6 @@ func xInternalAllows(xInternal []string, repo string) bool {
 	return false
 }
 
-// classifySchemaNote returns any advisory notes about the schema endpoint
-// (deprecated/public markers and shape-resolution gaps). The note is empty
-// when the endpoint is fully specified.
-func classifySchemaNote(ep schemaEndpoint) string {
-	var notes []string
-	if ep.Deprecated {
-		notes = append(notes, "deprecated schema endpoint")
-	}
-	if ep.Public {
-		notes = append(notes, "explicitly public endpoint")
-	}
-	if !ep.Has2xx {
-		notes = append(notes, "schema has no 2xx response")
-	} else if !ep.HasSuccessRef {
-		notes = append(notes, "schema 2xx response is not backed by a component $ref")
-	} else if ep.RequestBody && ep.RequestShape == nil {
-		notes = append(notes, "schema requestBody could not be resolved to a comparable shape")
-	}
-	return strings.Join(notes, "; ")
-}
-
 // shapeStatus is the per-side outcome of verifyShape.
 type shapeStatus int
 
