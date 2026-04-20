@@ -544,6 +544,48 @@ const ViewSchema: Record<string, unknown> = {
           }
         }
       },
+      "ContentSharePayload": {
+        "type": "object",
+        "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+        "required": [
+          "content_id",
+          "content_type",
+          "emails",
+          "share"
+        ],
+        "properties": {
+          "content_id": {
+            "description": "Identifier of the view being shared.",
+            "type": "string",
+            "format": "uuid",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          },
+          "content_type": {
+            "type": "string",
+            "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+            "enum": [
+              "pattern",
+              "filter",
+              "view"
+            ]
+          },
+          "emails": {
+            "type": "array",
+            "description": "Email addresses of the recipients to share this view with.",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "share": {
+            "type": "boolean",
+            "description": "When true, flip the view's visibility to public and send invitation\nemails to the recipients. When false, revert visibility to private.\n"
+          }
+        }
+      },
       "MesheryViewPage": {
         "type": "object",
         "description": "Paginated list of views with location enrichment.",
@@ -796,6 +838,56 @@ const ViewSchema: Record<string, unknown> = {
                   "x-oapi-codegen-extra-tags": {
                     "json": "metadata,omitempty"
                   }
+                }
+              }
+            }
+          }
+        }
+      },
+      "contentSharePayload": {
+        "description": "Body for sharing a view with recipients by email.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+              "required": [
+                "content_id",
+                "content_type",
+                "emails",
+                "share"
+              ],
+              "properties": {
+                "content_id": {
+                  "description": "Identifier of the view being shared.",
+                  "type": "string",
+                  "format": "uuid",
+                  "x-go-type": "uuid.UUID",
+                  "x-go-type-import": {
+                    "path": "github.com/gofrs/uuid"
+                  }
+                },
+                "content_type": {
+                  "type": "string",
+                  "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+                  "enum": [
+                    "pattern",
+                    "filter",
+                    "view"
+                  ]
+                },
+                "emails": {
+                  "type": "array",
+                  "description": "Email addresses of the recipients to share this view with.",
+                  "items": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "share": {
+                  "type": "boolean",
+                  "description": "When true, flip the view's visibility to public and send invitation\nemails to the recipients. When false, revert visibility to private.\n"
                 }
               }
             }
@@ -1363,6 +1455,117 @@ const ViewSchema: Record<string, unknown> = {
           },
           "401": {
             "description": "Expired JWT token used or insufficient privilege",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/view/share": {
+      "post": {
+        "x-internal": [
+          "cloud"
+        ],
+        "tags": [
+          "views"
+        ],
+        "operationId": "shareView",
+        "summary": "Share a view by email",
+        "description": "Shares a view with a list of email addresses. When `share` is true, the\nview's visibility is flipped to public and an invitation email is sent\nto each recipient. When `share` is false, visibility is reverted to\nprivate. Only the owner of the view (or a provider admin) may change\nits sharing mode.\n",
+        "requestBody": {
+          "description": "Body for sharing a view with recipients by email.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+                "required": [
+                  "content_id",
+                  "content_type",
+                  "emails",
+                  "share"
+                ],
+                "properties": {
+                  "content_id": {
+                    "description": "Identifier of the view being shared.",
+                    "type": "string",
+                    "format": "uuid",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    }
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+                    "enum": [
+                      "pattern",
+                      "filter",
+                      "view"
+                    ]
+                  },
+                  "emails": {
+                    "type": "array",
+                    "description": "Email addresses of the recipients to share this view with.",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "share": {
+                    "type": "boolean",
+                    "description": "When true, flip the view's visibility to public and send invitation\nemails to the recipients. When false, revert visibility to private.\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "View shared."
+          },
+          "400": {
+            "description": "Invalid request body or request param",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Expired JWT token used or insufficient privilege",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Caller is not the owner of the view."
+          },
+          "404": {
+            "description": "Result not found",
             "content": {
               "text/plain": {
                 "schema": {
