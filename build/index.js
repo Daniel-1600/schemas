@@ -82,20 +82,24 @@ const commands = {
  * Run a process and return a promise
  * @param {string} command - Executable to run
  * @param {string[]} args - Arguments to pass
+ * @param {{ label?: string }} [options] - Optional label for diagnostics
  * @returns {Promise<void>}
  */
-function runProcess(command, args = []) {
+function runProcess(command, args = [], { label } = {}) {
   return new Promise((resolve, reject) => {
     const proc = spawn(command, args, {
       cwd: paths.getProjectRoot(),
       stdio: "inherit",
     });
 
+    const displayCommand = [command, ...args].join(" ");
+    const prefix = label ? `${label} (${displayCommand})` : displayCommand;
+
     proc.on("close", (code) => {
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`${command} exited with code ${code}`));
+        reject(new Error(`${prefix} exited with code ${code}`));
       }
     });
 
@@ -136,11 +140,22 @@ async function runCommand(commandName, completed = new Set()) {
 
   // Run either a raw exec command or a node script
   if (command.exec) {
-    await runProcess(command.exec[0], command.exec.slice(1));
-  } else {
+    if (!Array.isArray(command.exec) || command.exec.length === 0) {
+      throw new Error(
+        `Command '${commandName}' has an invalid 'exec' (expected non-empty array)`,
+      );
+    }
+    await runProcess(command.exec[0], command.exec.slice(1), {
+      label: commandName,
+    });
+  } else if (command.script) {
     const scriptPath = path.join(__dirname, command.script);
     const args = command.args || [];
-    await runProcess("node", [scriptPath, ...args]);
+    await runProcess("node", [scriptPath, ...args], { label: commandName });
+  } else {
+    throw new Error(
+      `Command '${commandName}' has neither 'exec' nor 'script'`,
+    );
   }
   completed.add(commandName);
 }

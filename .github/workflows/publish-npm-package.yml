@@ -40,14 +40,14 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Validate schemas
+        run: make validate-schemas
+
       - name: Install Dependencies
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ''  # Explicitly empty for install
 
-      - name: Validate schemas
-        run: make validate-schemas
-          
 
       - name: Configure Git
         run: |
