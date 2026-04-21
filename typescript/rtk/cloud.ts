@@ -3910,11 +3910,10 @@ export type ShareViewApiArg = {
   body: {
     /** Identifier of the view being shared. */
     content_id: string;
-    /** The kind of content being shared. On this endpoint only `view` is
-        accepted; the enum is kept open for symmetry with the design share
-        endpoint so a single client-side type can back both calls.
+    /** The kind of content being shared. Only `view` is accepted on this
+        endpoint.
          */
-    content_type: "pattern" | "filter" | "view";
+    content_type: "view";
     /** Email addresses of the recipients to share this view with. */
     emails: string[];
     /** When true, flip the view's visibility to public and send invitation

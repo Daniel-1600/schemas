@@ -546,7 +546,7 @@ const ViewSchema: Record<string, unknown> = {
       },
       "ContentSharePayload": {
         "type": "object",
-        "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+        "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
         "required": [
           "content_id",
           "content_type",
@@ -565,10 +565,8 @@ const ViewSchema: Record<string, unknown> = {
           },
           "content_type": {
             "type": "string",
-            "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+            "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
             "enum": [
-              "pattern",
-              "filter",
               "view"
             ]
           },
@@ -851,7 +849,7 @@ const ViewSchema: Record<string, unknown> = {
           "application/json": {
             "schema": {
               "type": "object",
-              "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+              "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
               "required": [
                 "content_id",
                 "content_type",
@@ -870,10 +868,8 @@ const ViewSchema: Record<string, unknown> = {
                 },
                 "content_type": {
                   "type": "string",
-                  "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+                  "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
                   "enum": [
-                    "pattern",
-                    "filter",
                     "view"
                   ]
                 },
@@ -1494,7 +1490,7 @@ const ViewSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
-                "description": "Payload for sharing a view with one or more recipients by email. The\nwire format is identical to the design share payload (defined in\n`v1beta2/design`); Go consumers are expected to import the canonical\n`pattern.ContentSharePayload` type and reuse it for both endpoints.\n",
+                "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
                 "required": [
                   "content_id",
                   "content_type",
@@ -1513,10 +1509,8 @@ const ViewSchema: Record<string, unknown> = {
                   },
                   "content_type": {
                     "type": "string",
-                    "description": "The kind of content being shared. On this endpoint only `view` is\naccepted; the enum is kept open for symmetry with the design share\nendpoint so a single client-side type can back both calls.\n",
+                    "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
                     "enum": [
-                      "pattern",
-                      "filter",
                       "view"
                     ]
                   },

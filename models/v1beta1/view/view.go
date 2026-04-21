@@ -10,22 +10,19 @@ import (
 
 // Defines values for ContentSharePayloadContentType.
 const (
-	Filter  ContentSharePayloadContentType = "filter"
-	Pattern ContentSharePayloadContentType = "pattern"
-	View    ContentSharePayloadContentType = "view"
+	View ContentSharePayloadContentType = "view"
 )
 
 // ContentSharePayload Payload for sharing a view with one or more recipients by email. The
-// wire format is identical to the design share payload (defined in
-// `v1beta2/design`); Go consumers are expected to import the canonical
-// `pattern.ContentSharePayload` type and reuse it for both endpoints.
+// wire format matches the canonical design share payload
+// (`design.ContentSharePayload` in `v1beta2/design`), restricted to the
+// `view` content type since that is all this endpoint accepts.
 type ContentSharePayload struct {
 	// ContentId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
 	ContentId core.Uuid `json:"content_id" yaml:"content_id"`
 
-	// ContentType The kind of content being shared. On this endpoint only `view` is
-	// accepted; the enum is kept open for symmetry with the design share
-	// endpoint so a single client-side type can back both calls.
+	// ContentType The kind of content being shared. Only `view` is accepted on this
+	// endpoint.
 	ContentType ContentSharePayloadContentType `json:"content_type" yaml:"content_type"`
 
 	// Emails Email addresses of the recipients to share this view with.
@@ -36,9 +33,8 @@ type ContentSharePayload struct {
 	Share bool `json:"share" yaml:"share"`
 }
 
-// ContentSharePayloadContentType The kind of content being shared. On this endpoint only `view` is
-// accepted; the enum is kept open for symmetry with the design share
-// endpoint so a single client-side type can back both calls.
+// ContentSharePayloadContentType The kind of content being shared. Only `view` is accepted on this
+// endpoint.
 type ContentSharePayloadContentType string
 
 // MesheryView A saved view with filters and metadata that defines a customized perspective of Meshery resources. Learn more at https://docs.meshery.io/concepts/logical/views
