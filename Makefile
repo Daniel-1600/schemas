@@ -125,6 +125,16 @@ baseline-tag-divergence:
 		$(if $(MESHERY_REPO),--meshery-repo=$(MESHERY_REPO)) \
 		$(if $(CLOUD_REPO),--cloud-repo=$(CLOUD_REPO))
 
+## Regenerate the Option B Phase 0 consumer-audit verbatim baseline
+## (captures verbose make consumer-audit output against local sibling repos)
+.PHONY: baseline-consumer-audit
+baseline-consumer-audit:
+	@$(MAKE) --no-print-directory consumer-audit \
+		MESHERY_REPO=$(if $(MESHERY_REPO),$(MESHERY_REPO),../meshery) \
+		CLOUD_REPO=$(if $(CLOUD_REPO),$(CLOUD_REPO),../meshery-cloud) \
+		VERBOSE=1 > validation/baseline/consumer-audit.txt
+	@echo "phase0-consumer-audit: captured $$(wc -l < validation/baseline/consumer-audit.txt) lines -> validation/baseline/consumer-audit.txt"
+
 #-----------------------------------------------------------------------------
 # Consumer audit (schemas vs. consumer repos)
 #-----------------------------------------------------------------------------
