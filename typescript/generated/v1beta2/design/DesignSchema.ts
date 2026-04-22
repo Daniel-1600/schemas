@@ -24941,6 +24941,10 @@ const DesignSchema: Record<string, unknown> = {
     },
     "/api/pattern/import": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "designs"
         ],

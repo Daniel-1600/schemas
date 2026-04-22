@@ -27,6 +27,10 @@ const UserSchema: Record<string, unknown> = {
   "paths": {
     "/api/identity/orgs/{orgId}/users": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "users"
         ],
@@ -694,6 +698,10 @@ const UserSchema: Record<string, unknown> = {
     },
     "/api/users": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "users"
         ],
@@ -1312,6 +1320,10 @@ const UserSchema: Record<string, unknown> = {
     },
     "/api/identity/users/profile/{id}": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "users"
         ],
@@ -1888,6 +1900,10 @@ const UserSchema: Record<string, unknown> = {
     },
     "/api/identity/users/profile": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "users"
         ],

@@ -686,6 +686,10 @@ const EnvironmentSchema: Record<string, unknown> = {
   "paths": {
     "/api/environments": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],
@@ -940,6 +944,10 @@ const EnvironmentSchema: Record<string, unknown> = {
         }
       },
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],
@@ -1214,6 +1222,10 @@ const EnvironmentSchema: Record<string, unknown> = {
     },
     "/api/environments/{environmentId}": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],
@@ -1488,6 +1500,10 @@ const EnvironmentSchema: Record<string, unknown> = {
         }
       },
       "put": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],
@@ -1790,6 +1806,10 @@ const EnvironmentSchema: Record<string, unknown> = {
         }
       },
       "delete": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],
@@ -1861,6 +1881,10 @@ const EnvironmentSchema: Record<string, unknown> = {
     },
     "/api/environments/{environmentId}/connections": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "environments"
         ],

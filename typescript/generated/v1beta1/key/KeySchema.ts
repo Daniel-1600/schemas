@@ -37,6 +37,10 @@ const KeySchema: Record<string, unknown> = {
   "paths": {
     "/api/identity/orgs/{orgId}/users/keys": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "users"
         ],

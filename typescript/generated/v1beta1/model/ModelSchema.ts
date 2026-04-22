@@ -33,6 +33,10 @@ const ModelSchema: Record<string, unknown> = {
   "paths": {
     "/api/meshmodels/register": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Models"
         ],

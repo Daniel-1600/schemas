@@ -28,6 +28,10 @@ const EventSchema: Record<string, unknown> = {
   "paths": {
     "/events/{id}": {
       "delete": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "events"
         ],
@@ -93,6 +97,10 @@ const EventSchema: Record<string, unknown> = {
     },
     "/events": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "events"
         ],
@@ -146,6 +154,10 @@ const EventSchema: Record<string, unknown> = {
     },
     "/events/delete": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "events"
         ],
@@ -233,6 +245,10 @@ const EventSchema: Record<string, unknown> = {
     },
     "/events/status": {
       "put": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "events"
         ],
@@ -327,6 +343,10 @@ const EventSchema: Record<string, unknown> = {
     },
     "/events/{id}/status": {
       "put": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "events"
         ],

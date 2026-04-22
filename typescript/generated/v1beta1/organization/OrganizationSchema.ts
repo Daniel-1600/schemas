@@ -28,6 +28,10 @@ const OrganizationSchema: Record<string, unknown> = {
   "paths": {
     "/api/identity/orgs": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -331,6 +335,10 @@ const OrganizationSchema: Record<string, unknown> = {
         }
       },
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -764,6 +772,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/by-domain": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -1059,6 +1071,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/{orgId}": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -1350,6 +1366,10 @@ const OrganizationSchema: Record<string, unknown> = {
         }
       },
       "delete": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -1429,6 +1449,10 @@ const OrganizationSchema: Record<string, unknown> = {
         }
       },
       "put": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -1893,6 +1917,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/{orgId}/preferences": {
       "get": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -2105,6 +2133,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/{orgId}/teams/{teamId}": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -2376,6 +2408,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/{orgId}/teams/{teamId}/remove": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -2542,6 +2578,10 @@ const OrganizationSchema: Record<string, unknown> = {
     },
     "/api/identity/orgs/{orgId}/users/{userId}": {
       "post": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
@@ -2624,6 +2664,10 @@ const OrganizationSchema: Record<string, unknown> = {
         }
       },
       "delete": {
+        "x-internal": [
+          "cloud",
+          "meshery"
+        ],
         "tags": [
           "Organizations"
         ],
