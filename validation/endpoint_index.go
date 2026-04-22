@@ -3,6 +3,7 @@ package validation
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -11,22 +12,23 @@ import (
 // schemaEndpoint represents one endpoint defined in a construct's api.yml.
 // One entry per (method, path) — never collapsed across verbs.
 type schemaEndpoint struct {
-	Method        string             // "GET", "POST", etc. — one per entry
-	Path          string             // "/api/integrations/connections/{connectionId}"
-	OperationID   string             // "getConnection"
-	Tags          []string           // operation tags -> derive Category / Sub-Category
-	XInternal     []string           // ["meshery"], ["cloud"], or nil (= both repos)
-	RequestShape  *schemaShape       // nil for GET/DELETE without body
-	ResponseShape *schemaShape       // from primary 2xx response
-	Deprecated    bool               // operation-level OR construct-level
-	Public        bool               // true if explicitly security: []
-	HasSuccessRef bool               // true if a 2xx response has a $ref schema
-	Has2xx        bool               // true if there is a 2xx response at all
-	RequestBody   bool               // true if the operation declares a requestBody
-	QueryParams   []schemaQueryParam // query parameters declared on the operation
-	Construct     string             // "connection" — from extractConstructName
-	Version       string             // "v1beta1"
-	SourceFile    string             // "schemas/constructs/v1beta1/connection/api.yml"
+	Method            string             // "GET", "POST", etc. — one per entry
+	Path              string             // "/api/integrations/connections/{connectionId}"
+	OperationID       string             // "getConnection"
+	Tags              []string           // operation tags -> derive Category / Sub-Category
+	XInternal         []string           // ["meshery"], ["cloud"], or nil (= both repos)
+	RequestShape      *schemaShape       // nil for GET/DELETE without body
+	ResponseShape     *schemaShape       // from primary 2xx response
+	SuccessStatusCode int                // primary 2xx response code (200/201/202/204)
+	Deprecated        bool               // operation-level OR construct-level
+	Public            bool               // true if explicitly security: []
+	HasSuccessRef     bool               // true if a 2xx response has a $ref schema
+	Has2xx            bool               // true if there is a 2xx response at all
+	RequestBody       bool               // true if the operation declares a requestBody
+	QueryParams       []schemaQueryParam // query parameters declared on the operation
+	Construct         string             // "connection" — from extractConstructName
+	Version           string             // "v1beta1"
+	SourceFile        string             // "schemas/constructs/v1beta1/connection/api.yml"
 }
 
 // schemaQueryParam describes one query parameter declared in an OpenAPI spec.
@@ -38,9 +40,10 @@ type schemaQueryParam struct {
 // schemaShape is a structural summary of a schema component.
 // Fields are fully resolved ($refs followed) at index-build time.
 type schemaShape struct {
-	Name   string                // "ConnectionPayload"
-	Fields map[string]fieldShape // keyed by JSON wire name
-	GoType string                // from x-go-type annotation, if present
+	Name         string                // "ConnectionPayload"
+	Fields       map[string]fieldShape // keyed by JSON wire name
+	GoType       string                // from x-go-type annotation, if present
+	TopLevelType string                // "object", "array", "string", etc.
 }
 
 // fieldShape describes one field in a schema.
@@ -112,7 +115,7 @@ func buildEndpointIndex(rootDir string) (*schemaIndex, error) {
 					}
 				}
 
-				ep.ResponseShape, ep.HasSuccessRef, ep.Has2xx = pickResponseShape(op)
+				ep.ResponseShape, ep.HasSuccessRef, ep.Has2xx, ep.SuccessStatusCode = pickResponseShape(op)
 				ep.QueryParams = mergeQueryParams(pathItem.Parameters, op.Parameters)
 
 				index.Endpoints = append(index.Endpoints, ep)
@@ -226,8 +229,8 @@ func parseXInternalTargets(raw any) ([]string, error) {
 
 // pickResponseShape selects the primary 2xx response and converts it to a
 // schemaShape. Returns the shape (nil if none), whether the 2xx had a $ref
-// schema, and whether any 2xx response existed.
-func pickResponseShape(op *openapi3.Operation) (*schemaShape, bool, bool) {
+// schema, whether any 2xx response existed, and the chosen 2xx status code.
+func pickResponseShape(op *openapi3.Operation) (*schemaShape, bool, bool, int) {
 	codes := collectResponseCodes(op)
 	has2xx := false
 	for code := range codes {
@@ -237,15 +240,17 @@ func pickResponseShape(op *openapi3.Operation) (*schemaShape, bool, bool) {
 		}
 	}
 	if op.Responses == nil {
-		return nil, false, has2xx
+		return nil, false, has2xx, 0
 	}
 
 	// Prefer 200, then 201, then 202, 204, then any 2xx in sorted order.
 	preferred := []string{"200", "201", "202", "204"}
 	var resp *openapi3.ResponseRef
+	chosenCode := ""
 	for _, code := range preferred {
 		if r := op.Responses.Value(code); r != nil {
 			resp = r
+			chosenCode = code
 			break
 		}
 	}
@@ -258,11 +263,12 @@ func pickResponseShape(op *openapi3.Operation) (*schemaShape, bool, bool) {
 		}
 		sort.Strings(twoXX)
 		if len(twoXX) > 0 {
+			chosenCode = twoXX[0]
 			resp = op.Responses.Value(twoXX[0])
 		}
 	}
 	if resp == nil || resp.Value == nil {
-		return nil, false, has2xx
+		return nil, false, has2xx, parseStatusCode(chosenCode)
 	}
 
 	for _, media := range resp.Value.Content {
@@ -275,9 +281,17 @@ func pickResponseShape(op *openapi3.Operation) (*schemaShape, bool, bool) {
 			media.Schema.Value.Items.Ref != "" {
 			hasRef = true
 		}
-		return shape, hasRef, has2xx
+		return shape, hasRef, has2xx, parseStatusCode(chosenCode)
 	}
-	return nil, false, has2xx
+	return nil, false, has2xx, parseStatusCode(chosenCode)
+}
+
+func parseStatusCode(code string) int {
+	n, err := strconv.Atoi(code)
+	if err != nil {
+		return 0
+	}
+	return n
 }
 
 // buildSchemaShape resolves a schema reference into a structural fingerprint.
@@ -301,6 +315,9 @@ func buildSchemaShape(ref *openapi3.SchemaRef) *schemaShape {
 		if schema.Title != "" {
 			shape.Name = schema.Title
 		}
+	}
+	if schema.Type != nil && len(schema.Type.Slice()) > 0 {
+		shape.TopLevelType = schema.Type.Slice()[0]
 	}
 	if raw, ok := schema.Extensions["x-go-type"]; ok {
 		if s, ok := raw.(string); ok {

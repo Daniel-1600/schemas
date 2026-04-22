@@ -54,6 +54,68 @@ const (
 	auditStatusNotAudited = "Not Audited"
 )
 
+// endpointContractHints carries schema-side metadata about an endpoint's
+// expected body contract into assessConsumer so the audit verdict can be
+// classified by contract shape rather than treating every "nothing comparable"
+// case as Not Audited.
+type endpointContractHints struct {
+	RequestBodyDeclared   bool   // true when the schema declares a requestBody
+	Has2xx                bool   // true when any 2xx response exists
+	HasSuccessRef         bool   // true when the 2xx response uses a $ref schema
+	ExpectedSuccessStatus int    // primary success response code (200/201/202/204)
+	ResponseHasContent    bool   // true when the chosen 2xx response has schema content
+	ResponseTopLevelType  string // top-level schema type for the chosen 2xx response
+	ResponseHasFields     bool   // true when the response shape exposes comparable fields
+}
+
+// hintsFrom extracts the contract hints from a schema endpoint.
+func hintsFrom(ep schemaEndpoint) endpointContractHints {
+	responseTopLevelType := ""
+	responseHasFields := false
+	responseHasContent := ep.ResponseShape != nil
+	if ep.ResponseShape != nil {
+		responseTopLevelType = ep.ResponseShape.TopLevelType
+		responseHasFields = len(ep.ResponseShape.Fields) > 0
+	}
+	return endpointContractHints{
+		RequestBodyDeclared:   ep.RequestBody,
+		Has2xx:                ep.Has2xx,
+		HasSuccessRef:         ep.HasSuccessRef,
+		ExpectedSuccessStatus: ep.SuccessStatusCode,
+		ResponseHasContent:    responseHasContent,
+		ResponseTopLevelType:  responseTopLevelType,
+		ResponseHasFields:     responseHasFields,
+	}
+}
+
+// isBodyless returns true for endpoints that declare no request body and no
+// success response content at all (for example DELETE/204). Raw/scalar
+// responses are handled separately, since they still require positive evidence
+// that the handler writes a response body.
+func (h endpointContractHints) isBodyless() bool {
+	return !h.RequestBodyDeclared && !h.ResponseHasContent
+}
+
+// isRawOrScalarResponse returns true for endpoints that do not accept a
+// request body but do return success content that is not a comparable
+// structured payload. Examples: downloads, plain strings, bytes, or arrays of
+// scalars. Structured inline object responses stay on the typed comparison path.
+func (h endpointContractHints) isRawOrScalarResponse() bool {
+	if h.RequestBodyDeclared || !h.ResponseHasContent {
+		return false
+	}
+	if h.HasSuccessRef {
+		return false
+	}
+	if h.ResponseTopLevelType == "object" {
+		return false
+	}
+	if h.ResponseTopLevelType == "array" && h.ResponseHasFields {
+		return false
+	}
+	return true
+}
+
 type shapeAssessment struct {
 	status shapeStatus
 	diffs  []fieldDiff
@@ -302,15 +364,14 @@ func verifyShapeDetailed(shape *schemaShape, info *goTypeInfo, requestSide bool)
 	return shapeAssessment{status: shapeOK}
 }
 
-func assessConsumers(consumerProvided bool, repo string, consumers []consumerEndpoint, requestShape, responseShape *schemaShape, specQueryParams []schemaQueryParam) consumerAssessment {
+func assessConsumers(consumerProvided bool, repo string, consumers []consumerEndpoint, requestShape, responseShape *schemaShape, specQueryParams []schemaQueryParam, hints endpointContractHints) consumerAssessment {
 	if !consumerProvided {
 		return consumerAssessment{}
 	}
 	if len(consumers) == 0 {
-		return consumerAssessment{
-			Status: auditStatusNotAudited,
-			Notes:  []string{fmt.Sprintf("handler not found in %s", repo)},
-		}
+		// Unimplemented endpoints are already surfaced in Endpoint Status.
+		// Leave Schema Driven blank rather than emitting Not Audited.
+		return consumerAssessment{}
 	}
 
 	combined := consumerAssessment{Status: auditStatusTrue}
@@ -338,7 +399,7 @@ func assessConsumers(consumerProvided bool, repo string, consumers []consumerEnd
 	}
 
 	for i := range consumers {
-		assessment := assessConsumer(&consumers[i], requestShape, responseShape, specQueryParams)
+		assessment := assessConsumer(&consumers[i], requestShape, responseShape, specQueryParams, hints)
 		combined.Drift = append(combined.Drift, assessment.Drift...)
 		combined.Notes = append(combined.Notes, assessment.Notes...)
 		if statusRank(assessment.Status) > statusRank(combined.Status) {
@@ -403,7 +464,7 @@ func assessQueryParams(specParams []schemaQueryParam, handlerParams []string) []
 	return notes
 }
 
-func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShape, specQueryParams []schemaQueryParam) consumerAssessment {
+func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShape, specQueryParams []schemaQueryParam, hints endpointContractHints) consumerAssessment {
 	if c == nil {
 		return consumerAssessment{Status: auditStatusNotAudited}
 	}
@@ -428,16 +489,26 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 			Notes:  append(notes, fmt.Sprintf("%s handler %q could not be joined to a source file", c.Repo, c.HandlerName)),
 		}
 	}
+
+	// Query param comparison — advisory notes only, does not affect status.
+	for _, qpNote := range assessQueryParams(specQueryParams, c.QueryParams) {
+		notes = append(notes, fmt.Sprintf("%s: %s", c.Repo, qpNote))
+	}
+
+	// Bodyless and raw/scalar contracts do not need schema imports. Audit them
+	// separately before the ImportsSchemas gate.
+	if hints.isBodyless() {
+		return assessBodylessConsumer(c, notes, hints)
+	}
+	if hints.isRawOrScalarResponse() {
+		return assessRawOrScalarConsumer(c, notes)
+	}
+
 	if !c.ImportsSchemas {
 		return consumerAssessment{
 			Status: auditStatusFalse,
 			Notes:  append(notes, fmt.Sprintf("%s handler %s does not import github.com/meshery/schemas/models", c.Repo, describeHandler(*c))),
 		}
-	}
-
-	// Query param comparison — advisory notes only, does not affect status.
-	for _, qpNote := range assessQueryParams(specQueryParams, c.QueryParams) {
-		notes = append(notes, fmt.Sprintf("%s: %s", c.Repo, qpNote))
 	}
 
 	reqAssessment := verifyShapeDetailed(requestShape, c.RequestType, true)
@@ -539,6 +610,97 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 	// Unreachable: hadComparable is set whenever a side reaches shapeOK,
 	// so at least one of the branches above must return.
 	panic("assessConsumer: unreachable")
+}
+
+// assessBodylessConsumer audits a handler for an endpoint whose schema declares
+// no request body and no success response content at all (for example
+// DELETE/204). The contract is satisfied when the handler does not
+// unexpectedly decode a request body or encode a typed response. Unexpected
+// typed encode/decode is reported as FALSE (schema drift).
+func assessBodylessConsumer(c *consumerEndpoint, notes []string, hints endpointContractHints) consumerAssessment {
+	var drift []string
+	if c.RequestType != nil {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s decodes a request body (%s) but schema declares no requestBody",
+			c.Repo, describeHandler(*c), formatGoTypeRef(c.RequestType),
+		))
+	}
+	if c.ResponseType != nil {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s encodes a typed response (%s) but schema declares no $ref response schema",
+			c.Repo, describeHandler(*c), formatGoTypeRef(c.ResponseType),
+		))
+	}
+	if c.WritesRawResponse {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s writes a raw response body but schema declares no success response body",
+			c.Repo, describeHandler(*c),
+		))
+	}
+	if hints.ExpectedSuccessStatus == 204 && !containsInt(c.SuccessStatusCodes, 204) {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s does not set the expected 204 success status",
+			c.Repo, describeHandler(*c),
+		))
+	}
+	if len(drift) > 0 {
+		return consumerAssessment{
+			Status: auditStatusFalse,
+			Drift:  uniqueStrings(drift),
+			Notes:  uniqueStrings(notes),
+		}
+	}
+	return consumerAssessment{
+		Status: auditStatusTrue,
+		Notes:  uniqueStrings(notes),
+	}
+}
+
+// assessRawOrScalarConsumer audits endpoints whose success response is present
+// but not a comparable structured payload (downloads, text, bytes, arrays of
+// scalars). They are TRUE only when the handler exposes a recognized raw write
+// pattern and does not unexpectedly decode/encode typed bodies.
+func assessRawOrScalarConsumer(c *consumerEndpoint, notes []string) consumerAssessment {
+	var drift []string
+	if c.RequestType != nil {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s decodes a request body (%s) but schema declares no requestBody",
+			c.Repo, describeHandler(*c), formatGoTypeRef(c.RequestType),
+		))
+	}
+	if c.ResponseType != nil {
+		drift = append(drift, fmt.Sprintf(
+			"%s handler %s encodes a typed response (%s) but schema declares a raw/scalar success response",
+			c.Repo, describeHandler(*c), formatGoTypeRef(c.ResponseType),
+		))
+	}
+	if len(drift) > 0 {
+		return consumerAssessment{
+			Status: auditStatusFalse,
+			Drift:  uniqueStrings(drift),
+			Notes:  uniqueStrings(notes),
+		}
+	}
+	if !c.WritesRawResponse {
+		return consumerAssessment{
+			Status: auditStatusNotAudited,
+			Notes: append(uniqueStrings(notes),
+				fmt.Sprintf("%s handler %s did not expose a recognized raw-response write pattern", c.Repo, describeHandler(*c))),
+		}
+	}
+	return consumerAssessment{
+		Status: auditStatusTrue,
+		Notes:  uniqueStrings(notes),
+	}
+}
+
+func containsInt(values []int, want int) bool {
+	for _, v := range values {
+		if v == want {
+			return true
+		}
+	}
+	return false
 }
 
 // diffFields compares a schema shape against a Go type's field set. When
