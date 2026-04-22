@@ -146,6 +146,15 @@ baseline-consumer-audit:
 		exit $$status; \
 	fi
 
+## Regenerate the Option B Phase 0 consumer-dependency graph
+## (Go + TS imports of schemas across all three downstream repos)
+.PHONY: baseline-consumer-graph
+baseline-consumer-graph:
+	@go run ./cmd/phase0-consumer-graph \
+		$(if $(MESHERY_REPO),--meshery-repo="$(MESHERY_REPO)") \
+		$(if $(CLOUD_REPO),--cloud-repo="$(CLOUD_REPO)") \
+		$(if $(EXTENSIONS_REPO),--extensions-repo="$(EXTENSIONS_REPO)")
+
 #-----------------------------------------------------------------------------
 # Consumer audit (schemas vs. consumer repos)
 #-----------------------------------------------------------------------------
