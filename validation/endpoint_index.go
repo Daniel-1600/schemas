@@ -44,6 +44,11 @@ type schemaShape struct {
 	Fields       map[string]fieldShape // keyed by JSON wire name
 	GoType       string                // from x-go-type annotation, if present
 	TopLevelType string                // "object", "array", "string", etc.
+	// AllowsAdditionalProperties is true when the schema explicitly permits
+	// undeclared object keys via additionalProperties: true or a typed
+	// additionalProperties schema. The matcher uses this to avoid false-positive
+	// "extra field" drift against intentionally open-ended objects.
+	AllowsAdditionalProperties bool
 }
 
 // fieldShape describes one field in a schema.
@@ -331,12 +336,20 @@ func buildSchemaShape(ref *openapi3.SchemaRef) *schemaShape {
 			inner := buildSchemaShape(schema.Items)
 			if inner != nil {
 				shape.Fields = inner.Fields
+				shape.AllowsAdditionalProperties = inner.AllowsAdditionalProperties
 				if shape.Name == "" {
 					shape.Name = "[]" + inner.Name
 				}
 			}
 		}
 		return shape
+	}
+
+	if schema.AdditionalProperties.Has != nil && *schema.AdditionalProperties.Has {
+		shape.AllowsAdditionalProperties = true
+	}
+	if schema.AdditionalProperties.Schema != nil {
+		shape.AllowsAdditionalProperties = true
 	}
 
 	requiredSet := make(map[string]bool, len(schema.Required))

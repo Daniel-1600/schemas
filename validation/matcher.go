@@ -739,6 +739,9 @@ func diffFields(shape *schemaShape, info *goTypeInfo, requestSide bool) []fieldD
 		if _, ok := shape.Fields[name]; ok {
 			continue
 		}
+		if shape.AllowsAdditionalProperties {
+			continue
+		}
 		if requestSide && (serverGeneratedFields[name] || dbMirroredFields[name]) {
 			continue
 		}
