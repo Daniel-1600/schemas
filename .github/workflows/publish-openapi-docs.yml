@@ -36,6 +36,9 @@ jobs:
         with:
           go-version: '1.25.5'
 
+      - name: Validate schemas
+        run: make validate-schemas
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
@@ -46,9 +49,6 @@ jobs:
           npm i
           go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.5.1
           echo "$HOME/go/bin" >> $GITHUB_PATH
-
-      - name: Validate schemas
-        run: make validate-schemas
 
       - name: Build OpenAPI specifications
         run: |

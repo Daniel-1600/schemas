@@ -10,11 +10,12 @@
  *   node build/index.js <command>
  *
  * COMMANDS:
+ *   validate    - Validate schemas with the Go validator (via make validate-schemas)
  *   bundle      - Bundle and merge OpenAPI specifications
  *   golang      - Generate Go structs from OpenAPI specs
  *   rtk         - Generate RTK Query clients
  *   types       - Generate TypeScript type definitions
- *   all         - Run full build pipeline (bundle → golang → rtk → types)
+ *   all         - Run full build pipeline (validate → bundle → golang → rtk → types)
  *   help        - Show this help message
  *
  * EXAMPLES:
@@ -34,8 +35,8 @@ const paths = require("./lib/paths");
  */
 const commands = {
   validate: {
-    description: "Validate schemas with the Go validator",
-    exec: ["go", "run", "./cmd/validate-schemas"],
+    description: "Validate schemas with the Go validator (via make validate-schemas)",
+    exec: ["make", "validate-schemas"],
   },
   bundle: {
     description: "Bundle and merge OpenAPI specifications",
@@ -95,12 +96,15 @@ function runProcess(command, args = [], { label } = {}) {
     const displayCommand = [command, ...args].join(" ");
     const prefix = label ? `${label} (${displayCommand})` : displayCommand;
 
-    proc.on("close", (code) => {
+    proc.on("close", (code, signal) => {
       if (code === 0) {
         resolve();
-      } else {
-        reject(new Error(`${prefix} exited with code ${code}`));
+        return;
       }
+      const reason = signal
+        ? `terminated by signal ${signal}`
+        : `exited with code ${code}`;
+      reject(new Error(`${prefix} ${reason}`));
     });
 
     proc.on("error", reject);
