@@ -206,3 +206,46 @@ type Mapping struct {
 		t.Errorf("single-field Mapping struct should not carry mixed_struct_conventions")
 	}
 }
+
+// TestScanFileMultiNameFieldDeclaration covers the multi-name field form
+// `A, B string` + shared tag, which is easily undercounted if only the
+// first identifier is recorded.
+func TestScanFileMultiNameFieldDeclaration(t *testing.T) {
+	dir := t.TempDir()
+	src := `package models
+
+type Multi struct {
+	First, Second string ` + "`json:\"shared,omitempty\" db:\"shared\"`" + `
+	Solo          int    ` + "`json:\"solo\"`" + `
+}
+`
+	path := filepath.Join(dir, "multi.go")
+	if err := os.WriteFile(path, []byte(src), 0o644); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+	records, _, err := scanFile("test/repo", dir, path)
+	if err != nil {
+		t.Fatalf("scanFile: %v", err)
+	}
+	byField := map[string]fieldRecord{}
+	for _, r := range records {
+		byField[r.Field] = r
+	}
+	if _, ok := byField["First"]; !ok {
+		t.Error("missing First from multi-name declaration")
+	}
+	if _, ok := byField["Second"]; !ok {
+		t.Error("missing Second from multi-name declaration — baseline would be undercounted")
+	}
+	if byField["First"].JSONTag != "shared,omitempty" || byField["Second"].JSONTag != "shared,omitempty" {
+		t.Errorf("First/Second should share the tag literal: %q %q", byField["First"].JSONTag, byField["Second"].JSONTag)
+	}
+	// Each record should point at the identifier's own source token, not the
+	// shared field position.
+	if byField["First"].Line != byField["Second"].Line {
+		// On a single-line declaration they share a line; make sure it's the
+		// line of the declaration itself. This check exists mostly to assert
+		// we didn't accidentally drop one of them.
+		t.Logf("First line=%d Second line=%d (both on the same line is fine for a single-line decl)", byField["First"].Line, byField["Second"].Line)
+	}
+}

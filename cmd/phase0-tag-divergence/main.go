@@ -88,13 +88,14 @@ type summaryCounts struct {
 }
 
 type baselineReport struct {
-	GeneratedAt     time.Time      `json:"generated_at"`
-	GeneratedBy     string         `json:"generated_by"`
-	Scope           string         `json:"scope"`
-	Repos           []string       `json:"repos"`
-	FilesProcessed  int            `json:"files_processed"`
-	Summary         summaryCounts  `json:"summary"`
-	Records         []fieldRecord  `json:"records,omitempty"`
+	GeneratedAt    time.Time     `json:"generated_at"`
+	GeneratedBy    string        `json:"generated_by"`
+	Scope          string        `json:"scope"`
+	Repos          []string      `json:"repos"`
+	FilesProcessed int           `json:"files_processed"`
+	ParseErrors    []string      `json:"parse_errors,omitempty"`
+	Summary        summaryCounts `json:"summary"`
+	Records        []fieldRecord `json:"records,omitempty"`
 }
 
 type repoSpec struct {
@@ -140,6 +141,7 @@ func main() {
 	}
 
 	var allRecords []fieldRecord
+	var allParseErrors []string
 	for _, r := range repos {
 		abs, err := resolveAbsolutePath(rootDir, r.path)
 		if err != nil {
@@ -151,7 +153,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "warn: %s: %s is not a directory — skipping\n", r.label, modelsDir)
 			continue
 		}
-		recs, fileCount, structCount, err := scanRepo(r.label, abs, r.rel, *verbose)
+		recs, fileCount, structCount, parseErrors, err := scanRepo(r.label, abs, r.rel, *verbose)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "warn: %s: %v\n", r.label, err)
 			continue
@@ -159,7 +161,9 @@ func main() {
 		report.FilesProcessed += fileCount
 		report.Summary.TotalStructs += structCount
 		allRecords = append(allRecords, recs...)
+		allParseErrors = append(allParseErrors, parseErrors...)
 	}
+	report.ParseErrors = allParseErrors
 
 	sort.SliceStable(allRecords, func(i, j int) bool {
 		a, b := allRecords[i], allRecords[j]
@@ -206,8 +210,11 @@ func main() {
 }
 
 // scanRepo parses every non-test .go file under `<repoAbs>/<rel>` and returns
-// the field records plus count of files + structs scanned.
-func scanRepo(label, repoAbs, rel string, verbose bool) (records []fieldRecord, fileCount, structCount int, err error) {
+// the field records plus counts of files + structs scanned and any parse
+// errors surfaced along the way. Parse errors do not abort the walk but are
+// returned so the caller can decide (e.g., fail the baseline build when
+// invoked from CI).
+func scanRepo(label, repoAbs, rel string, verbose bool) (records []fieldRecord, fileCount, structCount int, parseErrors []string, err error) {
 	root := filepath.Join(repoAbs, filepath.FromSlash(rel))
 
 	walkErr := filepath.WalkDir(root, func(p string, d fs.DirEntry, walkErr error) error {
@@ -227,10 +234,13 @@ func scanRepo(label, repoAbs, rel string, verbose bool) (records []fieldRecord, 
 
 		frecs, structs, ferr := scanFile(label, repoAbs, p)
 		if ferr != nil {
-			if verbose {
-				fmt.Fprintf(os.Stderr, "  %s: %s: %v\n", label, p, ferr)
-			}
-			return nil // non-fatal: treat malformed files as no-data
+			// Parse errors make the baseline untrustworthy: report them on
+			// stderr unconditionally and record the path so the caller can
+			// decide whether to fail. We continue walking so one malformed
+			// file doesn't abort the full scan.
+			fmt.Fprintf(os.Stderr, "warn: %s: %s: parse error: %v\n", label, relFrom(repoAbs, p), ferr)
+			parseErrors = append(parseErrors, fmt.Sprintf("%s:%s", label, relFrom(repoAbs, p)))
+			return nil
 		}
 		if verbose {
 			fmt.Fprintf(os.Stderr, "%s: %s: %d structs, %d tagged fields\n", label, relFrom(repoAbs, p), structs, len(frecs))
@@ -240,7 +250,7 @@ func scanRepo(label, repoAbs, rel string, verbose bool) (records []fieldRecord, 
 		records = append(records, frecs...)
 		return nil
 	})
-	return records, fileCount, structCount, walkErr
+	return records, fileCount, structCount, parseErrors, walkErr
 }
 
 // scanFile parses one Go source file and returns records for every struct
@@ -285,27 +295,34 @@ func scanFile(label, repoAbs, absPath string) ([]fieldRecord, int, error) {
 			jsonName := tagName(jsonRaw)
 			dbName := tagName(dbRaw)
 
-			pos := fset.Position(field.Pos())
-			fieldName := namedField(field)
-			if fieldName == "" {
+			if len(field.Names) == 0 {
 				// Embedded / unnamed fields are not the target of Option B's
 				// identifier-naming rules.
 				continue
 			}
-
-			rec := fieldRecord{
-				Repo:          label,
-				File:          rel,
-				Line:          pos.Line,
-				Type:          typeName,
-				Field:         fieldName,
-				JSONTag:       jsonRaw,
-				JSONTagCasing: classify(jsonName),
-				DBTag:         dbRaw,
-				DBTagCasing:   classify(dbName),
+			// Multi-name declarations (`A, B string `tag...``) share one tag
+			// literal; emit a record per declared name so nothing is silently
+			// dropped. Each record's Line points at the specific name token,
+			// not the shared field position, so downstream readers can
+			// locate each identifier precisely.
+			for _, ident := range field.Names {
+				if ident == nil {
+					continue
+				}
+				rec := fieldRecord{
+					Repo:          label,
+					File:          rel,
+					Line:          fset.Position(ident.Pos()).Line,
+					Type:          typeName,
+					Field:         ident.Name,
+					JSONTag:       jsonRaw,
+					JSONTagCasing: classify(jsonName),
+					DBTag:         dbRaw,
+					DBTagCasing:   classify(dbName),
+				}
+				rec.Classifications = classifyField(jsonName, dbName)
+				structRecords = append(structRecords, rec)
 			}
-			rec.Classifications = classifyField(jsonName, dbName)
-			structRecords = append(structRecords, rec)
 		}
 
 		// Second pass within this struct: mixed conventions are flagged when
@@ -332,15 +349,6 @@ func scanFile(label, repoAbs, absPath string) ([]fieldRecord, int, error) {
 	})
 
 	return records, structs, nil
-}
-
-// namedField returns the first declared field name, or "" if the field is
-// embedded / unnamed.
-func namedField(f *ast.Field) string {
-	if len(f.Names) == 0 {
-		return ""
-	}
-	return f.Names[0].Name
 }
 
 // tagName extracts the first segment of a struct-tag value (`name,omitempty`
@@ -457,9 +465,15 @@ func classifyField(jsonName, dbName string) []classification {
 	return out
 }
 
-// normalizeName lowercases an identifier and strips non-alphanumerics so
-// camelCase and snake_case variants of the same base name compare equal.
-// "userId" -> "userid", "user_id" -> "userid", "userID" -> "userid".
+// normalizeName lowercases an identifier and drops the separator runes
+// `_`, `-`, and `.` so camelCase and snake_case variants of the same base
+// name compare equal. Non-ASCII and digit characters are preserved verbatim
+// (only uppercase ASCII is lowercased). Examples:
+//
+//	"userId"  -> "userid"
+//	"user_id" -> "userid"
+//	"userID"  -> "userid"
+//	"plan-v2" -> "planv2"
 func normalizeName(s string) string {
 	var b strings.Builder
 	b.Grow(len(s))
