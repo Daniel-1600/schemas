@@ -97,6 +97,11 @@ func parseTSConsumer(tree sourceTree, repo TSConsumerRepo) ([]consumerEndpoint, 
 		return nil, nil, fmt.Errorf("consumer-audit: ts parser: no scan dirs configured for repo %q", repo)
 	}
 
+	// Deduplicate nested scan dirs: if `ui/rtk-query` is under `ui`, walking
+	// both would process the same files twice and double-count findings.
+	// Keep only the shortest ancestor per prefix group.
+	dirs = dedupNestedDirs(dirs)
+
 	var (
 		endpoints []consumerEndpoint
 		findings  []TSFinding
@@ -141,14 +146,63 @@ func parseTSConsumer(tree sourceTree, repo TSConsumerRepo) ([]consumerEndpoint, 
 	return endpoints, findings, nil
 }
 
-// sortTSFindings orders findings deterministically for stable output.
+// dedupNestedDirs returns the subset of `dirs` that are not descended from
+// another entry in `dirs`. Walks a parent directory and its child
+// separately would re-process the same files, producing duplicate findings
+// and inflating counts.
+func dedupNestedDirs(dirs []string) []string {
+	// Normalize: strip trailing slashes, collect into a set.
+	norm := make([]string, 0, len(dirs))
+	seen := map[string]bool{}
+	for _, d := range dirs {
+		d = strings.TrimRight(d, "/")
+		if d == "" || seen[d] {
+			continue
+		}
+		seen[d] = true
+		norm = append(norm, d)
+	}
+	// Sort shortest first; a shorter path can never be a descendant of
+	// a longer one, so we can filter descendants in a single pass.
+	sort.Slice(norm, func(i, j int) bool {
+		if len(norm[i]) != len(norm[j]) {
+			return len(norm[i]) < len(norm[j])
+		}
+		return norm[i] < norm[j]
+	})
+	kept := norm[:0]
+	for _, d := range norm {
+		covered := false
+		for _, k := range kept {
+			if d == k || strings.HasPrefix(d, k+"/") {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			kept = append(kept, d)
+		}
+	}
+	return kept
+}
+
+// sortTSFindings orders findings by (Repo, File, Line, Kind, Key) so output
+// is a strict total order — important because sort.Slice is not stable and
+// the audit contract requires byte-identical output across runs. Every tie-
+// breaker is covered so there is no map-order leak.
 func sortTSFindings(fs []TSFinding) {
 	sort.Slice(fs, func(i, j int) bool {
+		if fs[i].Repo != fs[j].Repo {
+			return fs[i].Repo < fs[j].Repo
+		}
 		if fs[i].File != fs[j].File {
 			return fs[i].File < fs[j].File
 		}
 		if fs[i].Line != fs[j].Line {
 			return fs[i].Line < fs[j].Line
+		}
+		if fs[i].Kind != fs[j].Kind {
+			return fs[i].Kind < fs[j].Kind
 		}
 		return fs[i].Key < fs[j].Key
 	})
@@ -785,22 +839,42 @@ func scanParamsOrBody(
 	return out
 }
 
-// hasMixedCase returns true if an identifier contains both a lowercase
-// first letter AND an uppercase cluster (e.g. `orgID`, `userURL`). A
-// purely-camelCase identifier like `orgId` is not flagged because the
-// single-letter casing transition is the published wire form; the drift
-// is the *two+ consecutive uppercase letters* after a lowercase prefix.
+// hasMixedCase returns true if an identifier departs from the canonical
+// camelCase wire contract. A value is flagged when any of the following
+// holds:
+//
+//   - All-uppercase identifier (`ID`, `ORGID`) — pure SCREAMING.
+//   - PascalCase identifier (`OrgId`, `UserID`) — starts with an
+//     uppercase letter but has lowercase too; wire keys must start
+//     lowercase.
+//   - camelCase that embeds a 2+ consecutive-uppercase acronym cluster
+//     (`orgID`, `userURL`, `apiID`) — the SCREAMING initialism drift.
+//
+// Canonical camelCase like `orgId` (only one uppercase transition, not
+// two in a row) is NOT flagged — that's the published wire form.
 func hasMixedCase(s string) bool {
 	if s == "" {
 		return false
 	}
-	if s[0] < 'a' || s[0] > 'z' {
-		return false
+	hasLower, hasUpper := false, false
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c >= 'a' && c <= 'z' {
+			hasLower = true
+		}
+		if c >= 'A' && c <= 'Z' {
+			hasUpper = true
+		}
 	}
-	// Look for two consecutive uppercase letters after a lowercase
-	// character. That's the signature of SCREAMING/initialism drift
-	// (`orgID`, `userURL`, `apiID`) and it's what the identifier-naming
-	// contract outlaws.
+	// All-uppercase (ID, ORGID).
+	if hasUpper && !hasLower {
+		return true
+	}
+	// PascalCase — starts with uppercase but has lowercase later.
+	if s[0] >= 'A' && s[0] <= 'Z' && hasLower {
+		return true
+	}
+	// camelCase with a 2+ consecutive-uppercase cluster (orgID, userURL).
 	sawLower := false
 	for i := 0; i < len(s); i++ {
 		c := s[i]
