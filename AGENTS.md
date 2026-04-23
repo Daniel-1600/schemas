@@ -163,7 +163,7 @@ Within a given API version / resource version, every element has exactly one cor
 | File and folder names | lowercase | `api.yml`, `keychain.yaml` | ~~`Keychain.yaml`~~ |
 | URL path segments | kebab-case, plural nouns | `/api/role-holders`, `/api/workspaces` | ~~`/api/roleHolders`~~ |
 | URL path params + ID-like query params | `camelCase + Id` | `{orgId}`, `?userId=…`, `?workspaceId=…` | ~~`{orgID}`~~, ~~`{org_id}`~~, ~~`?workspace_id=…`~~ |
-| Shared pagination/search/sort/filter query params | preserve published parameter name | `?page=…`, `?pagesize=…`, `?search=…`, `?order=…`, `?filter=…` | ~~`?pageSize=…`~~ (until per-resource version bump) |
+| Shared pagination/search/sort/filter query params | `camelCase` | `?page=…`, `?pageSize=…`, `?search=…`, `?order=…`, `?filter=…` | ~~`?pagesize=…`~~, ~~`?page_size=…`~~ |
 | `operationId` | lower camelCase verbNoun | `getAllRoles`, `createWorkspace`, `getWorkspaces` | ~~`GetAllRoles`~~, ~~`get_all_roles`~~ |
 | TypeScript property / RTK arg | camelCase | `response.userId`, `queryArg.orgId` | ~~`response.user_id`~~, ~~`queryArg.orgID`~~ |
 | Go type names | PascalCase (generated) | `Connection`, `KeychainPayload` | — |
