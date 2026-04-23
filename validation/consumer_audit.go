@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -9,91 +8,11 @@ import (
 	"strings"
 )
 
-// Sheet layout constants. Cols 0..13 map to generated audit columns
-// (A..N); cols 14..24 (O..Y) are reserved for user-entered values or
-// formulas; col 25 (Z) holds machine-only metadata as JSON.
-const (
-	metadataColumnIndex  = 25
-	totalColumns         = 26
-	generatedColumnCount = 14
-)
-
-// RowMetadata is the opaque JSON blob stored in column Z of each data
-// row. It is machine-only — no human reads column Z directly.
-type RowMetadata struct {
-	State          string   `json:"state,omitempty"`
-	ChangedColumns []string `json:"changed_columns,omitempty"`
-	FirstSeen      string   `json:"first_seen,omitempty"`
-	LastReconciled string   `json:"last_reconciled,omitempty"`
-}
-
-// isZero reports whether no metadata fields are set.
-func (m RowMetadata) isZero() bool {
-	return m.State == "" && len(m.ChangedColumns) == 0 && m.FirstSeen == "" && m.LastReconciled == ""
-}
-
-// encode serializes the metadata to compact JSON. Empty metadata
-// encodes to an empty string rather than "{}" so the sheet cell stays
-// clean for rows that have no recorded history.
-func (m RowMetadata) encode() string {
-	if m.isZero() {
-		return ""
-	}
-	b, err := json.Marshal(m)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-// decodeRowMetadata parses a column-Z cell. An empty or malformed blob
-// yields a zero RowMetadata — the reconciler will repopulate it.
-func decodeRowMetadata(s string) RowMetadata {
-	s = strings.TrimSpace(s)
-	if s == "" {
-		return RowMetadata{}
-	}
-	var m RowMetadata
-	if err := json.Unmarshal([]byte(s), &m); err != nil {
-		return RowMetadata{}
-	}
-	return m
-}
-
-// DeletionRecord is one entry in the deletion ledger kept in row 1 of
-// column Z. The ledger is append-only and machine-only.
+// DeletionRecord is one endpoint removed from the current audit run.
 type DeletionRecord struct {
-	Endpoint      string `json:"endpoint"`
-	Method        string `json:"method"`
-	RemovedAt     string `json:"removed_at"`
-	LastChangeLog string `json:"last_change_log,omitempty"`
-}
-
-// encodeDeletionLedger serializes the ledger for storage in Z1. An
-// empty ledger encodes to an empty string.
-func encodeDeletionLedger(ledger []DeletionRecord) string {
-	if len(ledger) == 0 {
-		return ""
-	}
-	b, err := json.Marshal(ledger)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-// decodeDeletionLedger parses Z1. Unparseable content yields an empty
-// ledger; the reconciler will rebuild it.
-func decodeDeletionLedger(s string) []DeletionRecord {
-	s = strings.TrimSpace(s)
-	if s == "" {
-		return nil
-	}
-	var out []DeletionRecord
-	if err := json.Unmarshal([]byte(s), &out); err != nil {
-		return nil
-	}
-	return out
+	Endpoint  string
+	Method    string
+	RemovedAt string
 }
 
 // ConsumerAuditOptions configures a single consumer-audit run.
@@ -110,9 +29,9 @@ type ConsumerAuditOptions struct {
 	// consumer auditor. MesheryRepoUI defaults to MesheryRepo when unset
 	// because meshery/meshery keeps Go and TS consumers in the same
 	// checkout; CloudRepoUI likewise defaults to CloudRepo.
-	MesheryRepoUI   string
-	CloudRepoUI     string
-	ExtensionsRepo  string
+	MesheryRepoUI  string
+	CloudRepoUI    string
+	ExtensionsRepo string
 
 	// Google Sheets update. Empty = no sheet interaction (dry run).
 	SheetID           string
@@ -127,15 +46,8 @@ type ConsumerAuditResult struct {
 	// Reconciled state (nil if no previous state was provided).
 	Tracked []TrackedEndpoint
 
-	// NewDeletions are endpoints detected as removed on this run. They
-	// have been appended to DeletionLedger already; this slice exists so
-	// the CLI can surface them separately in the diff.
+	// NewDeletions are endpoints detected as removed on this run.
 	NewDeletions []DeletionRecord
-
-	// DeletionLedger is the full updated ledger that will be written to
-	// Z1 of the sheet. Includes NewDeletions plus everything previously
-	// recorded.
-	DeletionLedger []DeletionRecord
 
 	// Output rows for sheet serialization (sorted, deterministic).
 	Rows []AuditRow
@@ -152,81 +64,131 @@ type ConsumerAuditResult struct {
 
 // ConsumerAuditRow is one row of the audit output.
 type ConsumerAuditRow struct {
-	Category                  string
-	SubCategory               string
-	Endpoint                  string
-	Method                    string
-	EndpointStatus            string
-	XAnnotated                string
-	SchemaBackedMeshery       string
-	SchemaBackedCloud         string
-	SchemaDrivenMeshery       string
-	SchemaDrivenCloud         string
-	SchemaCompletenessMeshery string
-	SchemaCompletenessCloud   string
-	Notes                     string
+	Category            string
+	SubCategory         string
+	Endpoint            string
+	Method              string
+	EndpointStatus      string
+	XAnnotated          string
+	SchemaDrivenMeshery string
+	SchemaDrivenCloud   string
+	SchemaCompleteness  string
+	PathDrift           string
+	Notes               string
 	// ChangeLog is the UTC timestamp of the last state transition
 	// (new / changed) for this row, in format "YYYY-MM-DD HH:MM:SS".
 	// Empty on rows that have never been touched by reconciliation.
 	ChangeLog string
-	// Metadata is machine-only data serialized as JSON in column Z.
-	Metadata RowMetadata
 }
 
 // AuditRow remains a short alias used throughout the validation package.
 type AuditRow = ConsumerAuditRow
 
-// auditHeader is the canonical header for sheet row output. Columns
-// M..Y are user-owned; column Z holds the deletion ledger in row 1 and
-// per-row metadata in all other rows.
+// columnDef is one generated sheet column. The slice index in
+// generatedColumns is the column's position in the sheet (A=0, B=1, …).
+// Reconcile marks columns whose changes trigger a StateChanged transition.
+// get and set allow row serializers to operate without referencing
+// column indices anywhere else in the codebase.
+type columnDef struct {
+	Name      string
+	Reconcile bool
+	get       func(ConsumerAuditRow) string
+	set       func(*ConsumerAuditRow, string)
+}
+
+// generatedColumns is the single authoritative definition of every
+// tool-authored column. All sheet write ranges, the header row, row
+// serialization, and reconciliation tracking are derived from this slice.
+// To add or remove a column, only this slice needs to change.
+var generatedColumns = []columnDef{
+	{
+		Name: "Category",
+		get:  func(r ConsumerAuditRow) string { return r.Category },
+		set:  func(r *ConsumerAuditRow, v string) { r.Category = v },
+	},
+	{
+		Name: "Sub-Category",
+		get:  func(r ConsumerAuditRow) string { return r.SubCategory },
+		set:  func(r *ConsumerAuditRow, v string) { r.SubCategory = v },
+	},
+	{
+		Name: "Endpoint",
+		get:  func(r ConsumerAuditRow) string { return r.Endpoint },
+		set:  func(r *ConsumerAuditRow, v string) { r.Endpoint = v },
+	},
+	{
+		Name: "Method",
+		get:  func(r ConsumerAuditRow) string { return r.Method },
+		set:  func(r *ConsumerAuditRow, v string) { r.Method = v },
+	},
+	{
+		Name:      "Endpoint Status",
+		Reconcile: true,
+		get:       func(r ConsumerAuditRow) string { return r.EndpointStatus },
+		set:       func(r *ConsumerAuditRow, v string) { r.EndpointStatus = v },
+	},
+	{
+		Name:      "x-annotated",
+		Reconcile: true,
+		get:       func(r ConsumerAuditRow) string { return r.XAnnotated },
+		set:       func(r *ConsumerAuditRow, v string) { r.XAnnotated = v },
+	},
+	{
+		Name:      "Schema-Driven (Meshery)",
+		Reconcile: true,
+		get:       func(r ConsumerAuditRow) string { return r.SchemaDrivenMeshery },
+		set:       func(r *ConsumerAuditRow, v string) { r.SchemaDrivenMeshery = v },
+	},
+	{
+		Name:      "Schema-Driven (Cloud)",
+		Reconcile: true,
+		get:       func(r ConsumerAuditRow) string { return r.SchemaDrivenCloud },
+		set:       func(r *ConsumerAuditRow, v string) { r.SchemaDrivenCloud = v },
+	},
+	{
+		Name:      "Schema Completeness",
+		Reconcile: true,
+		get:       func(r ConsumerAuditRow) string { return r.SchemaCompleteness },
+		set:       func(r *ConsumerAuditRow, v string) { r.SchemaCompleteness = v },
+	},
+	{
+		Name: "Path Drift",
+		get:  func(r ConsumerAuditRow) string { return r.PathDrift },
+		set:  func(r *ConsumerAuditRow, v string) { r.PathDrift = v },
+	},
+	{
+		Name: "Notes",
+		get:  func(r ConsumerAuditRow) string { return r.Notes },
+		set:  func(r *ConsumerAuditRow, v string) { r.Notes = v },
+	},
+	{
+		Name: "Change Log",
+		get:  func(r ConsumerAuditRow) string { return r.ChangeLog },
+		set:  func(r *ConsumerAuditRow, v string) { r.ChangeLog = v },
+	},
+}
+
+// auditHeader is the canonical header row for generated sheet output.
 var auditHeader = func() []string {
-	h := make([]string, totalColumns)
-	h[0] = "Category"
-	h[1] = "Sub-Category"
-	h[2] = "Endpoint"
-	h[3] = "Method"
-	h[4] = "Endpoint Status"
-	h[5] = "x-annotated"
-	h[6] = "Schema-Backed (Meshery)"
-	h[7] = "Schema-Backed (Cloud)"
-	h[8] = "Schema-Driven (Meshery)"
-	h[9] = "Schema-Driven (Cloud)"
-	h[10] = "Schema Completeness (Meshery)"
-	h[11] = "Schema Completeness (Cloud)"
-	h[12] = "Notes"
-	h[13] = "Change Log"
-	h[metadataColumnIndex] = "__metadata__"
+	h := make([]string, len(generatedColumns))
+	for i, col := range generatedColumns {
+		h[i] = col.Name
+	}
 	return h
 }()
 
 // toRow converts the audit row to its serialized string slice. The
-// returned slice is always totalColumns wide, with M..Y left empty for
-// user-owned cells and Z carrying the JSON-encoded metadata.
+// returned slice contains generated columns only.
 func (r ConsumerAuditRow) toRow() []string {
-	cells := make([]string, totalColumns)
-	cells[0] = r.Category
-	cells[1] = r.SubCategory
-	cells[2] = r.Endpoint
-	cells[3] = r.Method
-	cells[4] = r.EndpointStatus
-	cells[5] = r.XAnnotated
-	cells[6] = r.SchemaBackedMeshery
-	cells[7] = r.SchemaBackedCloud
-	cells[8] = r.SchemaDrivenMeshery
-	cells[9] = r.SchemaDrivenCloud
-	cells[10] = r.SchemaCompletenessMeshery
-	cells[11] = r.SchemaCompletenessCloud
-	cells[12] = r.Notes
-	cells[13] = r.ChangeLog
-	cells[metadataColumnIndex] = r.Metadata.encode()
+	cells := make([]string, len(generatedColumns))
+	for i, col := range generatedColumns {
+		cells[i] = col.get(r)
+	}
 	return cells
 }
 
 // rowFromStrings reconstructs an AuditRow from a serialized string slice.
-// Missing trailing columns are tolerated. Legacy Change Log prefixes
-// ("+added YYYY-MM-DD", "~changed ...", "-removed ...") are recognized
-// and migrated on-the-fly: the date is promoted to an RFC3339 timestamp
-// and any missing metadata fields are seeded.
+// Missing trailing columns are tolerated.
 func rowFromStrings(cols []string) ConsumerAuditRow {
 	get := func(i int) string {
 		if i < len(cols) {
@@ -234,91 +196,14 @@ func rowFromStrings(cols []string) ConsumerAuditRow {
 		}
 		return ""
 	}
-	row := ConsumerAuditRow{
-		Category:                  get(0),
-		SubCategory:               get(1),
-		Endpoint:                  get(2),
-		Method:                    get(3),
-		EndpointStatus:            get(4),
-		XAnnotated:                get(5),
-		SchemaBackedMeshery:       get(6),
-		SchemaBackedCloud:         get(7),
-		SchemaDrivenMeshery:       get(8),
-		SchemaDrivenCloud:         get(9),
-		SchemaCompletenessMeshery: get(10),
-		SchemaCompletenessCloud:   get(11),
-		Notes:                     get(12),
-		ChangeLog:                 get(13),
-		Metadata:                  decodeRowMetadata(get(metadataColumnIndex)),
+	var row ConsumerAuditRow
+	for i, col := range generatedColumns {
+		col.set(&row, get(i))
 	}
-	row.ChangeLog, row.Metadata = normalizeLegacyChangeLog(row.ChangeLog, row.Metadata)
 	return row
 }
 
-// isLegacyTombstone reports whether a row loaded from the sheet is a
-// deletion tombstone. The primary signal is Metadata.State == "removed",
-// which is set by normalizeLegacyChangeLog when it encounters a legacy
-// "-removed YYYY-MM-DD" ChangeLog. The prefix check is kept as a fallback
-// for bare "-removed" entries that have no associated date (and thus no
-// metadata migration).
-func isLegacyTombstone(row ConsumerAuditRow) bool {
-	if row.Metadata.State == "removed" {
-		return true
-	}
-	return strings.HasPrefix(strings.TrimSpace(row.ChangeLog), "-removed")
-}
-
-// normalizeLegacyChangeLog rewrites the legacy "+added YYYY-MM-DD",
-// "~changed YYYY-MM-DD: Col1, Col2" formats into the new readable UTC
-// timestamp and seeds any missing metadata fields derived from the
-// prefix. Rows already in the new format are returned unchanged.
-func normalizeLegacyChangeLog(changeLog string, meta RowMetadata) (string, RowMetadata) {
-	trimmed := strings.TrimSpace(changeLog)
-	if trimmed == "" {
-		return changeLog, meta
-	}
-	var state, rest string
-	switch {
-	case strings.HasPrefix(trimmed, "+added "):
-		state = "new"
-		rest = strings.TrimPrefix(trimmed, "+added ")
-	case strings.HasPrefix(trimmed, "~changed "):
-		state = "changed"
-		rest = strings.TrimPrefix(trimmed, "~changed ")
-	case strings.HasPrefix(trimmed, "-removed "):
-		state = "removed"
-		rest = strings.TrimPrefix(trimmed, "-removed ")
-	default:
-		return changeLog, meta
-	}
-	date := rest
-	var changedCols []string
-	if idx := strings.Index(rest, ":"); idx >= 0 {
-		date = strings.TrimSpace(rest[:idx])
-		for _, c := range strings.Split(rest[idx+1:], ",") {
-			if c = strings.TrimSpace(c); c != "" {
-				changedCols = append(changedCols, c)
-			}
-		}
-	} else {
-		date = strings.TrimSpace(date)
-	}
-	ts := date + " 00:00:00"
-	if meta.State == "" {
-		meta.State = state
-	}
-	if meta.FirstSeen == "" {
-		meta.FirstSeen = ts
-	}
-	if len(meta.ChangedColumns) == 0 && len(changedCols) > 0 {
-		meta.ChangedColumns = changedCols
-	}
-	return ts, meta
-}
-
-// EndpointState enumerates the reconciliation states a live audit row
-// can be in. Deletions are tracked separately in the deletion ledger
-// and never appear as a TrackedEndpoint.
+// EndpointState enumerates the reconciliation states a live audit row can be in.
 type EndpointState int
 
 const (
@@ -328,8 +213,7 @@ const (
 )
 
 // TrackedEndpoint is one reconciled row with state transition. The CLI
-// consumes this to render the diff section. The Row already carries
-// the authoritative ChangeLog timestamp and Metadata blob.
+// consumes this to render the diff section.
 type TrackedEndpoint struct {
 	Row   ConsumerAuditRow
 	State EndpointState
@@ -348,8 +232,13 @@ type auditSummary struct {
 	SchemaOnlyCloud     int
 	ConsumerOnlyMeshery int
 	ConsumerOnlyCloud   int
-	Meshery             repoTally
-	Cloud               repoTally
+	// x-annotation breakdown across schema-defined endpoints.
+	AnnotatedMeshery int
+	AnnotatedCloud   int
+	AnnotatedBoth    int
+	// SchemaCompletenessTrue is the count of schema-defined endpoints whose
+	// schema passes blocking validation.
+	SchemaCompletenessTrue int
 }
 
 type constructScope struct {
@@ -360,6 +249,22 @@ type constructScope struct {
 type schemaCompletenessIndex struct {
 	Incomplete map[constructScope]bool
 }
+
+const (
+	XAnnotatedBoth        = "Both"
+	XAnnotatedCloudOnly   = "Cloud only"
+	XAnnotatedMesheryOnly = "Meshery only"
+	XAnnotatedNoSchema    = "No schema"
+
+	EndpointStatusActiveBoth                      = "Active - Both"
+	EndpointStatusActiveMesheryServer             = "Active - Meshery Server"
+	EndpointStatusActiveMesheryCloud              = "Active - Meshery Cloud"
+	EndpointStatusActiveMesheryServerMissingCloud = "Active - Meshery Server, Unimplemented Meshery Cloud"
+	EndpointStatusActiveMesheryCloudMissingServer = "Active - Meshery Cloud, Unimplemented Meshery Server"
+	EndpointStatusUnimplementedBoth               = "Unimplemented Both"
+	EndpointStatusUnimplementedMesheryServer      = "Unimplemented Meshery Server"
+	EndpointStatusUnimplementedMesheryCloud       = "Unimplemented Meshery Cloud"
+)
 
 // RunConsumerAudit is the single entry point for the consumer audit pipeline.
 func RunConsumerAudit(opts ConsumerAuditOptions) (*ConsumerAuditResult, error) {
@@ -555,27 +460,26 @@ func newSchemaRow(
 
 	mesheryConsumers := filterConsumersByRepo(consumers, "meshery")
 	cloudConsumers := filterConsumersByRepo(consumers, "meshery-cloud")
-	mesheryAssessment := assessConsumers(mesheryProvided && mesheryAllowed, "meshery", mesheryConsumers, ep.RequestShape, ep.ResponseShape, ep.QueryParams)
-	cloudAssessment := assessConsumers(cloudProvided && cloudAllowed, "meshery-cloud", cloudConsumers, ep.RequestShape, ep.ResponseShape, ep.QueryParams)
+	hints := hintsFrom(ep)
+	mesheryAssessment := assessConsumers(mesheryProvided && mesheryAllowed, "meshery", mesheryConsumers, ep.RequestShape, ep.ResponseShape, ep.QueryParams, hints)
+	cloudAssessment := assessConsumers(cloudProvided && cloudAllowed, "meshery-cloud", cloudConsumers, ep.RequestShape, ep.ResponseShape, ep.QueryParams, hints)
 
 	row.EndpointStatus = computeEndpointStatus(true, mesheryAllowed, cloudAllowed, len(mesheryConsumers) > 0, len(cloudConsumers) > 0)
-	row.SchemaBackedMeshery = schemaBackedFor(mesheryProvided, mesheryAllowed, mesheryConsumers)
-	row.SchemaBackedCloud = schemaBackedFor(cloudProvided, cloudAllowed, cloudConsumers)
 
-	if row.SchemaBackedMeshery != "" {
+	if mesheryAllowed {
 		row.SchemaDrivenMeshery = mesheryAssessment.Status
 	}
-	if row.SchemaBackedCloud != "" {
+	if cloudAllowed {
 		row.SchemaDrivenCloud = cloudAssessment.Status
 	}
 
-	if mesheryAllowed {
-		row.SchemaCompletenessMeshery = boolAuditStatus(schemaComplete)
-	}
-	if cloudAllowed {
-		row.SchemaCompletenessCloud = boolAuditStatus(schemaComplete)
+	// Schema Completeness is a property of the schema itself — the same value
+	// applies to all consumers that the endpoint targets.
+	if mesheryAllowed || cloudAllowed {
+		row.SchemaCompleteness = boolAuditStatus(schemaComplete)
 	}
 
+	row.PathDrift = pathDriftValue(assessmentHasPathDrift(mesheryAssessment), assessmentHasPathDrift(cloudAssessment))
 	row.Notes = buildLabeledNotes(mesheryAssessment, cloudAssessment)
 	return row
 }
@@ -591,29 +495,23 @@ func newConsumerOnlyRow(consumers []consumerEndpoint, mesheryProvided, cloudProv
 		SubCategory: subCategory,
 		Endpoint:    consumers[0].Path,
 		Method:      consumers[0].Method,
-		XAnnotated:  "No schema",
+		XAnnotated:  XAnnotatedNoSchema,
 	}
 	mesheryConsumers := filterConsumersByRepo(consumers, "meshery")
 	cloudConsumers := filterConsumersByRepo(consumers, "meshery-cloud")
 
 	row.EndpointStatus = computeEndpointStatus(false, false, false, len(mesheryConsumers) > 0, len(cloudConsumers) > 0)
-
-	// No schema → Schema-Backed is FALSE for the repo that registered it, blank
-	// for the other repo. Schema-Driven / Schema-Completeness stay blank (no
-	// schema to evaluate against).
-	if len(mesheryConsumers) > 0 {
-		row.SchemaBackedMeshery = "FALSE"
-	}
-	if len(cloudConsumers) > 0 {
-		row.SchemaBackedCloud = "FALSE"
-	}
-
+	// No schema: Schema-Driven and Schema Completeness are not applicable.
 	row.Notes = ""
 	return row
 }
 
 // classifyXAnnotated returns the x-annotated column value derived from an
 // endpoint's x-internal list.
+//
+// "Both"         — x-internal includes both "cloud" and "meshery".
+// "Cloud only"   — x-internal: ["cloud"] only.
+// "Meshery only" — x-internal: ["meshery"] only.
 func classifyXAnnotated(xInternal []string) string {
 	has := func(s string) bool {
 		for _, x := range xInternal {
@@ -624,16 +522,14 @@ func classifyXAnnotated(xInternal []string) string {
 		return false
 	}
 	switch {
-	case len(xInternal) == 0:
-		return "None"
 	case has("meshery") && has("cloud"):
-		return "None"
+		return XAnnotatedBoth
 	case has("cloud"):
-		return "Cloud only"
+		return XAnnotatedCloudOnly
 	case has("meshery"):
-		return "Meshery"
+		return XAnnotatedMesheryOnly
 	}
-	return "None"
+	return ""
 }
 
 // computeEndpointStatus reports whether the endpoint is live in each consumer
@@ -642,61 +538,33 @@ func computeEndpointStatus(schemaPresent, mApplies, cApplies, mActive, cActive b
 	if !schemaPresent {
 		switch {
 		case mActive && cActive:
-			return "Active - Both"
+			return EndpointStatusActiveBoth
 		case mActive:
-			return "Active - Meshery Server"
+			return EndpointStatusActiveMesheryServer
 		case cActive:
-			return "Active - Meshery Cloud"
+			return EndpointStatusActiveMesheryCloud
 		}
 		return ""
 	}
 	switch {
 	case mActive && cActive:
-		return "Active - Both"
+		return EndpointStatusActiveBoth
 	case mActive && cApplies:
-		return "Active - Meshery Server, Unimplemented Meshery Cloud"
+		return EndpointStatusActiveMesheryServerMissingCloud
 	case mActive:
-		return "Active - Meshery Server"
+		return EndpointStatusActiveMesheryServer
 	case cActive && mApplies:
-		return "Active - Meshery Cloud, Unimplemented Meshery Server"
+		return EndpointStatusActiveMesheryCloudMissingServer
 	case cActive:
-		return "Active - Meshery Cloud"
+		return EndpointStatusActiveMesheryCloud
 	case mApplies && cApplies:
-		return "Unimplemented Both"
+		return EndpointStatusUnimplementedBoth
 	case mApplies:
-		return "Unimplemented Meshery Server"
+		return EndpointStatusUnimplementedMesheryServer
 	case cApplies:
-		return "Unimplemented Meshery Cloud"
+		return EndpointStatusUnimplementedMesheryCloud
 	}
 	return ""
-}
-
-// schemaBackedFor returns the per-consumer Schema-Backed column value for a
-// schema-backed row. Blank means the column does not apply (the consumer was
-// not scanned, or the spec does not target that consumer and no handler was
-// found). TRUE means the schema defines a contract for this consumer — either
-// the endpoint is unimplemented (schema exists, no handler yet) or the
-// registered handler imports the shared schema types. FALSE means a handler
-// was found but none of its consumers import the schema package.
-func schemaBackedFor(provided, applies bool, repoConsumers []consumerEndpoint) string {
-	if !provided {
-		return ""
-	}
-	if !applies && len(repoConsumers) == 0 {
-		return ""
-	}
-	if len(repoConsumers) == 0 {
-		// applies is always true here (the !applies && len==0 branch above
-		// returned "" already). The schema targets this consumer even though no
-		// handler has been registered yet, so the endpoint is schema-backed.
-		return "TRUE"
-	}
-	for _, c := range repoConsumers {
-		if c.ImportsSchemas {
-			return "TRUE"
-		}
-	}
-	return "FALSE"
 }
 
 func filterConsumersByRepo(consumers []consumerEndpoint, repo string) []consumerEndpoint {
@@ -759,6 +627,28 @@ func buildLabeledNotes(meshery, cloud consumerAssessment) string {
 	notes = append(notes, collectRepoNotes("meshery", "meshery", meshery)...)
 	notes = append(notes, collectRepoNotes("cloud", "meshery-cloud", cloud)...)
 	return joinLabeledNotes(notes)
+}
+
+func pathDriftValue(meshery, cloud bool) string {
+	switch {
+	case meshery && cloud:
+		return "Both"
+	case meshery:
+		return "Meshery"
+	case cloud:
+		return "Cloud"
+	default:
+		return ""
+	}
+}
+
+func assessmentHasPathDrift(a consumerAssessment) bool {
+	for _, note := range a.Notes {
+		if strings.Contains(note, "path parameter name differs from spec:") {
+			return true
+		}
+	}
+	return false
 }
 
 func collectRepoNotes(source, repo string, a consumerAssessment) []labeledNote {
@@ -869,13 +759,6 @@ func sortAuditRows(rows []ConsumerAuditRow) {
 	})
 }
 
-// repoTally holds the per-repo counts surfaced in the terminal report.
-type repoTally struct {
-	BackedTrue        int
-	CompletenessTrue  int
-	CompletenessFalse int
-}
-
 func boolAuditStatus(ok bool) string {
 	if ok {
 		return auditStatusTrue
@@ -886,15 +769,11 @@ func boolAuditStatus(ok bool) string {
 func buildSchemaCompletenessIndex(rootDir string) schemaCompletenessIndex {
 	result := Audit(AuditOptions{
 		RootDir: rootDir,
-		Warn:    true,
 	})
 	index := schemaCompletenessIndex{
 		Incomplete: make(map[constructScope]bool),
 	}
 	for _, v := range result.Blocking {
-		index.add(v)
-	}
-	for _, v := range result.Advisory {
 		index.add(v)
 	}
 	return index
@@ -929,27 +808,6 @@ func constructScopeForFile(file string) (constructScope, bool) {
 	return constructScope{}, false
 }
 
-// tallyRepo derives a repoTally directly from row cells.
-func tallyRepo(
-	rows []ConsumerAuditRow,
-	backed func(ConsumerAuditRow) string,
-	completeness func(ConsumerAuditRow) string,
-) repoTally {
-	var t repoTally
-	for _, r := range rows {
-		if backed(r) == "TRUE" {
-			t.BackedTrue++
-		}
-		switch completeness(r) {
-		case auditStatusTrue:
-			t.CompletenessTrue++
-		case auditStatusFalse:
-			t.CompletenessFalse++
-		}
-	}
-	return t
-}
-
 func computeSummary(
 	idx *schemaIndex,
 	meshery, cloud []consumerEndpoint,
@@ -965,23 +823,27 @@ func computeSummary(
 		ConsumerOnlyMeshery: len(filterConsumersByRepo(match.ConsumerOnly, "meshery")),
 		ConsumerOnlyCloud:   len(filterConsumersByRepo(match.ConsumerOnly, "meshery-cloud")),
 	}
-	for _, ep := range match.SchemaOnly {
-		if xInternalAllows(ep.XInternal, "meshery") {
+	for _, row := range rows {
+		if row.XAnnotated == XAnnotatedNoSchema {
+			continue
+		}
+		if unimplementedWithSchemaInConsumer(row, "meshery") {
 			s.SchemaOnlyMeshery++
 		}
-		if xInternalAllows(ep.XInternal, "cloud") {
+		if unimplementedWithSchemaInConsumer(row, "cloud") {
 			s.SchemaOnlyCloud++
 		}
-	}
-	if mesheryProvided {
-		s.Meshery = tallyRepo(rows,
-			func(r ConsumerAuditRow) string { return r.SchemaBackedMeshery },
-			func(r ConsumerAuditRow) string { return r.SchemaCompletenessMeshery })
-	}
-	if cloudProvided {
-		s.Cloud = tallyRepo(rows,
-			func(r ConsumerAuditRow) string { return r.SchemaBackedCloud },
-			func(r ConsumerAuditRow) string { return r.SchemaCompletenessCloud })
+		switch row.XAnnotated {
+		case XAnnotatedMesheryOnly:
+			s.AnnotatedMeshery++
+		case XAnnotatedCloudOnly:
+			s.AnnotatedCloud++
+		case XAnnotatedBoth:
+			s.AnnotatedBoth++
+		}
+		if row.SchemaCompleteness == auditStatusTrue {
+			s.SchemaCompletenessTrue++
+		}
 	}
 	return s
 }

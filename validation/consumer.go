@@ -14,18 +14,20 @@ import (
 
 // consumerEndpoint represents one route registered in a consumer codebase.
 type consumerEndpoint struct {
-	Repo           string      // "meshery" or "meshery-cloud"
-	Method         string      // "GET", "POST", etc., or "ANY"
-	Path           string      // normalized: starts with /, params as {name}
-	HandlerName    string      // "GetConnections", "(anonymous)", ""
-	HandlerFile    string      // "server/handlers/user_handler.go" (repo-relative)
-	RouterFile     string      // where registration lives
-	RouterLine     int         // line number in the router file
-	ImportsSchemas bool        // handler file imports github.com/meshery/schemas/models/*
-	RequestType    *goTypeInfo // nil if not inferable
-	ResponseType   *goTypeInfo // nil if not inferable
-	QueryParams    []string    // query param names read by the handler (e.g. "orgId", "page")
-	Notes          []string    // parser-side notes (e.g. "anonymous handler")
+	Repo               string      // "meshery" or "meshery-cloud"
+	Method             string      // "GET", "POST", etc., or "ANY"
+	Path               string      // normalized: starts with /, params as {name}
+	HandlerName        string      // "GetConnections", "(anonymous)", ""
+	HandlerFile        string      // "server/handlers/user_handler.go" (repo-relative)
+	RouterFile         string      // where registration lives
+	RouterLine         int         // line number in the router file
+	ImportsSchemas     bool        // handler file imports github.com/meshery/schemas/models/*
+	RequestType        *goTypeInfo // nil if not inferable
+	ResponseType       *goTypeInfo // nil if not inferable
+	QueryParams        []string    // query param names read by the handler (e.g. "orgId", "page")
+	WritesRawResponse  bool        // handler calls Write/io.Copy/Blob/Stream/etc. (raw output, no typed schema)
+	SuccessStatusCodes []int       // explicit 2xx success codes found in the handler body
+	Notes              []string    // parser-side notes (e.g. "anonymous handler")
 }
 
 type goTypeOrigin string
@@ -56,7 +58,9 @@ type handlerInfo struct {
 	// DelegatesTo is the name of a same-package method this handler forwards
 	// (res, req, ...) to when its own body contains no req/resp evidence.
 	// Resolved in a post-pass so the delegate's types propagate here.
-	DelegatesTo string
+	DelegatesTo        string
+	WritesRawResponse  bool
+	SuccessStatusCodes []int
 }
 
 // indexHandlers walks the handler directories under a consumer source tree,
@@ -255,14 +259,16 @@ func indexHandlers(tree sourceTree, endpoints []consumerEndpoint) []consumerEndp
 				continue
 			}
 			name := fn.Name.Name
-			req, resp, delegate, qps := scanHandlerBody(fn, c.imports, localPkgTypes[c.dir], localPkgAliases[c.dir], funcReturns[c.dir], allFuncReturns, pkgTypes, pkgAliases)
+			req, resp, delegate, qps, writesRaw, successCodes := scanHandlerBody(fn, c.imports, localPkgTypes[c.dir], localPkgAliases[c.dir], funcReturns[c.dir], allFuncReturns, pkgTypes, pkgAliases)
 			handlers[name] = append(handlers[name], handlerInfo{
-				File:           c.path,
-				ImportsSchemas: importsSchemas,
-				RequestType:    req,
-				ResponseType:   resp,
-				QueryParams:    qps,
-				DelegatesTo:    delegate,
+				File:               c.path,
+				ImportsSchemas:     importsSchemas,
+				RequestType:        req,
+				ResponseType:       resp,
+				QueryParams:        qps,
+				DelegatesTo:        delegate,
+				WritesRawResponse:  writesRaw,
+				SuccessStatusCodes: successCodes,
 			})
 		}
 	}
@@ -299,6 +305,8 @@ func indexHandlers(tree sourceTree, endpoints []consumerEndpoint) []consumerEndp
 		if len(ep.QueryParams) == 0 {
 			ep.QueryParams = info.QueryParams
 		}
+		ep.WritesRawResponse = ep.WritesRawResponse || info.WritesRawResponse
+		ep.SuccessStatusCodes = appendUniqueInts(ep.SuccessStatusCodes, info.SuccessStatusCodes...)
 	}
 
 	return endpoints
@@ -564,9 +572,12 @@ func scanHandlerBody(
 	allFuncReturns map[string]*goTypeInfo,
 	pkgTypes map[string]map[string]map[string]string,
 	pkgAliases map[string]map[string]string,
-) (*goTypeInfo, *goTypeInfo, string, []string) {
+) (*goTypeInfo, *goTypeInfo, string, []string, bool, []int) {
+	// return values:
+	//   request type, response type, delegate name, query params,
+	//   writes-raw-body flag, explicit 2xx success status codes
 	if fn == nil || fn.Body == nil {
-		return nil, nil, "", nil
+		return nil, nil, "", nil, false, nil
 	}
 
 	locals := collectLocalVars(fn, funcReturns, allFuncReturns)
@@ -582,8 +593,11 @@ func scanHandlerBody(
 	}
 
 	var req, resp *goTypeInfo
+	var writesRaw bool
+	var successStatusCodes []int
 	qpSeen := make(map[string]bool)
 	var queryParams []string
+	responseWriterParams := responseWriterParamNames(fn)
 
 	ast.Inspect(fn.Body, func(n ast.Node) bool {
 		call, ok := n.(*ast.CallExpr)
@@ -620,6 +634,11 @@ func scanHandlerBody(
 			if resp == nil && len(call.Args) >= 2 {
 				resp = resolve(call.Args[1])
 			}
+			if len(call.Args) >= 1 {
+				if code, ok := successStatusCode(call.Args[0], imports); ok {
+					successStatusCodes = appendUniqueInts(successStatusCodes, code)
+				}
+			}
 		case "QueryParam":
 			// Echo: c.QueryParam("name")
 			if len(call.Args) == 1 {
@@ -637,11 +656,130 @@ func scanHandlerBody(
 					queryParams = append(queryParams, name)
 				}
 			}
+		case "Write":
+			// http.ResponseWriter.Write(b) — raw byte output.
+			writesRaw = true
+		case "Fprint", "Fprintf", "Fprintln":
+			// fmt.Fprint(w, ...) and friends write a raw response body
+			// without going through ResponseWriter.Write directly.
+			if len(call.Args) >= 1 && isFmtCall(sel, imports) && isResponseWriterArg(call.Args[0], responseWriterParams) {
+				writesRaw = true
+			}
+		case "WriteHeader":
+			if len(call.Args) >= 1 {
+				if code, ok := successStatusCode(call.Args[0], imports); ok {
+					successStatusCodes = appendUniqueInts(successStatusCodes, code)
+				}
+			}
+		case "NoContent":
+			// Echo context no-body helper (c.NoContent).
+			if len(call.Args) >= 1 {
+				if code, ok := successStatusCode(call.Args[0], imports); ok {
+					successStatusCodes = appendUniqueInts(successStatusCodes, code)
+				}
+			}
+		case "Blob", "Stream", "Attachment", "String", "File", "ServeFile", "ServeContent":
+			// Raw-response helpers / static file serving.
+			writesRaw = true
+			if len(call.Args) >= 1 {
+				if code, ok := successStatusCode(call.Args[0], imports); ok {
+					successStatusCodes = appendUniqueInts(successStatusCodes, code)
+				}
+			}
+		case "Copy":
+			// io.Copy(w, src) — raw pipe to response writer.
+			if id, ok := sel.X.(*ast.Ident); ok {
+				if imp, exists := imports[id.Name]; exists && imp == "io" {
+					writesRaw = true
+				}
+			}
 		}
 		return true
 	})
 
-	return req, resp, delegate, queryParams
+	return req, resp, delegate, queryParams, writesRaw, successStatusCodes
+}
+
+func responseWriterParamNames(fn *ast.FuncDecl) map[string]bool {
+	out := make(map[string]bool)
+	if fn == nil || fn.Type == nil || fn.Type.Params == nil {
+		return out
+	}
+	for _, field := range fn.Type.Params.List {
+		if exprToString(field.Type) != "http.ResponseWriter" {
+			continue
+		}
+		for _, name := range field.Names {
+			if name != nil && name.Name != "_" {
+				out[name.Name] = true
+			}
+		}
+	}
+	return out
+}
+
+func isFmtCall(sel *ast.SelectorExpr, imports map[string]string) bool {
+	if sel == nil {
+		return false
+	}
+	id, ok := sel.X.(*ast.Ident)
+	if !ok {
+		return false
+	}
+	return imports[id.Name] == "fmt"
+}
+
+func isResponseWriterArg(expr ast.Expr, responseWriterParams map[string]bool) bool {
+	id, ok := expr.(*ast.Ident)
+	return ok && responseWriterParams[id.Name]
+}
+
+func successStatusCode(expr ast.Expr, imports map[string]string) (int, bool) {
+	switch e := expr.(type) {
+	case *ast.BasicLit:
+		if e.Kind != token.INT {
+			return 0, false
+		}
+		n, err := strconv.Atoi(e.Value)
+		if err != nil || n < 200 || n >= 300 {
+			return 0, false
+		}
+		return n, true
+	case *ast.SelectorExpr:
+		id, ok := e.X.(*ast.Ident)
+		if !ok || e.Sel == nil {
+			return 0, false
+		}
+		if imports[id.Name] != "net/http" {
+			return 0, false
+		}
+		switch e.Sel.Name {
+		case "StatusOK":
+			return 200, true
+		case "StatusCreated":
+			return 201, true
+		case "StatusAccepted":
+			return 202, true
+		case "StatusNoContent":
+			return 204, true
+		}
+	}
+	return 0, false
+}
+
+func appendUniqueInts(dst []int, values ...int) []int {
+	seen := make(map[int]bool, len(dst))
+	for _, v := range dst {
+		seen[v] = true
+	}
+	for _, v := range values {
+		if seen[v] {
+			continue
+		}
+		seen[v] = true
+		dst = append(dst, v)
+	}
+	return dst
 }
 
 // receiverIsQueryValues reports whether an expression is a call chain ending
@@ -1142,7 +1280,7 @@ func resolveDelegations(handlers map[string][]handlerInfo) {
 				if info.DelegatesTo == "" {
 					continue
 				}
-				if info.RequestType != nil && info.ResponseType != nil {
+				if info.RequestType != nil && info.ResponseType != nil && info.WritesRawResponse && len(info.SuccessStatusCodes) > 0 {
 					continue
 				}
 				if info.DelegatesTo == name {
@@ -1160,6 +1298,15 @@ func resolveDelegations(handlers map[string][]handlerInfo) {
 				}
 				if info.ResponseType == nil && target.ResponseType != nil {
 					info.ResponseType = target.ResponseType
+					updated = true
+				}
+				if !info.WritesRawResponse && target.WritesRawResponse {
+					info.WritesRawResponse = true
+					updated = true
+				}
+				before := len(info.SuccessStatusCodes)
+				info.SuccessStatusCodes = appendUniqueInts(info.SuccessStatusCodes, target.SuccessStatusCodes...)
+				if len(info.SuccessStatusCodes) != before {
 					updated = true
 				}
 				if updated {
