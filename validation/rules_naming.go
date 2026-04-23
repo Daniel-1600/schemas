@@ -48,7 +48,34 @@ func checkRule3(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 	return out
 }
 
-// Rule 4: path parameters must be camelCase with Id suffix.
+// Rule 4: URL parameters (path + query) must be camelCase with Id suffix.
+//
+// Path parameters are detected from the path template (`{...}` placeholders)
+// so a path like `/api/foo/{orgID}` is flagged even when no `parameters: [{in: path}]`
+// block is declared. Query parameters are detected from every
+// `parameters: [{in: query, name: ...}]` block visible at either path-level or
+// operation-level, including entries resolved from `$ref` to
+// `components/parameters/*` — kin-openapi materialises the referenced
+// parameter into `p.Value` so inline and referenced forms are covered
+// uniformly (see `collectAllParams`).
+//
+// The canonical URL-parameter contract is camelCase with an `Id` suffix for
+// ID-like names (see AGENTS.md § "Casing rules at a glance" — URL path params
+// + ID-like query params). The same `IsBadPathParam`/`SuggestPathParam`
+// predicate governs both path and query parameters because they share the
+// same wire contract: both appear in the client-visible URL.
+//
+// Header parameters are intentionally out of scope: some HTTP headers are
+// legitimately non-camel (`Accept-Language`, `If-None-Match`) and belong to
+// external standards rather than to our own naming contract. Rule 9 covers
+// query + header parameter casing at a looser-but-broader layer (any non-
+// camelCase), so between the two rules: Rule 4 enforces the URL-parameter
+// `Id`-suffix convention across path+query, and Rule 9 enforces generic
+// camelCase for query+header. Overlap on query parameters is intentional —
+// each rule reports under a distinct RuleNumber so baseline tooling can
+// classify them separately, and the messages identify the parameter role
+// ("path parameter" vs "query parameter") so reviewers see where in the
+// request contract the violation lives.
 func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation {
 	sev := classifyStyleIssue(opts)
 	if sev == nil {
@@ -58,7 +85,18 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 		return nil
 	}
 	var out []Violation
+
+	paths := make([]string, 0, len(doc.Paths.Map()))
 	for path := range doc.Paths.Map() {
+		paths = append(paths, path)
+	}
+	sort.Strings(paths)
+
+	for _, path := range paths {
+		item := doc.Paths.Map()[path]
+
+		// Path parameters — detected from the path template. A single
+		// placeholder appears once per template; no dedup needed.
 		matches := pathParamRE.FindAllStringSubmatch(path, -1)
 		for _, m := range matches {
 			param := m[1]
@@ -66,11 +104,47 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 				suggestion := SuggestPathParam(param)
 				out = append(out, Violation{
 					File:       filePath,
-					Message:    fmt.Sprintf(`Path %q — parameter {%s} uses incorrect casing. Use camelCase with "Id" suffix: {%s}. See AGENTS.md § "Naming conventions".`, path, param, suggestion),
+					Message:    fmt.Sprintf(`Path %q — path parameter {%s} uses incorrect casing. Use camelCase with "Id" suffix: {%s}. See AGENTS.md § "Naming conventions".`, path, param, suggestion),
 					Severity:   *sev,
 					RuleNumber: 4,
 				})
 			}
+		}
+
+		// Query parameters — walked from every `parameters: [{in: query}]`
+		// block on this path (path-level + every method). A single
+		// `components/parameters/*` reference used at both path-level and
+		// op-level would otherwise surface twice per path; dedupe by wire
+		// name within a path so the violation list reflects the contract
+		// (one query parameter per URL) rather than the YAML structure.
+		if item == nil {
+			continue
+		}
+		seen := make(map[string]bool)
+		names := make([]string, 0)
+		for _, p := range collectAllParams(item) {
+			if p == nil || p.Value == nil || p.Value.In != openapi3.ParameterInQuery {
+				continue
+			}
+			name := p.Value.Name
+			if name == "" || seen[name] {
+				continue
+			}
+			seen[name] = true
+			names = append(names, name)
+		}
+		sort.Strings(names)
+		for _, name := range names {
+			if !IsBadPathParam(name) {
+				continue
+			}
+			suggestion := SuggestPathParam(name)
+			out = append(out, Violation{
+				File:       filePath,
+				Message:    fmt.Sprintf(`Path %q — query parameter %q uses incorrect casing. Use camelCase with "Id" suffix: %q. See AGENTS.md § "Naming conventions".`, path, name, suggestion),
+				Severity:   *sev,
+				RuleNumber: 4,
+			})
 		}
 	}
 	return out
