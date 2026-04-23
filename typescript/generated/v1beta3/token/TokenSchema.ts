@@ -7,7 +7,6 @@ const TokenSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "token",
-    "x-deprecated": true,
     "description": "Documentation for Meshery Cloud REST APIs for user tokens and sessions",
     "contact": {
       "name": "Meshery Maintainers",
@@ -18,7 +17,7 @@ const TokenSchema: Record<string, unknown> = {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "v1beta2"
+    "version": "v1beta3"
   },
   "servers": [
     {
@@ -59,7 +58,7 @@ const TokenSchema: Record<string, unknown> = {
         "description": "Retrieves tokens associated with the authenticated user.",
         "parameters": [
           {
-            "name": "isOAuth",
+            "name": "isOauth",
             "in": "query",
             "description": "Whether to retrieve OAuth-backed sessions instead of API tokens.",
             "schema": {
@@ -109,9 +108,9 @@ const TokenSchema: Record<string, unknown> = {
                   "description": "A paginated list of tokens.",
                   "required": [
                     "tokens",
-                    "total_count",
+                    "totalCount",
                     "page",
-                    "page_size"
+                    "pageSize"
                   ],
                   "properties": {
                     "tokens": {
@@ -121,13 +120,19 @@ const TokenSchema: Record<string, unknown> = {
                         "type": "object",
                         "additionalProperties": false,
                         "description": "Represents a user-owned API token or OAuth session.",
+                        "required": [
+                          "id",
+                          "userId",
+                          "provider"
+                        ],
                         "properties": {
                           "id": {
                             "description": "Unique identifier for the token.",
-                            "x-order": 1,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
+                            "x-order": 1,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -135,12 +140,14 @@ const TokenSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "user_id": {
+                          "userId": {
                             "description": "UUID of the user who owns the token.",
-                            "x-order": 2,
+                            "x-go-name": "UserID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "user_id"
+                              "db": "user_id",
+                              "json": "userId"
                             },
+                            "x-order": 2,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -151,110 +158,119 @@ const TokenSchema: Record<string, unknown> = {
                           "provider": {
                             "type": "string",
                             "description": "Authentication provider associated with the token.",
-                            "x-order": 3,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "provider"
+                              "db": "provider",
+                              "json": "provider"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 3
                           },
-                          "access_token": {
+                          "accessToken": {
                             "type": "string",
                             "description": "Access token value.",
-                            "x-order": 4,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "access_token"
+                              "db": "access_token",
+                              "json": "accessToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 4
                           },
-                          "refresh_token": {
+                          "refreshToken": {
                             "type": "string",
                             "description": "Refresh token value when applicable.",
-                            "x-order": 5,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "refresh_token"
+                              "db": "refresh_token",
+                              "json": "refreshToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 5
                           },
                           "name": {
                             "type": "string",
                             "description": "Human-readable token name.",
-                            "x-order": 6,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "name"
+                              "db": "name",
+                              "json": "name"
                             },
                             "minLength": 1,
-                            "maxLength": 255
+                            "maxLength": 255,
+                            "x-order": 6
                           },
                           "purpose": {
                             "type": "string",
                             "description": "Purpose for which the token was created.",
-                            "x-order": 7,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "purpose"
+                              "db": "purpose",
+                              "json": "purpose"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 7
                           },
-                          "is_oauth": {
+                          "isOauth": {
                             "type": "boolean",
                             "description": "Whether this entry represents an OAuth session.",
-                            "x-order": 8,
+                            "x-go-name": "IsOAuth",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "is_oauth"
-                            }
+                              "db": "is_oauth",
+                              "json": "isOauth"
+                            },
+                            "x-order": 8
                           },
-                          "created_at": {
-                            "x-order": 9,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the token was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 9
                           },
-                          "updated_at": {
-                            "x-order": 10,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the token was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 10
                           }
-                        },
-                        "required": [
-                          "id",
-                          "user_id",
-                          "provider"
-                        ]
+                        }
                       },
                       "x-order": 1,
-                      "description": "The tokens of the tokenpage."
+                      "description": "Tokens returned on the current page."
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of tokens across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "minimum": 0
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "page": {
                       "type": "integer",
                       "description": "Current page number (zero-based).",
-                      "x-order": 3,
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of tokens per page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 4,
-                      "minimum": 1
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     }
                   }
                 }
@@ -300,7 +316,9 @@ const TokenSchema: Record<string, unknown> = {
             "description": "Name of the token.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
             }
           },
           {
@@ -308,12 +326,13 @@ const TokenSchema: Record<string, unknown> = {
             "in": "query",
             "description": "Purpose for which the token is generated.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 500
             }
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Token generated",
             "content": {
               "application/json": {
@@ -322,9 +341,9 @@ const TokenSchema: Record<string, unknown> = {
                   "description": "A paginated list of tokens.",
                   "required": [
                     "tokens",
-                    "total_count",
+                    "totalCount",
                     "page",
-                    "page_size"
+                    "pageSize"
                   ],
                   "properties": {
                     "tokens": {
@@ -334,13 +353,19 @@ const TokenSchema: Record<string, unknown> = {
                         "type": "object",
                         "additionalProperties": false,
                         "description": "Represents a user-owned API token or OAuth session.",
+                        "required": [
+                          "id",
+                          "userId",
+                          "provider"
+                        ],
                         "properties": {
                           "id": {
                             "description": "Unique identifier for the token.",
-                            "x-order": 1,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
+                            "x-order": 1,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -348,12 +373,14 @@ const TokenSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "user_id": {
+                          "userId": {
                             "description": "UUID of the user who owns the token.",
-                            "x-order": 2,
+                            "x-go-name": "UserID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "user_id"
+                              "db": "user_id",
+                              "json": "userId"
                             },
+                            "x-order": 2,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -364,110 +391,119 @@ const TokenSchema: Record<string, unknown> = {
                           "provider": {
                             "type": "string",
                             "description": "Authentication provider associated with the token.",
-                            "x-order": 3,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "provider"
+                              "db": "provider",
+                              "json": "provider"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 3
                           },
-                          "access_token": {
+                          "accessToken": {
                             "type": "string",
                             "description": "Access token value.",
-                            "x-order": 4,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "access_token"
+                              "db": "access_token",
+                              "json": "accessToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 4
                           },
-                          "refresh_token": {
+                          "refreshToken": {
                             "type": "string",
                             "description": "Refresh token value when applicable.",
-                            "x-order": 5,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "refresh_token"
+                              "db": "refresh_token",
+                              "json": "refreshToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 5
                           },
                           "name": {
                             "type": "string",
                             "description": "Human-readable token name.",
-                            "x-order": 6,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "name"
+                              "db": "name",
+                              "json": "name"
                             },
                             "minLength": 1,
-                            "maxLength": 255
+                            "maxLength": 255,
+                            "x-order": 6
                           },
                           "purpose": {
                             "type": "string",
                             "description": "Purpose for which the token was created.",
-                            "x-order": 7,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "purpose"
+                              "db": "purpose",
+                              "json": "purpose"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 7
                           },
-                          "is_oauth": {
+                          "isOauth": {
                             "type": "boolean",
                             "description": "Whether this entry represents an OAuth session.",
-                            "x-order": 8,
+                            "x-go-name": "IsOAuth",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "is_oauth"
-                            }
+                              "db": "is_oauth",
+                              "json": "isOauth"
+                            },
+                            "x-order": 8
                           },
-                          "created_at": {
-                            "x-order": 9,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the token was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 9
                           },
-                          "updated_at": {
-                            "x-order": 10,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the token was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 10
                           }
-                        },
-                        "required": [
-                          "id",
-                          "user_id",
-                          "provider"
-                        ]
+                        }
                       },
                       "x-order": 1,
-                      "description": "The tokens of the tokenpage."
+                      "description": "Tokens returned on the current page."
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of tokens across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "minimum": 0
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "page": {
                       "type": "integer",
                       "description": "Current page number (zero-based).",
-                      "x-order": 3,
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of tokens per page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 4,
-                      "minimum": 1
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     }
                   }
                 }
@@ -520,7 +556,7 @@ const TokenSchema: Record<string, unknown> = {
           {
             "name": "tokenId",
             "in": "query",
-            "description": "ID of the token.",
+            "description": "ID of the token to delete.",
             "required": true,
             "schema": {
               "type": "string",
@@ -543,9 +579,9 @@ const TokenSchema: Record<string, unknown> = {
                   "description": "A paginated list of tokens.",
                   "required": [
                     "tokens",
-                    "total_count",
+                    "totalCount",
                     "page",
-                    "page_size"
+                    "pageSize"
                   ],
                   "properties": {
                     "tokens": {
@@ -555,13 +591,19 @@ const TokenSchema: Record<string, unknown> = {
                         "type": "object",
                         "additionalProperties": false,
                         "description": "Represents a user-owned API token or OAuth session.",
+                        "required": [
+                          "id",
+                          "userId",
+                          "provider"
+                        ],
                         "properties": {
                           "id": {
                             "description": "Unique identifier for the token.",
-                            "x-order": 1,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
+                            "x-order": 1,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -569,12 +611,14 @@ const TokenSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "user_id": {
+                          "userId": {
                             "description": "UUID of the user who owns the token.",
-                            "x-order": 2,
+                            "x-go-name": "UserID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "user_id"
+                              "db": "user_id",
+                              "json": "userId"
                             },
+                            "x-order": 2,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -585,110 +629,119 @@ const TokenSchema: Record<string, unknown> = {
                           "provider": {
                             "type": "string",
                             "description": "Authentication provider associated with the token.",
-                            "x-order": 3,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "provider"
+                              "db": "provider",
+                              "json": "provider"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 3
                           },
-                          "access_token": {
+                          "accessToken": {
                             "type": "string",
                             "description": "Access token value.",
-                            "x-order": 4,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "access_token"
+                              "db": "access_token",
+                              "json": "accessToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 4
                           },
-                          "refresh_token": {
+                          "refreshToken": {
                             "type": "string",
                             "description": "Refresh token value when applicable.",
-                            "x-order": 5,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "refresh_token"
+                              "db": "refresh_token",
+                              "json": "refreshToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 5
                           },
                           "name": {
                             "type": "string",
                             "description": "Human-readable token name.",
-                            "x-order": 6,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "name"
+                              "db": "name",
+                              "json": "name"
                             },
                             "minLength": 1,
-                            "maxLength": 255
+                            "maxLength": 255,
+                            "x-order": 6
                           },
                           "purpose": {
                             "type": "string",
                             "description": "Purpose for which the token was created.",
-                            "x-order": 7,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "purpose"
+                              "db": "purpose",
+                              "json": "purpose"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 7
                           },
-                          "is_oauth": {
+                          "isOauth": {
                             "type": "boolean",
                             "description": "Whether this entry represents an OAuth session.",
-                            "x-order": 8,
+                            "x-go-name": "IsOAuth",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "is_oauth"
-                            }
+                              "db": "is_oauth",
+                              "json": "isOauth"
+                            },
+                            "x-order": 8
                           },
-                          "created_at": {
-                            "x-order": 9,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the token was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 9
                           },
-                          "updated_at": {
-                            "x-order": 10,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the token was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 10
                           }
-                        },
-                        "required": [
-                          "id",
-                          "user_id",
-                          "provider"
-                        ]
+                        }
                       },
                       "x-order": 1,
-                      "description": "The tokens of the tokenpage."
+                      "description": "Tokens returned on the current page."
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of tokens across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "minimum": 0
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "page": {
                       "type": "integer",
                       "description": "Current page number (zero-based).",
-                      "x-order": 3,
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of tokens per page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 4,
-                      "minimum": 1
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     }
                   }
                 }
@@ -728,7 +781,7 @@ const TokenSchema: Record<string, unknown> = {
         }
       }
     },
-    "/api/identity/tokens/{id}": {
+    "/api/identity/tokens/{tokenId}": {
       "get": {
         "x-internal": [
           "cloud"
@@ -741,7 +794,7 @@ const TokenSchema: Record<string, unknown> = {
         "description": "Retrieves a specific token by its ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "tokenId",
             "in": "path",
             "description": "Token ID",
             "required": true,
@@ -765,13 +818,19 @@ const TokenSchema: Record<string, unknown> = {
                   "type": "object",
                   "additionalProperties": false,
                   "description": "Represents a user-owned API token or OAuth session.",
+                  "required": [
+                    "id",
+                    "userId",
+                    "provider"
+                  ],
                   "properties": {
                     "id": {
                       "description": "Unique identifier for the token.",
-                      "x-order": 1,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
+                      "x-order": 1,
                       "type": "string",
                       "format": "uuid",
                       "x-go-type": "uuid.UUID",
@@ -779,12 +838,14 @@ const TokenSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "user_id": {
+                    "userId": {
                       "description": "UUID of the user who owns the token.",
-                      "x-order": 2,
+                      "x-go-name": "UserID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "user_id"
+                        "db": "user_id",
+                        "json": "userId"
                       },
+                      "x-order": 2,
                       "type": "string",
                       "format": "uuid",
                       "x-go-type": "uuid.UUID",
@@ -795,89 +856,89 @@ const TokenSchema: Record<string, unknown> = {
                     "provider": {
                       "type": "string",
                       "description": "Authentication provider associated with the token.",
-                      "x-order": 3,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "provider"
+                        "db": "provider",
+                        "json": "provider"
                       },
-                      "maxLength": 500
+                      "maxLength": 500,
+                      "x-order": 3
                     },
-                    "access_token": {
+                    "accessToken": {
                       "type": "string",
                       "description": "Access token value.",
-                      "x-order": 4,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "access_token"
+                        "db": "access_token",
+                        "json": "accessToken"
                       },
-                      "maxLength": 4096
+                      "maxLength": 4096,
+                      "x-order": 4
                     },
-                    "refresh_token": {
+                    "refreshToken": {
                       "type": "string",
                       "description": "Refresh token value when applicable.",
-                      "x-order": 5,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "refresh_token"
+                        "db": "refresh_token",
+                        "json": "refreshToken"
                       },
-                      "maxLength": 4096
+                      "maxLength": 4096,
+                      "x-order": 5
                     },
                     "name": {
                       "type": "string",
                       "description": "Human-readable token name.",
-                      "x-order": 6,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "name"
+                        "db": "name",
+                        "json": "name"
                       },
                       "minLength": 1,
-                      "maxLength": 255
+                      "maxLength": 255,
+                      "x-order": 6
                     },
                     "purpose": {
                       "type": "string",
                       "description": "Purpose for which the token was created.",
-                      "x-order": 7,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "purpose"
+                        "db": "purpose",
+                        "json": "purpose"
                       },
-                      "maxLength": 500
+                      "maxLength": 500,
+                      "x-order": 7
                     },
-                    "is_oauth": {
+                    "isOauth": {
                       "type": "boolean",
                       "description": "Whether this entry represents an OAuth session.",
-                      "x-order": 8,
+                      "x-go-name": "IsOAuth",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "is_oauth"
-                      }
+                        "db": "is_oauth",
+                        "json": "isOauth"
+                      },
+                      "x-order": 8
                     },
-                    "created_at": {
-                      "x-order": 9,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the token was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 9
                     },
-                    "updated_at": {
-                      "x-order": 10,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the token was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 10
                     }
-                  },
-                  "required": [
-                    "id",
-                    "user_id",
-                    "provider"
-                  ]
+                  }
                 }
               }
             }
@@ -930,7 +991,7 @@ const TokenSchema: Record<string, unknown> = {
           {
             "name": "userId",
             "in": "query",
-            "description": "UUID of the user.",
+            "description": "UUID of the user to issue the indefinite token for.",
             "required": true,
             "schema": {
               "type": "string",
@@ -945,10 +1006,11 @@ const TokenSchema: Record<string, unknown> = {
           {
             "name": "provider",
             "in": "query",
-            "description": "Remote provider.",
+            "description": "Authentication provider to associate with the indefinite token.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "maxLength": 500
             }
           }
         ],
@@ -962,9 +1024,9 @@ const TokenSchema: Record<string, unknown> = {
                   "description": "A paginated list of tokens.",
                   "required": [
                     "tokens",
-                    "total_count",
+                    "totalCount",
                     "page",
-                    "page_size"
+                    "pageSize"
                   ],
                   "properties": {
                     "tokens": {
@@ -974,13 +1036,19 @@ const TokenSchema: Record<string, unknown> = {
                         "type": "object",
                         "additionalProperties": false,
                         "description": "Represents a user-owned API token or OAuth session.",
+                        "required": [
+                          "id",
+                          "userId",
+                          "provider"
+                        ],
                         "properties": {
                           "id": {
                             "description": "Unique identifier for the token.",
-                            "x-order": 1,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
+                            "x-order": 1,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -988,12 +1056,14 @@ const TokenSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "user_id": {
+                          "userId": {
                             "description": "UUID of the user who owns the token.",
-                            "x-order": 2,
+                            "x-go-name": "UserID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "user_id"
+                              "db": "user_id",
+                              "json": "userId"
                             },
+                            "x-order": 2,
                             "type": "string",
                             "format": "uuid",
                             "x-go-type": "uuid.UUID",
@@ -1004,110 +1074,119 @@ const TokenSchema: Record<string, unknown> = {
                           "provider": {
                             "type": "string",
                             "description": "Authentication provider associated with the token.",
-                            "x-order": 3,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "provider"
+                              "db": "provider",
+                              "json": "provider"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 3
                           },
-                          "access_token": {
+                          "accessToken": {
                             "type": "string",
                             "description": "Access token value.",
-                            "x-order": 4,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "access_token"
+                              "db": "access_token",
+                              "json": "accessToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 4
                           },
-                          "refresh_token": {
+                          "refreshToken": {
                             "type": "string",
                             "description": "Refresh token value when applicable.",
-                            "x-order": 5,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "refresh_token"
+                              "db": "refresh_token",
+                              "json": "refreshToken"
                             },
-                            "maxLength": 4096
+                            "maxLength": 4096,
+                            "x-order": 5
                           },
                           "name": {
                             "type": "string",
                             "description": "Human-readable token name.",
-                            "x-order": 6,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "name"
+                              "db": "name",
+                              "json": "name"
                             },
                             "minLength": 1,
-                            "maxLength": 255
+                            "maxLength": 255,
+                            "x-order": 6
                           },
                           "purpose": {
                             "type": "string",
                             "description": "Purpose for which the token was created.",
-                            "x-order": 7,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "purpose"
+                              "db": "purpose",
+                              "json": "purpose"
                             },
-                            "maxLength": 500
+                            "maxLength": 500,
+                            "x-order": 7
                           },
-                          "is_oauth": {
+                          "isOauth": {
                             "type": "boolean",
                             "description": "Whether this entry represents an OAuth session.",
-                            "x-order": 8,
+                            "x-go-name": "IsOAuth",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "is_oauth"
-                            }
+                              "db": "is_oauth",
+                              "json": "isOauth"
+                            },
+                            "x-order": 8
                           },
-                          "created_at": {
-                            "x-order": 9,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the token was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 9
                           },
-                          "updated_at": {
-                            "x-order": 10,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the token was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 10
                           }
-                        },
-                        "required": [
-                          "id",
-                          "user_id",
-                          "provider"
-                        ]
+                        }
                       },
                       "x-order": 1,
-                      "description": "The tokens of the tokenpage."
+                      "description": "Tokens returned on the current page."
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of tokens across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "minimum": 0
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "page": {
                       "type": "integer",
                       "description": "Current page number (zero-based).",
-                      "x-order": 3,
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of tokens per page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 4,
-                      "minimum": 1
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     }
                   }
                 }
@@ -1199,8 +1278,8 @@ const TokenSchema: Record<string, unknown> = {
       }
     },
     "parameters": {
-      "id": {
-        "name": "id",
+      "tokenId": {
+        "name": "tokenId",
         "in": "path",
         "description": "Token ID",
         "required": true,
@@ -1212,6 +1291,46 @@ const TokenSchema: Record<string, unknown> = {
           "x-go-type-import": {
             "path": "github.com/gofrs/uuid"
           }
+        }
+      },
+      "tokenIdQuery": {
+        "name": "tokenId",
+        "in": "query",
+        "description": "ID of the token to delete.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+          "x-go-type": "uuid.UUID",
+          "x-go-type-import": {
+            "path": "github.com/gofrs/uuid"
+          }
+        }
+      },
+      "userIdQuery": {
+        "name": "userId",
+        "in": "query",
+        "description": "UUID of the user to issue the indefinite token for.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+          "x-go-type": "uuid.UUID",
+          "x-go-type-import": {
+            "path": "github.com/gofrs/uuid"
+          }
+        }
+      },
+      "providerQuery": {
+        "name": "provider",
+        "in": "query",
+        "description": "Authentication provider to associate with the indefinite token.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "maxLength": 500
         }
       },
       "page": {
@@ -1246,8 +1365,8 @@ const TokenSchema: Record<string, unknown> = {
           "type": "string"
         }
       },
-      "isOAuth": {
-        "name": "isOAuth",
+      "isOauth": {
+        "name": "isOauth",
         "in": "query",
         "description": "Whether to retrieve OAuth-backed sessions instead of API tokens.",
         "schema": {
@@ -1260,7 +1379,9 @@ const TokenSchema: Record<string, unknown> = {
         "description": "Name of the token.",
         "required": true,
         "schema": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
         }
       },
       "purpose": {
@@ -1268,46 +1389,8 @@ const TokenSchema: Record<string, unknown> = {
         "in": "query",
         "description": "Purpose for which the token is generated.",
         "schema": {
-          "type": "string"
-        }
-      },
-      "tokenId": {
-        "name": "tokenId",
-        "in": "query",
-        "description": "ID of the token.",
-        "required": true,
-        "schema": {
           "type": "string",
-          "format": "uuid",
-          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-          "x-go-type": "uuid.UUID",
-          "x-go-type-import": {
-            "path": "github.com/gofrs/uuid"
-          }
-        }
-      },
-      "userId": {
-        "name": "userId",
-        "in": "query",
-        "description": "UUID of the user.",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-          "x-go-type": "uuid.UUID",
-          "x-go-type-import": {
-            "path": "github.com/gofrs/uuid"
-          }
-        }
-      },
-      "provider": {
-        "name": "provider",
-        "in": "query",
-        "description": "Remote provider.",
-        "required": true,
-        "schema": {
-          "type": "string"
+          "maxLength": 500
         }
       }
     },
@@ -1316,13 +1399,19 @@ const TokenSchema: Record<string, unknown> = {
         "type": "object",
         "additionalProperties": false,
         "description": "Represents a user-owned API token or OAuth session.",
+        "required": [
+          "id",
+          "userId",
+          "provider"
+        ],
         "properties": {
           "id": {
             "description": "Unique identifier for the token.",
-            "x-order": 1,
             "x-oapi-codegen-extra-tags": {
-              "db": "id"
+              "db": "id",
+              "json": "id"
             },
+            "x-order": 1,
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1330,12 +1419,14 @@ const TokenSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "user_id": {
+          "userId": {
             "description": "UUID of the user who owns the token.",
-            "x-order": 2,
+            "x-go-name": "UserID",
             "x-oapi-codegen-extra-tags": {
-              "db": "user_id"
+              "db": "user_id",
+              "json": "userId"
             },
+            "x-order": 2,
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1346,98 +1437,98 @@ const TokenSchema: Record<string, unknown> = {
           "provider": {
             "type": "string",
             "description": "Authentication provider associated with the token.",
-            "x-order": 3,
             "x-oapi-codegen-extra-tags": {
-              "db": "provider"
+              "db": "provider",
+              "json": "provider"
             },
-            "maxLength": 500
+            "maxLength": 500,
+            "x-order": 3
           },
-          "access_token": {
+          "accessToken": {
             "type": "string",
             "description": "Access token value.",
-            "x-order": 4,
             "x-oapi-codegen-extra-tags": {
-              "db": "access_token"
+              "db": "access_token",
+              "json": "accessToken"
             },
-            "maxLength": 4096
+            "maxLength": 4096,
+            "x-order": 4
           },
-          "refresh_token": {
+          "refreshToken": {
             "type": "string",
             "description": "Refresh token value when applicable.",
-            "x-order": 5,
             "x-oapi-codegen-extra-tags": {
-              "db": "refresh_token"
+              "db": "refresh_token",
+              "json": "refreshToken"
             },
-            "maxLength": 4096
+            "maxLength": 4096,
+            "x-order": 5
           },
           "name": {
             "type": "string",
             "description": "Human-readable token name.",
-            "x-order": 6,
             "x-oapi-codegen-extra-tags": {
-              "db": "name"
+              "db": "name",
+              "json": "name"
             },
             "minLength": 1,
-            "maxLength": 255
+            "maxLength": 255,
+            "x-order": 6
           },
           "purpose": {
             "type": "string",
             "description": "Purpose for which the token was created.",
-            "x-order": 7,
             "x-oapi-codegen-extra-tags": {
-              "db": "purpose"
+              "db": "purpose",
+              "json": "purpose"
             },
-            "maxLength": 500
+            "maxLength": 500,
+            "x-order": 7
           },
-          "is_oauth": {
+          "isOauth": {
             "type": "boolean",
             "description": "Whether this entry represents an OAuth session.",
-            "x-order": 8,
+            "x-go-name": "IsOAuth",
             "x-oapi-codegen-extra-tags": {
-              "db": "is_oauth"
-            }
+              "db": "is_oauth",
+              "json": "isOauth"
+            },
+            "x-order": 8
           },
-          "created_at": {
-            "x-order": 9,
-            "description": "Timestamp when the resource was created.",
-            "x-go-type": "time.Time",
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "CreatedAt",
+            "description": "Timestamp when the token was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
+              "json": "createdAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 9
           },
-          "updated_at": {
-            "x-order": 10,
-            "description": "Timestamp when the resource was updated.",
-            "x-go-type": "time.Time",
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "UpdatedAt",
+            "description": "Timestamp when the token was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
+              "json": "updatedAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 10
           }
-        },
-        "required": [
-          "id",
-          "user_id",
-          "provider"
-        ]
+        }
       },
       "TokenPage": {
         "type": "object",
         "description": "A paginated list of tokens.",
         "required": [
           "tokens",
-          "total_count",
+          "totalCount",
           "page",
-          "page_size"
+          "pageSize"
         ],
         "properties": {
           "tokens": {
@@ -1447,13 +1538,19 @@ const TokenSchema: Record<string, unknown> = {
               "type": "object",
               "additionalProperties": false,
               "description": "Represents a user-owned API token or OAuth session.",
+              "required": [
+                "id",
+                "userId",
+                "provider"
+              ],
               "properties": {
                 "id": {
                   "description": "Unique identifier for the token.",
-                  "x-order": 1,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "id"
+                    "db": "id",
+                    "json": "id"
                   },
+                  "x-order": 1,
                   "type": "string",
                   "format": "uuid",
                   "x-go-type": "uuid.UUID",
@@ -1461,12 +1558,14 @@ const TokenSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "user_id": {
+                "userId": {
                   "description": "UUID of the user who owns the token.",
-                  "x-order": 2,
+                  "x-go-name": "UserID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "user_id"
+                    "db": "user_id",
+                    "json": "userId"
                   },
+                  "x-order": 2,
                   "type": "string",
                   "format": "uuid",
                   "x-go-type": "uuid.UUID",
@@ -1477,110 +1576,119 @@ const TokenSchema: Record<string, unknown> = {
                 "provider": {
                   "type": "string",
                   "description": "Authentication provider associated with the token.",
-                  "x-order": 3,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "provider"
+                    "db": "provider",
+                    "json": "provider"
                   },
-                  "maxLength": 500
+                  "maxLength": 500,
+                  "x-order": 3
                 },
-                "access_token": {
+                "accessToken": {
                   "type": "string",
                   "description": "Access token value.",
-                  "x-order": 4,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "access_token"
+                    "db": "access_token",
+                    "json": "accessToken"
                   },
-                  "maxLength": 4096
+                  "maxLength": 4096,
+                  "x-order": 4
                 },
-                "refresh_token": {
+                "refreshToken": {
                   "type": "string",
                   "description": "Refresh token value when applicable.",
-                  "x-order": 5,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "refresh_token"
+                    "db": "refresh_token",
+                    "json": "refreshToken"
                   },
-                  "maxLength": 4096
+                  "maxLength": 4096,
+                  "x-order": 5
                 },
                 "name": {
                   "type": "string",
                   "description": "Human-readable token name.",
-                  "x-order": 6,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "name"
+                    "db": "name",
+                    "json": "name"
                   },
                   "minLength": 1,
-                  "maxLength": 255
+                  "maxLength": 255,
+                  "x-order": 6
                 },
                 "purpose": {
                   "type": "string",
                   "description": "Purpose for which the token was created.",
-                  "x-order": 7,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "purpose"
+                    "db": "purpose",
+                    "json": "purpose"
                   },
-                  "maxLength": 500
+                  "maxLength": 500,
+                  "x-order": 7
                 },
-                "is_oauth": {
+                "isOauth": {
                   "type": "boolean",
                   "description": "Whether this entry represents an OAuth session.",
-                  "x-order": 8,
+                  "x-go-name": "IsOAuth",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "is_oauth"
-                  }
+                    "db": "is_oauth",
+                    "json": "isOauth"
+                  },
+                  "x-order": 8
                 },
-                "created_at": {
-                  "x-order": 9,
-                  "description": "Timestamp when the resource was created.",
-                  "x-go-type": "time.Time",
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "CreatedAt",
+                  "description": "Timestamp when the token was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "yaml": "created_at"
+                    "json": "createdAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 9
                 },
-                "updated_at": {
-                  "x-order": 10,
-                  "description": "Timestamp when the resource was updated.",
-                  "x-go-type": "time.Time",
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "UpdatedAt",
+                  "description": "Timestamp when the token was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "yaml": "updated_at"
+                    "json": "updatedAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 10
                 }
-              },
-              "required": [
-                "id",
-                "user_id",
-                "provider"
-              ]
+              }
             },
             "x-order": 1,
-            "description": "The tokens of the tokenpage."
+            "description": "Tokens returned on the current page."
           },
-          "total_count": {
+          "totalCount": {
             "type": "integer",
             "description": "Total number of tokens across all pages.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
             "x-order": 2,
-            "minimum": 0
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "page": {
             "type": "integer",
             "description": "Current page number (zero-based).",
-            "x-order": 3,
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-order": 3
           },
-          "page_size": {
+          "pageSize": {
             "type": "integer",
             "description": "Number of tokens per page.",
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
             "x-order": 4,
-            "minimum": 1
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           }
         }
       }

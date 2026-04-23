@@ -1,8 +1,8 @@
 import { cloudBaseApi as api } from "./api";
 export const addTagTypes = [
-  "Badge_Badge",
   "Feature_Features",
   "Academy_API_Academy",
+  "Badge_Badge",
   "credential_credentials",
   "Key_users",
   "Key_Key",
@@ -12,7 +12,6 @@ export const addTagTypes = [
   "Team_teams",
   "role_roles",
   "schedule_scheduler",
-  "token_tokens",
   "User_users",
   "View_views",
   "Connection_API_Connections",
@@ -23,6 +22,7 @@ export const addTagTypes = [
   "Plan_Plans",
   "Subscription_Subscriptions",
   "Subscription_Payment Processors",
+  "token_tokens",
   "Workspace_workspaces",
   "Workspace_designs",
   "Workspace_views",
@@ -33,26 +33,6 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      deleteBadgeById: build.mutation<DeleteBadgeByIdApiResponse, DeleteBadgeByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["Badge_Badge"],
-      }),
-      getBadgeById: build.query<GetBadgeByIdApiResponse, GetBadgeByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.id}` }),
-        providesTags: ["Badge_Badge"],
-      }),
-      createOrUpdateBadge: build.mutation<CreateOrUpdateBadgeApiResponse, CreateOrUpdateBadgeApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/badges`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Badge_Badge"],
-      }),
-      getAvailableBadges: build.query<GetAvailableBadgesApiResponse, GetAvailableBadgesApiArg>({
-        query: () => ({ url: `/api/identity/badges` }),
-        providesTags: ["Badge_Badge"],
-      }),
-      assignBadges: build.mutation<AssignBadgesApiResponse, AssignBadgesApiArg>({
-        query: (queryArg) => ({ url: `/api/identity/users/badges`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["Badge_Badge"],
-      }),
       getFeatures: build.query<GetFeaturesApiResponse, GetFeaturesApiArg>({
         query: () => ({ url: `/api/entitlement/features` }),
         providesTags: ["Feature_Features"],
@@ -213,6 +193,31 @@ const injectedRtkApi = api
       getCertificateById: build.query<GetCertificateByIdApiResponse, GetCertificateByIdApiArg>({
         query: (queryArg) => ({ url: `/api/academy/certificates/${queryArg.certificateId}` }),
         providesTags: ["Academy_API_Academy"],
+      }),
+      deleteBadgeById: build.mutation<DeleteBadgeByIdApiResponse, DeleteBadgeByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.badgeId}`, method: "DELETE" }),
+        invalidatesTags: ["Badge_Badge"],
+      }),
+      getBadgeById: build.query<GetBadgeByIdApiResponse, GetBadgeByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/badges/${queryArg.badgeId}` }),
+        providesTags: ["Badge_Badge"],
+      }),
+      createOrUpdateBadge: build.mutation<CreateOrUpdateBadgeApiResponse, CreateOrUpdateBadgeApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/badges`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Badge_Badge"],
+      }),
+      getAvailableBadges: build.query<GetAvailableBadgesApiResponse, GetAvailableBadgesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/badges`,
+          params: {
+            orgId: queryArg.orgId,
+          },
+        }),
+        providesTags: ["Badge_Badge"],
+      }),
+      assignBadges: build.mutation<AssignBadgesApiResponse, AssignBadgesApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/users/badges`, method: "PUT", body: queryArg.body }),
+        invalidatesTags: ["Badge_Badge"],
       }),
       getUserCredentials: build.query<GetUserCredentialsApiResponse, GetUserCredentialsApiArg>({
         query: (queryArg) => ({
@@ -586,57 +591,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Team_teams"],
-      }),
-      getUserTokens: build.query<GetUserTokensApiResponse, GetUserTokensApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/tokens`,
-          params: {
-            isOAuth: queryArg.isOAuth,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["token_tokens"],
-      }),
-      generateToken: build.mutation<GenerateTokenApiResponse, GenerateTokenApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/tokens`,
-          method: "POST",
-          params: {
-            name: queryArg.name,
-            purpose: queryArg.purpose,
-          },
-        }),
-        invalidatesTags: ["token_tokens"],
-      }),
-      deleteUserToken: build.mutation<DeleteUserTokenApiResponse, DeleteUserTokenApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/tokens`,
-          method: "DELETE",
-          params: {
-            tokenId: queryArg.tokenId,
-          },
-        }),
-        invalidatesTags: ["token_tokens"],
-      }),
-      getUserTokensById: build.query<GetUserTokensByIdApiResponse, GetUserTokensByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/identity/tokens/${queryArg.id}` }),
-        providesTags: ["token_tokens"],
-      }),
-      issueIndefiniteLifetimeToken: build.query<
-        IssueIndefiniteLifetimeTokenApiResponse,
-        IssueIndefiniteLifetimeTokenApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/identity/tokens/infinite`,
-          params: {
-            userId: queryArg.userId,
-            provider: queryArg.provider,
-          },
-        }),
-        providesTags: ["token_tokens"],
       }),
       getUsersForOrg: build.query<GetUsersForOrgApiResponse, GetUsersForOrgApiArg>({
         query: (queryArg) => ({
@@ -1213,6 +1167,57 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Subscription_Payment Processors"],
       }),
+      getUserTokens: build.query<GetUserTokensApiResponse, GetUserTokensApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/tokens`,
+          params: {
+            isOauth: queryArg.isOauth,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["token_tokens"],
+      }),
+      generateToken: build.mutation<GenerateTokenApiResponse, GenerateTokenApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/tokens`,
+          method: "POST",
+          params: {
+            name: queryArg.name,
+            purpose: queryArg.purpose,
+          },
+        }),
+        invalidatesTags: ["token_tokens"],
+      }),
+      deleteUserToken: build.mutation<DeleteUserTokenApiResponse, DeleteUserTokenApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/tokens`,
+          method: "DELETE",
+          params: {
+            tokenId: queryArg.tokenId,
+          },
+        }),
+        invalidatesTags: ["token_tokens"],
+      }),
+      getUserTokensById: build.query<GetUserTokensByIdApiResponse, GetUserTokensByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/tokens/${queryArg.tokenId}` }),
+        providesTags: ["token_tokens"],
+      }),
+      issueIndefiniteLifetimeToken: build.query<
+        IssueIndefiniteLifetimeTokenApiResponse,
+        IssueIndefiniteLifetimeTokenApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/identity/tokens/infinite`,
+          params: {
+            userId: queryArg.userId,
+            provider: queryArg.provider,
+          },
+        }),
+        providesTags: ["token_tokens"],
+      }),
       getWorkspaces: build.query<GetWorkspacesApiResponse, GetWorkspacesApiArg>({
         query: (queryArg) => ({
           url: `/api/workspaces`,
@@ -1364,110 +1369,6 @@ const injectedRtkApi = api
     overrideExisting: false,
   });
 export { injectedRtkApi as cloudApi };
-export type DeleteBadgeByIdApiResponse = unknown;
-export type DeleteBadgeByIdApiArg = {
-  /** Unique identifier */
-  id: string;
-};
-export type GetBadgeByIdApiResponse = /** status 200 undefined */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** The ID of the organization in which this badge is available . */
-  org_id: string;
-  /** unique identifier for the badge ( auto generated ) */
-  label: string;
-  /** Concise descriptor for the badge or certificate. */
-  name: string;
-  /** A description of the milestone achieved, often including criteria for receiving this recognition. */
-  description: string;
-  /** URL to the badge image */
-  image_url: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** Timestamp when the resource was deleted, if applicable */
-  deleted_at: string;
-};
-export type GetBadgeByIdApiArg = {
-  /** Unique identifier */
-  id: string;
-};
-export type CreateOrUpdateBadgeApiResponse = /** status 201 undefined */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** The ID of the organization in which this badge is available . */
-  org_id: string;
-  /** unique identifier for the badge ( auto generated ) */
-  label: string;
-  /** Concise descriptor for the badge or certificate. */
-  name: string;
-  /** A description of the milestone achieved, often including criteria for receiving this recognition. */
-  description: string;
-  /** URL to the badge image */
-  image_url: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** Timestamp when the resource was deleted, if applicable */
-  deleted_at: string;
-};
-export type CreateOrUpdateBadgeApiArg = {
-  body: {
-    /** Existing badge ID for updates; omit on create. */
-    id?: string;
-    /** The ID of the organization in which this badge is available. */
-    org_id: string;
-    /** unique identifier for the badge ( auto generated ) */
-    label: string;
-    /** Concise descriptor for the badge or certificate. */
-    name: string;
-    /** A description of the milestone achieved, often including criteria for receiving this recognition. */
-    description: string;
-    /** URL to the badge image */
-    image_url: string;
-  };
-};
-export type GetAvailableBadgesApiResponse = /** status 200 Available badges */ {
-  /** The badges of the badgespage. */
-  badges?: {
-    [key: string]: {
-      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      id: string;
-      /** The ID of the organization in which this badge is available . */
-      org_id: string;
-      /** unique identifier for the badge ( auto generated ) */
-      label: string;
-      /** Concise descriptor for the badge or certificate. */
-      name: string;
-      /** A description of the milestone achieved, often including criteria for receiving this recognition. */
-      description: string;
-      /** URL to the badge image */
-      image_url: string;
-      /** Timestamp when the resource was created. */
-      created_at: string;
-      /** Timestamp when the resource was updated. */
-      updated_at: string;
-      /** Timestamp when the resource was deleted, if applicable */
-      deleted_at: string;
-    };
-  };
-};
-export type GetAvailableBadgesApiArg = void;
-export type AssignBadgesApiResponse = /** status 200 Badge assignment result */ {
-  [key: string]: any;
-};
-export type AssignBadgesApiArg = {
-  body: {
-    /** The badges of the badgeassignment. */
-    badges?: string[];
-    /** ID of the user who owns or created this resource. */
-    user_id?: string;
-    /** The notify of the badgeassignment. */
-    notify?: boolean;
-  };
-};
 export type GetFeaturesApiResponse = /** status 200 Features response */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
@@ -3289,6 +3190,113 @@ export type GetCertificateByIdApiArg = {
   /** The ID of the certificate to retrieve */
   certificateId: string;
 };
+export type DeleteBadgeByIdApiResponse = unknown;
+export type DeleteBadgeByIdApiArg = {
+  /** Badge ID */
+  badgeId: string;
+};
+export type GetBadgeByIdApiResponse = /** status 200 Badge response */ {
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  id: string;
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  orgId: string;
+  /** Unique identifier for the badge, typically slug-style (auto generated). */
+  label: string;
+  /** Concise descriptor for the badge or certificate. */
+  name: string;
+  /** A description of the milestone achieved, often including criteria for receiving this recognition. */
+  description: string;
+  /** URL to the badge image. */
+  imageUrl: string;
+  /** Timestamp when the badge was created. */
+  createdAt: string;
+  /** Timestamp when the badge was last updated. */
+  updatedAt: string;
+  /** Timestamp when the badge was soft-deleted, if applicable. */
+  deletedAt: string;
+};
+export type GetBadgeByIdApiArg = {
+  /** Badge ID */
+  badgeId: string;
+};
+export type CreateOrUpdateBadgeApiResponse = /** status 200 Badge upserted */ {
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  id: string;
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  orgId: string;
+  /** Unique identifier for the badge, typically slug-style (auto generated). */
+  label: string;
+  /** Concise descriptor for the badge or certificate. */
+  name: string;
+  /** A description of the milestone achieved, often including criteria for receiving this recognition. */
+  description: string;
+  /** URL to the badge image. */
+  imageUrl: string;
+  /** Timestamp when the badge was created. */
+  createdAt: string;
+  /** Timestamp when the badge was last updated. */
+  updatedAt: string;
+  /** Timestamp when the badge was soft-deleted, if applicable. */
+  deletedAt: string;
+};
+export type CreateOrUpdateBadgeApiArg = {
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    orgId: string;
+    /** Unique identifier for the badge, typically slug-style (auto generated). */
+    label: string;
+    /** Concise descriptor for the badge or certificate. */
+    name: string;
+    /** A description of the milestone achieved, often including criteria for receiving this recognition. */
+    description: string;
+    /** URL to the badge image. */
+    imageUrl: string;
+  };
+};
+export type GetAvailableBadgesApiResponse = /** status 200 Available badges */ {
+  /** Available badges, keyed by badge label. */
+  badges?: {
+    [key: string]: {
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      id: string;
+      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+      orgId: string;
+      /** Unique identifier for the badge, typically slug-style (auto generated). */
+      label: string;
+      /** Concise descriptor for the badge or certificate. */
+      name: string;
+      /** A description of the milestone achieved, often including criteria for receiving this recognition. */
+      description: string;
+      /** URL to the badge image. */
+      imageUrl: string;
+      /** Timestamp when the badge was created. */
+      createdAt: string;
+      /** Timestamp when the badge was last updated. */
+      updatedAt: string;
+      /** Timestamp when the badge was soft-deleted, if applicable. */
+      deletedAt: string;
+    };
+  };
+};
+export type GetAvailableBadgesApiArg = {
+  /** Organization ID to scope the badge listing to. */
+  orgId?: string;
+};
+export type AssignBadgesApiResponse = /** status 200 Badge assignment result */ {
+  [key: string]: any;
+};
+export type AssignBadgesApiArg = {
+  body: {
+    /** Labels of the badges being assigned to the user. */
+    badges: string[];
+    /** ID of the user to receive the badges. */
+    userId: string;
+    /** When true, send a notification to the user about the new badge assignment. */
+    notify?: boolean;
+  };
+};
 export type GetUserCredentialsApiResponse = /** status 200 Credentials response */ {
   /** The credentials returned on the current page. */
   credentials: {
@@ -4888,184 +4896,6 @@ export type ListUsersNotInTeamApiArg = {
   page?: string;
   /** Get responses by pagesize */
   pagesize?: string;
-};
-export type GetUserTokensApiResponse = /** status 200 Tokens response */ {
-  /** The tokens of the tokenpage. */
-  tokens: {
-    /** Unique identifier for the token. */
-    id: string;
-    /** UUID of the user who owns the token. */
-    user_id: string;
-    /** Authentication provider associated with the token. */
-    provider: string;
-    /** Access token value. */
-    access_token?: string;
-    /** Refresh token value when applicable. */
-    refresh_token?: string;
-    /** Human-readable token name. */
-    name?: string;
-    /** Purpose for which the token was created. */
-    purpose?: string;
-    /** Whether this entry represents an OAuth session. */
-    is_oauth?: boolean;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  }[];
-  /** Total number of tokens across all pages. */
-  total_count: number;
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of tokens per page. */
-  page_size: number;
-};
-export type GetUserTokensApiArg = {
-  /** Whether to retrieve OAuth-backed sessions instead of API tokens. */
-  isOAuth?: boolean;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-};
-export type GenerateTokenApiResponse = /** status 200 Token generated */ {
-  /** The tokens of the tokenpage. */
-  tokens: {
-    /** Unique identifier for the token. */
-    id: string;
-    /** UUID of the user who owns the token. */
-    user_id: string;
-    /** Authentication provider associated with the token. */
-    provider: string;
-    /** Access token value. */
-    access_token?: string;
-    /** Refresh token value when applicable. */
-    refresh_token?: string;
-    /** Human-readable token name. */
-    name?: string;
-    /** Purpose for which the token was created. */
-    purpose?: string;
-    /** Whether this entry represents an OAuth session. */
-    is_oauth?: boolean;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  }[];
-  /** Total number of tokens across all pages. */
-  total_count: number;
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of tokens per page. */
-  page_size: number;
-};
-export type GenerateTokenApiArg = {
-  /** Name of the token. */
-  name: string;
-  /** Purpose for which the token is generated. */
-  purpose?: string;
-};
-export type DeleteUserTokenApiResponse = /** status 200 Token deleted */ {
-  /** The tokens of the tokenpage. */
-  tokens: {
-    /** Unique identifier for the token. */
-    id: string;
-    /** UUID of the user who owns the token. */
-    user_id: string;
-    /** Authentication provider associated with the token. */
-    provider: string;
-    /** Access token value. */
-    access_token?: string;
-    /** Refresh token value when applicable. */
-    refresh_token?: string;
-    /** Human-readable token name. */
-    name?: string;
-    /** Purpose for which the token was created. */
-    purpose?: string;
-    /** Whether this entry represents an OAuth session. */
-    is_oauth?: boolean;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  }[];
-  /** Total number of tokens across all pages. */
-  total_count: number;
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of tokens per page. */
-  page_size: number;
-};
-export type DeleteUserTokenApiArg = {
-  /** ID of the token. */
-  tokenId: string;
-};
-export type GetUserTokensByIdApiResponse = /** status 200 Token response */ {
-  /** Unique identifier for the token. */
-  id: string;
-  /** UUID of the user who owns the token. */
-  user_id: string;
-  /** Authentication provider associated with the token. */
-  provider: string;
-  /** Access token value. */
-  access_token?: string;
-  /** Refresh token value when applicable. */
-  refresh_token?: string;
-  /** Human-readable token name. */
-  name?: string;
-  /** Purpose for which the token was created. */
-  purpose?: string;
-  /** Whether this entry represents an OAuth session. */
-  is_oauth?: boolean;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-};
-export type GetUserTokensByIdApiArg = {
-  /** Token ID */
-  id: string;
-};
-export type IssueIndefiniteLifetimeTokenApiResponse = /** status 200 Token generated */ {
-  /** The tokens of the tokenpage. */
-  tokens: {
-    /** Unique identifier for the token. */
-    id: string;
-    /** UUID of the user who owns the token. */
-    user_id: string;
-    /** Authentication provider associated with the token. */
-    provider: string;
-    /** Access token value. */
-    access_token?: string;
-    /** Refresh token value when applicable. */
-    refresh_token?: string;
-    /** Human-readable token name. */
-    name?: string;
-    /** Purpose for which the token was created. */
-    purpose?: string;
-    /** Whether this entry represents an OAuth session. */
-    is_oauth?: boolean;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  }[];
-  /** Total number of tokens across all pages. */
-  total_count: number;
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of tokens per page. */
-  page_size: number;
-};
-export type IssueIndefiniteLifetimeTokenApiArg = {
-  /** UUID of the user. */
-  userId: string;
-  /** Remote provider. */
-  provider: string;
 };
 export type GetUsersForOrgApiResponse = /** status 200 Paginated list of organization users */ {
   /** Current page number of the result set. */
@@ -13647,6 +13477,184 @@ export type HandleSubscriptionWebhookApiResponse = unknown;
 export type HandleSubscriptionWebhookApiArg = {
   body: object;
 };
+export type GetUserTokensApiResponse = /** status 200 Tokens response */ {
+  /** Tokens returned on the current page. */
+  tokens: {
+    /** Unique identifier for the token. */
+    id: string;
+    /** UUID of the user who owns the token. */
+    userId: string;
+    /** Authentication provider associated with the token. */
+    provider: string;
+    /** Access token value. */
+    accessToken?: string;
+    /** Refresh token value when applicable. */
+    refreshToken?: string;
+    /** Human-readable token name. */
+    name?: string;
+    /** Purpose for which the token was created. */
+    purpose?: string;
+    /** Whether this entry represents an OAuth session. */
+    isOauth?: boolean;
+    /** Timestamp when the token was created. */
+    createdAt?: string;
+    /** Timestamp when the token was last updated. */
+    updatedAt?: string;
+  }[];
+  /** Total number of tokens across all pages. */
+  totalCount: number;
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of tokens per page. */
+  pageSize: number;
+};
+export type GetUserTokensApiArg = {
+  /** Whether to retrieve OAuth-backed sessions instead of API tokens. */
+  isOauth?: boolean;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type GenerateTokenApiResponse = /** status 201 Token generated */ {
+  /** Tokens returned on the current page. */
+  tokens: {
+    /** Unique identifier for the token. */
+    id: string;
+    /** UUID of the user who owns the token. */
+    userId: string;
+    /** Authentication provider associated with the token. */
+    provider: string;
+    /** Access token value. */
+    accessToken?: string;
+    /** Refresh token value when applicable. */
+    refreshToken?: string;
+    /** Human-readable token name. */
+    name?: string;
+    /** Purpose for which the token was created. */
+    purpose?: string;
+    /** Whether this entry represents an OAuth session. */
+    isOauth?: boolean;
+    /** Timestamp when the token was created. */
+    createdAt?: string;
+    /** Timestamp when the token was last updated. */
+    updatedAt?: string;
+  }[];
+  /** Total number of tokens across all pages. */
+  totalCount: number;
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of tokens per page. */
+  pageSize: number;
+};
+export type GenerateTokenApiArg = {
+  /** Name of the token. */
+  name: string;
+  /** Purpose for which the token is generated. */
+  purpose?: string;
+};
+export type DeleteUserTokenApiResponse = /** status 200 Token deleted */ {
+  /** Tokens returned on the current page. */
+  tokens: {
+    /** Unique identifier for the token. */
+    id: string;
+    /** UUID of the user who owns the token. */
+    userId: string;
+    /** Authentication provider associated with the token. */
+    provider: string;
+    /** Access token value. */
+    accessToken?: string;
+    /** Refresh token value when applicable. */
+    refreshToken?: string;
+    /** Human-readable token name. */
+    name?: string;
+    /** Purpose for which the token was created. */
+    purpose?: string;
+    /** Whether this entry represents an OAuth session. */
+    isOauth?: boolean;
+    /** Timestamp when the token was created. */
+    createdAt?: string;
+    /** Timestamp when the token was last updated. */
+    updatedAt?: string;
+  }[];
+  /** Total number of tokens across all pages. */
+  totalCount: number;
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of tokens per page. */
+  pageSize: number;
+};
+export type DeleteUserTokenApiArg = {
+  /** ID of the token to delete. */
+  tokenId: string;
+};
+export type GetUserTokensByIdApiResponse = /** status 200 Token response */ {
+  /** Unique identifier for the token. */
+  id: string;
+  /** UUID of the user who owns the token. */
+  userId: string;
+  /** Authentication provider associated with the token. */
+  provider: string;
+  /** Access token value. */
+  accessToken?: string;
+  /** Refresh token value when applicable. */
+  refreshToken?: string;
+  /** Human-readable token name. */
+  name?: string;
+  /** Purpose for which the token was created. */
+  purpose?: string;
+  /** Whether this entry represents an OAuth session. */
+  isOauth?: boolean;
+  /** Timestamp when the token was created. */
+  createdAt?: string;
+  /** Timestamp when the token was last updated. */
+  updatedAt?: string;
+};
+export type GetUserTokensByIdApiArg = {
+  /** Token ID */
+  tokenId: string;
+};
+export type IssueIndefiniteLifetimeTokenApiResponse = /** status 200 Token generated */ {
+  /** Tokens returned on the current page. */
+  tokens: {
+    /** Unique identifier for the token. */
+    id: string;
+    /** UUID of the user who owns the token. */
+    userId: string;
+    /** Authentication provider associated with the token. */
+    provider: string;
+    /** Access token value. */
+    accessToken?: string;
+    /** Refresh token value when applicable. */
+    refreshToken?: string;
+    /** Human-readable token name. */
+    name?: string;
+    /** Purpose for which the token was created. */
+    purpose?: string;
+    /** Whether this entry represents an OAuth session. */
+    isOauth?: boolean;
+    /** Timestamp when the token was created. */
+    createdAt?: string;
+    /** Timestamp when the token was last updated. */
+    updatedAt?: string;
+  }[];
+  /** Total number of tokens across all pages. */
+  totalCount: number;
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of tokens per page. */
+  pageSize: number;
+};
+export type IssueIndefiniteLifetimeTokenApiArg = {
+  /** UUID of the user to issue the indefinite token for. */
+  userId: string;
+  /** Authentication provider to associate with the indefinite token. */
+  provider: string;
+};
 export type GetWorkspacesApiResponse = /** status 200 Workspaces */ {
   /** Zero-based page index returned in this response. */
   page?: number;
@@ -15090,11 +15098,6 @@ export type UnassignViewFromWorkspaceApiArg = {
   viewId: string;
 };
 export const {
-  useDeleteBadgeByIdMutation,
-  useGetBadgeByIdQuery,
-  useCreateOrUpdateBadgeMutation,
-  useGetAvailableBadgesQuery,
-  useAssignBadgesMutation,
   useGetFeaturesQuery,
   useGetFeaturesByOrganizationQuery,
   useGetMyAcademyCurriculaQuery,
@@ -15115,6 +15118,11 @@ export const {
   useGetAcademyAdminSummaryQuery,
   useGetAcademyAdminRegistrationsQuery,
   useGetCertificateByIdQuery,
+  useDeleteBadgeByIdMutation,
+  useGetBadgeByIdQuery,
+  useCreateOrUpdateBadgeMutation,
+  useGetAvailableBadgesQuery,
+  useAssignBadgesMutation,
   useGetUserCredentialsQuery,
   useSaveUserCredentialMutation,
   useUpdateUserCredentialMutation,
@@ -15167,11 +15175,6 @@ export const {
   useAddUserToTeamMutation,
   useRemoveUserFromTeamMutation,
   useListUsersNotInTeamQuery,
-  useGetUserTokensQuery,
-  useGenerateTokenMutation,
-  useDeleteUserTokenMutation,
-  useGetUserTokensByIdQuery,
-  useIssueIndefiniteLifetimeTokenQuery,
   useGetUsersForOrgQuery,
   useGetUsersQuery,
   useGetUserProfileByIdQuery,
@@ -15251,6 +15254,11 @@ export const {
   useUpgradeSubscriptionMutation,
   usePreviewSubscriptionUpgradeMutation,
   useHandleSubscriptionWebhookMutation,
+  useGetUserTokensQuery,
+  useGenerateTokenMutation,
+  useDeleteUserTokenMutation,
+  useGetUserTokensByIdQuery,
+  useIssueIndefiniteLifetimeTokenQuery,
   useGetWorkspacesQuery,
   useCreateWorkspaceMutation,
   useGetWorkspaceByIdQuery,

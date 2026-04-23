@@ -7,9 +7,8 @@ const BadgeSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Badge",
-    "x-deprecated": true,
     "description": "OpenAPI schema for managing badges.",
-    "version": "v1beta1",
+    "version": "v1beta2",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -27,11 +26,12 @@ const BadgeSchema: Record<string, unknown> = {
   ],
   "tags": [
     {
-      "name": "Badge"
+      "name": "Badge",
+      "description": "Operations related to user and organization badges."
     }
   ],
   "paths": {
-    "/api/organizations/badges/{id}": {
+    "/api/organizations/badges/{badgeId}": {
       "delete": {
         "x-internal": [
           "cloud"
@@ -43,19 +43,19 @@ const BadgeSchema: Record<string, unknown> = {
         "summary": "Delete a badge by its ID",
         "parameters": [
           {
-            "name": "id",
+            "name": "badgeId",
             "in": "path",
-            "description": "Unique identifier",
+            "description": "Badge ID",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid",
+              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
               "x-go-type": "uuid.UUID",
               "x-go-type-import": {
                 "path": "github.com/gofrs/uuid"
-              },
-              "x-go-type-skip-optional-pointer": true
-            },
-            "required": true
+              }
+            }
           }
         ],
         "responses": {
@@ -105,69 +105,73 @@ const BadgeSchema: Record<string, unknown> = {
         "summary": "Get a badge by its ID",
         "parameters": [
           {
-            "name": "id",
+            "name": "badgeId",
             "in": "path",
-            "description": "Unique identifier",
+            "description": "Badge ID",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid",
+              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
               "x-go-type": "uuid.UUID",
               "x-go-type-import": {
                 "path": "github.com/gofrs/uuid"
-              },
-              "x-go-type-skip-optional-pointer": true
-            },
-            "required": true
+              }
+            }
           }
         ],
         "responses": {
           "200": {
+            "description": "Badge response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "additionalProperties": false,
+                  "description": "Badge entity — a named recognition issued within an organization.",
                   "required": [
                     "id",
                     "label",
                     "name",
-                    "org_id",
+                    "orgId",
                     "description",
-                    "image_url",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "imageUrl",
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id"
                       }
                     },
-                    "org_id": {
-                      "description": "The ID of the organization in which this badge is available .",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id",
-                        "json": "org_id"
-                      },
+                    "orgId": {
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "OrgID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id",
+                        "json": "orgId"
                       }
                     },
                     "label": {
                       "type": "string",
-                      "description": "unique identifier for the badge ( auto generated )",
+                      "description": "Unique identifier for the badge, typically slug-style (auto generated).",
                       "example": "Kubernetes-Expert",
                       "x-oapi-codegen-extra-tags": {
                         "db": "label",
@@ -196,48 +200,51 @@ const BadgeSchema: Record<string, unknown> = {
                       },
                       "maxLength": 5000
                     },
-                    "image_url": {
+                    "imageUrl": {
                       "type": "string",
                       "format": "uri",
-                      "description": "URL to the badge image",
+                      "description": "URL to the badge image.",
                       "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+                      "maxLength": 2048,
                       "x-oapi-codegen-extra-tags": {
                         "db": "image_url",
-                        "json": "image_url"
+                        "json": "imageUrl"
                       }
                     },
-                    "created_at": {
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the badge was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
-                      },
-                      "x-go-type-skip-optional-pointer": true
+                        "json": "createdAt"
+                      }
                     },
-                    "updated_at": {
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the badge was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
-                      },
-                      "x-go-type-skip-optional-pointer": true
+                        "json": "updatedAt"
+                      }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the badge was soft-deleted, if applicable.",
                       "x-go-type": "core.NullTime",
-                      "description": "Timestamp when the resource was deleted, if applicable",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -297,41 +304,42 @@ const BadgeSchema: Record<string, unknown> = {
                 "required": [
                   "label",
                   "name",
-                  "org_id",
+                  "orgId",
                   "description",
-                  "image_url"
+                  "imageUrl"
                 ],
                 "properties": {
                   "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                    "x-go-type": "uuid.UUID",
+                    "x-go-type-import": {
+                      "path": "github.com/gofrs/uuid"
+                    },
                     "x-go-name": "ID",
-                    "description": "Existing badge ID for updates; omit on create.",
                     "x-oapi-codegen-extra-tags": {
                       "db": "id",
                       "json": "id,omitempty"
-                    },
-                    "type": "string",
-                    "format": "uuid",
-                    "x-go-type": "uuid.UUID",
-                    "x-go-type-import": {
-                      "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "org_id": {
-                    "description": "The ID of the organization in which this badge is available.",
-                    "x-oapi-codegen-extra-tags": {
-                      "db": "org_id",
-                      "json": "org_id"
-                    },
+                  "orgId": {
                     "type": "string",
                     "format": "uuid",
+                    "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                     "x-go-type": "uuid.UUID",
                     "x-go-type-import": {
                       "path": "github.com/gofrs/uuid"
+                    },
+                    "x-go-name": "OrgID",
+                    "x-oapi-codegen-extra-tags": {
+                      "db": "org_id",
+                      "json": "orgId"
                     }
                   },
                   "label": {
                     "type": "string",
-                    "description": "unique identifier for the badge ( auto generated )",
+                    "description": "Unique identifier for the badge, typically slug-style (auto generated).",
                     "example": "Kubernetes-Expert",
                     "x-oapi-codegen-extra-tags": {
                       "db": "label",
@@ -360,14 +368,15 @@ const BadgeSchema: Record<string, unknown> = {
                     },
                     "maxLength": 5000
                   },
-                  "image_url": {
+                  "imageUrl": {
                     "type": "string",
                     "format": "uri",
-                    "description": "URL to the badge image",
+                    "description": "URL to the badge image.",
                     "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+                    "maxLength": 2048,
                     "x-oapi-codegen-extra-tags": {
                       "db": "image_url",
-                      "json": "image_url"
+                      "json": "imageUrl"
                     }
                   }
                 }
@@ -377,53 +386,57 @@ const BadgeSchema: Record<string, unknown> = {
           "required": true
         },
         "responses": {
-          "201": {
+          "200": {
+            "description": "Badge upserted",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "additionalProperties": false,
+                  "description": "Badge entity — a named recognition issued within an organization.",
                   "required": [
                     "id",
                     "label",
                     "name",
-                    "org_id",
+                    "orgId",
                     "description",
-                    "image_url",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "imageUrl",
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
-                      "x-go-name": "ID",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "id",
-                        "json": "id"
-                      },
                       "type": "string",
                       "format": "uuid",
                       "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "ID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "id",
+                        "json": "id"
                       }
                     },
-                    "org_id": {
-                      "description": "The ID of the organization in which this badge is available .",
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "org_id",
-                        "json": "org_id"
-                      },
+                    "orgId": {
                       "type": "string",
                       "format": "uuid",
+                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
+                      },
+                      "x-go-name": "OrgID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "org_id",
+                        "json": "orgId"
                       }
                     },
                     "label": {
                       "type": "string",
-                      "description": "unique identifier for the badge ( auto generated )",
+                      "description": "Unique identifier for the badge, typically slug-style (auto generated).",
                       "example": "Kubernetes-Expert",
                       "x-oapi-codegen-extra-tags": {
                         "db": "label",
@@ -452,48 +465,51 @@ const BadgeSchema: Record<string, unknown> = {
                       },
                       "maxLength": 5000
                     },
-                    "image_url": {
+                    "imageUrl": {
                       "type": "string",
                       "format": "uri",
-                      "description": "URL to the badge image",
+                      "description": "URL to the badge image.",
                       "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+                      "maxLength": 2048,
                       "x-oapi-codegen-extra-tags": {
                         "db": "image_url",
-                        "json": "image_url"
+                        "json": "imageUrl"
                       }
                     },
-                    "created_at": {
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the badge was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
-                      },
-                      "x-go-type-skip-optional-pointer": true
+                        "json": "createdAt"
+                      }
                     },
-                    "updated_at": {
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the badge was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
-                      },
-                      "x-go-type-skip-optional-pointer": true
+                        "json": "updatedAt"
+                      }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the badge was soft-deleted, if applicable.",
                       "x-go-type": "core.NullTime",
-                      "description": "Timestamp when the resource was deleted, if applicable",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -544,6 +560,18 @@ const BadgeSchema: Record<string, unknown> = {
           "Badge"
         ],
         "summary": "Get available badges",
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "query",
+            "description": "Organization ID to scope the badge listing to.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Available badges",
@@ -551,53 +579,57 @@ const BadgeSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Map of badges available in an organization, keyed by badge label.",
                   "properties": {
                     "badges": {
                       "type": "object",
                       "additionalProperties": {
                         "type": "object",
+                        "additionalProperties": false,
+                        "description": "Badge entity — a named recognition issued within an organization.",
                         "required": [
                           "id",
                           "label",
                           "name",
-                          "org_id",
+                          "orgId",
                           "description",
-                          "image_url",
-                          "created_at",
-                          "updated_at",
-                          "deleted_at"
+                          "imageUrl",
+                          "createdAt",
+                          "updatedAt",
+                          "deletedAt"
                         ],
                         "properties": {
                           "id": {
-                            "x-go-name": "ID",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "id",
-                              "json": "id"
-                            },
                             "type": "string",
                             "format": "uuid",
                             "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
+                            },
+                            "x-go-name": "ID",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "id",
+                              "json": "id"
                             }
                           },
-                          "org_id": {
-                            "description": "The ID of the organization in which this badge is available .",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "org_id",
-                              "json": "org_id"
-                            },
+                          "orgId": {
                             "type": "string",
                             "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
+                            },
+                            "x-go-name": "OrgID",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "org_id",
+                              "json": "orgId"
                             }
                           },
                           "label": {
                             "type": "string",
-                            "description": "unique identifier for the badge ( auto generated )",
+                            "description": "Unique identifier for the badge, typically slug-style (auto generated).",
                             "example": "Kubernetes-Expert",
                             "x-oapi-codegen-extra-tags": {
                               "db": "label",
@@ -626,53 +658,56 @@ const BadgeSchema: Record<string, unknown> = {
                             },
                             "maxLength": 5000
                           },
-                          "image_url": {
+                          "imageUrl": {
                             "type": "string",
                             "format": "uri",
-                            "description": "URL to the badge image",
+                            "description": "URL to the badge image.",
                             "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+                            "maxLength": 2048,
                             "x-oapi-codegen-extra-tags": {
                               "db": "image_url",
-                              "json": "image_url"
+                              "json": "imageUrl"
                             }
                           },
-                          "created_at": {
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the badge was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
-                            },
-                            "x-go-type-skip-optional-pointer": true
+                              "json": "createdAt"
+                            }
                           },
-                          "updated_at": {
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the badge was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
-                            "x-go-type-skip-optional-pointer": true
+                              "json": "updatedAt"
+                            }
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
+                            "description": "Timestamp when the badge was soft-deleted, if applicable.",
                             "x-go-type": "core.NullTime",
-                            "description": "Timestamp when the resource was deleted, if applicable",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "json": "deleted_at"
+                              "json": "deletedAt"
                             }
                           }
                         }
                       },
-                      "description": "The badges of the badgespage."
+                      "description": "Available badges, keyed by badge label."
                     }
                   }
                 }
@@ -728,23 +763,33 @@ const BadgeSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
+                "description": "Payload for assigning a set of badges to a user.",
+                "required": [
+                  "badges",
+                  "userId"
+                ],
                 "properties": {
                   "badges": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Badge label (see Badge.label) to assign."
                     },
-                    "description": "The badges of the badgeassignment."
+                    "description": "Labels of the badges being assigned to the user."
                   },
-                  "user_id": {
+                  "userId": {
                     "type": "string",
-                    "description": "ID of the user who owns or created this resource.",
+                    "description": "ID of the user to receive the badges.",
                     "maxLength": 500,
-                    "format": "uuid"
+                    "format": "uuid",
+                    "x-go-name": "UserID",
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "userId"
+                    }
                   },
                   "notify": {
                     "type": "boolean",
-                    "description": "The notify of the badgeassignment."
+                    "description": "When true, send a notification to the user about the new badge assignment."
                   }
                 }
               }
@@ -840,6 +885,33 @@ const BadgeSchema: Record<string, unknown> = {
         }
       }
     },
+    "parameters": {
+      "badgeId": {
+        "name": "badgeId",
+        "in": "path",
+        "description": "Badge ID",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+          "x-go-type": "uuid.UUID",
+          "x-go-type-import": {
+            "path": "github.com/gofrs/uuid"
+          }
+        }
+      },
+      "orgIdQuery": {
+        "name": "orgId",
+        "in": "query",
+        "description": "Organization ID to scope the badge listing to.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
     "securitySchemes": {
       "jwt": {
         "type": "http",
@@ -854,125 +926,42 @@ const BadgeSchema: Record<string, unknown> = {
         "required": [
           "label",
           "name",
-          "org_id",
+          "orgId",
           "description",
-          "image_url"
+          "imageUrl"
         ],
         "properties": {
           "id": {
-            "x-go-name": "ID",
-            "description": "Existing badge ID for updates; omit on create.",
-            "x-oapi-codegen-extra-tags": {
-              "db": "id",
-              "json": "id,omitempty"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
-            }
-          },
-          "org_id": {
-            "description": "The ID of the organization in which this badge is available.",
-            "x-oapi-codegen-extra-tags": {
-              "db": "org_id",
-              "json": "org_id"
-            },
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
-            }
-          },
-          "label": {
-            "type": "string",
-            "description": "unique identifier for the badge ( auto generated )",
-            "example": "Kubernetes-Expert",
-            "x-oapi-codegen-extra-tags": {
-              "db": "label",
-              "json": "label"
-            },
-            "maxLength": 500
-          },
-          "name": {
-            "type": "string",
-            "description": "Concise descriptor for the badge or certificate.",
-            "example": "Kubernetes Expert",
-            "x-oapi-codegen-extra-tags": {
-              "db": "name",
-              "json": "name"
-            },
-            "minLength": 1,
-            "maxLength": 255
-          },
-          "description": {
-            "type": "string",
-            "description": "A description of the milestone achieved, often including criteria for receiving this recognition.",
-            "example": "Awarded for mastering Kubernetes concepts and practices.",
-            "x-oapi-codegen-extra-tags": {
-              "db": "description",
-              "json": "description"
-            },
-            "maxLength": 5000
-          },
-          "image_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "URL to the badge image",
-            "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
-            "x-oapi-codegen-extra-tags": {
-              "db": "image_url",
-              "json": "image_url"
-            }
-          }
-        }
-      },
-      "Badge": {
-        "type": "object",
-        "required": [
-          "id",
-          "label",
-          "name",
-          "org_id",
-          "description",
-          "image_url",
-          "created_at",
-          "updated_at",
-          "deleted_at"
-        ],
-        "properties": {
-          "id": {
-            "x-go-name": "ID",
-            "x-oapi-codegen-extra-tags": {
-              "db": "id",
-              "json": "id"
-            },
             "type": "string",
             "format": "uuid",
             "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "ID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "id",
+              "json": "id,omitempty"
             }
           },
-          "org_id": {
-            "description": "The ID of the organization in which this badge is available .",
-            "x-oapi-codegen-extra-tags": {
-              "db": "org_id",
-              "json": "org_id"
-            },
+          "orgId": {
             "type": "string",
             "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "OrgID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "org_id",
+              "json": "orgId"
             }
           },
           "label": {
             "type": "string",
-            "description": "unique identifier for the badge ( auto generated )",
+            "description": "Unique identifier for the badge, typically slug-style (auto generated).",
             "example": "Kubernetes-Expert",
             "x-oapi-codegen-extra-tags": {
               "db": "label",
@@ -1001,101 +990,196 @@ const BadgeSchema: Record<string, unknown> = {
             },
             "maxLength": 5000
           },
-          "image_url": {
+          "imageUrl": {
             "type": "string",
             "format": "uri",
-            "description": "URL to the badge image",
+            "description": "URL to the badge image.",
             "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+            "maxLength": 2048,
             "x-oapi-codegen-extra-tags": {
               "db": "image_url",
-              "json": "image_url"
+              "json": "imageUrl"
+            }
+          }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Badge entity — a named recognition issued within an organization.",
+        "required": [
+          "id",
+          "label",
+          "name",
+          "orgId",
+          "description",
+          "imageUrl",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "ID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "id",
+              "json": "id"
             }
           },
-          "created_at": {
-            "description": "Timestamp when the resource was created.",
-            "x-go-type": "time.Time",
+          "orgId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            },
+            "x-go-name": "OrgID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "org_id",
+              "json": "orgId"
+            }
+          },
+          "label": {
+            "type": "string",
+            "description": "Unique identifier for the badge, typically slug-style (auto generated).",
+            "example": "Kubernetes-Expert",
+            "x-oapi-codegen-extra-tags": {
+              "db": "label",
+              "json": "label"
+            },
+            "maxLength": 500
+          },
+          "name": {
+            "type": "string",
+            "description": "Concise descriptor for the badge or certificate.",
+            "example": "Kubernetes Expert",
+            "x-oapi-codegen-extra-tags": {
+              "db": "name",
+              "json": "name"
+            },
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the milestone achieved, often including criteria for receiving this recognition.",
+            "example": "Awarded for mastering Kubernetes concepts and practices.",
+            "x-oapi-codegen-extra-tags": {
+              "db": "description",
+              "json": "description"
+            },
+            "maxLength": 5000
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the badge image.",
+            "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+            "maxLength": 2048,
+            "x-oapi-codegen-extra-tags": {
+              "db": "image_url",
+              "json": "imageUrl"
+            }
+          },
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "CreatedAt",
+            "description": "Timestamp when the badge was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
-            },
-            "x-go-type-skip-optional-pointer": true
+              "json": "createdAt"
+            }
           },
-          "updated_at": {
-            "description": "Timestamp when the resource was updated.",
-            "x-go-type": "time.Time",
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "UpdatedAt",
+            "description": "Timestamp when the badge was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
-            },
-            "x-go-type-skip-optional-pointer": true
+              "json": "updatedAt"
+            }
           },
-          "deleted_at": {
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
+            "description": "Timestamp when the badge was soft-deleted, if applicable.",
             "x-go-type": "core.NullTime",
-            "description": "Timestamp when the resource was deleted, if applicable",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "deleted_at",
-              "json": "deleted_at"
+              "json": "deletedAt"
             }
           }
         }
       },
       "BadgesPage": {
         "type": "object",
+        "description": "Map of badges available in an organization, keyed by badge label.",
         "properties": {
           "badges": {
             "type": "object",
             "additionalProperties": {
               "type": "object",
+              "additionalProperties": false,
+              "description": "Badge entity — a named recognition issued within an organization.",
               "required": [
                 "id",
                 "label",
                 "name",
-                "org_id",
+                "orgId",
                 "description",
-                "image_url",
-                "created_at",
-                "updated_at",
-                "deleted_at"
+                "imageUrl",
+                "createdAt",
+                "updatedAt",
+                "deletedAt"
               ],
               "properties": {
                 "id": {
-                  "x-go-name": "ID",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "id",
-                    "json": "id"
-                  },
                   "type": "string",
                   "format": "uuid",
                   "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-go-name": "ID",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "id",
+                    "json": "id"
                   }
                 },
-                "org_id": {
-                  "description": "The ID of the organization in which this badge is available .",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "org_id",
-                    "json": "org_id"
-                  },
+                "orgId": {
                   "type": "string",
                   "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
+                  },
+                  "x-go-name": "OrgID",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "org_id",
+                    "json": "orgId"
                   }
                 },
                 "label": {
                   "type": "string",
-                  "description": "unique identifier for the badge ( auto generated )",
+                  "description": "Unique identifier for the badge, typically slug-style (auto generated).",
                   "example": "Kubernetes-Expert",
                   "x-oapi-codegen-extra-tags": {
                     "db": "label",
@@ -1124,75 +1208,88 @@ const BadgeSchema: Record<string, unknown> = {
                   },
                   "maxLength": 5000
                 },
-                "image_url": {
+                "imageUrl": {
                   "type": "string",
                   "format": "uri",
-                  "description": "URL to the badge image",
+                  "description": "URL to the badge image.",
                   "example": "https://raw.githubusercontent.com/layer5io/layer5-academy/refs/heads/master/static/11111111-1111-1111-1111-111111111111/images/meshery-logo-light.webp",
+                  "maxLength": 2048,
                   "x-oapi-codegen-extra-tags": {
                     "db": "image_url",
-                    "json": "image_url"
+                    "json": "imageUrl"
                   }
                 },
-                "created_at": {
-                  "description": "Timestamp when the resource was created.",
-                  "x-go-type": "time.Time",
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "CreatedAt",
+                  "description": "Timestamp when the badge was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "yaml": "created_at"
-                  },
-                  "x-go-type-skip-optional-pointer": true
+                    "json": "createdAt"
+                  }
                 },
-                "updated_at": {
-                  "description": "Timestamp when the resource was updated.",
-                  "x-go-type": "time.Time",
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "UpdatedAt",
+                  "description": "Timestamp when the badge was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "yaml": "updated_at"
-                  },
-                  "x-go-type-skip-optional-pointer": true
+                    "json": "updatedAt"
+                  }
                 },
-                "deleted_at": {
+                "deletedAt": {
                   "type": "string",
                   "format": "date-time",
+                  "description": "Timestamp when the badge was soft-deleted, if applicable.",
                   "x-go-type": "core.NullTime",
-                  "description": "Timestamp when the resource was deleted, if applicable",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/core",
+                    "name": "core"
+                  },
                   "x-oapi-codegen-extra-tags": {
                     "db": "deleted_at",
-                    "json": "deleted_at"
+                    "json": "deletedAt"
                   }
                 }
               }
             },
-            "description": "The badges of the badgespage."
+            "description": "Available badges, keyed by badge label."
           }
         }
       },
       "BadgeAssignmentPayload": {
         "type": "object",
+        "description": "Payload for assigning a set of badges to a user.",
+        "required": [
+          "badges",
+          "userId"
+        ],
         "properties": {
           "badges": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "description": "Badge label (see Badge.label) to assign."
             },
-            "description": "The badges of the badgeassignment."
+            "description": "Labels of the badges being assigned to the user."
           },
-          "user_id": {
+          "userId": {
             "type": "string",
-            "description": "ID of the user who owns or created this resource.",
+            "description": "ID of the user to receive the badges.",
             "maxLength": 500,
-            "format": "uuid"
+            "format": "uuid",
+            "x-go-name": "UserID",
+            "x-oapi-codegen-extra-tags": {
+              "json": "userId"
+            }
           },
           "notify": {
             "type": "boolean",
-            "description": "The notify of the badgeassignment."
+            "description": "When true, send a notification to the user about the new badge assignment."
           }
         }
       }
