@@ -82,20 +82,27 @@ func collectParityEndpoints(filePath, version string, doc *openapi3.T, acc *pari
 			continue // not a list endpoint
 		}
 		acc.endpoints = append(acc.endpoints, parityEndpoint{
-			file:          filePath,
-			version:       version,
-			path:          path,
-			operationID:   op.OperationID,
-			hasOrgIDQuery: operationHasOrgIDQuery(op),
+			file:        filePath,
+			version:     version,
+			path:        path,
+			operationID: op.OperationID,
+			// Parity check considers parameters declared at both the
+			// operation level and the PathItem level — the latter apply
+			// to every operation on the path under OpenAPI semantics.
+			hasOrgIDQuery: hasOrgIDQueryInParams(item.Parameters) ||
+				hasOrgIDQueryInParams(op.Parameters),
 		})
 	}
 }
 
 // respondsWithPage returns true when the operation's 200 response body
-// references a JSON schema whose component name ends in "Page". That
-// covers WorkspacePage, EnvironmentPage, MesheryDesignPage,
-// WorkspacesDesignsMappingPage, etc. Anything else is considered a
-// non-listing GET and excluded from Rule 46.
+// references a JSON schema whose component name ends in "Page", either
+// directly or through a composition keyword (`allOf`/`anyOf`/`oneOf`)
+// that resolves to a Page-shaped schema. That covers WorkspacePage,
+// EnvironmentPage, MesheryDesignPage, WorkspacesDesignsMappingPage, plus
+// any future schema that is built by composing a Page envelope into an
+// intermediate wrapper. Anything else is considered a non-listing GET
+// and excluded from Rule 46.
 func respondsWithPage(op *openapi3.Operation) bool {
 	if op == nil || op.Responses == nil {
 		return false
@@ -108,23 +115,52 @@ func respondsWithPage(op *openapi3.Operation) bool {
 	if content == nil || content.Schema == nil {
 		return false
 	}
-	if ref := content.Schema.Ref; ref != "" {
-		return strings.HasSuffix(ref, "Page")
+	return schemaRefEndsInPage(content.Schema)
+}
+
+// schemaRefEndsInPage returns true when the schema ref, or any ref
+// reachable through `allOf`/`anyOf`/`oneOf` composition, names a
+// component whose name ends in "Page". Cycles are avoided by only
+// walking child SchemaRef pointers one level deep — the schemas repo
+// never nests Page composition more than one level, and deeper walks
+// would risk cyclic ref loops.
+func schemaRefEndsInPage(ref *openapi3.SchemaRef) bool {
+	if ref == nil {
+		return false
+	}
+	if strings.HasSuffix(ref.Ref, "Page") {
+		return true
+	}
+	if ref.Value == nil {
+		return false
+	}
+	for _, sub := range ref.Value.AllOf {
+		if strings.HasSuffix(sub.Ref, "Page") {
+			return true
+		}
+	}
+	for _, sub := range ref.Value.AnyOf {
+		if strings.HasSuffix(sub.Ref, "Page") {
+			return true
+		}
+	}
+	for _, sub := range ref.Value.OneOf {
+		if strings.HasSuffix(sub.Ref, "Page") {
+			return true
+		}
 	}
 	return false
 }
 
-// operationHasOrgIDQuery returns true when the operation declares the
-// orgIdQuery parameter — either via a $ref to the canonical component
-// definition, or as an inline `in: query` parameter named `orgId` /
-// `organizationId`. The inline fallback is belt-and-braces: it keeps
-// Rule 46 from false-flagging a resource that spells the same concept
-// out inline rather than via the shared component.
-func operationHasOrgIDQuery(op *openapi3.Operation) bool {
-	if op == nil {
-		return false
-	}
-	for _, p := range op.Parameters {
+// hasOrgIDQueryInParams returns true when the given OpenAPI parameter
+// list declares the orgIdQuery parameter — either via a $ref to the
+// canonical component definition, or as an inline `in: query`
+// parameter named `orgId` / `organizationId`. Reused for both
+// operation-level (`Operation.Parameters`) and path-level
+// (`PathItem.Parameters`) lists so Rule 46 recognises the canonical
+// OpenAPI pattern of hoisting a shared parameter to the path level.
+func hasOrgIDQueryInParams(params openapi3.Parameters) bool {
+	for _, p := range params {
 		if p == nil {
 			continue
 		}
@@ -185,7 +221,6 @@ func reportParityViolations(acc *parityAccumulator, opts AuditOptions) []Violati
 		if !anyHas {
 			continue // no sibling established the pattern
 		}
-		sort.Strings(siblingsWithOrg)
 
 		// Report the ones that DON'T declare orgIdQuery. Emit in
 		// deterministic order: sort by (file, path) so the advisory
@@ -208,18 +243,25 @@ func reportParityViolations(acc *parityAccumulator, opts AuditOptions) []Violati
 			if opID == "" {
 				opID = "(no operationId)"
 			}
+			// Message stays baseline-stable by NOT embedding the
+			// variable list of sibling paths (which grows as new
+			// endpoints adopt orgIdQuery, invalidating
+			// advisory-baseline hashes). Readers can run
+			// `make audit-schemas-style-full | grep orgIdQuery` to see
+			// the full sibling list, or look at violated-endpoint
+			// siblings in the same version directory.
 			out = append(out, Violation{
 				File: e.file,
 				Message: fmt.Sprintf(
 					`GET %q (operationId %q) is missing the `+
 						`"#/components/parameters/orgIdQuery" parameter ref, `+
-						`while sibling list endpoints in %s declare it (e.g., %s). `+
+						`while sibling list endpoints in the %s directory declare it. `+
 						`Partial parity across sibling list endpoints is the drift `+
 						`class that dropped the workspaces-orgId query in production. `+
 						`Either add the ref here, or remove it from the sibling for `+
 						`consistency. See AGENTS.md § "Casing rules at a glance" and `+
 						`docs/identifier-naming-migration.md §9.4.`,
-					e.path, opID, version, strings.Join(siblingsWithOrg, ", ")),
+					e.path, opID, version),
 				Severity:   *sev,
 				RuleNumber: 46,
 			})

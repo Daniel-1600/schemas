@@ -105,7 +105,7 @@ func TestCheckRule46_OneSiblingOmits(t *testing.T) {
 	if vs[0].File != "v1beta1/workspace/api.yml" {
 		t.Errorf("expected file=workspace/api.yml, got %q", vs[0].File)
 	}
-	for _, want := range []string{"/api/workspaces", "getWorkspaces", "/api/environments", "orgIdQuery"} {
+	for _, want := range []string{"/api/workspaces", "getWorkspaces", "orgIdQuery", "v1beta1"} {
 		if !strings.Contains(vs[0].Message, want) {
 			t.Errorf("message missing %q; got: %s", want, vs[0].Message)
 		}
