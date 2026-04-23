@@ -7,9 +7,8 @@ const KeychainSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Keychain",
-    "x-deprecated": true,
     "description": "OpenAPI schema for keychain management in Meshery.",
-    "version": "v1beta1",
+    "version": "v1beta2",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -83,27 +82,40 @@ const KeychainSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "A paginated list of keychains.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "keychains"
                   ],
                   "properties": {
                     "page": {
-                      "x-order": 1,
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 1
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
-                      "x-order": 3,
+                    "totalCount": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "keychains": {
                       "type": "array",
@@ -115,15 +127,16 @@ const KeychainSchema: Record<string, unknown> = {
                           "id",
                           "name",
                           "owner",
-                          "created_at",
-                          "updated_at"
+                          "createdAt",
+                          "updatedAt"
                         ],
                         "properties": {
                           "id": {
                             "description": "Unique identifier for the keychain.",
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "x-order": 1,
                             "type": "string",
@@ -139,14 +152,16 @@ const KeychainSchema: Record<string, unknown> = {
                             "minLength": 1,
                             "maxLength": 255,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "name"
+                              "db": "name",
+                              "json": "name"
                             },
                             "x-order": 2
                           },
                           "owner": {
                             "description": "Owner of the keychain.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "owner"
+                              "db": "owner",
+                              "json": "owner"
                             },
                             "x-order": 3,
                             "type": "string",
@@ -156,51 +171,50 @@ const KeychainSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "created_at": {
-                            "x-order": 4,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the keychain was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 4
                           },
-                          "updated_at": {
-                            "x-order": 5,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the keychain was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 5
                           },
-                          "deleted_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
-                            },
-                            "x-order": 6,
-                            "description": "SQL null Timestamp to handle null values of time.",
-                            "x-go-type": "meshcore.NullTime",
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the keychain was soft-deleted.",
+                            "nullable": true,
+                            "x-go-type": "core.NullTime",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
+                            },
+                            "x-order": 6
                           }
                         }
                       },
                       "x-order": 4,
-                      "description": "The keychains of the keychainpage."
+                      "description": "Keychains returned on the current page."
                     }
                   }
                 }
@@ -254,7 +268,7 @@ const KeychainSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
-                "description": "Input payload for creating or updating a keychain.",
+                "description": "Payload for creating or updating a keychain.",
                 "required": [
                   "name"
                 ],
@@ -269,6 +283,9 @@ const KeychainSchema: Record<string, unknown> = {
                   "owner": {
                     "description": "Owner of the keychain.",
                     "x-order": 2,
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "owner,omitempty"
+                    },
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -282,7 +299,7 @@ const KeychainSchema: Record<string, unknown> = {
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Keychain created",
             "content": {
               "application/json": {
@@ -294,15 +311,16 @@ const KeychainSchema: Record<string, unknown> = {
                     "id",
                     "name",
                     "owner",
-                    "created_at",
-                    "updated_at"
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
                       "description": "Unique identifier for the keychain.",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "x-order": 1,
                       "type": "string",
@@ -318,14 +336,16 @@ const KeychainSchema: Record<string, unknown> = {
                       "minLength": 1,
                       "maxLength": 255,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "name"
+                        "db": "name",
+                        "json": "name"
                       },
                       "x-order": 2
                     },
                     "owner": {
                       "description": "Owner of the keychain.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner"
+                        "db": "owner",
+                        "json": "owner"
                       },
                       "x-order": 3,
                       "type": "string",
@@ -335,46 +355,45 @@ const KeychainSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
-                      "x-order": 4,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the keychain was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 4
                     },
-                    "updated_at": {
-                      "x-order": 5,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the keychain was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 5
                     },
-                    "deleted_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
-                      "x-order": 6,
-                      "description": "SQL null Timestamp to handle null values of time.",
-                      "x-go-type": "meshcore.NullTime",
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the keychain was soft-deleted.",
+                      "nullable": true,
+                      "x-go-type": "core.NullTime",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
+                      },
+                      "x-order": 6
                     }
                   }
                 }
@@ -454,15 +473,16 @@ const KeychainSchema: Record<string, unknown> = {
                     "id",
                     "name",
                     "owner",
-                    "created_at",
-                    "updated_at"
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
                       "description": "Unique identifier for the keychain.",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "x-order": 1,
                       "type": "string",
@@ -478,14 +498,16 @@ const KeychainSchema: Record<string, unknown> = {
                       "minLength": 1,
                       "maxLength": 255,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "name"
+                        "db": "name",
+                        "json": "name"
                       },
                       "x-order": 2
                     },
                     "owner": {
                       "description": "Owner of the keychain.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner"
+                        "db": "owner",
+                        "json": "owner"
                       },
                       "x-order": 3,
                       "type": "string",
@@ -495,46 +517,45 @@ const KeychainSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
-                      "x-order": 4,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the keychain was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 4
                     },
-                    "updated_at": {
-                      "x-order": 5,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the keychain was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 5
                     },
-                    "deleted_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
-                      "x-order": 6,
-                      "description": "SQL null Timestamp to handle null values of time.",
-                      "x-go-type": "meshcore.NullTime",
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the keychain was soft-deleted.",
+                      "nullable": true,
+                      "x-go-type": "core.NullTime",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
+                      },
+                      "x-order": 6
                     }
                   }
                 }
@@ -615,7 +636,7 @@ const KeychainSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
-                "description": "Input payload for creating or updating a keychain.",
+                "description": "Payload for creating or updating a keychain.",
                 "required": [
                   "name"
                 ],
@@ -630,6 +651,9 @@ const KeychainSchema: Record<string, unknown> = {
                   "owner": {
                     "description": "Owner of the keychain.",
                     "x-order": 2,
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "owner,omitempty"
+                    },
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -655,15 +679,16 @@ const KeychainSchema: Record<string, unknown> = {
                     "id",
                     "name",
                     "owner",
-                    "created_at",
-                    "updated_at"
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
                       "description": "Unique identifier for the keychain.",
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "x-order": 1,
                       "type": "string",
@@ -679,14 +704,16 @@ const KeychainSchema: Record<string, unknown> = {
                       "minLength": 1,
                       "maxLength": 255,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "name"
+                        "db": "name",
+                        "json": "name"
                       },
                       "x-order": 2
                     },
                     "owner": {
                       "description": "Owner of the keychain.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner"
+                        "db": "owner",
+                        "json": "owner"
                       },
                       "x-order": 3,
                       "type": "string",
@@ -696,46 +723,45 @@ const KeychainSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
-                      "x-order": 4,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the keychain was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 4
                     },
-                    "updated_at": {
-                      "x-order": 5,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the keychain was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 5
                     },
-                    "deleted_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
-                      "x-order": 6,
-                      "description": "SQL null Timestamp to handle null values of time.",
-                      "x-go-type": "meshcore.NullTime",
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the keychain was soft-deleted.",
+                      "nullable": true,
+                      "x-go-type": "core.NullTime",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
+                      },
+                      "x-order": 6
                     }
                   }
                 }
@@ -1099,27 +1125,40 @@ const KeychainSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "A paginated list of authorization keys.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "keys"
                   ],
                   "properties": {
                     "page": {
-                      "x-order": 1,
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 1
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
-                      "x-order": 3,
+                    "totalCount": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "keys": {
                       "type": "array",
@@ -1134,8 +1173,8 @@ const KeychainSchema: Record<string, unknown> = {
                           "category",
                           "subcategory",
                           "description",
-                          "created_at",
-                          "updated_at"
+                          "createdAt",
+                          "updatedAt"
                         ],
                         "properties": {
                           "id": {
@@ -1148,7 +1187,8 @@ const KeychainSchema: Record<string, unknown> = {
                             },
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "x-order": 1
                           },
@@ -1162,7 +1202,8 @@ const KeychainSchema: Record<string, unknown> = {
                             },
                             "x-go-name": "Owner",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "owner"
+                              "db": "owner",
+                              "json": "owner"
                             },
                             "x-order": 2
                           },
@@ -1170,7 +1211,8 @@ const KeychainSchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Operation permitted by the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "function"
+                              "db": "function",
+                              "json": "function"
                             },
                             "x-order": 3,
                             "maxLength": 500
@@ -1179,7 +1221,8 @@ const KeychainSchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Category for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "category"
+                              "db": "category",
+                              "json": "category"
                             },
                             "x-order": 4,
                             "maxLength": 500
@@ -1188,7 +1231,8 @@ const KeychainSchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Subcategory for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "subcategory"
+                              "db": "subcategory",
+                              "json": "subcategory"
                             },
                             "x-order": 5,
                             "maxLength": 500
@@ -1197,56 +1241,56 @@ const KeychainSchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Human readable description of the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "description"
+                              "db": "description",
+                              "json": "description"
                             },
                             "x-order": 6,
                             "maxLength": 5000
                           },
-                          "created_at": {
-                            "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the key was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 7
                           },
-                          "updated_at": {
-                            "x-order": 8,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the key was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 8
                           },
-                          "deleted_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
-                            },
-                            "x-order": 9,
-                            "description": "SQL null Timestamp to handle null values of time.",
-                            "x-go-type": "meshcore.NullTime",
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the key was soft-deleted.",
+                            "nullable": true,
+                            "x-go-type": "core.NullTime",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
+                            },
+                            "x-order": 9
                           }
                         }
                       },
                       "x-order": 4,
-                      "description": "The keys of the keypage."
+                      "description": "Keys returned on the current page."
                     }
                   }
                 }
@@ -1420,15 +1464,16 @@ const KeychainSchema: Record<string, unknown> = {
           "id",
           "name",
           "owner",
-          "created_at",
-          "updated_at"
+          "createdAt",
+          "updatedAt"
         ],
         "properties": {
           "id": {
             "description": "Unique identifier for the keychain.",
             "x-go-name": "ID",
             "x-oapi-codegen-extra-tags": {
-              "db": "id"
+              "db": "id",
+              "json": "id"
             },
             "x-order": 1,
             "type": "string",
@@ -1444,14 +1489,16 @@ const KeychainSchema: Record<string, unknown> = {
             "minLength": 1,
             "maxLength": 255,
             "x-oapi-codegen-extra-tags": {
-              "db": "name"
+              "db": "name",
+              "json": "name"
             },
             "x-order": 2
           },
           "owner": {
             "description": "Owner of the keychain.",
             "x-oapi-codegen-extra-tags": {
-              "db": "owner"
+              "db": "owner",
+              "json": "owner"
             },
             "x-order": 3,
             "type": "string",
@@ -1461,52 +1508,51 @@ const KeychainSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "created_at": {
-            "x-order": 4,
-            "description": "Timestamp when the resource was created.",
-            "x-go-type": "time.Time",
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "CreatedAt",
+            "description": "Timestamp when the keychain was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
+              "json": "createdAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 4
           },
-          "updated_at": {
-            "x-order": 5,
-            "description": "Timestamp when the resource was updated.",
-            "x-go-type": "time.Time",
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "UpdatedAt",
+            "description": "Timestamp when the keychain was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
+              "json": "updatedAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 5
           },
-          "deleted_at": {
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
-            "x-order": 6,
-            "description": "SQL null Timestamp to handle null values of time.",
-            "x-go-type": "meshcore.NullTime",
-            "x-go-type-import": {
-              "name": "meshcore",
-              "path": "github.com/meshery/schemas/models/core"
-            },
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Timestamp when the keychain was soft-deleted.",
+            "nullable": true,
+            "x-go-type": "core.NullTime",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "json": "deletedAt,omitempty"
+            },
+            "x-order": 6
           }
         }
       },
-      "KeychainInput": {
+      "KeychainPayload": {
         "type": "object",
-        "description": "Input payload for creating or updating a keychain.",
+        "description": "Payload for creating or updating a keychain.",
         "required": [
           "name"
         ],
@@ -1521,6 +1567,9 @@ const KeychainSchema: Record<string, unknown> = {
           "owner": {
             "description": "Owner of the keychain.",
             "x-order": 2,
+            "x-oapi-codegen-extra-tags": {
+              "json": "owner,omitempty"
+            },
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1532,27 +1581,40 @@ const KeychainSchema: Record<string, unknown> = {
       },
       "KeychainPage": {
         "type": "object",
+        "description": "A paginated list of keychains.",
         "required": [
           "page",
-          "page_size",
-          "total_count",
+          "pageSize",
+          "totalCount",
           "keychains"
         ],
         "properties": {
           "page": {
-            "x-order": 1,
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Zero-based page index returned in this response.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-order": 1
           },
-          "page_size": {
+          "pageSize": {
+            "type": "integer",
+            "description": "Maximum number of items returned on each page.",
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
             "x-order": 2,
-            "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           },
-          "total_count": {
-            "x-order": 3,
+          "totalCount": {
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Total number of items across all pages.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-order": 3,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "keychains": {
             "type": "array",
@@ -1564,15 +1626,16 @@ const KeychainSchema: Record<string, unknown> = {
                 "id",
                 "name",
                 "owner",
-                "created_at",
-                "updated_at"
+                "createdAt",
+                "updatedAt"
               ],
               "properties": {
                 "id": {
                   "description": "Unique identifier for the keychain.",
                   "x-go-name": "ID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "id"
+                    "db": "id",
+                    "json": "id"
                   },
                   "x-order": 1,
                   "type": "string",
@@ -1588,14 +1651,16 @@ const KeychainSchema: Record<string, unknown> = {
                   "minLength": 1,
                   "maxLength": 255,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "name"
+                    "db": "name",
+                    "json": "name"
                   },
                   "x-order": 2
                 },
                 "owner": {
                   "description": "Owner of the keychain.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "owner"
+                    "db": "owner",
+                    "json": "owner"
                   },
                   "x-order": 3,
                   "type": "string",
@@ -1605,51 +1670,50 @@ const KeychainSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "created_at": {
-                  "x-order": 4,
-                  "description": "Timestamp when the resource was created.",
-                  "x-go-type": "time.Time",
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "CreatedAt",
+                  "description": "Timestamp when the keychain was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "yaml": "created_at"
+                    "json": "createdAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 4
                 },
-                "updated_at": {
-                  "x-order": 5,
-                  "description": "Timestamp when the resource was updated.",
-                  "x-go-type": "time.Time",
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "UpdatedAt",
+                  "description": "Timestamp when the keychain was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "yaml": "updated_at"
+                    "json": "updatedAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 5
                 },
-                "deleted_at": {
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "deleted_at"
-                  },
-                  "x-order": 6,
-                  "description": "SQL null Timestamp to handle null values of time.",
-                  "x-go-type": "meshcore.NullTime",
-                  "x-go-type-import": {
-                    "name": "meshcore",
-                    "path": "github.com/meshery/schemas/models/core"
-                  },
+                "deletedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  "description": "Timestamp when the keychain was soft-deleted.",
+                  "nullable": true,
+                  "x-go-type": "core.NullTime",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/core",
+                    "name": "core"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "json": "deletedAt,omitempty"
+                  },
+                  "x-order": 6
                 }
               }
             },
             "x-order": 4,
-            "description": "The keychains of the keychainpage."
+            "description": "Keychains returned on the current page."
           }
         }
       }

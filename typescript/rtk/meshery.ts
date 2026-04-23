@@ -1,6 +1,5 @@
 import { mesheryBaseApi as api } from "./api";
 export const addTagTypes = [
-  "Environment_environments",
   "Evaluation_Evaluation",
   "credential_credentials",
   "Key_users",
@@ -10,6 +9,7 @@ export const addTagTypes = [
   "User_users",
   "Connection_API_Connections",
   "Design_designs",
+  "Environment_environments",
   "Events_events",
   "Workspace_workspaces",
   "Workspace_designs",
@@ -21,57 +21,6 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
-        query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments`,
-          params: {
-            search: queryArg.search,
-            order: queryArg.order,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            orgId: queryArg.orgId,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
-      getEnvironmentById: build.query<GetEnvironmentByIdApiResponse, GetEnvironmentByIdApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}`,
-          params: {
-            orgId: queryArg.orgId,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
-      updateEnvironment: build.mutation<UpdateEnvironmentApiResponse, UpdateEnvironmentApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      deleteEnvironment: build.mutation<DeleteEnvironmentApiResponse, DeleteEnvironmentApiArg>({
-        query: (queryArg) => ({ url: `/api/environments/${queryArg.environmentId}`, method: "DELETE" }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      getEnvironmentConnections: build.query<GetEnvironmentConnectionsApiResponse, GetEnvironmentConnectionsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}/connections`,
-          params: {
-            search: queryArg.search,
-            order: queryArg.order,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            filter: queryArg.filter,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
       postEvaluate: build.mutation<PostEvaluateApiResponse, PostEvaluateApiArg>({
         query: (queryArg) => ({ url: `/evaluate`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Evaluation_Evaluation"],
@@ -377,6 +326,57 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/pattern/import`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Design_designs"],
       }),
+      createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
+        query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments`,
+          params: {
+            search: queryArg.search,
+            order: queryArg.order,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            orgId: queryArg.orgId,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
+      getEnvironmentById: build.query<GetEnvironmentByIdApiResponse, GetEnvironmentByIdApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}`,
+          params: {
+            orgId: queryArg.orgId,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
+      updateEnvironment: build.mutation<UpdateEnvironmentApiResponse, UpdateEnvironmentApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      deleteEnvironment: build.mutation<DeleteEnvironmentApiResponse, DeleteEnvironmentApiArg>({
+        query: (queryArg) => ({ url: `/api/environments/${queryArg.environmentId}`, method: "DELETE" }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      getEnvironmentConnections: build.query<GetEnvironmentConnectionsApiResponse, GetEnvironmentConnectionsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}/connections`,
+          params: {
+            search: queryArg.search,
+            order: queryArg.order,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            filter: queryArg.filter,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
       deleteEvent: build.mutation<DeleteEventApiResponse, DeleteEventApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.eventId}`, method: "DELETE" }),
         invalidatesTags: ["Events_events"],
@@ -548,184 +548,6 @@ const injectedRtkApi = api
     overrideExisting: false,
   });
 export { injectedRtkApi as mesheryApi, injectedRtkApi };
-export type CreateEnvironmentApiResponse = /** status 201 Created environment */ {
-  /** ID */
-  id: string;
-  /** Specifies the version of the schema to which the environment conforms. */
-  schemaVersion: string;
-  /** Environment name */
-  name: string;
-  /** Environment description */
-  description: string;
-  /** Environment organization ID */
-  organization_id: string;
-  /** Environment owner */
-  owner?: string;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Additional metadata associated with the environment. */
-  metadata?: object;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-  /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-  deleted_at?: string | null;
-};
-export type CreateEnvironmentApiArg = {
-  /** Body for creating environment */
-  body: {
-    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
-    name: string;
-    /** An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
-    description?: string;
-    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
-    organization_id: string;
-  };
-};
-export type GetEnvironmentsApiResponse = /** status 200 Environments */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type GetEnvironmentsApiArg = {
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** User's organization ID */
-  orgId: string;
-};
-export type GetEnvironmentByIdApiResponse = /** status 200 Environment page */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type GetEnvironmentByIdApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** User's organization ID */
-  orgId: string;
-};
-export type UpdateEnvironmentApiResponse = /** status 200 Environment page */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type UpdateEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Body for creating environment */
-  body: {
-    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
-    name: string;
-    /** An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
-    description?: string;
-    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
-    organization_id: string;
-  };
-};
-export type DeleteEnvironmentApiResponse = unknown;
-export type DeleteEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-};
-export type GetEnvironmentConnectionsApiResponse = /** status 200 Environment connections */ {
-  /** Current page number of the result set. */
-  page?: number;
-  /** Number of items per page. */
-  page_size?: number;
-  /** Total number of items available. */
-  total_count?: number;
-  /** The connections of the environmentconnectionspage. */
-  connections?: {
-    [key: string]: any;
-  }[];
-};
-export type GetEnvironmentConnectionsApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  filter?: string;
-};
 export type PostEvaluateApiResponse = /** status 200 Successful evaluation */ {
   /** Specifies the version of the schema to which the evaluation response conforms. */
   schemaVersion: string;
@@ -4766,6 +4588,194 @@ export type ImportDesignApiArg = {
         name?: string;
       };
 };
+export type CreateEnvironmentApiResponse = /** status 201 Created environment */ {
+  /** ID */
+  id: string;
+  /** Specifies the version of the schema to which the environment conforms. */
+  schemaVersion: string;
+  /** Environment name */
+  name: string;
+  /** Environment description */
+  description: string;
+  /** Environment organization ID */
+  organizationId: string;
+  /** Environment owner */
+  owner?: string;
+  /** Timestamp when the environment was created. */
+  createdAt?: string;
+  /** Additional metadata associated with the environment. */
+  metadata?: object;
+  /** Timestamp when the environment was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+  deletedAt?: string | null;
+};
+export type CreateEnvironmentApiArg = {
+  /** Body for creating environment */
+  body: {
+    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
+    name: string;
+    /** An environment is a collection of resources, such as connections & credentials. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
+    description?: string;
+    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
+    organizationId: string;
+  };
+};
+export type GetEnvironmentsApiResponse = /** status 200 Environments */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetEnvironmentsApiArg = {
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** User's organization ID */
+  orgId: string;
+};
+export type GetEnvironmentByIdApiResponse = /** status 200 Environment page */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetEnvironmentByIdApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** User's organization ID */
+  orgId: string;
+};
+export type UpdateEnvironmentApiResponse = /** status 200 Environment page */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type UpdateEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Body for creating environment */
+  body: {
+    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
+    name: string;
+    /** An environment is a collection of resources, such as connections & credentials. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
+    description?: string;
+    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
+    organizationId: string;
+  };
+};
+export type DeleteEnvironmentApiResponse = unknown;
+export type DeleteEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+};
+export type GetEnvironmentConnectionsApiResponse = /** status 200 Environment connections */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The connections of the environmentconnectionspage. */
+  connections?: {
+    [key: string]: any;
+  }[];
+};
+export type GetEnvironmentConnectionsApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** JSON-encoded filter string used to scope the connection listing. */
+  filter?: string;
+};
 export type DeleteEventApiResponse = unknown;
 export type DeleteEventApiArg = {
   /** ID of the event. */
@@ -6266,12 +6276,6 @@ export type UnassignViewFromWorkspaceApiArg = {
   viewId: string;
 };
 export const {
-  useCreateEnvironmentMutation,
-  useGetEnvironmentsQuery,
-  useGetEnvironmentByIdQuery,
-  useUpdateEnvironmentMutation,
-  useDeleteEnvironmentMutation,
-  useGetEnvironmentConnectionsQuery,
   usePostEvaluateMutation,
   useGetUserCredentialsQuery,
   useSaveUserCredentialMutation,
@@ -6314,6 +6318,12 @@ export const {
   useAddConnectionToEnvironmentMutation,
   useRemoveConnectionFromEnvironmentMutation,
   useImportDesignMutation,
+  useCreateEnvironmentMutation,
+  useGetEnvironmentsQuery,
+  useGetEnvironmentByIdQuery,
+  useUpdateEnvironmentMutation,
+  useDeleteEnvironmentMutation,
+  useGetEnvironmentConnectionsQuery,
   useDeleteEventMutation,
   useCreateEventMutation,
   useBulkDeleteEventsMutation,

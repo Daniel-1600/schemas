@@ -1,28 +1,28 @@
 import { cloudBaseApi as api } from "./api";
 export const addTagTypes = [
   "Badge_Badge",
-  "Environment_environments",
   "Feature_Features",
-  "Keychain_Keychain",
   "Academy_API_Academy",
   "credential_credentials",
   "Key_users",
   "Key_Key",
+  "Keychain_Keychain",
   "Model_Models",
   "Organization_Organizations",
   "Team_teams",
-  "Plan_Plans",
   "role_roles",
   "schedule_scheduler",
-  "Subscription_Subscriptions",
-  "Subscription_Payment Processors",
   "token_tokens",
   "User_users",
   "View_views",
   "Connection_API_Connections",
   "Design_designs",
+  "Environment_environments",
   "Events_events",
   "Invitation_Invitation",
+  "Plan_Plans",
+  "Subscription_Subscriptions",
+  "Subscription_Payment Processors",
   "Workspace_workspaces",
   "Workspace_designs",
   "Workspace_views",
@@ -53,57 +53,6 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/identity/users/badges`, method: "PUT", body: queryArg.body }),
         invalidatesTags: ["Badge_Badge"],
       }),
-      createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
-        query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments`,
-          params: {
-            search: queryArg.search,
-            order: queryArg.order,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            orgId: queryArg.orgId,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
-      getEnvironmentById: build.query<GetEnvironmentByIdApiResponse, GetEnvironmentByIdApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}`,
-          params: {
-            orgId: queryArg.orgId,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
-      updateEnvironment: build.mutation<UpdateEnvironmentApiResponse, UpdateEnvironmentApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      deleteEnvironment: build.mutation<DeleteEnvironmentApiResponse, DeleteEnvironmentApiArg>({
-        query: (queryArg) => ({ url: `/api/environments/${queryArg.environmentId}`, method: "DELETE" }),
-        invalidatesTags: ["Environment_environments"],
-      }),
-      getEnvironmentConnections: build.query<GetEnvironmentConnectionsApiResponse, GetEnvironmentConnectionsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}/connections`,
-          params: {
-            search: queryArg.search,
-            order: queryArg.order,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            filter: queryArg.filter,
-          },
-        }),
-        providesTags: ["Environment_environments"],
-      }),
       getFeatures: build.query<GetFeaturesApiResponse, GetFeaturesApiArg>({
         query: () => ({ url: `/api/entitlement/features` }),
         providesTags: ["Feature_Features"],
@@ -113,61 +62,6 @@ const injectedRtkApi = api
           url: `/api/entitlement/subscriptions/organizations/${queryArg.organizationId}/features`,
         }),
         providesTags: ["Feature_Features"],
-      }),
-      getKeychains: build.query<GetKeychainsApiResponse, GetKeychainsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/auth/keychains`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["Keychain_Keychain"],
-      }),
-      createKeychain: build.mutation<CreateKeychainApiResponse, CreateKeychainApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/keychains`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Keychain_Keychain"],
-      }),
-      getKeychainById: build.query<GetKeychainByIdApiResponse, GetKeychainByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}` }),
-        providesTags: ["Keychain_Keychain"],
-      }),
-      updateKeychain: build.mutation<UpdateKeychainApiResponse, UpdateKeychainApiArg>({
-        query: (queryArg) => ({
-          url: `/api/auth/keychains/${queryArg.keychainId}`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Keychain_Keychain"],
-      }),
-      deleteKeychain: build.mutation<DeleteKeychainApiResponse, DeleteKeychainApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}`, method: "DELETE" }),
-        invalidatesTags: ["Keychain_Keychain"],
-      }),
-      addKeyToKeychain: build.mutation<AddKeyToKeychainApiResponse, AddKeyToKeychainApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`, method: "POST" }),
-        invalidatesTags: ["Keychain_Keychain"],
-      }),
-      removeKeyFromKeychain: build.mutation<RemoveKeyFromKeychainApiResponse, RemoveKeyFromKeychainApiArg>({
-        query: (queryArg) => ({
-          url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`,
-          method: "DELETE",
-        }),
-        invalidatesTags: ["Keychain_Keychain"],
-      }),
-      getKeysOfKeychain: build.query<GetKeysOfKeychainApiResponse, GetKeysOfKeychainApiArg>({
-        query: (queryArg) => ({
-          url: `/api/auth/keychains/${queryArg.keychainId}/keys`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["Keychain_Keychain"],
       }),
       getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
         query: (queryArg) => ({
@@ -388,6 +282,61 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}`, method: "DELETE" }),
         invalidatesTags: ["Key_Key"],
       }),
+      getKeychains: build.query<GetKeychainsApiResponse, GetKeychainsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/auth/keychains`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["Keychain_Keychain"],
+      }),
+      createKeychain: build.mutation<CreateKeychainApiResponse, CreateKeychainApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/keychains`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Keychain_Keychain"],
+      }),
+      getKeychainById: build.query<GetKeychainByIdApiResponse, GetKeychainByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}` }),
+        providesTags: ["Keychain_Keychain"],
+      }),
+      updateKeychain: build.mutation<UpdateKeychainApiResponse, UpdateKeychainApiArg>({
+        query: (queryArg) => ({
+          url: `/api/auth/keychains/${queryArg.keychainId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Keychain_Keychain"],
+      }),
+      deleteKeychain: build.mutation<DeleteKeychainApiResponse, DeleteKeychainApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}`, method: "DELETE" }),
+        invalidatesTags: ["Keychain_Keychain"],
+      }),
+      addKeyToKeychain: build.mutation<AddKeyToKeychainApiResponse, AddKeyToKeychainApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`, method: "POST" }),
+        invalidatesTags: ["Keychain_Keychain"],
+      }),
+      removeKeyFromKeychain: build.mutation<RemoveKeyFromKeychainApiResponse, RemoveKeyFromKeychainApiArg>({
+        query: (queryArg) => ({
+          url: `/api/auth/keychains/${queryArg.keychainId}/${queryArg.keyId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Keychain_Keychain"],
+      }),
+      getKeysOfKeychain: build.query<GetKeysOfKeychainApiResponse, GetKeysOfKeychainApiArg>({
+        query: (queryArg) => ({
+          url: `/api/auth/keychains/${queryArg.keychainId}/keys`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["Keychain_Keychain"],
+      }),
       registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
         query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["Model_Models"],
@@ -491,16 +440,6 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Organization_Organizations"],
       }),
-      getPlans: build.query<GetPlansApiResponse, GetPlansApiArg>({
-        query: (queryArg) => ({
-          url: `/api/entitlement/plans`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-          },
-        }),
-        providesTags: ["Plan_Plans"],
-      }),
       addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
         query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
         invalidatesTags: ["role_roles"],
@@ -589,52 +528,6 @@ const injectedRtkApi = api
       deleteSchedule: build.mutation<DeleteScheduleApiResponse, DeleteScheduleApiArg>({
         query: (queryArg) => ({ url: `/user/schedules/${queryArg.scheduleId}`, method: "DELETE" }),
         invalidatesTags: ["schedule_scheduler"],
-      }),
-      getSubscriptions: build.query<GetSubscriptionsApiResponse, GetSubscriptionsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/entitlement/subscriptions`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            order: queryArg.order,
-            status: queryArg.status,
-          },
-        }),
-        providesTags: ["Subscription_Subscriptions"],
-      }),
-      cancelSubscription: build.mutation<CancelSubscriptionApiResponse, CancelSubscriptionApiArg>({
-        query: (queryArg) => ({
-          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/cancel`,
-          method: "POST",
-        }),
-        invalidatesTags: ["Subscription_Subscriptions"],
-      }),
-      createSubscription: build.mutation<CreateSubscriptionApiResponse, CreateSubscriptionApiArg>({
-        query: (queryArg) => ({ url: `/api/entitlement/subscriptions/create`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Subscription_Subscriptions"],
-      }),
-      upgradeSubscription: build.mutation<UpgradeSubscriptionApiResponse, UpgradeSubscriptionApiArg>({
-        query: (queryArg) => ({
-          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade`,
-          method: "POST",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Subscription_Subscriptions"],
-      }),
-      previewSubscriptionUpgrade: build.mutation<
-        PreviewSubscriptionUpgradeApiResponse,
-        PreviewSubscriptionUpgradeApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade-preview`,
-          method: "POST",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Subscription_Subscriptions"],
-      }),
-      handleSubscriptionWebhook: build.mutation<HandleSubscriptionWebhookApiResponse, HandleSubscriptionWebhookApiArg>({
-        query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Subscription_Payment Processors"],
       }),
       getTeams: build.query<GetTeamsApiResponse, GetTeamsApiArg>({
         query: (queryArg) => ({
@@ -1065,6 +958,57 @@ const injectedRtkApi = api
         }),
         providesTags: ["Design_designs"],
       }),
+      createEnvironment: build.mutation<CreateEnvironmentApiResponse, CreateEnvironmentApiArg>({
+        query: (queryArg) => ({ url: `/api/environments`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      getEnvironments: build.query<GetEnvironmentsApiResponse, GetEnvironmentsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments`,
+          params: {
+            search: queryArg.search,
+            order: queryArg.order,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            orgId: queryArg.orgId,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
+      getEnvironmentById: build.query<GetEnvironmentByIdApiResponse, GetEnvironmentByIdApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}`,
+          params: {
+            orgId: queryArg.orgId,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
+      updateEnvironment: build.mutation<UpdateEnvironmentApiResponse, UpdateEnvironmentApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      deleteEnvironment: build.mutation<DeleteEnvironmentApiResponse, DeleteEnvironmentApiArg>({
+        query: (queryArg) => ({ url: `/api/environments/${queryArg.environmentId}`, method: "DELETE" }),
+        invalidatesTags: ["Environment_environments"],
+      }),
+      getEnvironmentConnections: build.query<GetEnvironmentConnectionsApiResponse, GetEnvironmentConnectionsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}/connections`,
+          params: {
+            search: queryArg.search,
+            order: queryArg.order,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            filter: queryArg.filter,
+          },
+        }),
+        providesTags: ["Environment_environments"],
+      }),
       deleteEvent: build.mutation<DeleteEventApiResponse, DeleteEventApiArg>({
         query: (queryArg) => ({ url: `/events/${queryArg.eventId}`, method: "DELETE" }),
         invalidatesTags: ["Events_events"],
@@ -1212,6 +1156,62 @@ const injectedRtkApi = api
       >({
         query: () => ({ url: `/api/identity/users/request/notification` }),
         providesTags: ["Invitation_Invitation"],
+      }),
+      getPlans: build.query<GetPlansApiResponse, GetPlansApiArg>({
+        query: (queryArg) => ({
+          url: `/api/entitlement/plans`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+          },
+        }),
+        providesTags: ["Plan_Plans"],
+      }),
+      getSubscriptions: build.query<GetSubscriptionsApiResponse, GetSubscriptionsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/entitlement/subscriptions`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            order: queryArg.order,
+            status: queryArg.status,
+          },
+        }),
+        providesTags: ["Subscription_Subscriptions"],
+      }),
+      cancelSubscription: build.mutation<CancelSubscriptionApiResponse, CancelSubscriptionApiArg>({
+        query: (queryArg) => ({
+          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/cancel`,
+          method: "POST",
+        }),
+        invalidatesTags: ["Subscription_Subscriptions"],
+      }),
+      createSubscription: build.mutation<CreateSubscriptionApiResponse, CreateSubscriptionApiArg>({
+        query: (queryArg) => ({ url: `/api/entitlement/subscriptions/create`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Subscription_Subscriptions"],
+      }),
+      upgradeSubscription: build.mutation<UpgradeSubscriptionApiResponse, UpgradeSubscriptionApiArg>({
+        query: (queryArg) => ({
+          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Subscription_Subscriptions"],
+      }),
+      previewSubscriptionUpgrade: build.mutation<
+        PreviewSubscriptionUpgradeApiResponse,
+        PreviewSubscriptionUpgradeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/entitlement/subscriptions/${queryArg.subscriptionId}/upgrade-preview`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Subscription_Subscriptions"],
+      }),
+      handleSubscriptionWebhook: build.mutation<HandleSubscriptionWebhookApiResponse, HandleSubscriptionWebhookApiArg>({
+        query: (queryArg) => ({ url: `/api/entitlement/subscriptions/webhooks`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Subscription_Payment Processors"],
       }),
       getWorkspaces: build.query<GetWorkspacesApiResponse, GetWorkspacesApiArg>({
         query: (queryArg) => ({
@@ -1468,184 +1468,6 @@ export type AssignBadgesApiArg = {
     notify?: boolean;
   };
 };
-export type CreateEnvironmentApiResponse = /** status 201 Created environment */ {
-  /** ID */
-  id: string;
-  /** Specifies the version of the schema to which the environment conforms. */
-  schemaVersion: string;
-  /** Environment name */
-  name: string;
-  /** Environment description */
-  description: string;
-  /** Environment organization ID */
-  organization_id: string;
-  /** Environment owner */
-  owner?: string;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Additional metadata associated with the environment. */
-  metadata?: object;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-  /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-  deleted_at?: string | null;
-};
-export type CreateEnvironmentApiArg = {
-  /** Body for creating environment */
-  body: {
-    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
-    name: string;
-    /** An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
-    description?: string;
-    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
-    organization_id: string;
-  };
-};
-export type GetEnvironmentsApiResponse = /** status 200 Environments */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type GetEnvironmentsApiArg = {
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** User's organization ID */
-  orgId: string;
-};
-export type GetEnvironmentByIdApiResponse = /** status 200 Environment page */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type GetEnvironmentByIdApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** User's organization ID */
-  orgId: string;
-};
-export type UpdateEnvironmentApiResponse = /** status 200 Environment page */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Environments associated with this resource. */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-};
-export type UpdateEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Body for creating environment */
-  body: {
-    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
-    name: string;
-    /** An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
-    description?: string;
-    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
-    organization_id: string;
-  };
-};
-export type DeleteEnvironmentApiResponse = unknown;
-export type DeleteEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-};
-export type GetEnvironmentConnectionsApiResponse = /** status 200 Environment connections */ {
-  /** Current page number of the result set. */
-  page?: number;
-  /** Number of items per page. */
-  page_size?: number;
-  /** Total number of items available. */
-  total_count?: number;
-  /** The connections of the environmentconnectionspage. */
-  connections?: {
-    [key: string]: any;
-  }[];
-};
-export type GetEnvironmentConnectionsApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  filter?: string;
-};
 export type GetFeaturesApiResponse = /** status 200 Features response */ {
   /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
   id: string;
@@ -1712,157 +1534,6 @@ export type GetFeaturesByOrganizationApiResponse = /** status 200 Features respo
 export type GetFeaturesByOrganizationApiArg = {
   /** The ID of the organization */
   organizationId: string;
-};
-export type GetKeychainsApiResponse = /** status 200 Keychain(s) fetched */ {
-  page: number;
-  page_size: number;
-  total_count: number;
-  /** The keychains of the keychainpage. */
-  keychains: {
-    /** Unique identifier for the keychain. */
-    id: string;
-    /** Name of the keychain. */
-    name: string;
-    /** Owner of the keychain. */
-    owner: string;
-    /** Timestamp when the resource was created. */
-    created_at: string;
-    /** Timestamp when the resource was updated. */
-    updated_at: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetKeychainsApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-};
-export type CreateKeychainApiResponse = /** status 200 Keychain created */ {
-  /** Unique identifier for the keychain. */
-  id: string;
-  /** Name of the keychain. */
-  name: string;
-  /** Owner of the keychain. */
-  owner: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-};
-export type CreateKeychainApiArg = {
-  body: {
-    /** Name of the keychain. */
-    name: string;
-    /** Owner of the keychain. */
-    owner?: string;
-  };
-};
-export type GetKeychainByIdApiResponse = /** status 200 Keychain fetched */ {
-  /** Unique identifier for the keychain. */
-  id: string;
-  /** Name of the keychain. */
-  name: string;
-  /** Owner of the keychain. */
-  owner: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-};
-export type GetKeychainByIdApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-};
-export type UpdateKeychainApiResponse = /** status 200 Keychain updated */ {
-  /** Unique identifier for the keychain. */
-  id: string;
-  /** Name of the keychain. */
-  name: string;
-  /** Owner of the keychain. */
-  owner: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-};
-export type UpdateKeychainApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-  body: {
-    /** Name of the keychain. */
-    name: string;
-    /** Owner of the keychain. */
-    owner?: string;
-  };
-};
-export type DeleteKeychainApiResponse = unknown;
-export type DeleteKeychainApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-};
-export type AddKeyToKeychainApiResponse = unknown;
-export type AddKeyToKeychainApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-  /** Key ID */
-  keyId: string;
-};
-export type RemoveKeyFromKeychainApiResponse = unknown;
-export type RemoveKeyFromKeychainApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-  /** Key ID */
-  keyId: string;
-};
-export type GetKeysOfKeychainApiResponse = /** status 200 Keys response */ {
-  page: number;
-  page_size: number;
-  total_count: number;
-  /** The keys of the keypage. */
-  keys: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    owner: string;
-    /** Operation permitted by the key. */
-    function: string;
-    /** Category for the key. */
-    category: string;
-    /** Subcategory for the key. */
-    subcategory: string;
-    /** Human readable description of the key. */
-    description: string;
-    /** Timestamp when the resource was created. */
-    created_at: string;
-    /** Timestamp when the resource was updated. */
-    updated_at: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetKeysOfKeychainApiArg = {
-  /** Keychain ID */
-  keychainId: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
 };
 export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
   /** Total number of Curricula */
@@ -3885,6 +3556,163 @@ export type DeleteKeyApiArg = {
   /** Key ID */
   keyId: string;
 };
+export type GetKeychainsApiResponse = /** status 200 Keychain(s) fetched */ {
+  /** Zero-based page index returned in this response. */
+  page: number;
+  /** Maximum number of items returned on each page. */
+  pageSize: number;
+  /** Total number of items across all pages. */
+  totalCount: number;
+  /** Keychains returned on the current page. */
+  keychains: {
+    /** Unique identifier for the keychain. */
+    id: string;
+    /** Name of the keychain. */
+    name: string;
+    /** Owner of the keychain. */
+    owner: string;
+    /** Timestamp when the keychain was created. */
+    createdAt: string;
+    /** Timestamp when the keychain was last updated. */
+    updatedAt: string;
+    /** Timestamp when the keychain was soft-deleted. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetKeychainsApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type CreateKeychainApiResponse = /** status 201 Keychain created */ {
+  /** Unique identifier for the keychain. */
+  id: string;
+  /** Name of the keychain. */
+  name: string;
+  /** Owner of the keychain. */
+  owner: string;
+  /** Timestamp when the keychain was created. */
+  createdAt: string;
+  /** Timestamp when the keychain was last updated. */
+  updatedAt: string;
+  /** Timestamp when the keychain was soft-deleted. */
+  deletedAt?: string | null;
+};
+export type CreateKeychainApiArg = {
+  body: {
+    /** Name of the keychain. */
+    name: string;
+    /** Owner of the keychain. */
+    owner?: string;
+  };
+};
+export type GetKeychainByIdApiResponse = /** status 200 Keychain fetched */ {
+  /** Unique identifier for the keychain. */
+  id: string;
+  /** Name of the keychain. */
+  name: string;
+  /** Owner of the keychain. */
+  owner: string;
+  /** Timestamp when the keychain was created. */
+  createdAt: string;
+  /** Timestamp when the keychain was last updated. */
+  updatedAt: string;
+  /** Timestamp when the keychain was soft-deleted. */
+  deletedAt?: string | null;
+};
+export type GetKeychainByIdApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+};
+export type UpdateKeychainApiResponse = /** status 200 Keychain updated */ {
+  /** Unique identifier for the keychain. */
+  id: string;
+  /** Name of the keychain. */
+  name: string;
+  /** Owner of the keychain. */
+  owner: string;
+  /** Timestamp when the keychain was created. */
+  createdAt: string;
+  /** Timestamp when the keychain was last updated. */
+  updatedAt: string;
+  /** Timestamp when the keychain was soft-deleted. */
+  deletedAt?: string | null;
+};
+export type UpdateKeychainApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+  body: {
+    /** Name of the keychain. */
+    name: string;
+    /** Owner of the keychain. */
+    owner?: string;
+  };
+};
+export type DeleteKeychainApiResponse = unknown;
+export type DeleteKeychainApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+};
+export type AddKeyToKeychainApiResponse = unknown;
+export type AddKeyToKeychainApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+  /** Key ID */
+  keyId: string;
+};
+export type RemoveKeyFromKeychainApiResponse = unknown;
+export type RemoveKeyFromKeychainApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+  /** Key ID */
+  keyId: string;
+};
+export type GetKeysOfKeychainApiResponse = /** status 200 Keys response */ {
+  /** Zero-based page index returned in this response. */
+  page: number;
+  /** Maximum number of items returned on each page. */
+  pageSize: number;
+  /** Total number of items across all pages. */
+  totalCount: number;
+  /** Keys returned on the current page. */
+  keys: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    owner: string;
+    /** Operation permitted by the key. */
+    function: string;
+    /** Category for the key. */
+    category: string;
+    /** Subcategory for the key. */
+    subcategory: string;
+    /** Human readable description of the key. */
+    description: string;
+    /** Timestamp when the key was created. */
+    createdAt: string;
+    /** Timestamp when the key was last updated. */
+    updatedAt: string;
+    /** Timestamp when the key was soft-deleted. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetKeysOfKeychainApiArg = {
+  /** Keychain ID */
+  keychainId: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
 export type RegisterMeshmodelsApiResponse = /** status 201 Model registered */ {
   message?: string;
 };
@@ -4655,25 +4483,6 @@ export type DeleteUserFromOrgApiArg = {
   /** User ID. */
   userId: string;
 };
-export type GetPlansApiResponse = /** status 200 Plans response */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** Name of the plan */
-  name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
-  cadence: "none" | "monthly" | "annually";
-  unit: "user" | "free";
-  /** Minimum number of units required for the plan */
-  minimum_units: number;
-  /** Price per unit of the plan */
-  price_per_unit: number;
-  currency: "usd";
-}[];
-export type GetPlansApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-};
 export type AddRoleHolderApiResponse = unknown;
 export type AddRoleHolderApiArg = {
   body: {
@@ -4921,185 +4730,6 @@ export type DeleteScheduleApiResponse = unknown;
 export type DeleteScheduleApiArg = {
   /** Schedule ID */
   scheduleId: string;
-};
-export type GetSubscriptionsApiResponse = /** status 200 Get subscription response */ {
-  /** Current page number of the result set. */
-  page: number;
-  /** Number of items per page. */
-  page_size: number;
-  /** Total number of items available. */
-  total_count: number;
-  /** Subscriptions returned in the current page of results. */
-  subscriptions: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    org_id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    plan_id: string;
-    /** Plan entity schema. */
-    plan?: {
-      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      id: string;
-      /** Name of the plan */
-      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
-      cadence: "none" | "monthly" | "annually";
-      unit: "user" | "free";
-      /** Minimum number of units required for the plan */
-      minimum_units: number;
-      /** Price per unit of the plan */
-      price_per_unit: number;
-      currency: "usd";
-    };
-    /** number of units subscribed (eg number of users) */
-    quantity: number;
-    start_date?: string;
-    end_date?: string;
-    /** Possible statuses of a Stripe subscription. */
-    status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
-    created_at?: string;
-    updated_at?: string;
-    deleted_at?: string;
-    /** Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe */
-    billing_id: string;
-  }[];
-};
-export type GetSubscriptionsApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Filter subscriptions by status */
-  status?: string[];
-};
-export type CancelSubscriptionApiResponse = /** status 200 undefined */ {
-  /** Current page number of the result set. */
-  page: number;
-  /** Number of items per page. */
-  page_size: number;
-  /** Total number of items available. */
-  total_count: number;
-  /** Subscriptions returned in the current page of results. */
-  subscriptions: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    org_id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    plan_id: string;
-    /** Plan entity schema. */
-    plan?: {
-      /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-      id: string;
-      /** Name of the plan */
-      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
-      cadence: "none" | "monthly" | "annually";
-      unit: "user" | "free";
-      /** Minimum number of units required for the plan */
-      minimum_units: number;
-      /** Price per unit of the plan */
-      price_per_unit: number;
-      currency: "usd";
-    };
-    /** number of units subscribed (eg number of users) */
-    quantity: number;
-    start_date?: string;
-    end_date?: string;
-    /** Possible statuses of a Stripe subscription. */
-    status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
-    created_at?: string;
-    updated_at?: string;
-    deleted_at?: string;
-    /** Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe */
-    billing_id: string;
-  }[];
-};
-export type CancelSubscriptionApiArg = {
-  /** Subscription ID */
-  subscriptionId: string;
-};
-export type CreateSubscriptionApiResponse = /** status 201 A new subscription has been created */ {
-  /** ID of the associated subscription. */
-  subscriptionId?: string;
-  /** Client secret returned by the payment processor for the subscription checkout flow. */
-  clientSecret?: string;
-};
-export type CreateSubscriptionApiArg = {
-  body: {
-    /** Organization ID */
-    orgId?: string;
-    /** Price ID from the payment processor */
-    planId?: string;
-    /** Coupon ID to apply */
-    couponId?: string;
-    /** Number of users in the organization */
-    userCount?: number;
-    /** Email of the customer */
-    email?: string;
-    /** Supported payment processors */
-    paymentProcessor?: "stripe" | "paypal" | "braintree";
-  };
-};
-export type UpgradeSubscriptionApiResponse = /** status 200 undefined */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  org_id: string;
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  plan_id: string;
-  /** Plan entity schema. */
-  plan?: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** Name of the plan */
-    name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
-    cadence: "none" | "monthly" | "annually";
-    unit: "user" | "free";
-    /** Minimum number of units required for the plan */
-    minimum_units: number;
-    /** Price per unit of the plan */
-    price_per_unit: number;
-    currency: "usd";
-  };
-  /** number of units subscribed (eg number of users) */
-  quantity: number;
-  start_date?: string;
-  end_date?: string;
-  /** Possible statuses of a Stripe subscription. */
-  status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
-  created_at?: string;
-  updated_at?: string;
-  deleted_at?: string;
-  /** Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe */
-  billing_id: string;
-};
-export type UpgradeSubscriptionApiArg = {
-  /** Subscription ID */
-  subscriptionId: string;
-  body: {
-    /** Old Plan id that is being changed */
-    oldPlanId?: string;
-    /** New Plan id that is being changed to */
-    newPlanId?: string;
-  };
-};
-export type PreviewSubscriptionUpgradeApiResponse =
-  /** status 200 Preview of the upgraded subscription invoice */ object;
-export type PreviewSubscriptionUpgradeApiArg = {
-  /** Subscription ID */
-  subscriptionId: string;
-  body: {
-    /** Old Plan id that is being changed */
-    oldPlanId?: string;
-    /** New Plan id that is being changed to */
-    newPlanId?: string;
-  };
-};
-export type HandleSubscriptionWebhookApiResponse = unknown;
-export type HandleSubscriptionWebhookApiArg = {
-  body: object;
 };
 export type GetTeamsApiResponse = /** status 200 Teams */ {
   /** Current page number of the result set. */
@@ -13115,6 +12745,194 @@ export type GetCatalogRequestApiArg = {
   order?: string;
   filter?: string;
 };
+export type CreateEnvironmentApiResponse = /** status 201 Created environment */ {
+  /** ID */
+  id: string;
+  /** Specifies the version of the schema to which the environment conforms. */
+  schemaVersion: string;
+  /** Environment name */
+  name: string;
+  /** Environment description */
+  description: string;
+  /** Environment organization ID */
+  organizationId: string;
+  /** Environment owner */
+  owner?: string;
+  /** Timestamp when the environment was created. */
+  createdAt?: string;
+  /** Additional metadata associated with the environment. */
+  metadata?: object;
+  /** Timestamp when the environment was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+  deletedAt?: string | null;
+};
+export type CreateEnvironmentApiArg = {
+  /** Body for creating environment */
+  body: {
+    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
+    name: string;
+    /** An environment is a collection of resources, such as connections & credentials. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
+    description?: string;
+    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
+    organizationId: string;
+  };
+};
+export type GetEnvironmentsApiResponse = /** status 200 Environments */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetEnvironmentsApiArg = {
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** User's organization ID */
+  orgId: string;
+};
+export type GetEnvironmentByIdApiResponse = /** status 200 Environment page */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetEnvironmentByIdApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** User's organization ID */
+  orgId: string;
+};
+export type UpdateEnvironmentApiResponse = /** status 200 Environment page */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Environments associated with this resource. */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organizationId: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type UpdateEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Body for creating environment */
+  body: {
+    /** An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation. */
+    name: string;
+    /** An environment is a collection of resources, such as connections & credentials. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments). */
+    description?: string;
+    /** Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation. */
+    organizationId: string;
+  };
+};
+export type DeleteEnvironmentApiResponse = unknown;
+export type DeleteEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+};
+export type GetEnvironmentConnectionsApiResponse = /** status 200 Environment connections */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The connections of the environmentconnectionspage. */
+  connections?: {
+    [key: string]: any;
+  }[];
+};
+export type GetEnvironmentConnectionsApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** JSON-encoded filter string used to scope the connection listing. */
+  filter?: string;
+};
 export type DeleteEventApiResponse = unknown;
 export type DeleteEventApiArg = {
   /** ID of the event. */
@@ -13604,6 +13422,231 @@ export type GetSignupRequestNotificationApiResponse = /** status 200 Signup requ
   [key: string]: any;
 };
 export type GetSignupRequestNotificationApiArg = void;
+export type GetPlansApiResponse = /** status 200 Plans response */ {
+  /** Unique identifier for the plan. */
+  id: string;
+  /** Display name of the plan. */
+  name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
+  /** Billing cadence for the plan (monthly, annually, or none). */
+  cadence: "none" | "monthly" | "annually";
+  /** Unit of consumption this plan charges against (e.g. user). */
+  unit: "user" | "free";
+  /** Minimum number of units required for the plan. */
+  minimumUnits: number;
+  /** Price per unit of the plan. */
+  pricePerUnit: number;
+  /** Currency in which the plan is priced. */
+  currency: "usd";
+}[];
+export type GetPlansApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+};
+export type GetSubscriptionsApiResponse = /** status 200 Subscriptions response */ {
+  /** Current page number of the result set. */
+  page: number;
+  /** Number of items per page. */
+  pageSize: number;
+  /** Total number of items available. */
+  totalCount: number;
+  /** Subscriptions returned on the current page. */
+  subscriptions: {
+    /** Unique identifier for the subscription. */
+    id: string;
+    /** ID of the organization that owns this subscription. */
+    orgId: string;
+    /** ID of the plan this subscription is for. */
+    planId: string;
+    /** Eager-loaded plan associated with this subscription. */
+    plan?: {
+      /** Unique identifier for the plan. */
+      id: string;
+      /** Display name of the plan. */
+      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
+      /** Billing cadence for the plan (monthly, annually, or none). */
+      cadence: "none" | "monthly" | "annually";
+      /** Unit of consumption this plan charges against (e.g. user). */
+      unit: "user" | "free";
+      /** Minimum number of units required for the plan. */
+      minimumUnits: number;
+      /** Price per unit of the plan. */
+      pricePerUnit: number;
+      /** Currency in which the plan is priced. */
+      currency: "usd";
+    };
+    /** Number of units subscribed (eg number of users). */
+    quantity: number;
+    /** Timestamp when the subscription period started. */
+    startDate?: string;
+    /** Timestamp when the current subscription period ends. */
+    endDate?: string;
+    /** Current status of the subscription (e.g. active, past_due, canceled). */
+    status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
+    /** Timestamp when the subscription was created. */
+    createdAt?: string;
+    /** Timestamp when the subscription was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the subscription was soft-deleted, if applicable. */
+    deletedAt?: string;
+    /** Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe). */
+    billingId: string;
+  }[];
+};
+export type GetSubscriptionsApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Filter subscriptions by status */
+  status?: string[];
+};
+export type CancelSubscriptionApiResponse = /** status 200 Subscription cancellation scheduled */ {
+  /** Current page number of the result set. */
+  page: number;
+  /** Number of items per page. */
+  pageSize: number;
+  /** Total number of items available. */
+  totalCount: number;
+  /** Subscriptions returned on the current page. */
+  subscriptions: {
+    /** Unique identifier for the subscription. */
+    id: string;
+    /** ID of the organization that owns this subscription. */
+    orgId: string;
+    /** ID of the plan this subscription is for. */
+    planId: string;
+    /** Eager-loaded plan associated with this subscription. */
+    plan?: {
+      /** Unique identifier for the plan. */
+      id: string;
+      /** Display name of the plan. */
+      name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
+      /** Billing cadence for the plan (monthly, annually, or none). */
+      cadence: "none" | "monthly" | "annually";
+      /** Unit of consumption this plan charges against (e.g. user). */
+      unit: "user" | "free";
+      /** Minimum number of units required for the plan. */
+      minimumUnits: number;
+      /** Price per unit of the plan. */
+      pricePerUnit: number;
+      /** Currency in which the plan is priced. */
+      currency: "usd";
+    };
+    /** Number of units subscribed (eg number of users). */
+    quantity: number;
+    /** Timestamp when the subscription period started. */
+    startDate?: string;
+    /** Timestamp when the current subscription period ends. */
+    endDate?: string;
+    /** Current status of the subscription (e.g. active, past_due, canceled). */
+    status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
+    /** Timestamp when the subscription was created. */
+    createdAt?: string;
+    /** Timestamp when the subscription was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the subscription was soft-deleted, if applicable. */
+    deletedAt?: string;
+    /** Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe). */
+    billingId: string;
+  }[];
+};
+export type CancelSubscriptionApiArg = {
+  /** Subscription ID */
+  subscriptionId: string;
+};
+export type CreateSubscriptionApiResponse = /** status 201 A new subscription has been created */ {
+  /** ID of the associated subscription in the payment processor. */
+  subscriptionId?: string;
+  /** Client secret returned by the payment processor for the subscription checkout flow. */
+  clientSecret?: string;
+};
+export type CreateSubscriptionApiArg = {
+  body: {
+    /** ID of the organization subscribing. */
+    orgId?: string;
+    /** Price ID from the payment processor. */
+    planId?: string;
+    /** Coupon ID to apply. */
+    couponId?: string;
+    /** Number of users in the organization. */
+    userCount?: number;
+    /** Email of the customer. */
+    email?: string;
+    /** Payment processor used to complete the subscription checkout. */
+    paymentProcessor?: "stripe" | "paypal" | "braintree";
+  };
+};
+export type UpgradeSubscriptionApiResponse = /** status 200 Subscription upgraded */ {
+  /** Unique identifier for the subscription. */
+  id: string;
+  /** ID of the organization that owns this subscription. */
+  orgId: string;
+  /** ID of the plan this subscription is for. */
+  planId: string;
+  /** Eager-loaded plan associated with this subscription. */
+  plan?: {
+    /** Unique identifier for the plan. */
+    id: string;
+    /** Display name of the plan. */
+    name: "Free" | "Team Designer" | "Team Operator" | "Enterprise";
+    /** Billing cadence for the plan (monthly, annually, or none). */
+    cadence: "none" | "monthly" | "annually";
+    /** Unit of consumption this plan charges against (e.g. user). */
+    unit: "user" | "free";
+    /** Minimum number of units required for the plan. */
+    minimumUnits: number;
+    /** Price per unit of the plan. */
+    pricePerUnit: number;
+    /** Currency in which the plan is priced. */
+    currency: "usd";
+  };
+  /** Number of units subscribed (eg number of users). */
+  quantity: number;
+  /** Timestamp when the subscription period started. */
+  startDate?: string;
+  /** Timestamp when the current subscription period ends. */
+  endDate?: string;
+  /** Current status of the subscription (e.g. active, past_due, canceled). */
+  status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid";
+  /** Timestamp when the subscription was created. */
+  createdAt?: string;
+  /** Timestamp when the subscription was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the subscription was soft-deleted, if applicable. */
+  deletedAt?: string;
+  /** Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe). */
+  billingId: string;
+};
+export type UpgradeSubscriptionApiArg = {
+  /** Subscription ID */
+  subscriptionId: string;
+  body: {
+    /** Plan ID that is being replaced. */
+    oldPlanId?: string;
+    /** Plan ID that replaces the old plan. */
+    newPlanId?: string;
+  };
+};
+export type PreviewSubscriptionUpgradeApiResponse =
+  /** status 200 Preview of the upgraded subscription invoice */ object;
+export type PreviewSubscriptionUpgradeApiArg = {
+  /** Subscription ID */
+  subscriptionId: string;
+  body: {
+    /** Plan ID that is being replaced. */
+    oldPlanId?: string;
+    /** Plan ID that replaces the old plan. */
+    newPlanId?: string;
+  };
+};
+export type HandleSubscriptionWebhookApiResponse = unknown;
+export type HandleSubscriptionWebhookApiArg = {
+  body: object;
+};
 export type GetWorkspacesApiResponse = /** status 200 Workspaces */ {
   /** Zero-based page index returned in this response. */
   page?: number;
@@ -15052,22 +15095,8 @@ export const {
   useCreateOrUpdateBadgeMutation,
   useGetAvailableBadgesQuery,
   useAssignBadgesMutation,
-  useCreateEnvironmentMutation,
-  useGetEnvironmentsQuery,
-  useGetEnvironmentByIdQuery,
-  useUpdateEnvironmentMutation,
-  useDeleteEnvironmentMutation,
-  useGetEnvironmentConnectionsQuery,
   useGetFeaturesQuery,
   useGetFeaturesByOrganizationQuery,
-  useGetKeychainsQuery,
-  useCreateKeychainMutation,
-  useGetKeychainByIdQuery,
-  useUpdateKeychainMutation,
-  useDeleteKeychainMutation,
-  useAddKeyToKeychainMutation,
-  useRemoveKeyFromKeychainMutation,
-  useGetKeysOfKeychainQuery,
   useGetMyAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
   useGetAcademyCurriculaQuery,
@@ -15096,6 +15125,14 @@ export const {
   useUpsertKeyMutation,
   useGetKeyByIdQuery,
   useDeleteKeyMutation,
+  useGetKeychainsQuery,
+  useCreateKeychainMutation,
+  useGetKeychainByIdQuery,
+  useUpdateKeychainMutation,
+  useDeleteKeychainMutation,
+  useAddKeyToKeychainMutation,
+  useRemoveKeyFromKeychainMutation,
+  useGetKeysOfKeychainQuery,
   useRegisterMeshmodelsMutation,
   useGetMeshModelModelsQuery,
   useGetOrgsQuery,
@@ -15112,7 +15149,6 @@ export const {
   useRemoveTeamFromOrgMutation,
   useAddUserToOrgMutation,
   useDeleteUserFromOrgMutation,
-  useGetPlansQuery,
   useAddRoleHolderMutation,
   useDeleteRoleMutation,
   useGetAllRolesQuery,
@@ -15125,12 +15161,6 @@ export const {
   useUpsertScheduleMutation,
   useGetScheduleQuery,
   useDeleteScheduleMutation,
-  useGetSubscriptionsQuery,
-  useCancelSubscriptionMutation,
-  useCreateSubscriptionMutation,
-  useUpgradeSubscriptionMutation,
-  usePreviewSubscriptionUpgradeMutation,
-  useHandleSubscriptionWebhookMutation,
   useGetTeamsQuery,
   useCreateTeamMutation,
   useGetTeamUsersQuery,
@@ -15186,6 +15216,12 @@ export const {
   useGetResourceAccessActorsByTypeQuery,
   useShareDesignMutation,
   useGetCatalogRequestQuery,
+  useCreateEnvironmentMutation,
+  useGetEnvironmentsQuery,
+  useGetEnvironmentByIdQuery,
+  useUpdateEnvironmentMutation,
+  useDeleteEnvironmentMutation,
+  useGetEnvironmentConnectionsQuery,
   useDeleteEventMutation,
   useCreateEventMutation,
   useBulkDeleteEventsMutation,
@@ -15208,6 +15244,13 @@ export const {
   useApproveSignupRequestMutation,
   useDenySignupRequestMutation,
   useGetSignupRequestNotificationQuery,
+  useGetPlansQuery,
+  useGetSubscriptionsQuery,
+  useCancelSubscriptionMutation,
+  useCreateSubscriptionMutation,
+  useUpgradeSubscriptionMutation,
+  usePreviewSubscriptionUpgradeMutation,
+  useHandleSubscriptionWebhookMutation,
   useGetWorkspacesQuery,
   useCreateWorkspaceMutation,
   useGetWorkspaceByIdQuery,

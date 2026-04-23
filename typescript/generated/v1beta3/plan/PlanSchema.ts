@@ -7,9 +7,8 @@ const PlanSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Plan",
-    "x-deprecated": true,
     "description": "OpenAPI schema for subscription plan management in Meshery Cloud.",
-    "version": "v1beta2",
+    "version": "v1beta3",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -76,12 +75,13 @@ const PlanSchema: Record<string, unknown> = {
                       "name",
                       "cadence",
                       "unit",
-                      "price_per_unit",
-                      "minimum_units",
+                      "pricePerUnit",
+                      "minimumUnits",
                       "currency"
                     ],
                     "properties": {
                       "id": {
+                        "description": "Unique identifier for the plan.",
                         "x-oapi-codegen-extra-tags": {
                           "db": "id",
                           "json": "id",
@@ -89,13 +89,13 @@ const PlanSchema: Record<string, unknown> = {
                         },
                         "type": "string",
                         "format": "uuid",
-                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                         "x-go-type": "uuid.UUID",
                         "x-go-type-import": {
                           "path": "github.com/gofrs/uuid"
                         }
                       },
                       "name": {
+                        "description": "Display name of the plan.",
                         "x-go-type": "PlanName",
                         "x-oapi-codegen-extra-tags": {
                           "db": "name",
@@ -103,7 +103,6 @@ const PlanSchema: Record<string, unknown> = {
                           "csv": "name"
                         },
                         "type": "string",
-                        "description": "Name of the plan",
                         "x-enum-casing-exempt": true,
                         "enum": [
                           "Free",
@@ -113,6 +112,7 @@ const PlanSchema: Record<string, unknown> = {
                         ]
                       },
                       "cadence": {
+                        "description": "Billing cadence for the plan (monthly, annually, or none).",
                         "x-go-type": "PlanCadence",
                         "x-oapi-codegen-extra-tags": {
                           "db": "cadence",
@@ -127,6 +127,7 @@ const PlanSchema: Record<string, unknown> = {
                         ]
                       },
                       "unit": {
+                        "description": "Unit of consumption this plan charges against (e.g. user).",
                         "x-go-type": "PlanUnit",
                         "x-oapi-codegen-extra-tags": {
                           "db": "unit",
@@ -139,27 +140,28 @@ const PlanSchema: Record<string, unknown> = {
                           "free"
                         ]
                       },
-                      "minimum_units": {
+                      "minimumUnits": {
                         "type": "integer",
-                        "description": "Minimum number of units required for the plan",
+                        "description": "Minimum number of units required for the plan.",
                         "x-oapi-codegen-extra-tags": {
                           "db": "minimum_units",
-                          "json": "minimum_units",
+                          "json": "minimumUnits",
                           "csv": "minimum_units"
                         },
                         "minimum": 0
                       },
-                      "price_per_unit": {
+                      "pricePerUnit": {
                         "type": "number",
-                        "description": "Price per unit of the plan",
+                        "description": "Price per unit of the plan.",
                         "x-oapi-codegen-extra-tags": {
                           "db": "price_per_unit",
-                          "json": "price_per_unit",
+                          "json": "pricePerUnit",
                           "csv": "price_per_unit"
                         },
                         "minimum": 0
                       },
                       "currency": {
+                        "description": "Currency in which the plan is priced.",
                         "x-go-type": "Currency",
                         "x-oapi-codegen-extra-tags": {
                           "db": "currency",
@@ -254,27 +256,37 @@ const PlanSchema: Record<string, unknown> = {
     "schemas": {
       "PlanPage": {
         "type": "object",
+        "description": "Paginated list of plans supported by the system.",
         "required": [
           "page",
-          "page_size",
-          "total_count",
+          "pageSize",
+          "totalCount",
           "plans"
         ],
         "properties": {
           "page": {
             "type": "integer",
             "description": "Current page number of the result set.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true
           },
-          "page_size": {
+          "pageSize": {
             "type": "integer",
             "description": "Number of items per page.",
-            "minimum": 1
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           },
-          "total_count": {
+          "totalCount": {
             "type": "integer",
             "description": "Total number of items available.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "plans": {
             "type": "array",
@@ -287,12 +299,13 @@ const PlanSchema: Record<string, unknown> = {
                 "name",
                 "cadence",
                 "unit",
-                "price_per_unit",
-                "minimum_units",
+                "pricePerUnit",
+                "minimumUnits",
                 "currency"
               ],
               "properties": {
                 "id": {
+                  "description": "Unique identifier for the plan.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "id",
                     "json": "id",
@@ -300,13 +313,13 @@ const PlanSchema: Record<string, unknown> = {
                   },
                   "type": "string",
                   "format": "uuid",
-                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
                 "name": {
+                  "description": "Display name of the plan.",
                   "x-go-type": "PlanName",
                   "x-oapi-codegen-extra-tags": {
                     "db": "name",
@@ -314,7 +327,6 @@ const PlanSchema: Record<string, unknown> = {
                     "csv": "name"
                   },
                   "type": "string",
-                  "description": "Name of the plan",
                   "x-enum-casing-exempt": true,
                   "enum": [
                     "Free",
@@ -324,6 +336,7 @@ const PlanSchema: Record<string, unknown> = {
                   ]
                 },
                 "cadence": {
+                  "description": "Billing cadence for the plan (monthly, annually, or none).",
                   "x-go-type": "PlanCadence",
                   "x-oapi-codegen-extra-tags": {
                     "db": "cadence",
@@ -338,6 +351,7 @@ const PlanSchema: Record<string, unknown> = {
                   ]
                 },
                 "unit": {
+                  "description": "Unit of consumption this plan charges against (e.g. user).",
                   "x-go-type": "PlanUnit",
                   "x-oapi-codegen-extra-tags": {
                     "db": "unit",
@@ -350,27 +364,28 @@ const PlanSchema: Record<string, unknown> = {
                     "free"
                   ]
                 },
-                "minimum_units": {
+                "minimumUnits": {
                   "type": "integer",
-                  "description": "Minimum number of units required for the plan",
+                  "description": "Minimum number of units required for the plan.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "minimum_units",
-                    "json": "minimum_units",
+                    "json": "minimumUnits",
                     "csv": "minimum_units"
                   },
                   "minimum": 0
                 },
-                "price_per_unit": {
+                "pricePerUnit": {
                   "type": "number",
-                  "description": "Price per unit of the plan",
+                  "description": "Price per unit of the plan.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "price_per_unit",
-                    "json": "price_per_unit",
+                    "json": "pricePerUnit",
                     "csv": "price_per_unit"
                   },
                   "minimum": 0
                 },
                 "currency": {
+                  "description": "Currency in which the plan is priced.",
                   "x-go-type": "Currency",
                   "x-oapi-codegen-extra-tags": {
                     "db": "currency",
@@ -385,7 +400,7 @@ const PlanSchema: Record<string, unknown> = {
               },
               "x-go-type": "Plan"
             },
-            "description": "The plans of the planpage."
+            "description": "Plans returned on the current page."
           }
         }
       },
@@ -398,12 +413,13 @@ const PlanSchema: Record<string, unknown> = {
           "name",
           "cadence",
           "unit",
-          "price_per_unit",
-          "minimum_units",
+          "pricePerUnit",
+          "minimumUnits",
           "currency"
         ],
         "properties": {
           "id": {
+            "description": "Unique identifier for the plan.",
             "x-oapi-codegen-extra-tags": {
               "db": "id",
               "json": "id",
@@ -411,13 +427,13 @@ const PlanSchema: Record<string, unknown> = {
             },
             "type": "string",
             "format": "uuid",
-            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
             }
           },
           "name": {
+            "description": "Display name of the plan.",
             "x-go-type": "PlanName",
             "x-oapi-codegen-extra-tags": {
               "db": "name",
@@ -425,7 +441,6 @@ const PlanSchema: Record<string, unknown> = {
               "csv": "name"
             },
             "type": "string",
-            "description": "Name of the plan",
             "x-enum-casing-exempt": true,
             "enum": [
               "Free",
@@ -435,6 +450,7 @@ const PlanSchema: Record<string, unknown> = {
             ]
           },
           "cadence": {
+            "description": "Billing cadence for the plan (monthly, annually, or none).",
             "x-go-type": "PlanCadence",
             "x-oapi-codegen-extra-tags": {
               "db": "cadence",
@@ -449,6 +465,7 @@ const PlanSchema: Record<string, unknown> = {
             ]
           },
           "unit": {
+            "description": "Unit of consumption this plan charges against (e.g. user).",
             "x-go-type": "PlanUnit",
             "x-oapi-codegen-extra-tags": {
               "db": "unit",
@@ -461,27 +478,28 @@ const PlanSchema: Record<string, unknown> = {
               "free"
             ]
           },
-          "minimum_units": {
+          "minimumUnits": {
             "type": "integer",
-            "description": "Minimum number of units required for the plan",
+            "description": "Minimum number of units required for the plan.",
             "x-oapi-codegen-extra-tags": {
               "db": "minimum_units",
-              "json": "minimum_units",
+              "json": "minimumUnits",
               "csv": "minimum_units"
             },
             "minimum": 0
           },
-          "price_per_unit": {
+          "pricePerUnit": {
             "type": "number",
-            "description": "Price per unit of the plan",
+            "description": "Price per unit of the plan.",
             "x-oapi-codegen-extra-tags": {
               "db": "price_per_unit",
-              "json": "price_per_unit",
+              "json": "pricePerUnit",
               "csv": "price_per_unit"
             },
             "minimum": 0
           },
           "currency": {
+            "description": "Currency in which the plan is priced.",
             "x-go-type": "Currency",
             "x-oapi-codegen-extra-tags": {
               "db": "currency",
@@ -497,7 +515,7 @@ const PlanSchema: Record<string, unknown> = {
       },
       "PlanName": {
         "type": "string",
-        "description": "Name of the plan",
+        "description": "Display name of the subscription plan.",
         "x-enum-casing-exempt": true,
         "enum": [
           "Free",
@@ -508,6 +526,7 @@ const PlanSchema: Record<string, unknown> = {
       },
       "PlanCadence": {
         "type": "string",
+        "description": "Billing cadence of the subscription plan.",
         "enum": [
           "none",
           "monthly",
@@ -516,6 +535,7 @@ const PlanSchema: Record<string, unknown> = {
       },
       "PlanUnit": {
         "type": "string",
+        "description": "Unit of consumption the plan charges against.",
         "enum": [
           "user",
           "free"
@@ -523,6 +543,7 @@ const PlanSchema: Record<string, unknown> = {
       },
       "Currency": {
         "type": "string",
+        "description": "Currency code for the plan pricing.",
         "enum": [
           "usd"
         ]

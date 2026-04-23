@@ -7,9 +7,8 @@ const SubscriptionSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Subscription",
-    "x-deprecated": true,
     "description": "API for managing subscriptions using various payment processors in a SaaS application.",
-    "version": "v1beta2",
+    "version": "v1beta3",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -99,31 +98,42 @@ const SubscriptionSchema: Record<string, unknown> = {
         ],
         "responses": {
           "200": {
+            "description": "Subscriptions response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Paginated list of subscriptions.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "subscriptions"
                   ],
                   "properties": {
                     "page": {
                       "type": "integer",
                       "description": "Current page number of the result set.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of items per page.",
-                      "minimum": 1
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of items available.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "subscriptions": {
                       "type": "array",
@@ -134,74 +144,80 @@ const SubscriptionSchema: Record<string, unknown> = {
                         "description": "Subscription entity schema.",
                         "required": [
                           "id",
-                          "org_id",
-                          "plan_id",
-                          "billing_id",
+                          "orgId",
+                          "planId",
+                          "billingId",
                           "status",
                           "quantity"
                         ],
                         "properties": {
                           "id": {
+                            "description": "Unique identifier for the subscription.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "org_id": {
+                          "orgId": {
+                            "description": "ID of the organization that owns this subscription.",
+                            "x-go-name": "OrgID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "org_id"
+                              "db": "org_id",
+                              "json": "orgId"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "plan_id": {
+                          "planId": {
+                            "description": "ID of the plan this subscription is for.",
+                            "x-go-name": "PlanID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "plan_id"
+                              "db": "plan_id",
+                              "json": "planId"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
                           "plan": {
-                            "x-go-type": "planv1beta2.Plan",
+                            "description": "Eager-loaded plan associated with this subscription.",
+                            "x-go-type": "planv1beta3.Plan",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta2/plan",
-                              "name": "planv1beta2"
+                              "path": "github.com/meshery/schemas/models/v1beta3/plan",
+                              "name": "planv1beta3"
                             },
                             "x-oapi-codegen-extra-tags": {
                               "belongs_to": "plans",
-                              "fk_id": "PlanId",
+                              "fk_id": "PlanID",
                               "json": "plan,omitempty"
                             },
                             "type": "object",
                             "additionalProperties": false,
-                            "description": "Plan entity schema.",
                             "required": [
                               "id",
                               "name",
                               "cadence",
                               "unit",
-                              "price_per_unit",
-                              "minimum_units",
+                              "pricePerUnit",
+                              "minimumUnits",
                               "currency"
                             ],
                             "properties": {
                               "id": {
+                                "description": "Unique identifier for the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "id",
                                   "json": "id",
@@ -209,13 +225,13 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 },
                                 "type": "string",
                                 "format": "uuid",
-                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
                                 }
                               },
                               "name": {
+                                "description": "Display name of the plan.",
                                 "x-go-type": "PlanName",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "name",
@@ -223,7 +239,6 @@ const SubscriptionSchema: Record<string, unknown> = {
                                   "csv": "name"
                                 },
                                 "type": "string",
-                                "description": "Name of the plan",
                                 "x-enum-casing-exempt": true,
                                 "enum": [
                                   "Free",
@@ -233,6 +248,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 ]
                               },
                               "cadence": {
+                                "description": "Billing cadence for the plan (monthly, annually, or none).",
                                 "x-go-type": "PlanCadence",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "cadence",
@@ -247,6 +263,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 ]
                               },
                               "unit": {
+                                "description": "Unit of consumption this plan charges against (e.g. user).",
                                 "x-go-type": "PlanUnit",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "unit",
@@ -259,27 +276,28 @@ const SubscriptionSchema: Record<string, unknown> = {
                                   "free"
                                 ]
                               },
-                              "minimum_units": {
+                              "minimumUnits": {
                                 "type": "integer",
-                                "description": "Minimum number of units required for the plan",
+                                "description": "Minimum number of units required for the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "minimum_units",
-                                  "json": "minimum_units",
+                                  "json": "minimumUnits",
                                   "csv": "minimum_units"
                                 },
                                 "minimum": 0
                               },
-                              "price_per_unit": {
+                              "pricePerUnit": {
                                 "type": "number",
-                                "description": "Price per unit of the plan",
+                                "description": "Price per unit of the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "price_per_unit",
-                                  "json": "price_per_unit",
+                                  "json": "pricePerUnit",
                                   "csv": "price_per_unit"
                                 },
                                 "minimum": 0
                               },
                               "currency": {
+                                "description": "Currency in which the plan is priced.",
                                 "x-go-type": "Currency",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "currency",
@@ -294,36 +312,44 @@ const SubscriptionSchema: Record<string, unknown> = {
                             }
                           },
                           "quantity": {
-                            "description": "number of units subscribed (eg number of users)",
                             "type": "integer",
+                            "description": "Number of units subscribed (eg number of users).",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "quantity"
+                              "db": "quantity",
+                              "json": "quantity"
                             },
                             "minimum": 0
                           },
-                          "start_date": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "start_date"
-                            },
+                          "startDate": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the subscription period started.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "start_date",
+                              "json": "startDate"
+                            }
                           },
-                          "end_date": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "end_date"
-                            },
+                          "endDate": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the current subscription period ends.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "end_date",
+                              "json": "endDate"
+                            }
                           },
                           "status": {
+                            "description": "Current status of the subscription (e.g. active, past_due, canceled).",
                             "x-go-type": "SubscriptionStatus",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "status"
+                              "db": "status",
+                              "json": "status"
                             },
                             "type": "string",
-                            "description": "Possible statuses of a Stripe subscription.",
                             "enum": [
                               "incomplete",
                               "incomplete_expired",
@@ -343,25 +369,33 @@ const SubscriptionSchema: Record<string, unknown> = {
                               "unpaid": "The subscription is still technically active but has unpaid invoices and is no longer generating new invoices."
                             }
                           },
-                          "created_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at"
-                            },
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
-                          },
-                          "updated_at": {
+                            "description": "Timestamp when the subscription was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at"
-                            },
+                              "db": "created_at",
+                              "json": "createdAt"
+                            }
+                          },
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
-                          },
-                          "deleted_at": {
+                            "description": "Timestamp when the subscription was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
+                              "db": "updated_at",
+                              "json": "updatedAt"
+                            }
+                          },
+                          "deletedAt": {
+                            "description": "Timestamp when the subscription was soft-deleted, if applicable.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
                             },
                             "type": "string",
                             "format": "date-time",
@@ -371,25 +405,26 @@ const SubscriptionSchema: Record<string, unknown> = {
                             },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "billing_id": {
+                          "billingId": {
                             "type": "string",
-                            "description": "Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe",
+                            "description": "Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe).",
                             "x-id-format": "external",
+                            "x-go-name": "BillingID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "billing_id"
+                              "db": "billing_id",
+                              "json": "billingId"
                             },
                             "maxLength": 500,
                             "pattern": "^[A-Za-z0-9_\\-]+$"
                           }
                         }
                       },
-                      "description": "Subscriptions returned in the current page of results."
+                      "description": "Subscriptions returned on the current page."
                     }
                   }
                 }
               }
-            },
-            "description": "Get subscription response"
+            }
           },
           "400": {
             "description": "Invalid request body or request param",
@@ -446,37 +481,49 @@ const SubscriptionSchema: Record<string, unknown> = {
             "required": true,
             "description": "Subscription ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "Subscription cancellation scheduled",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Paginated list of subscriptions.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "subscriptions"
                   ],
                   "properties": {
                     "page": {
                       "type": "integer",
                       "description": "Current page number of the result set.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of items per page.",
-                      "minimum": 1
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of items available.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "subscriptions": {
                       "type": "array",
@@ -487,74 +534,80 @@ const SubscriptionSchema: Record<string, unknown> = {
                         "description": "Subscription entity schema.",
                         "required": [
                           "id",
-                          "org_id",
-                          "plan_id",
-                          "billing_id",
+                          "orgId",
+                          "planId",
+                          "billingId",
                           "status",
                           "quantity"
                         ],
                         "properties": {
                           "id": {
+                            "description": "Unique identifier for the subscription.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "org_id": {
+                          "orgId": {
+                            "description": "ID of the organization that owns this subscription.",
+                            "x-go-name": "OrgID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "org_id"
+                              "db": "org_id",
+                              "json": "orgId"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "plan_id": {
+                          "planId": {
+                            "description": "ID of the plan this subscription is for.",
+                            "x-go-name": "PlanID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "plan_id"
+                              "db": "plan_id",
+                              "json": "planId"
                             },
                             "type": "string",
                             "format": "uuid",
-                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                             "x-go-type": "uuid.UUID",
                             "x-go-type-import": {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
                           "plan": {
-                            "x-go-type": "planv1beta2.Plan",
+                            "description": "Eager-loaded plan associated with this subscription.",
+                            "x-go-type": "planv1beta3.Plan",
                             "x-go-type-import": {
-                              "path": "github.com/meshery/schemas/models/v1beta2/plan",
-                              "name": "planv1beta2"
+                              "path": "github.com/meshery/schemas/models/v1beta3/plan",
+                              "name": "planv1beta3"
                             },
                             "x-oapi-codegen-extra-tags": {
                               "belongs_to": "plans",
-                              "fk_id": "PlanId",
+                              "fk_id": "PlanID",
                               "json": "plan,omitempty"
                             },
                             "type": "object",
                             "additionalProperties": false,
-                            "description": "Plan entity schema.",
                             "required": [
                               "id",
                               "name",
                               "cadence",
                               "unit",
-                              "price_per_unit",
-                              "minimum_units",
+                              "pricePerUnit",
+                              "minimumUnits",
                               "currency"
                             ],
                             "properties": {
                               "id": {
+                                "description": "Unique identifier for the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "id",
                                   "json": "id",
@@ -562,13 +615,13 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 },
                                 "type": "string",
                                 "format": "uuid",
-                                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                 "x-go-type": "uuid.UUID",
                                 "x-go-type-import": {
                                   "path": "github.com/gofrs/uuid"
                                 }
                               },
                               "name": {
+                                "description": "Display name of the plan.",
                                 "x-go-type": "PlanName",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "name",
@@ -576,7 +629,6 @@ const SubscriptionSchema: Record<string, unknown> = {
                                   "csv": "name"
                                 },
                                 "type": "string",
-                                "description": "Name of the plan",
                                 "x-enum-casing-exempt": true,
                                 "enum": [
                                   "Free",
@@ -586,6 +638,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 ]
                               },
                               "cadence": {
+                                "description": "Billing cadence for the plan (monthly, annually, or none).",
                                 "x-go-type": "PlanCadence",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "cadence",
@@ -600,6 +653,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                                 ]
                               },
                               "unit": {
+                                "description": "Unit of consumption this plan charges against (e.g. user).",
                                 "x-go-type": "PlanUnit",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "unit",
@@ -612,27 +666,28 @@ const SubscriptionSchema: Record<string, unknown> = {
                                   "free"
                                 ]
                               },
-                              "minimum_units": {
+                              "minimumUnits": {
                                 "type": "integer",
-                                "description": "Minimum number of units required for the plan",
+                                "description": "Minimum number of units required for the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "minimum_units",
-                                  "json": "minimum_units",
+                                  "json": "minimumUnits",
                                   "csv": "minimum_units"
                                 },
                                 "minimum": 0
                               },
-                              "price_per_unit": {
+                              "pricePerUnit": {
                                 "type": "number",
-                                "description": "Price per unit of the plan",
+                                "description": "Price per unit of the plan.",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "price_per_unit",
-                                  "json": "price_per_unit",
+                                  "json": "pricePerUnit",
                                   "csv": "price_per_unit"
                                 },
                                 "minimum": 0
                               },
                               "currency": {
+                                "description": "Currency in which the plan is priced.",
                                 "x-go-type": "Currency",
                                 "x-oapi-codegen-extra-tags": {
                                   "db": "currency",
@@ -647,36 +702,44 @@ const SubscriptionSchema: Record<string, unknown> = {
                             }
                           },
                           "quantity": {
-                            "description": "number of units subscribed (eg number of users)",
                             "type": "integer",
+                            "description": "Number of units subscribed (eg number of users).",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "quantity"
+                              "db": "quantity",
+                              "json": "quantity"
                             },
                             "minimum": 0
                           },
-                          "start_date": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "start_date"
-                            },
+                          "startDate": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the subscription period started.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "start_date",
+                              "json": "startDate"
+                            }
                           },
-                          "end_date": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "end_date"
-                            },
+                          "endDate": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the current subscription period ends.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "end_date",
+                              "json": "endDate"
+                            }
                           },
                           "status": {
+                            "description": "Current status of the subscription (e.g. active, past_due, canceled).",
                             "x-go-type": "SubscriptionStatus",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "status"
+                              "db": "status",
+                              "json": "status"
                             },
                             "type": "string",
-                            "description": "Possible statuses of a Stripe subscription.",
                             "enum": [
                               "incomplete",
                               "incomplete_expired",
@@ -696,25 +759,33 @@ const SubscriptionSchema: Record<string, unknown> = {
                               "unpaid": "The subscription is still technically active but has unpaid invoices and is no longer generating new invoices."
                             }
                           },
-                          "created_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at"
-                            },
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
-                          },
-                          "updated_at": {
+                            "description": "Timestamp when the subscription was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at"
-                            },
+                              "db": "created_at",
+                              "json": "createdAt"
+                            }
+                          },
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
-                          },
-                          "deleted_at": {
+                            "description": "Timestamp when the subscription was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
+                              "db": "updated_at",
+                              "json": "updatedAt"
+                            }
+                          },
+                          "deletedAt": {
+                            "description": "Timestamp when the subscription was soft-deleted, if applicable.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
                             },
                             "type": "string",
                             "format": "date-time",
@@ -724,19 +795,21 @@ const SubscriptionSchema: Record<string, unknown> = {
                             },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "billing_id": {
+                          "billingId": {
                             "type": "string",
-                            "description": "Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe",
+                            "description": "Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe).",
                             "x-id-format": "external",
+                            "x-go-name": "BillingID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "billing_id"
+                              "db": "billing_id",
+                              "json": "billingId"
                             },
                             "maxLength": 500,
                             "pattern": "^[A-Za-z0-9_\\-]+$"
                           }
                         }
                       },
-                      "description": "Subscriptions returned in the current page of results."
+                      "description": "Subscriptions returned on the current page."
                     }
                   }
                 }
@@ -807,9 +880,10 @@ const SubscriptionSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
+                "description": "Payload for creating a new subscription through a payment processor.",
                 "properties": {
                   "orgId": {
-                    "description": "Organization ID",
+                    "description": "ID of the organization subscribing.",
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -819,36 +893,37 @@ const SubscriptionSchema: Record<string, unknown> = {
                   },
                   "planId": {
                     "type": "string",
-                    "description": "Price ID from the payment processor",
+                    "description": "Price ID from the payment processor.",
                     "x-id-format": "external",
                     "maxLength": 500,
                     "pattern": "^[A-Za-z0-9_\\-]+$"
                   },
                   "couponId": {
                     "type": "string",
-                    "description": "Coupon ID to apply",
+                    "description": "Coupon ID to apply.",
                     "x-id-format": "external",
                     "maxLength": 500,
                     "pattern": "^[A-Za-z0-9_\\-]+$"
                   },
                   "userCount": {
                     "type": "integer",
-                    "description": "Number of users in the organization",
+                    "description": "Number of users in the organization.",
                     "minimum": 0
                   },
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email of the customer"
+                    "description": "Email of the customer.",
+                    "maxLength": 500
                   },
                   "paymentProcessor": {
+                    "description": "Payment processor used to complete the subscription checkout.",
                     "type": "string",
                     "enum": [
                       "stripe",
                       "paypal",
                       "braintree"
-                    ],
-                    "description": "Supported payment processors"
+                    ]
                   }
                 }
               }
@@ -862,10 +937,11 @@ const SubscriptionSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Response body returned after a subscription is created.",
                   "properties": {
                     "subscriptionId": {
                       "type": "string",
-                      "description": "ID of the associated subscription.",
+                      "description": "ID of the associated subscription in the payment processor.",
                       "x-id-format": "external",
                       "maxLength": 500,
                       "pattern": "^[A-Za-z0-9_\\-]+$"
@@ -935,7 +1011,8 @@ const SubscriptionSchema: Record<string, unknown> = {
             "required": true,
             "description": "Subscription ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -945,9 +1022,10 @@ const SubscriptionSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
+                "description": "Payload for upgrading or downgrading a subscription by changing one of its plans.",
                 "properties": {
                   "oldPlanId": {
-                    "description": "Old Plan id that is being changed",
+                    "description": "Plan ID that is being replaced.",
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -956,7 +1034,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                     }
                   },
                   "newPlanId": {
-                    "description": "New Plan id that is being changed to",
+                    "description": "Plan ID that replaces the old plan.",
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -971,6 +1049,7 @@ const SubscriptionSchema: Record<string, unknown> = {
         },
         "responses": {
           "200": {
+            "description": "Subscription upgraded",
             "content": {
               "application/json": {
                 "schema": {
@@ -979,74 +1058,80 @@ const SubscriptionSchema: Record<string, unknown> = {
                   "description": "Subscription entity schema.",
                   "required": [
                     "id",
-                    "org_id",
-                    "plan_id",
-                    "billing_id",
+                    "orgId",
+                    "planId",
+                    "billingId",
                     "status",
                     "quantity"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the subscription.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "org_id": {
+                    "orgId": {
+                      "description": "ID of the organization that owns this subscription.",
+                      "x-go-name": "OrgID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "org_id"
+                        "db": "org_id",
+                        "json": "orgId"
                       },
                       "type": "string",
                       "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "plan_id": {
+                    "planId": {
+                      "description": "ID of the plan this subscription is for.",
+                      "x-go-name": "PlanID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "plan_id"
+                        "db": "plan_id",
+                        "json": "planId"
                       },
                       "type": "string",
                       "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
                     "plan": {
-                      "x-go-type": "planv1beta2.Plan",
+                      "description": "Eager-loaded plan associated with this subscription.",
+                      "x-go-type": "planv1beta3.Plan",
                       "x-go-type-import": {
-                        "path": "github.com/meshery/schemas/models/v1beta2/plan",
-                        "name": "planv1beta2"
+                        "path": "github.com/meshery/schemas/models/v1beta3/plan",
+                        "name": "planv1beta3"
                       },
                       "x-oapi-codegen-extra-tags": {
                         "belongs_to": "plans",
-                        "fk_id": "PlanId",
+                        "fk_id": "PlanID",
                         "json": "plan,omitempty"
                       },
                       "type": "object",
                       "additionalProperties": false,
-                      "description": "Plan entity schema.",
                       "required": [
                         "id",
                         "name",
                         "cadence",
                         "unit",
-                        "price_per_unit",
-                        "minimum_units",
+                        "pricePerUnit",
+                        "minimumUnits",
                         "currency"
                       ],
                       "properties": {
                         "id": {
+                          "description": "Unique identifier for the plan.",
                           "x-oapi-codegen-extra-tags": {
                             "db": "id",
                             "json": "id",
@@ -1054,13 +1139,13 @@ const SubscriptionSchema: Record<string, unknown> = {
                           },
                           "type": "string",
                           "format": "uuid",
-                          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                           "x-go-type": "uuid.UUID",
                           "x-go-type-import": {
                             "path": "github.com/gofrs/uuid"
                           }
                         },
                         "name": {
+                          "description": "Display name of the plan.",
                           "x-go-type": "PlanName",
                           "x-oapi-codegen-extra-tags": {
                             "db": "name",
@@ -1068,7 +1153,6 @@ const SubscriptionSchema: Record<string, unknown> = {
                             "csv": "name"
                           },
                           "type": "string",
-                          "description": "Name of the plan",
                           "x-enum-casing-exempt": true,
                           "enum": [
                             "Free",
@@ -1078,6 +1162,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                           ]
                         },
                         "cadence": {
+                          "description": "Billing cadence for the plan (monthly, annually, or none).",
                           "x-go-type": "PlanCadence",
                           "x-oapi-codegen-extra-tags": {
                             "db": "cadence",
@@ -1092,6 +1177,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                           ]
                         },
                         "unit": {
+                          "description": "Unit of consumption this plan charges against (e.g. user).",
                           "x-go-type": "PlanUnit",
                           "x-oapi-codegen-extra-tags": {
                             "db": "unit",
@@ -1104,27 +1190,28 @@ const SubscriptionSchema: Record<string, unknown> = {
                             "free"
                           ]
                         },
-                        "minimum_units": {
+                        "minimumUnits": {
                           "type": "integer",
-                          "description": "Minimum number of units required for the plan",
+                          "description": "Minimum number of units required for the plan.",
                           "x-oapi-codegen-extra-tags": {
                             "db": "minimum_units",
-                            "json": "minimum_units",
+                            "json": "minimumUnits",
                             "csv": "minimum_units"
                           },
                           "minimum": 0
                         },
-                        "price_per_unit": {
+                        "pricePerUnit": {
                           "type": "number",
-                          "description": "Price per unit of the plan",
+                          "description": "Price per unit of the plan.",
                           "x-oapi-codegen-extra-tags": {
                             "db": "price_per_unit",
-                            "json": "price_per_unit",
+                            "json": "pricePerUnit",
                             "csv": "price_per_unit"
                           },
                           "minimum": 0
                         },
                         "currency": {
+                          "description": "Currency in which the plan is priced.",
                           "x-go-type": "Currency",
                           "x-oapi-codegen-extra-tags": {
                             "db": "currency",
@@ -1139,36 +1226,44 @@ const SubscriptionSchema: Record<string, unknown> = {
                       }
                     },
                     "quantity": {
-                      "description": "number of units subscribed (eg number of users)",
                       "type": "integer",
+                      "description": "Number of units subscribed (eg number of users).",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "quantity"
+                        "db": "quantity",
+                        "json": "quantity"
                       },
                       "minimum": 0
                     },
-                    "start_date": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "start_date"
-                      },
+                    "startDate": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the subscription period started.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "start_date",
+                        "json": "startDate"
+                      }
                     },
-                    "end_date": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "end_date"
-                      },
+                    "endDate": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the current subscription period ends.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "end_date",
+                        "json": "endDate"
+                      }
                     },
                     "status": {
+                      "description": "Current status of the subscription (e.g. active, past_due, canceled).",
                       "x-go-type": "SubscriptionStatus",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "status"
+                        "db": "status",
+                        "json": "status"
                       },
                       "type": "string",
-                      "description": "Possible statuses of a Stripe subscription.",
                       "enum": [
                         "incomplete",
                         "incomplete_expired",
@@ -1188,25 +1283,33 @@ const SubscriptionSchema: Record<string, unknown> = {
                         "unpaid": "The subscription is still technically active but has unpaid invoices and is no longer generating new invoices."
                       }
                     },
-                    "created_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "created_at"
-                      },
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "updated_at": {
+                      "description": "Timestamp when the subscription was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "updated_at"
-                      },
+                        "db": "created_at",
+                        "json": "createdAt"
+                      }
+                    },
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "deleted_at": {
+                      "description": "Timestamp when the subscription was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
+                        "db": "updated_at",
+                        "json": "updatedAt"
+                      }
+                    },
+                    "deletedAt": {
+                      "description": "Timestamp when the subscription was soft-deleted, if applicable.",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
                       },
                       "type": "string",
                       "format": "date-time",
@@ -1216,12 +1319,14 @@ const SubscriptionSchema: Record<string, unknown> = {
                       },
                       "x-go-type-skip-optional-pointer": true
                     },
-                    "billing_id": {
+                    "billingId": {
                       "type": "string",
-                      "description": "Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe",
+                      "description": "Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe).",
                       "x-id-format": "external",
+                      "x-go-name": "BillingID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "billing_id"
+                        "db": "billing_id",
+                        "json": "billingId"
                       },
                       "maxLength": 500,
                       "pattern": "^[A-Za-z0-9_\\-]+$"
@@ -1296,7 +1401,8 @@ const SubscriptionSchema: Record<string, unknown> = {
             "required": true,
             "description": "Subscription ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1306,9 +1412,10 @@ const SubscriptionSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
+                "description": "Payload for upgrading or downgrading a subscription by changing one of its plans.",
                 "properties": {
                   "oldPlanId": {
-                    "description": "Old Plan id that is being changed",
+                    "description": "Plan ID that is being replaced.",
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -1317,7 +1424,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                     }
                   },
                   "newPlanId": {
-                    "description": "New Plan id that is being changed to",
+                    "description": "Plan ID that replaces the old plan.",
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -1401,7 +1508,7 @@ const SubscriptionSchema: Record<string, unknown> = {
             "application/json": {
               "schema": {
                 "type": "object",
-                "description": "Payload for webhook events from payment processors"
+                "description": "Payload for webhook events from payment processors."
               }
             }
           }
@@ -1501,7 +1608,8 @@ const SubscriptionSchema: Record<string, unknown> = {
         "required": true,
         "description": "Subscription ID",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       },
       "page": {
@@ -1540,18 +1648,19 @@ const SubscriptionSchema: Record<string, unknown> = {
     "schemas": {
       "PaymentProcessor": {
         "type": "string",
+        "description": "Payment processor used to charge the subscription.",
         "enum": [
           "stripe",
           "paypal",
           "braintree"
-        ],
-        "description": "Supported payment processors"
+        ]
       },
       "CreateSubscriptionRequest": {
         "type": "object",
+        "description": "Payload for creating a new subscription through a payment processor.",
         "properties": {
           "orgId": {
-            "description": "Organization ID",
+            "description": "ID of the organization subscribing.",
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1561,44 +1670,46 @@ const SubscriptionSchema: Record<string, unknown> = {
           },
           "planId": {
             "type": "string",
-            "description": "Price ID from the payment processor",
+            "description": "Price ID from the payment processor.",
             "x-id-format": "external",
             "maxLength": 500,
             "pattern": "^[A-Za-z0-9_\\-]+$"
           },
           "couponId": {
             "type": "string",
-            "description": "Coupon ID to apply",
+            "description": "Coupon ID to apply.",
             "x-id-format": "external",
             "maxLength": 500,
             "pattern": "^[A-Za-z0-9_\\-]+$"
           },
           "userCount": {
             "type": "integer",
-            "description": "Number of users in the organization",
+            "description": "Number of users in the organization.",
             "minimum": 0
           },
           "email": {
             "type": "string",
             "format": "email",
-            "description": "Email of the customer"
+            "description": "Email of the customer.",
+            "maxLength": 500
           },
           "paymentProcessor": {
+            "description": "Payment processor used to complete the subscription checkout.",
             "type": "string",
             "enum": [
               "stripe",
               "paypal",
               "braintree"
-            ],
-            "description": "Supported payment processors"
+            ]
           }
         }
       },
       "UpgradeSubscriptionRequest": {
         "type": "object",
+        "description": "Payload for upgrading or downgrading a subscription by changing one of its plans.",
         "properties": {
           "oldPlanId": {
-            "description": "Old Plan id that is being changed",
+            "description": "Plan ID that is being replaced.",
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1607,7 +1718,7 @@ const SubscriptionSchema: Record<string, unknown> = {
             }
           },
           "newPlanId": {
-            "description": "New Plan id that is being changed to",
+            "description": "Plan ID that replaces the old plan.",
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -1619,10 +1730,11 @@ const SubscriptionSchema: Record<string, unknown> = {
       },
       "CreateSubscriptionResponse": {
         "type": "object",
+        "description": "Response body returned after a subscription is created.",
         "properties": {
           "subscriptionId": {
             "type": "string",
-            "description": "ID of the associated subscription.",
+            "description": "ID of the associated subscription in the payment processor.",
             "x-id-format": "external",
             "maxLength": 500,
             "pattern": "^[A-Za-z0-9_\\-]+$"
@@ -1636,66 +1748,78 @@ const SubscriptionSchema: Record<string, unknown> = {
       },
       "UpdateUsersRequest": {
         "type": "object",
+        "description": "Payload for synchronizing the current user count with the payment processor.",
         "properties": {
           "paymentProcessor": {
+            "description": "Payment processor currently billing the subscription.",
             "type": "string",
             "enum": [
               "stripe",
               "paypal",
               "braintree"
-            ],
-            "description": "Supported payment processors"
+            ]
           }
         }
       },
       "CancelSubscriptionRequest": {
         "type": "object",
+        "description": "Payload for cancelling a subscription in an external processor.",
         "properties": {
           "subscriptionId": {
             "type": "string",
-            "description": "Subscription ID from the payment processor",
+            "description": "Subscription ID from the payment processor.",
             "x-id-format": "external",
             "maxLength": 500,
             "pattern": "^[A-Za-z0-9_\\-]+$"
           },
           "paymentProcessor": {
+            "description": "Payment processor currently billing the subscription.",
             "type": "string",
             "enum": [
               "stripe",
               "paypal",
               "braintree"
-            ],
-            "description": "Supported payment processors"
+            ]
           }
         }
       },
       "WebhookEvent": {
         "type": "object",
-        "description": "Payload for webhook events from payment processors"
+        "description": "Payload for webhook events from payment processors."
       },
       "SubscriptionPage": {
         "type": "object",
+        "description": "Paginated list of subscriptions.",
         "required": [
           "page",
-          "page_size",
-          "total_count",
+          "pageSize",
+          "totalCount",
           "subscriptions"
         ],
         "properties": {
           "page": {
             "type": "integer",
             "description": "Current page number of the result set.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true
           },
-          "page_size": {
+          "pageSize": {
             "type": "integer",
             "description": "Number of items per page.",
-            "minimum": 1
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           },
-          "total_count": {
+          "totalCount": {
             "type": "integer",
             "description": "Total number of items available.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "subscriptions": {
             "type": "array",
@@ -1706,74 +1830,80 @@ const SubscriptionSchema: Record<string, unknown> = {
               "description": "Subscription entity schema.",
               "required": [
                 "id",
-                "org_id",
-                "plan_id",
-                "billing_id",
+                "orgId",
+                "planId",
+                "billingId",
                 "status",
                 "quantity"
               ],
               "properties": {
                 "id": {
+                  "description": "Unique identifier for the subscription.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "id"
+                    "db": "id",
+                    "json": "id"
                   },
                   "type": "string",
                   "format": "uuid",
-                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "org_id": {
+                "orgId": {
+                  "description": "ID of the organization that owns this subscription.",
+                  "x-go-name": "OrgID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "org_id"
+                    "db": "org_id",
+                    "json": "orgId"
                   },
                   "type": "string",
                   "format": "uuid",
-                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "plan_id": {
+                "planId": {
+                  "description": "ID of the plan this subscription is for.",
+                  "x-go-name": "PlanID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "plan_id"
+                    "db": "plan_id",
+                    "json": "planId"
                   },
                   "type": "string",
                   "format": "uuid",
-                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                   "x-go-type": "uuid.UUID",
                   "x-go-type-import": {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
                 "plan": {
-                  "x-go-type": "planv1beta2.Plan",
+                  "description": "Eager-loaded plan associated with this subscription.",
+                  "x-go-type": "planv1beta3.Plan",
                   "x-go-type-import": {
-                    "path": "github.com/meshery/schemas/models/v1beta2/plan",
-                    "name": "planv1beta2"
+                    "path": "github.com/meshery/schemas/models/v1beta3/plan",
+                    "name": "planv1beta3"
                   },
                   "x-oapi-codegen-extra-tags": {
                     "belongs_to": "plans",
-                    "fk_id": "PlanId",
+                    "fk_id": "PlanID",
                     "json": "plan,omitempty"
                   },
                   "type": "object",
                   "additionalProperties": false,
-                  "description": "Plan entity schema.",
                   "required": [
                     "id",
                     "name",
                     "cadence",
                     "unit",
-                    "price_per_unit",
-                    "minimum_units",
+                    "pricePerUnit",
+                    "minimumUnits",
                     "currency"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the plan.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "id",
                         "json": "id",
@@ -1781,13 +1911,13 @@ const SubscriptionSchema: Record<string, unknown> = {
                       },
                       "type": "string",
                       "format": "uuid",
-                      "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                       "x-go-type": "uuid.UUID",
                       "x-go-type-import": {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
                     "name": {
+                      "description": "Display name of the plan.",
                       "x-go-type": "PlanName",
                       "x-oapi-codegen-extra-tags": {
                         "db": "name",
@@ -1795,7 +1925,6 @@ const SubscriptionSchema: Record<string, unknown> = {
                         "csv": "name"
                       },
                       "type": "string",
-                      "description": "Name of the plan",
                       "x-enum-casing-exempt": true,
                       "enum": [
                         "Free",
@@ -1805,6 +1934,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                       ]
                     },
                     "cadence": {
+                      "description": "Billing cadence for the plan (monthly, annually, or none).",
                       "x-go-type": "PlanCadence",
                       "x-oapi-codegen-extra-tags": {
                         "db": "cadence",
@@ -1819,6 +1949,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                       ]
                     },
                     "unit": {
+                      "description": "Unit of consumption this plan charges against (e.g. user).",
                       "x-go-type": "PlanUnit",
                       "x-oapi-codegen-extra-tags": {
                         "db": "unit",
@@ -1831,27 +1962,28 @@ const SubscriptionSchema: Record<string, unknown> = {
                         "free"
                       ]
                     },
-                    "minimum_units": {
+                    "minimumUnits": {
                       "type": "integer",
-                      "description": "Minimum number of units required for the plan",
+                      "description": "Minimum number of units required for the plan.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "minimum_units",
-                        "json": "minimum_units",
+                        "json": "minimumUnits",
                         "csv": "minimum_units"
                       },
                       "minimum": 0
                     },
-                    "price_per_unit": {
+                    "pricePerUnit": {
                       "type": "number",
-                      "description": "Price per unit of the plan",
+                      "description": "Price per unit of the plan.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "price_per_unit",
-                        "json": "price_per_unit",
+                        "json": "pricePerUnit",
                         "csv": "price_per_unit"
                       },
                       "minimum": 0
                     },
                     "currency": {
+                      "description": "Currency in which the plan is priced.",
                       "x-go-type": "Currency",
                       "x-oapi-codegen-extra-tags": {
                         "db": "currency",
@@ -1866,36 +1998,44 @@ const SubscriptionSchema: Record<string, unknown> = {
                   }
                 },
                 "quantity": {
-                  "description": "number of units subscribed (eg number of users)",
                   "type": "integer",
+                  "description": "Number of units subscribed (eg number of users).",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "quantity"
+                    "db": "quantity",
+                    "json": "quantity"
                   },
                   "minimum": 0
                 },
-                "start_date": {
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "start_date"
-                  },
+                "startDate": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  "description": "Timestamp when the subscription period started.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "start_date",
+                    "json": "startDate"
+                  }
                 },
-                "end_date": {
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "end_date"
-                  },
+                "endDate": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  "description": "Timestamp when the current subscription period ends.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "end_date",
+                    "json": "endDate"
+                  }
                 },
                 "status": {
+                  "description": "Current status of the subscription (e.g. active, past_due, canceled).",
                   "x-go-type": "SubscriptionStatus",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "status"
+                    "db": "status",
+                    "json": "status"
                   },
                   "type": "string",
-                  "description": "Possible statuses of a Stripe subscription.",
                   "enum": [
                     "incomplete",
                     "incomplete_expired",
@@ -1915,25 +2055,33 @@ const SubscriptionSchema: Record<string, unknown> = {
                     "unpaid": "The subscription is still technically active but has unpaid invoices and is no longer generating new invoices."
                   }
                 },
-                "created_at": {
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "created_at"
-                  },
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
-                },
-                "updated_at": {
+                  "description": "Timestamp when the subscription was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "updated_at"
-                  },
+                    "db": "created_at",
+                    "json": "createdAt"
+                  }
+                },
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
-                },
-                "deleted_at": {
+                  "description": "Timestamp when the subscription was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
-                    "db": "deleted_at"
+                    "db": "updated_at",
+                    "json": "updatedAt"
+                  }
+                },
+                "deletedAt": {
+                  "description": "Timestamp when the subscription was soft-deleted, if applicable.",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "json": "deletedAt,omitempty"
                   },
                   "type": "string",
                   "format": "date-time",
@@ -1943,19 +2091,21 @@ const SubscriptionSchema: Record<string, unknown> = {
                   },
                   "x-go-type-skip-optional-pointer": true
                 },
-                "billing_id": {
+                "billingId": {
                   "type": "string",
-                  "description": "Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe",
+                  "description": "Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe).",
                   "x-id-format": "external",
+                  "x-go-name": "BillingID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "billing_id"
+                    "db": "billing_id",
+                    "json": "billingId"
                   },
                   "maxLength": 500,
                   "pattern": "^[A-Za-z0-9_\\-]+$"
                 }
               }
             },
-            "description": "Subscriptions returned in the current page of results."
+            "description": "Subscriptions returned on the current page."
           }
         }
       },
@@ -1965,74 +2115,80 @@ const SubscriptionSchema: Record<string, unknown> = {
         "description": "Subscription entity schema.",
         "required": [
           "id",
-          "org_id",
-          "plan_id",
-          "billing_id",
+          "orgId",
+          "planId",
+          "billingId",
           "status",
           "quantity"
         ],
         "properties": {
           "id": {
+            "description": "Unique identifier for the subscription.",
             "x-oapi-codegen-extra-tags": {
-              "db": "id"
+              "db": "id",
+              "json": "id"
             },
             "type": "string",
             "format": "uuid",
-            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "org_id": {
+          "orgId": {
+            "description": "ID of the organization that owns this subscription.",
+            "x-go-name": "OrgID",
             "x-oapi-codegen-extra-tags": {
-              "db": "org_id"
+              "db": "org_id",
+              "json": "orgId"
             },
             "type": "string",
             "format": "uuid",
-            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "plan_id": {
+          "planId": {
+            "description": "ID of the plan this subscription is for.",
+            "x-go-name": "PlanID",
             "x-oapi-codegen-extra-tags": {
-              "db": "plan_id"
+              "db": "plan_id",
+              "json": "planId"
             },
             "type": "string",
             "format": "uuid",
-            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
             "x-go-type": "uuid.UUID",
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
             }
           },
           "plan": {
-            "x-go-type": "planv1beta2.Plan",
+            "description": "Eager-loaded plan associated with this subscription.",
+            "x-go-type": "planv1beta3.Plan",
             "x-go-type-import": {
-              "path": "github.com/meshery/schemas/models/v1beta2/plan",
-              "name": "planv1beta2"
+              "path": "github.com/meshery/schemas/models/v1beta3/plan",
+              "name": "planv1beta3"
             },
             "x-oapi-codegen-extra-tags": {
               "belongs_to": "plans",
-              "fk_id": "PlanId",
+              "fk_id": "PlanID",
               "json": "plan,omitempty"
             },
             "type": "object",
             "additionalProperties": false,
-            "description": "Plan entity schema.",
             "required": [
               "id",
               "name",
               "cadence",
               "unit",
-              "price_per_unit",
-              "minimum_units",
+              "pricePerUnit",
+              "minimumUnits",
               "currency"
             ],
             "properties": {
               "id": {
+                "description": "Unique identifier for the plan.",
                 "x-oapi-codegen-extra-tags": {
                   "db": "id",
                   "json": "id",
@@ -2040,13 +2196,13 @@ const SubscriptionSchema: Record<string, unknown> = {
                 },
                 "type": "string",
                 "format": "uuid",
-                "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                 "x-go-type": "uuid.UUID",
                 "x-go-type-import": {
                   "path": "github.com/gofrs/uuid"
                 }
               },
               "name": {
+                "description": "Display name of the plan.",
                 "x-go-type": "PlanName",
                 "x-oapi-codegen-extra-tags": {
                   "db": "name",
@@ -2054,7 +2210,6 @@ const SubscriptionSchema: Record<string, unknown> = {
                   "csv": "name"
                 },
                 "type": "string",
-                "description": "Name of the plan",
                 "x-enum-casing-exempt": true,
                 "enum": [
                   "Free",
@@ -2064,6 +2219,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                 ]
               },
               "cadence": {
+                "description": "Billing cadence for the plan (monthly, annually, or none).",
                 "x-go-type": "PlanCadence",
                 "x-oapi-codegen-extra-tags": {
                   "db": "cadence",
@@ -2078,6 +2234,7 @@ const SubscriptionSchema: Record<string, unknown> = {
                 ]
               },
               "unit": {
+                "description": "Unit of consumption this plan charges against (e.g. user).",
                 "x-go-type": "PlanUnit",
                 "x-oapi-codegen-extra-tags": {
                   "db": "unit",
@@ -2090,27 +2247,28 @@ const SubscriptionSchema: Record<string, unknown> = {
                   "free"
                 ]
               },
-              "minimum_units": {
+              "minimumUnits": {
                 "type": "integer",
-                "description": "Minimum number of units required for the plan",
+                "description": "Minimum number of units required for the plan.",
                 "x-oapi-codegen-extra-tags": {
                   "db": "minimum_units",
-                  "json": "minimum_units",
+                  "json": "minimumUnits",
                   "csv": "minimum_units"
                 },
                 "minimum": 0
               },
-              "price_per_unit": {
+              "pricePerUnit": {
                 "type": "number",
-                "description": "Price per unit of the plan",
+                "description": "Price per unit of the plan.",
                 "x-oapi-codegen-extra-tags": {
                   "db": "price_per_unit",
-                  "json": "price_per_unit",
+                  "json": "pricePerUnit",
                   "csv": "price_per_unit"
                 },
                 "minimum": 0
               },
               "currency": {
+                "description": "Currency in which the plan is priced.",
                 "x-go-type": "Currency",
                 "x-oapi-codegen-extra-tags": {
                   "db": "currency",
@@ -2125,36 +2283,44 @@ const SubscriptionSchema: Record<string, unknown> = {
             }
           },
           "quantity": {
-            "description": "number of units subscribed (eg number of users)",
             "type": "integer",
+            "description": "Number of units subscribed (eg number of users).",
             "x-oapi-codegen-extra-tags": {
-              "db": "quantity"
+              "db": "quantity",
+              "json": "quantity"
             },
             "minimum": 0
           },
-          "start_date": {
-            "x-oapi-codegen-extra-tags": {
-              "db": "start_date"
-            },
+          "startDate": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Timestamp when the subscription period started.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "db": "start_date",
+              "json": "startDate"
+            }
           },
-          "end_date": {
-            "x-oapi-codegen-extra-tags": {
-              "db": "end_date"
-            },
+          "endDate": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Timestamp when the current subscription period ends.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "db": "end_date",
+              "json": "endDate"
+            }
           },
           "status": {
+            "description": "Current status of the subscription (e.g. active, past_due, canceled).",
             "x-go-type": "SubscriptionStatus",
             "x-oapi-codegen-extra-tags": {
-              "db": "status"
+              "db": "status",
+              "json": "status"
             },
             "type": "string",
-            "description": "Possible statuses of a Stripe subscription.",
             "enum": [
               "incomplete",
               "incomplete_expired",
@@ -2174,25 +2340,33 @@ const SubscriptionSchema: Record<string, unknown> = {
               "unpaid": "The subscription is still technically active but has unpaid invoices and is no longer generating new invoices."
             }
           },
-          "created_at": {
-            "x-oapi-codegen-extra-tags": {
-              "db": "created_at"
-            },
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
-          },
-          "updated_at": {
+            "description": "Timestamp when the subscription was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
-              "db": "updated_at"
-            },
+              "db": "created_at",
+              "json": "createdAt"
+            }
+          },
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
-          },
-          "deleted_at": {
+            "description": "Timestamp when the subscription was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
+              "db": "updated_at",
+              "json": "updatedAt"
+            }
+          },
+          "deletedAt": {
+            "description": "Timestamp when the subscription was soft-deleted, if applicable.",
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "json": "deletedAt,omitempty"
             },
             "type": "string",
             "format": "date-time",
@@ -2202,12 +2376,14 @@ const SubscriptionSchema: Record<string, unknown> = {
             },
             "x-go-type-skip-optional-pointer": true
           },
-          "billing_id": {
+          "billingId": {
             "type": "string",
-            "description": "Billing ID of the subscription. This is the ID of the subscription in the billing system. eg Stripe",
+            "description": "Billing ID of the subscription. The ID of the subscription in the external billing system (for example, Stripe).",
             "x-id-format": "external",
+            "x-go-name": "BillingID",
             "x-oapi-codegen-extra-tags": {
-              "db": "billing_id"
+              "db": "billing_id",
+              "json": "billingId"
             },
             "maxLength": 500,
             "pattern": "^[A-Za-z0-9_\\-]+$"
