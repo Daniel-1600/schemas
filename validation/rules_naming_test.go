@@ -317,7 +317,11 @@ func TestEffectiveWireName(t *testing.T) {
 		{"userId", "", "userId"},
 		{"user_id", "userId", "userId"},
 		{"user_id", "userId,omitempty", "userId"},
-		{"transient", "-", "transient"}, // json:"-" falls back to property name
+
+		// json:"-" means the field is not serialized — excluded from the
+		// wire-name set. effectiveWireName returns "" to signal that.
+		{"model_id", "-", ""},
+		{"model_id", "-,omitempty", ""}, // pathological form; still excluded
 	}
 	for _, tc := range cases {
 		t.Run(tc.name+"/"+tc.override, func(t *testing.T) {
@@ -328,5 +332,26 @@ func TestEffectiveWireName(t *testing.T) {
 					tc.name, tc.override, got, tc.want)
 			}
 		})
+	}
+}
+
+// TestCheckRule45ForAPI_JSONDashExcluded confirms that a DB-only
+// snake_case property with `json:"-"` does NOT contribute a snake-family
+// member to Rule 45's mixing check, because it is not on the wire.
+// Without this, DB-joined fields like `model_id json:"-"` would
+// incorrectly trigger Rule 45 on otherwise-canonical camelCase structs.
+func TestCheckRule45ForAPI_JSONDashExcluded(t *testing.T) {
+	schema := &openapi3.Schema{
+		Type: &openapi3.Types{"object"},
+		Properties: openapi3.Schemas{
+			"userId":   mkStringProp(),
+			"orgId":    mkStringProp(),
+			"model_id": mkStringPropWithJSON("-"), // DB-only, never on wire
+		},
+	}
+	vs := checkRule45ForAPI("t.yml", docWithSchema("HasDBOnly", schema),
+		AuditOptions{StyleDebt: true})
+	if len(vs) != 0 {
+		t.Errorf("json:\"-\" DB-only field should be excluded from Rule 45; got %d: %+v", len(vs), vs)
 	}
 }

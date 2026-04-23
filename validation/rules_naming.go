@@ -407,15 +407,24 @@ func getExtraTag(extensions map[string]any, tagName string) string {
 // `MesheryPattern` struct's `OrgID json:"orgId"` + `WorkspaceID
 // json:"workspace_id"` + `UserID json:"user_id"`).
 //
-// Casing families:
-//   - camel     — camelCase or lowercase single word (`userId`, `name`).
+// Casing families (see classifyCasingFamily for the full taxonomy):
+//   - camel     — starts lowercase, contains at least one uppercase, no
+//                 consecutive-uppercase acronym run (`userId`, `orgId`).
 //   - snake     — contains an underscore (`user_id`, `created_at`).
-//   - screaming — all-uppercase token, or contains a SCREAMING-ID /
-//                 SCREAMING-URL token (`ID`, `URL`, `orgID`, `pageURL`).
+//   - screaming — all-uppercase, or contains a 2+ consecutive-uppercase
+//                 acronym token (`ID`, `URL`, `orgID`, `pageURL`).
+//   - lowercase — single-word all-lowercase, no underscore, no uppercase
+//                 (`id`, `name`, `metadata`). Agnostic bucket: does NOT
+//                 count toward the mixed-family trigger.
 //
 // Pure-camel and pure-snake structs both pass — a fully-legacy-snake
-// struct is caught by Rule 6 independently. Only the mixed case fails
-// Rule 45.
+// struct is caught by Rule 6 independently. The rule fires only when
+// two or more of {camel, snake, screaming} appear in the same struct;
+// a mix with only the agnostic `lowercase` bucket is not a drift.
+//
+// Properties with `json:"-"` are excluded from the wire-name set
+// (they don't reach the wire), so DB-only fields like `model_id` with
+// `json:"-"` do not contribute a snake-family member.
 //
 // Composition: inline `allOf`/`anyOf`/`oneOf` branches and array `items`
 // are walked as part of the *same* struct (their properties contribute to
@@ -480,7 +489,8 @@ func isMixedForRule45(families map[string][]string) bool {
 
 // rule45Message renders the violation text for a schema that mixes casing
 // families. Families are listed in deterministic order with their members
-// sorted, so violation text is stable run-to-run.
+// sorted and deduplicated (composition can visit the same wire name more
+// than once), so violation text is stable run-to-run and readable.
 func rule45Message(schemaName string, families map[string][]string) string {
 	familyNames := make([]string, 0, len(families))
 	for f := range families {
@@ -492,7 +502,14 @@ func rule45Message(schemaName string, families map[string][]string) string {
 	for _, f := range familyNames {
 		members := append([]string(nil), families[f]...)
 		sort.Strings(members)
-		parts = append(parts, fmt.Sprintf("%s: [%s]", f, strings.Join(members, ", ")))
+		// Deduplicate adjacent entries (list is sorted).
+		out := members[:0]
+		for i, m := range members {
+			if i == 0 || m != members[i-1] {
+				out = append(out, m)
+			}
+		}
+		parts = append(parts, fmt.Sprintf("%s: [%s]", f, strings.Join(out, ", ")))
 	}
 	return fmt.Sprintf(
 		`Schema %q mixes JSON-tag casing conventions across its properties — %s. Partial casing migrations are forbidden under the canonical identifier-naming contract. If the wire format must change, introduce a new API version and migrate every property consistently. See AGENTS.md § "Casing rules at a glance" and docs/identifier-naming-migration.md §9.`,
@@ -520,8 +537,13 @@ func collectCasingFamilies(schema *openapi3.Schema, families map[string][]string
 			}
 			propRef := schema.Properties[propName]
 			effective := effectiveWireName(propRef, propName)
-			family := classifyCasingFamily(effective)
-			families[family] = append(families[family], effective)
+			if effective != "" {
+				// `json:"-"` properties return "" from effectiveWireName
+				// and are excluded from the wire-name set — they are
+				// DB-only / internal and must not trigger Rule 45.
+				family := classifyCasingFamily(effective)
+				families[family] = append(families[family], effective)
+			}
 			// Recurse into the property's own schema (nested objects,
 			// array items, composition) so inline composite shapes
 			// contribute to the same family set.
@@ -619,18 +641,39 @@ func hasConsecutiveUppercase(name string) bool {
 	return false
 }
 
-// effectiveWireName returns the JSON-tag override from
-// `x-oapi-codegen-extra-tags.json` if present and non-empty (minus any
-// `,omitempty` modifier), otherwise the OpenAPI property key itself.
-// Rule 45 cares about what reaches the wire, not what the source file
-// calls the property.
+// effectiveWireName returns the wire-visible name of a property, or the
+// empty string when the property is not on the wire at all
+// (`x-oapi-codegen-extra-tags.json: "-"`). Callers treat the empty return
+// as "exclude from the wire-name set" — a `json:"-"` field must not
+// contribute to Rule 45's family set because it is DB-only / internal,
+// not part of the wire contract. The usual resolution is:
+//
+//   - If `json:"-"` is set, return "" (not on the wire).
+//   - Otherwise if `x-oapi-codegen-extra-tags.json` names the wire form,
+//     return that name (minus any `,omitempty` modifier — that's
+//     stripped by getExtraTag).
+//   - Otherwise fall back to the OpenAPI property key, which is the
+//     JSON tag by default.
 func effectiveWireName(propRef *openapi3.SchemaRef, propName string) string {
 	if propRef == nil || propRef.Value == nil {
 		return propName
 	}
-	js := getExtraTag(propRef.Value.Extensions, "json")
-	if js == "" || js == "-" {
-		return propName
+	// getExtraTag strips any `,omitempty` after the first comma, but does
+	// not distinguish "no override" from "override is `-`". Consult the
+	// raw extension map for the dash case.
+	if raw, ok := propRef.Value.Extensions["x-oapi-codegen-extra-tags"].(map[string]any); ok {
+		if js, ok := raw["json"].(string); ok {
+			head := js
+			if idx := strings.Index(js, ","); idx >= 0 {
+				head = js[:idx]
+			}
+			if head == "-" {
+				return ""
+			}
+			if head != "" {
+				return head
+			}
+		}
 	}
-	return js
+	return propName
 }
