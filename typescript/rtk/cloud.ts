@@ -4,17 +4,16 @@ export const addTagTypes = [
   "Environment_environments",
   "Feature_Features",
   "Keychain_Keychain",
-  "role_roles",
-  "schedule_scheduler",
   "Academy_API_Academy",
   "credential_credentials",
-  "Invitation_Invitation",
   "Key_users",
   "Key_Key",
   "Model_Models",
   "Organization_Organizations",
   "Team_teams",
   "Plan_Plans",
+  "role_roles",
+  "schedule_scheduler",
   "Subscription_Subscriptions",
   "Subscription_Payment Processors",
   "token_tokens",
@@ -23,6 +22,7 @@ export const addTagTypes = [
   "Connection_API_Connections",
   "Design_designs",
   "Events_events",
+  "Invitation_Invitation",
   "Workspace_workspaces",
   "Workspace_designs",
   "Workspace_views",
@@ -168,95 +168,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Keychain_Keychain"],
-      }),
-      addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
-        query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["role_roles"],
-      }),
-      deleteRole: build.mutation<DeleteRoleApiResponse, DeleteRoleApiArg>({
-        query: (queryArg) => ({ url: `/api/identity/roles/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["role_roles"],
-      }),
-      getAllRoles: build.query<GetAllRolesApiResponse, GetAllRolesApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-            all: queryArg.all,
-            selector: queryArg.selector,
-            teamId: queryArg.teamId,
-          },
-        }),
-        providesTags: ["role_roles"],
-      }),
-      upsertRole: build.mutation<UpsertRoleApiResponse, UpsertRoleApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
-          method: "POST",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["role_roles"],
-      }),
-      bulkEditRoleHolder: build.mutation<BulkEditRoleHolderApiResponse, BulkEditRoleHolderApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["role_roles"],
-      }),
-      getRoleKeychains: build.query<GetRoleKeychainsApiResponse, GetRoleKeychainsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["role_roles"],
-      }),
-      assignKeychainToRole: build.mutation<AssignKeychainToRoleApiResponse, AssignKeychainToRoleApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
-          method: "POST",
-        }),
-        invalidatesTags: ["role_roles"],
-      }),
-      unassignKeychainFromRole: build.mutation<UnassignKeychainFromRoleApiResponse, UnassignKeychainFromRoleApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
-          method: "DELETE",
-        }),
-        invalidatesTags: ["role_roles"],
-      }),
-      getSchedules: build.query<GetSchedulesApiResponse, GetSchedulesApiArg>({
-        query: (queryArg) => ({
-          url: `/user/schedules`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["schedule_scheduler"],
-      }),
-      upsertSchedule: build.mutation<UpsertScheduleApiResponse, UpsertScheduleApiArg>({
-        query: (queryArg) => ({ url: `/user/schedules`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["schedule_scheduler"],
-      }),
-      getSchedule: build.query<GetScheduleApiResponse, GetScheduleApiArg>({
-        query: (queryArg) => ({ url: `/user/schedules/${queryArg.id}` }),
-        providesTags: ["schedule_scheduler"],
-      }),
-      deleteSchedule: build.mutation<DeleteScheduleApiResponse, DeleteScheduleApiArg>({
-        query: (queryArg) => ({ url: `/user/schedules/${queryArg.id}`, method: "DELETE" }),
-        invalidatesTags: ["schedule_scheduler"],
       }),
       getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
         query: (queryArg) => ({
@@ -443,77 +354,6 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/integrations/credentials/${queryArg.credentialId}` }),
         providesTags: ["credential_credentials"],
       }),
-      getInvitation: build.query<GetInvitationApiResponse, GetInvitationApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}` }),
-        providesTags: ["Invitation_Invitation"],
-      }),
-      deleteInvitation: build.mutation<DeleteInvitationApiResponse, DeleteInvitationApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}`, method: "DELETE" }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      updateInvitation: build.mutation<UpdateInvitationApiResponse, UpdateInvitationApiArg>({
-        query: (queryArg) => ({
-          url: `/api/organizations/invitations/${queryArg.invitationId}`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      getInvitations: build.query<GetInvitationsApiResponse, GetInvitationsApiArg>({
-        query: () => ({ url: `/api/organizations/invitations` }),
-        providesTags: ["Invitation_Invitation"],
-      }),
-      createInvitation: build.mutation<CreateInvitationApiResponse, CreateInvitationApiArg>({
-        query: (queryArg) => ({ url: `/api/organizations/invitations`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      acceptInvitation: build.mutation<AcceptInvitationApiResponse, AcceptInvitationApiArg>({
-        query: (queryArg) => ({
-          url: `/api/organizations/invitations/${queryArg.invitationId}/accept`,
-          method: "POST",
-        }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      handleUserInvite: build.mutation<HandleUserInviteApiResponse, HandleUserInviteApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/users/invite`,
-          method: "POST",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      signupRequest: build.mutation<SignupRequestApiResponse, SignupRequestApiArg>({
-        query: (queryArg) => ({ url: `/api/identity/users/request`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      getSignupRequests: build.query<GetSignupRequestsApiResponse, GetSignupRequestsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/users/request`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-            filter: queryArg.filter,
-          },
-        }),
-        providesTags: ["Invitation_Invitation"],
-      }),
-      approveSignupRequest: build.mutation<ApproveSignupRequestApiResponse, ApproveSignupRequestApiArg>({
-        query: () => ({ url: `/api/identity/users/request/approve`, method: "POST" }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      denySignupRequest: build.mutation<DenySignupRequestApiResponse, DenySignupRequestApiArg>({
-        query: () => ({ url: `/api/identity/users/request/deny`, method: "POST" }),
-        invalidatesTags: ["Invitation_Invitation"],
-      }),
-      getSignupRequestNotification: build.query<
-        GetSignupRequestNotificationApiResponse,
-        GetSignupRequestNotificationApiArg
-      >({
-        query: () => ({ url: `/api/identity/users/request/notification` }),
-        providesTags: ["Invitation_Invitation"],
-      }),
       getUserKeys: build.query<GetUserKeysApiResponse, GetUserKeysApiArg>({
         query: (queryArg) => ({
           url: `/api/identity/orgs/${queryArg.orgId}/users/keys`,
@@ -660,6 +500,95 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Plan_Plans"],
+      }),
+      addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["role_roles"],
+      }),
+      deleteRole: build.mutation<DeleteRoleApiResponse, DeleteRoleApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/roles/${queryArg.roleId}`, method: "DELETE" }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getAllRoles: build.query<GetAllRolesApiResponse, GetAllRolesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            search: queryArg.search,
+            order: queryArg.order,
+            all: queryArg.all,
+            selector: queryArg.selector,
+            teamId: queryArg.teamId,
+          },
+        }),
+        providesTags: ["role_roles"],
+      }),
+      upsertRole: build.mutation<UpsertRoleApiResponse, UpsertRoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      bulkEditRoleHolder: build.mutation<BulkEditRoleHolderApiResponse, BulkEditRoleHolderApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getRoleKeychains: build.query<GetRoleKeychainsApiResponse, GetRoleKeychainsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["role_roles"],
+      }),
+      assignKeychainToRole: build.mutation<AssignKeychainToRoleApiResponse, AssignKeychainToRoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
+          method: "POST",
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      unassignKeychainFromRole: build.mutation<UnassignKeychainFromRoleApiResponse, UnassignKeychainFromRoleApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/roles/${queryArg.roleId}/keychains/${queryArg.keychainId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["role_roles"],
+      }),
+      getSchedules: build.query<GetSchedulesApiResponse, GetSchedulesApiArg>({
+        query: (queryArg) => ({
+          url: `/user/schedules`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["schedule_scheduler"],
+      }),
+      upsertSchedule: build.mutation<UpsertScheduleApiResponse, UpsertScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["schedule_scheduler"],
+      }),
+      getSchedule: build.query<GetScheduleApiResponse, GetScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules/${queryArg.scheduleId}` }),
+        providesTags: ["schedule_scheduler"],
+      }),
+      deleteSchedule: build.mutation<DeleteScheduleApiResponse, DeleteScheduleApiArg>({
+        query: (queryArg) => ({ url: `/user/schedules/${queryArg.scheduleId}`, method: "DELETE" }),
+        invalidatesTags: ["schedule_scheduler"],
       }),
       getSubscriptions: build.query<GetSubscriptionsApiResponse, GetSubscriptionsApiArg>({
         query: (queryArg) => ({
@@ -1212,6 +1141,77 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Events_events"],
+      }),
+      getInvitation: build.query<GetInvitationApiResponse, GetInvitationApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}` }),
+        providesTags: ["Invitation_Invitation"],
+      }),
+      deleteInvitation: build.mutation<DeleteInvitationApiResponse, DeleteInvitationApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/invitations/${queryArg.invitationId}`, method: "DELETE" }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      updateInvitation: build.mutation<UpdateInvitationApiResponse, UpdateInvitationApiArg>({
+        query: (queryArg) => ({
+          url: `/api/organizations/invitations/${queryArg.invitationId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      getInvitations: build.query<GetInvitationsApiResponse, GetInvitationsApiArg>({
+        query: () => ({ url: `/api/organizations/invitations` }),
+        providesTags: ["Invitation_Invitation"],
+      }),
+      createInvitation: build.mutation<CreateInvitationApiResponse, CreateInvitationApiArg>({
+        query: (queryArg) => ({ url: `/api/organizations/invitations`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      acceptInvitation: build.mutation<AcceptInvitationApiResponse, AcceptInvitationApiArg>({
+        query: (queryArg) => ({
+          url: `/api/organizations/invitations/${queryArg.invitationId}/accept`,
+          method: "POST",
+        }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      handleUserInvite: build.mutation<HandleUserInviteApiResponse, HandleUserInviteApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/users/invite`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      signupRequest: build.mutation<SignupRequestApiResponse, SignupRequestApiArg>({
+        query: (queryArg) => ({ url: `/api/identity/users/request`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      getSignupRequests: build.query<GetSignupRequestsApiResponse, GetSignupRequestsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/users/request`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+            filter: queryArg.filter,
+          },
+        }),
+        providesTags: ["Invitation_Invitation"],
+      }),
+      approveSignupRequest: build.mutation<ApproveSignupRequestApiResponse, ApproveSignupRequestApiArg>({
+        query: () => ({ url: `/api/identity/users/request/approve`, method: "POST" }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      denySignupRequest: build.mutation<DenySignupRequestApiResponse, DenySignupRequestApiArg>({
+        query: () => ({ url: `/api/identity/users/request/deny`, method: "POST" }),
+        invalidatesTags: ["Invitation_Invitation"],
+      }),
+      getSignupRequestNotification: build.query<
+        GetSignupRequestNotificationApiResponse,
+        GetSignupRequestNotificationApiArg
+      >({
+        query: () => ({ url: `/api/identity/users/request/notification` }),
+        providesTags: ["Invitation_Invitation"],
       }),
       getWorkspaces: build.query<GetWorkspacesApiResponse, GetWorkspacesApiArg>({
         query: (queryArg) => ({
@@ -1863,262 +1863,6 @@ export type GetKeysOfKeychainApiArg = {
   search?: string;
   /** Get ordered responses */
   order?: string;
-};
-export type AddRoleHolderApiResponse = unknown;
-export type AddRoleHolderApiArg = {
-  body: {
-    /** Email of the user to assign roles to. */
-    email: string;
-    /** List of role names to assign. */
-    roleNames: string[];
-  };
-};
-export type DeleteRoleApiResponse = unknown;
-export type DeleteRoleApiArg = {
-  /** Role ID */
-  id: string;
-};
-export type GetAllRolesApiResponse = /** status 200 Roles response */ {
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of roles per page. */
-  page_size: number;
-  /** Total number of roles across all pages. */
-  total_count: number;
-  /** The roles of the rolespage. */
-  roles: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id?: string;
-    /** Unique name of the role. */
-    role_name: string;
-    /** Human-readable description of the role. */
-    description: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the role was soft-deleted. */
-    deleted_at?: string;
-  }[];
-};
-export type GetAllRolesApiArg = {
-  /** Organization ID */
-  orgId: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get all possible entries */
-  all?: boolean;
-  /** Role grouping selector such as provider, organization, or team. */
-  selector?: string;
-  /** Team ID used when selector is team. */
-  teamId?: string;
-};
-export type UpsertRoleApiResponse = /** status 200 Role upserted */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id?: string;
-  /** Unique name of the role. */
-  role_name: string;
-  /** Human-readable description of the role. */
-  description: string;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-  /** Timestamp when the role was soft-deleted. */
-  deleted_at?: string;
-};
-export type UpsertRoleApiArg = {
-  /** Organization ID */
-  orgId: string;
-  body: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id?: string;
-    /** Unique name of the role. */
-    role_name: string;
-    /** Human-readable description of the role. */
-    description: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the role was soft-deleted. */
-    deleted_at?: string;
-  };
-};
-export type BulkEditRoleHolderApiResponse = unknown;
-export type BulkEditRoleHolderApiArg = {
-  /** Organization ID */
-  orgId: string;
-  body: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id?: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    user_id?: string;
-    /** The username of the userroleupdaterequest. */
-    username?: string;
-    /** Email address. */
-    email?: string;
-    /** The first name of the userroleupdaterequest. */
-    firstName?: string;
-    /** The last name of the userroleupdaterequest. */
-    lastName?: string;
-    /** Current status of the resource. */
-    status?: string;
-    /** The role names of the userroleupdaterequest. */
-    roleNames?: string[];
-    created_at?: string;
-    updated_at?: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetRoleKeychainsApiResponse = /** status 200 Keychains response */ {
-  page: number;
-  page_size: number;
-  total_count: number;
-  /** The keychains of the keychainpage. */
-  keychains: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** Name of the keychain. */
-    name: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    owner: string;
-    /** Timestamp when the resource was created. */
-    created_at: string;
-    /** Timestamp when the resource was updated. */
-    updated_at: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetRoleKeychainsApiArg = {
-  /** Organization ID */
-  orgId: string;
-  /** Role ID */
-  roleId: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-};
-export type AssignKeychainToRoleApiResponse = unknown;
-export type AssignKeychainToRoleApiArg = {
-  /** Organization ID */
-  orgId: string;
-  /** Role ID */
-  roleId: string;
-  /** Keychain ID */
-  keychainId: string;
-};
-export type UnassignKeychainFromRoleApiResponse = unknown;
-export type UnassignKeychainFromRoleApiArg = {
-  /** Organization ID */
-  orgId: string;
-  /** Role ID */
-  roleId: string;
-  /** Keychain ID */
-  keychainId: string;
-};
-export type GetSchedulesApiResponse = /** status 200 Schedules response */ {
-  /** Current page number (zero-based). */
-  page: number;
-  /** Number of schedules per page. */
-  page_size: number;
-  /** Total number of schedules across all pages. */
-  total_count: number;
-  /** The schedules of the schedulepage. */
-  schedules: {
-    /** Unique identifier for the schedule. */
-    id?: string;
-    /** Human-readable name for the schedule. */
-    name: string;
-    /** UUID of the user who owns this schedule. */
-    user_id: string;
-    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
-     */
-    cron_expression: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  }[];
-};
-export type GetSchedulesApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-};
-export type UpsertScheduleApiResponse = /** status 200 Schedule upserted */ {
-  /** Unique identifier for the schedule. */
-  id?: string;
-  /** Human-readable name for the schedule. */
-  name: string;
-  /** UUID of the user who owns this schedule. */
-  user_id: string;
-  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
-   */
-  cron_expression: string;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-};
-export type UpsertScheduleApiArg = {
-  body: {
-    /** Unique identifier for the schedule. */
-    id?: string;
-    /** Human-readable name for the schedule. */
-    name: string;
-    /** UUID of the user who owns this schedule. */
-    user_id: string;
-    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
-     */
-    cron_expression: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-  };
-};
-export type GetScheduleApiResponse = /** status 200 Schedule response */ {
-  /** Unique identifier for the schedule. */
-  id?: string;
-  /** Human-readable name for the schedule. */
-  name: string;
-  /** UUID of the user who owns this schedule. */
-  user_id: string;
-  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
-   */
-  cron_expression: string;
-  /** Timestamp when the resource was created. */
-  created_at?: string;
-  /** Timestamp when the resource was updated. */
-  updated_at?: string;
-};
-export type GetScheduleApiArg = {
-  /** Schedule ID */
-  id: string;
-};
-export type DeleteScheduleApiResponse = unknown;
-export type DeleteScheduleApiArg = {
-  /** Schedule ID */
-  id: string;
 };
 export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
   /** Total number of Curricula */
@@ -4002,307 +3746,6 @@ export type GetCredentialByIdApiArg = {
   /** Credential ID */
   credentialId: string;
 };
-export type GetInvitationApiResponse = /** status 200 undefined */ {
-  /** Unique identifier for the invitation , is also used as the invitation code */
-  id: string;
-  /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
-  owner_id: string;
-  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
-  is_default?: boolean;
-  /** Name of the invitation, which can be used to identify the invitation, required and cant be empty string, */
-  name: string;
-  /** Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description */
-  description: string;
-  /** The emails of the invitation. */
-  emails: string[];
-  /** ID of the organization to which the user is invited */
-  org_id: string;
-  /** Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire */
-  expires_at?: string;
-  /** Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota */
-  quota?: number;
-  /** List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet */
-  accepted_by: string[];
-  /** The roles of the invitation. */
-  roles: string[];
-  /** The teams of the invitation. */
-  teams: string[];
-  /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-  status: "enabled" | "disabled";
-  /** Timestamp when the invitation was created */
-  created_at: string;
-  /** Timestamp when the invitation was last updated */
-  updated_at: string;
-  /** Timestamp when the invitation was deleted, if applicable */
-  deleted_at: string;
-};
-export type GetInvitationApiArg = {
-  /** The ID of the invitation */
-  invitationId: string;
-};
-export type DeleteInvitationApiResponse = unknown;
-export type DeleteInvitationApiArg = {
-  /** The ID of the invitation */
-  invitationId: string;
-};
-export type UpdateInvitationApiResponse = /** status 200 undefined */ {
-  /** Unique identifier for the invitation , is also used as the invitation code */
-  id: string;
-  /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
-  owner_id: string;
-  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
-  is_default?: boolean;
-  /** Name of the invitation, which can be used to identify the invitation, required and cant be empty string, */
-  name: string;
-  /** Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description */
-  description: string;
-  /** The emails of the invitation. */
-  emails: string[];
-  /** ID of the organization to which the user is invited */
-  org_id: string;
-  /** Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire */
-  expires_at?: string;
-  /** Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota */
-  quota?: number;
-  /** List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet */
-  accepted_by: string[];
-  /** The roles of the invitation. */
-  roles: string[];
-  /** The teams of the invitation. */
-  teams: string[];
-  /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-  status: "enabled" | "disabled";
-  /** Timestamp when the invitation was created */
-  created_at: string;
-  /** Timestamp when the invitation was last updated */
-  updated_at: string;
-  /** Timestamp when the invitation was deleted, if applicable */
-  deleted_at: string;
-};
-export type UpdateInvitationApiArg = {
-  /** The ID of the invitation */
-  invitationId: string;
-  body: {
-    /** Existing invitation ID for updates; omit on create. */
-    id?: string;
-    /** ID of the user who created the invitation. */
-    owner_id?: string;
-    /** Indicates whether the invitation is a default invitation (open invite). */
-    is_default?: boolean;
-    /** Name of the invitation. */
-    name: string;
-    /** Description of the invitation. */
-    description: string;
-    /** The emails of the invitation. */
-    emails: string[];
-    /** ID of the organization to which the user is invited. */
-    org_id: string;
-    /** Timestamp when the invitation expires, if applicable. */
-    expires_at?: string;
-    /** Quota for the invitation. */
-    quota?: number;
-    /** The roles of the invitation. */
-    roles: string[];
-    /** The teams of the invitation. */
-    teams: string[];
-    /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-    status: "enabled" | "disabled";
-  };
-};
-export type GetInvitationsApiResponse = /** status 200 undefined */ {
-  /** List of invitations */
-  data: {
-    /** Unique identifier for the invitation , is also used as the invitation code */
-    id: string;
-    /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
-    owner_id: string;
-    /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
-    is_default?: boolean;
-    /** Name of the invitation, which can be used to identify the invitation, required and cant be empty string, */
-    name: string;
-    /** Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description */
-    description: string;
-    /** The emails of the invitation. */
-    emails: string[];
-    /** ID of the organization to which the user is invited */
-    org_id: string;
-    /** Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire */
-    expires_at?: string;
-    /** Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota */
-    quota?: number;
-    /** List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet */
-    accepted_by: string[];
-    /** The roles of the invitation. */
-    roles: string[];
-    /** The teams of the invitation. */
-    teams: string[];
-    /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-    status: "enabled" | "disabled";
-    /** Timestamp when the invitation was created */
-    created_at: string;
-    /** Timestamp when the invitation was last updated */
-    updated_at: string;
-    /** Timestamp when the invitation was deleted, if applicable */
-    deleted_at: string;
-  }[];
-  /** Total number of invitations available */
-  total: number;
-};
-export type GetInvitationsApiArg = void;
-export type CreateInvitationApiResponse = /** status 201 undefined */ {
-  /** Unique identifier for the invitation , is also used as the invitation code */
-  id: string;
-  /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
-  owner_id: string;
-  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
-  is_default?: boolean;
-  /** Name of the invitation, which can be used to identify the invitation, required and cant be empty string, */
-  name: string;
-  /** Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description */
-  description: string;
-  /** The emails of the invitation. */
-  emails: string[];
-  /** ID of the organization to which the user is invited */
-  org_id: string;
-  /** Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire */
-  expires_at?: string;
-  /** Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota */
-  quota?: number;
-  /** List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet */
-  accepted_by: string[];
-  /** The roles of the invitation. */
-  roles: string[];
-  /** The teams of the invitation. */
-  teams: string[];
-  /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-  status: "enabled" | "disabled";
-  /** Timestamp when the invitation was created */
-  created_at: string;
-  /** Timestamp when the invitation was last updated */
-  updated_at: string;
-  /** Timestamp when the invitation was deleted, if applicable */
-  deleted_at: string;
-};
-export type CreateInvitationApiArg = {
-  body: {
-    /** Existing invitation ID for updates; omit on create. */
-    id?: string;
-    /** ID of the user who created the invitation. */
-    owner_id?: string;
-    /** Indicates whether the invitation is a default invitation (open invite). */
-    is_default?: boolean;
-    /** Name of the invitation. */
-    name: string;
-    /** Description of the invitation. */
-    description: string;
-    /** The emails of the invitation. */
-    emails: string[];
-    /** ID of the organization to which the user is invited. */
-    org_id: string;
-    /** Timestamp when the invitation expires, if applicable. */
-    expires_at?: string;
-    /** Quota for the invitation. */
-    quota?: number;
-    /** The roles of the invitation. */
-    roles: string[];
-    /** The teams of the invitation. */
-    teams: string[];
-    /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-    status: "enabled" | "disabled";
-  };
-};
-export type AcceptInvitationApiResponse = /** status 200 undefined */ {
-  /** Unique identifier for the invitation , is also used as the invitation code */
-  id: string;
-  /** ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes */
-  owner_id: string;
-  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation */
-  is_default?: boolean;
-  /** Name of the invitation, which can be used to identify the invitation, required and cant be empty string, */
-  name: string;
-  /** Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description */
-  description: string;
-  /** The emails of the invitation. */
-  emails: string[];
-  /** ID of the organization to which the user is invited */
-  org_id: string;
-  /** Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire */
-  expires_at?: string;
-  /** Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota */
-  quota?: number;
-  /** List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet */
-  accepted_by: string[];
-  /** The roles of the invitation. */
-  roles: string[];
-  /** The teams of the invitation. */
-  teams: string[];
-  /** Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later. */
-  status: "enabled" | "disabled";
-  /** Timestamp when the invitation was created */
-  created_at: string;
-  /** Timestamp when the invitation was last updated */
-  updated_at: string;
-  /** Timestamp when the invitation was deleted, if applicable */
-  deleted_at: string;
-};
-export type AcceptInvitationApiArg = {
-  /** The ID of the invitation */
-  invitationId: string;
-};
-export type HandleUserInviteApiResponse = /** status 200 Invitation request accepted */ {
-  [key: string]: any;
-};
-export type HandleUserInviteApiArg = {
-  /** The ID of the organization */
-  orgId: string;
-  body: {
-    [key: string]: any;
-  };
-};
-export type SignupRequestApiResponse = /** status 201 Signup request created */ {
-  [key: string]: any;
-};
-export type SignupRequestApiArg = {
-  body: {
-    [key: string]: any;
-  };
-};
-export type GetSignupRequestsApiResponse = /** status 200 Signup requests page */ {
-  /** Current page number of the result set. */
-  page?: number;
-  /** Number of items per page. */
-  page_size?: number;
-  /** Total number of items available. */
-  total_count?: number;
-  /** The data of the signuprequestspage. */
-  data?: {
-    [key: string]: any;
-  }[];
-};
-export type GetSignupRequestsApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get filtered reponses */
-  filter?: string;
-};
-export type ApproveSignupRequestApiResponse = /** status 200 Signup request approved */ {
-  [key: string]: any;
-};
-export type ApproveSignupRequestApiArg = void;
-export type DenySignupRequestApiResponse = /** status 200 Signup request denied */ {
-  [key: string]: any;
-};
-export type DenySignupRequestApiArg = void;
-export type GetSignupRequestNotificationApiResponse = /** status 200 Signup request notification payload */ {
-  [key: string]: any;
-};
-export type GetSignupRequestNotificationApiArg = void;
 export type GetUserKeysApiResponse = /** status 200 Returns user keys based on roles assigned to user */ {
   /** Zero-based page index returned in this response. */
   page: number;
@@ -5230,6 +4673,254 @@ export type GetPlansApiArg = {
   page?: string;
   /** Get responses by pagesize */
   pagesize?: string;
+};
+export type AddRoleHolderApiResponse = unknown;
+export type AddRoleHolderApiArg = {
+  body: {
+    /** Email of the user to assign roles to. */
+    email: string;
+    /** List of role names to assign. */
+    roleNames: string[];
+  };
+};
+export type DeleteRoleApiResponse = unknown;
+export type DeleteRoleApiArg = {
+  /** Role ID */
+  roleId: string;
+};
+export type GetAllRolesApiResponse = /** status 200 Roles response */ {
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of roles per page. */
+  pageSize: number;
+  /** Total number of roles across all pages. */
+  totalCount: number;
+  /** The roles of the rolespage. */
+  roles: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Unique name of the role. */
+    roleName: string;
+    /** Human-readable description of the role. */
+    description: string;
+    /** Timestamp when the role was created. */
+    createdAt?: string;
+    /** Timestamp when the role was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the role was soft-deleted, if applicable. */
+    deletedAt?: string;
+  }[];
+};
+export type GetAllRolesApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by page size */
+  pageSize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get all possible entries */
+  all?: boolean;
+  /** Role grouping selector such as provider, organization, or team. */
+  selector?: string;
+  /** Team ID used when selector is team. */
+  teamId?: string;
+};
+export type UpsertRoleApiResponse = /** status 200 Role upserted */ {
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  id?: string;
+  /** Unique name of the role. */
+  roleName: string;
+  /** Human-readable description of the role. */
+  description: string;
+  /** Timestamp when the role was created. */
+  createdAt?: string;
+  /** Timestamp when the role was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the role was soft-deleted, if applicable. */
+  deletedAt?: string;
+};
+export type UpsertRoleApiArg = {
+  /** Organization ID */
+  orgId: string;
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Unique name of the role. */
+    roleName: string;
+    /** Human-readable description of the role. */
+    description: string;
+  };
+};
+export type BulkEditRoleHolderApiResponse = unknown;
+export type BulkEditRoleHolderApiArg = {
+  /** Organization ID */
+  orgId: string;
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    userId?: string;
+    /** The username of the user. */
+    username?: string;
+    /** Email address of the user. */
+    email?: string;
+    /** First name of the user. */
+    firstName?: string;
+    /** Last name of the user. */
+    lastName?: string;
+    /** Current status of the user. */
+    status?: string;
+    /** Role names currently or newly assigned to the user. */
+    roleNames?: string[];
+    /** Timestamp when the user was created. */
+    createdAt?: string;
+    /** Timestamp when the user was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the user was soft-deleted, if applicable. */
+    deletedAt?: string;
+  }[];
+};
+export type GetRoleKeychainsApiResponse = /** status 200 Keychains response */ {
+  page: number;
+  page_size: number;
+  total_count: number;
+  /** The keychains of the keychainpage. */
+  keychains: {
+    /** Unique identifier for the keychain. */
+    id: string;
+    /** Name of the keychain. */
+    name: string;
+    /** Owner of the keychain. */
+    owner: string;
+    /** Timestamp when the resource was created. */
+    created_at: string;
+    /** Timestamp when the resource was updated. */
+    updated_at: string;
+    /** SQL null Timestamp to handle null values of time. */
+    deleted_at?: string;
+  }[];
+};
+export type GetRoleKeychainsApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by page size */
+  pageSize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type AssignKeychainToRoleApiResponse = unknown;
+export type AssignKeychainToRoleApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+  /** Keychain ID */
+  keychainId: string;
+};
+export type UnassignKeychainFromRoleApiResponse = unknown;
+export type UnassignKeychainFromRoleApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Role ID */
+  roleId: string;
+  /** Keychain ID */
+  keychainId: string;
+};
+export type GetSchedulesApiResponse = /** status 200 Schedules response */ {
+  /** Current page number (zero-based). */
+  page: number;
+  /** Number of schedules per page. */
+  pageSize: number;
+  /** Total number of schedules across all pages. */
+  totalCount: number;
+  /** The schedules of the schedulepage. */
+  schedules: {
+    /** Unique identifier for the schedule. */
+    id?: string;
+    /** Human-readable name for the schedule. */
+    name: string;
+    /** UUID of the user who owns this schedule. */
+    userId: string;
+    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+     */
+    cronExpression: string;
+    /** Timestamp when the schedule was created. */
+    createdAt?: string;
+    /** Timestamp when the schedule was last updated. */
+    updatedAt?: string;
+  }[];
+};
+export type GetSchedulesApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by page size */
+  pageSize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type UpsertScheduleApiResponse = /** status 200 Schedule upserted */ {
+  /** Unique identifier for the schedule. */
+  id?: string;
+  /** Human-readable name for the schedule. */
+  name: string;
+  /** UUID of the user who owns this schedule. */
+  userId: string;
+  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+   */
+  cronExpression: string;
+  /** Timestamp when the schedule was created. */
+  createdAt?: string;
+  /** Timestamp when the schedule was last updated. */
+  updatedAt?: string;
+};
+export type UpsertScheduleApiArg = {
+  body: {
+    /** Existing schedule ID for updates; omit on create. */
+    id?: string;
+    /** Human-readable name for the schedule. */
+    name: string;
+    /** Owner user ID; inferred from the authenticated user when omitted. */
+    userId?: string;
+    /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+     */
+    cronExpression: string;
+  };
+};
+export type GetScheduleApiResponse = /** status 200 Schedule response */ {
+  /** Unique identifier for the schedule. */
+  id?: string;
+  /** Human-readable name for the schedule. */
+  name: string;
+  /** UUID of the user who owns this schedule. */
+  userId: string;
+  /** Cron expression defining the schedule's recurrence (e.g. "0 0 * * *" for daily at midnight).
+   */
+  cronExpression: string;
+  /** Timestamp when the schedule was created. */
+  createdAt?: string;
+  /** Timestamp when the schedule was last updated. */
+  updatedAt?: string;
+};
+export type GetScheduleApiArg = {
+  /** Schedule ID */
+  scheduleId: string;
+};
+export type DeleteScheduleApiResponse = unknown;
+export type DeleteScheduleApiArg = {
+  /** Schedule ID */
+  scheduleId: string;
 };
 export type GetSubscriptionsApiResponse = /** status 200 Get subscription response */ {
   /** Current page number of the result set. */
@@ -13612,6 +13303,307 @@ export type GetEventTypesApiArg = {
   /** Get responses by pagesize */
   pagesize?: string;
 };
+export type GetInvitationApiResponse = /** status 200 Invitation fetched */ {
+  /** Unique identifier for the invitation, also used as the invitation code. */
+  id: string;
+  /** ID of the user who created the invitation. Tracks who created the invitation for auditing purposes. */
+  ownerId: string;
+  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation. */
+  isDefault?: boolean;
+  /** Name of the invitation, which can be used to identify it. Required; cannot be an empty string. */
+  name: string;
+  /** Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description. */
+  description: string;
+  /** Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address. */
+  emails: string[];
+  /** ID of the organization to which the user is invited. */
+  orgId: string;
+  /** Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire. */
+  expiresAt?: string;
+  /** Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited. */
+  quota?: number;
+  /** List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet. */
+  acceptedBy: string[];
+  /** Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles. */
+  roles: string[];
+  /** Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams. */
+  teams: string[];
+  /** Activation status of the invitation. */
+  status: "enabled" | "disabled";
+  /** Timestamp when the invitation was created. */
+  createdAt: string;
+  /** Timestamp when the invitation was last updated. */
+  updatedAt: string;
+  /** Timestamp when the invitation was deleted, if applicable. */
+  deletedAt: string;
+};
+export type GetInvitationApiArg = {
+  /** The ID of the invitation. */
+  invitationId: string;
+};
+export type DeleteInvitationApiResponse = unknown;
+export type DeleteInvitationApiArg = {
+  /** The ID of the invitation. */
+  invitationId: string;
+};
+export type UpdateInvitationApiResponse = /** status 200 Invitation updated */ {
+  /** Unique identifier for the invitation, also used as the invitation code. */
+  id: string;
+  /** ID of the user who created the invitation. Tracks who created the invitation for auditing purposes. */
+  ownerId: string;
+  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation. */
+  isDefault?: boolean;
+  /** Name of the invitation, which can be used to identify it. Required; cannot be an empty string. */
+  name: string;
+  /** Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description. */
+  description: string;
+  /** Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address. */
+  emails: string[];
+  /** ID of the organization to which the user is invited. */
+  orgId: string;
+  /** Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire. */
+  expiresAt?: string;
+  /** Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited. */
+  quota?: number;
+  /** List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet. */
+  acceptedBy: string[];
+  /** Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles. */
+  roles: string[];
+  /** Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams. */
+  teams: string[];
+  /** Activation status of the invitation. */
+  status: "enabled" | "disabled";
+  /** Timestamp when the invitation was created. */
+  createdAt: string;
+  /** Timestamp when the invitation was last updated. */
+  updatedAt: string;
+  /** Timestamp when the invitation was deleted, if applicable. */
+  deletedAt: string;
+};
+export type UpdateInvitationApiArg = {
+  /** The ID of the invitation. */
+  invitationId: string;
+  body: {
+    /** Existing invitation ID for updates; omit on create. */
+    id?: string;
+    /** ID of the user who created the invitation. */
+    ownerId?: string;
+    /** Indicates whether the invitation is a default invitation (open invite). */
+    isDefault?: boolean;
+    /** Name of the invitation. */
+    name: string;
+    /** Description of the invitation. */
+    description: string;
+    /** Email addresses or patterns this invitation is valid for. */
+    emails: string[];
+    /** ID of the organization to which the user is invited. */
+    orgId: string;
+    /** Timestamp when the invitation expires, if applicable. */
+    expiresAt?: string;
+    /** Quota for the invitation; limits the number of users that can accept it. */
+    quota?: number;
+    /** Roles that the user will have when accepting the invitation. */
+    roles: string[];
+    /** Teams that the user will be added to when accepting the invitation. */
+    teams: string[];
+    /** Activation status of the invitation. */
+    status: "enabled" | "disabled";
+  };
+};
+export type GetInvitationsApiResponse = /** status 200 Invitations page */ {
+  /** Invitations returned on the current page. */
+  data: {
+    /** Unique identifier for the invitation, also used as the invitation code. */
+    id: string;
+    /** ID of the user who created the invitation. Tracks who created the invitation for auditing purposes. */
+    ownerId: string;
+    /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation. */
+    isDefault?: boolean;
+    /** Name of the invitation, which can be used to identify it. Required; cannot be an empty string. */
+    name: string;
+    /** Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description. */
+    description: string;
+    /** Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address. */
+    emails: string[];
+    /** ID of the organization to which the user is invited. */
+    orgId: string;
+    /** Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire. */
+    expiresAt?: string;
+    /** Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited. */
+    quota?: number;
+    /** List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet. */
+    acceptedBy: string[];
+    /** Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles. */
+    roles: string[];
+    /** Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams. */
+    teams: string[];
+    /** Activation status of the invitation. */
+    status: "enabled" | "disabled";
+    /** Timestamp when the invitation was created. */
+    createdAt: string;
+    /** Timestamp when the invitation was last updated. */
+    updatedAt: string;
+    /** Timestamp when the invitation was deleted, if applicable. */
+    deletedAt: string;
+  }[];
+  /** Total number of invitations available. */
+  total: number;
+};
+export type GetInvitationsApiArg = void;
+export type CreateInvitationApiResponse = /** status 201 Invitation created */ {
+  /** Unique identifier for the invitation, also used as the invitation code. */
+  id: string;
+  /** ID of the user who created the invitation. Tracks who created the invitation for auditing purposes. */
+  ownerId: string;
+  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation. */
+  isDefault?: boolean;
+  /** Name of the invitation, which can be used to identify it. Required; cannot be an empty string. */
+  name: string;
+  /** Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description. */
+  description: string;
+  /** Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address. */
+  emails: string[];
+  /** ID of the organization to which the user is invited. */
+  orgId: string;
+  /** Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire. */
+  expiresAt?: string;
+  /** Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited. */
+  quota?: number;
+  /** List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet. */
+  acceptedBy: string[];
+  /** Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles. */
+  roles: string[];
+  /** Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams. */
+  teams: string[];
+  /** Activation status of the invitation. */
+  status: "enabled" | "disabled";
+  /** Timestamp when the invitation was created. */
+  createdAt: string;
+  /** Timestamp when the invitation was last updated. */
+  updatedAt: string;
+  /** Timestamp when the invitation was deleted, if applicable. */
+  deletedAt: string;
+};
+export type CreateInvitationApiArg = {
+  body: {
+    /** Existing invitation ID for updates; omit on create. */
+    id?: string;
+    /** ID of the user who created the invitation. */
+    ownerId?: string;
+    /** Indicates whether the invitation is a default invitation (open invite). */
+    isDefault?: boolean;
+    /** Name of the invitation. */
+    name: string;
+    /** Description of the invitation. */
+    description: string;
+    /** Email addresses or patterns this invitation is valid for. */
+    emails: string[];
+    /** ID of the organization to which the user is invited. */
+    orgId: string;
+    /** Timestamp when the invitation expires, if applicable. */
+    expiresAt?: string;
+    /** Quota for the invitation; limits the number of users that can accept it. */
+    quota?: number;
+    /** Roles that the user will have when accepting the invitation. */
+    roles: string[];
+    /** Teams that the user will be added to when accepting the invitation. */
+    teams: string[];
+    /** Activation status of the invitation. */
+    status: "enabled" | "disabled";
+  };
+};
+export type AcceptInvitationApiResponse = /** status 200 Invitation accepted */ {
+  /** Unique identifier for the invitation, also used as the invitation code. */
+  id: string;
+  /** ID of the user who created the invitation. Tracks who created the invitation for auditing purposes. */
+  ownerId: string;
+  /** Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation. */
+  isDefault?: boolean;
+  /** Name of the invitation, which can be used to identify it. Required; cannot be an empty string. */
+  name: string;
+  /** Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description. */
+  description: string;
+  /** Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address. */
+  emails: string[];
+  /** ID of the organization to which the user is invited. */
+  orgId: string;
+  /** Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire. */
+  expiresAt?: string;
+  /** Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited. */
+  quota?: number;
+  /** List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet. */
+  acceptedBy: string[];
+  /** Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles. */
+  roles: string[];
+  /** Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams. */
+  teams: string[];
+  /** Activation status of the invitation. */
+  status: "enabled" | "disabled";
+  /** Timestamp when the invitation was created. */
+  createdAt: string;
+  /** Timestamp when the invitation was last updated. */
+  updatedAt: string;
+  /** Timestamp when the invitation was deleted, if applicable. */
+  deletedAt: string;
+};
+export type AcceptInvitationApiArg = {
+  /** The ID of the invitation. */
+  invitationId: string;
+};
+export type HandleUserInviteApiResponse = /** status 200 Invitation request accepted */ {
+  [key: string]: any;
+};
+export type HandleUserInviteApiArg = {
+  /** The ID of the organization. */
+  orgId: string;
+  body: {
+    [key: string]: any;
+  };
+};
+export type SignupRequestApiResponse = /** status 201 Signup request created */ {
+  [key: string]: any;
+};
+export type SignupRequestApiArg = {
+  body: {
+    [key: string]: any;
+  };
+};
+export type GetSignupRequestsApiResponse = /** status 200 Signup requests page */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** Signup requests returned on the current page. */
+  data?: {
+    [key: string]: any;
+  }[];
+};
+export type GetSignupRequestsApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get filtered reponses */
+  filter?: string;
+};
+export type ApproveSignupRequestApiResponse = /** status 200 Signup request approved */ {
+  [key: string]: any;
+};
+export type ApproveSignupRequestApiArg = void;
+export type DenySignupRequestApiResponse = /** status 200 Signup request denied */ {
+  [key: string]: any;
+};
+export type DenySignupRequestApiArg = void;
+export type GetSignupRequestNotificationApiResponse = /** status 200 Signup request notification payload */ {
+  [key: string]: any;
+};
+export type GetSignupRequestNotificationApiArg = void;
 export type GetWorkspacesApiResponse = /** status 200 Workspaces */ {
   /** Zero-based page index returned in this response. */
   page?: number;
@@ -15076,18 +15068,6 @@ export const {
   useAddKeyToKeychainMutation,
   useRemoveKeyFromKeychainMutation,
   useGetKeysOfKeychainQuery,
-  useAddRoleHolderMutation,
-  useDeleteRoleMutation,
-  useGetAllRolesQuery,
-  useUpsertRoleMutation,
-  useBulkEditRoleHolderMutation,
-  useGetRoleKeychainsQuery,
-  useAssignKeychainToRoleMutation,
-  useUnassignKeychainFromRoleMutation,
-  useGetSchedulesQuery,
-  useUpsertScheduleMutation,
-  useGetScheduleQuery,
-  useDeleteScheduleMutation,
   useGetMyAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
   useGetAcademyCurriculaQuery,
@@ -15111,18 +15091,6 @@ export const {
   useUpdateUserCredentialMutation,
   useDeleteUserCredentialMutation,
   useGetCredentialByIdQuery,
-  useGetInvitationQuery,
-  useDeleteInvitationMutation,
-  useUpdateInvitationMutation,
-  useGetInvitationsQuery,
-  useCreateInvitationMutation,
-  useAcceptInvitationMutation,
-  useHandleUserInviteMutation,
-  useSignupRequestMutation,
-  useGetSignupRequestsQuery,
-  useApproveSignupRequestMutation,
-  useDenySignupRequestMutation,
-  useGetSignupRequestNotificationQuery,
   useGetUserKeysQuery,
   useGetKeysQuery,
   useUpsertKeyMutation,
@@ -15145,6 +15113,18 @@ export const {
   useAddUserToOrgMutation,
   useDeleteUserFromOrgMutation,
   useGetPlansQuery,
+  useAddRoleHolderMutation,
+  useDeleteRoleMutation,
+  useGetAllRolesQuery,
+  useUpsertRoleMutation,
+  useBulkEditRoleHolderMutation,
+  useGetRoleKeychainsQuery,
+  useAssignKeychainToRoleMutation,
+  useUnassignKeychainFromRoleMutation,
+  useGetSchedulesQuery,
+  useUpsertScheduleMutation,
+  useGetScheduleQuery,
+  useDeleteScheduleMutation,
   useGetSubscriptionsQuery,
   useCancelSubscriptionMutation,
   useCreateSubscriptionMutation,
@@ -15216,6 +15196,18 @@ export const {
   useGetEventsQuery,
   useGetEventSummaryByUserQuery,
   useGetEventTypesQuery,
+  useGetInvitationQuery,
+  useDeleteInvitationMutation,
+  useUpdateInvitationMutation,
+  useGetInvitationsQuery,
+  useCreateInvitationMutation,
+  useAcceptInvitationMutation,
+  useHandleUserInviteMutation,
+  useSignupRequestMutation,
+  useGetSignupRequestsQuery,
+  useApproveSignupRequestMutation,
+  useDenySignupRequestMutation,
+  useGetSignupRequestNotificationQuery,
   useGetWorkspacesQuery,
   useCreateWorkspaceMutation,
   useGetWorkspaceByIdQuery,

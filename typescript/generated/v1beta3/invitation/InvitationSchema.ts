@@ -7,9 +7,8 @@ const InvitationSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Invitation",
-    "x-deprecated": true,
     "description": "OpenAPI schema for managing invitations.",
-    "version": "v1beta2",
+    "version": "v1beta3",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -47,14 +46,16 @@ const InvitationSchema: Record<string, unknown> = {
             "name": "invitationId",
             "in": "path",
             "required": true,
-            "description": "The ID of the invitation",
+            "description": "The ID of the invitation.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "Invitation fetched",
             "content": {
               "application/json": {
                 "schema": {
@@ -63,35 +64,26 @@ const InvitationSchema: Record<string, unknown> = {
                   "description": "Invitation entity schema.",
                   "required": [
                     "id",
-                    "owner_id",
+                    "ownerId",
                     "name",
                     "description",
-                    "org_id",
-                    "accepted_by",
+                    "orgId",
+                    "acceptedBy",
                     "emails",
                     "roles",
                     "teams",
                     "status",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the invitation, also used as the invitation code.",
                       "x-go-name": "ID",
-                      "description": "Unique identifier for the invitation , is also used as the invitation code",
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    },
-                    "owner_id": {
-                      "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner_id",
-                        "json": "owner_id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -100,27 +92,42 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "is_default": {
+                    "ownerId": {
+                      "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                      "x-go-name": "OwnerID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "owner_id",
+                        "json": "ownerId"
+                      },
+                      "type": "string",
+                      "format": "uuid",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    },
+                    "isDefault": {
                       "type": "boolean",
-                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "is_default",
-                        "json": "is_default"
+                        "json": "isDefault"
                       }
                     },
                     "name": {
                       "type": "string",
-                      "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                      "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                       "minLength": 1,
                       "maxLength": 255
                     },
                     "description": {
                       "type": "string",
-                      "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                      "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                       "maxLength": 5000
                     },
                     "emails": {
                       "type": "array",
+                      "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -128,16 +135,16 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string",
                         "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                        "x-go-type": "string",
-                        "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                      },
-                      "description": "The emails of the invitation."
+                        "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                        "x-go-type": "string"
+                      }
                     },
-                    "org_id": {
-                      "description": "ID of the organization to which the user is invited",
+                    "orgId": {
+                      "description": "ID of the organization to which the user is invited.",
+                      "x-go-name": "OrgID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "org_id",
-                        "json": "org_id"
+                        "json": "orgId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -146,22 +153,23 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "expires_at": {
+                    "expiresAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                      "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "expires_at",
-                        "json": "expires_at"
+                        "json": "expiresAt"
                       }
                     },
                     "quota": {
                       "type": "integer",
-                      "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                      "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                       "minimum": 0
                     },
-                    "accepted_by": {
+                    "acceptedBy": {
                       "type": "array",
+                      "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -169,74 +177,73 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string"
                       },
-                      "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                       "x-oapi-codegen-extra-tags": {
                         "db": "accepted_by",
-                        "json": "accepted_by"
+                        "json": "acceptedBy"
                       }
                     },
                     "roles": {
                       "type": "array",
+                      "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                      },
-                      "description": "The roles of the invitation."
+                        "description": "Role identifier granted by this invitation on acceptance."
+                      }
                     },
                     "teams": {
                       "type": "array",
+                      "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                      },
-                      "description": "The teams of the invitation."
+                        "description": "Team identifier the invited user is added to on acceptance."
+                      }
                     },
                     "status": {
+                      "description": "Activation status of the invitation.",
                       "x-go-type": "InvitationStatus",
                       "type": "string",
                       "enum": [
                         "enabled",
                         "disabled"
-                      ],
-                      "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                      ]
                     },
-                    "created_at": {
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was created",
+                      "description": "Timestamp when the invitation was created.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "json": "created_at"
+                        "json": "createdAt"
                       }
                     },
-                    "updated_at": {
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was last updated",
+                      "description": "Timestamp when the invitation was last updated.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "json": "updated_at"
+                        "json": "updatedAt"
                       }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the invitation was deleted, if applicable.",
                       "x-go-type": "core.NullTime",
                       "x-go-type-import": {
                         "path": "github.com/meshery/schemas/models/core"
                       },
-                      "description": "Timestamp when the invitation was deleted, if applicable",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -300,9 +307,10 @@ const InvitationSchema: Record<string, unknown> = {
             "name": "invitationId",
             "in": "path",
             "required": true,
-            "description": "The ID of the invitation",
+            "description": "The ID of the invitation.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -366,9 +374,10 @@ const InvitationSchema: Record<string, unknown> = {
             "name": "invitationId",
             "in": "path",
             "required": true,
-            "description": "The ID of the invitation",
+            "description": "The ID of the invitation.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -381,7 +390,7 @@ const InvitationSchema: Record<string, unknown> = {
                 "required": [
                   "name",
                   "description",
-                  "org_id",
+                  "orgId",
                   "emails",
                   "roles",
                   "teams",
@@ -401,11 +410,12 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "owner_id": {
+                  "ownerId": {
                     "description": "ID of the user who created the invitation.",
+                    "x-go-name": "OwnerID",
                     "x-oapi-codegen-extra-tags": {
                       "db": "owner_id",
-                      "json": "owner_id,omitempty"
+                      "json": "ownerId,omitempty"
                     },
                     "type": "string",
                     "format": "uuid",
@@ -414,12 +424,12 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "is_default": {
+                  "isDefault": {
                     "type": "boolean",
                     "description": "Indicates whether the invitation is a default invitation (open invite).",
                     "x-oapi-codegen-extra-tags": {
                       "db": "is_default",
-                      "json": "is_default,omitempty"
+                      "json": "isDefault,omitempty"
                     }
                   },
                   "name": {
@@ -442,32 +452,34 @@ const InvitationSchema: Record<string, unknown> = {
                     "items": {
                       "type": "string",
                       "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
+                      "description": "Email address or pattern that is permitted to use this invitation.",
                       "x-go-type": "string"
                     },
-                    "description": "The emails of the invitation."
+                    "description": "Email addresses or patterns this invitation is valid for."
                   },
-                  "org_id": {
+                  "orgId": {
                     "type": "string",
+                    "format": "uuid",
                     "description": "ID of the organization to which the user is invited.",
+                    "x-go-name": "OrgID",
                     "x-oapi-codegen-extra-tags": {
                       "db": "org_id",
-                      "json": "org_id"
+                      "json": "orgId"
                     },
-                    "maxLength": 500,
-                    "format": "uuid"
+                    "maxLength": 500
                   },
-                  "expires_at": {
+                  "expiresAt": {
                     "type": "string",
                     "format": "date-time",
                     "description": "Timestamp when the invitation expires, if applicable.",
                     "x-oapi-codegen-extra-tags": {
                       "db": "expires_at",
-                      "json": "expires_at,omitempty"
+                      "json": "expiresAt,omitempty"
                     }
                   },
                   "quota": {
                     "type": "integer",
-                    "description": "Quota for the invitation.",
+                    "description": "Quota for the invitation; limits the number of users that can accept it.",
                     "minimum": 0
                   },
                   "roles": {
@@ -477,9 +489,10 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/lib/pq"
                     },
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Role identifier granted by this invitation on acceptance."
                     },
-                    "description": "The roles of the invitation."
+                    "description": "Roles that the user will have when accepting the invitation."
                   },
                   "teams": {
                     "type": "array",
@@ -488,18 +501,19 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/lib/pq"
                     },
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Team identifier the invited user is added to on acceptance."
                     },
-                    "description": "The teams of the invitation."
+                    "description": "Teams that the user will be added to when accepting the invitation."
                   },
                   "status": {
+                    "description": "Activation status of the invitation.",
                     "x-go-type": "InvitationStatus",
                     "type": "string",
                     "enum": [
                       "enabled",
                       "disabled"
-                    ],
-                    "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                    ]
                   }
                 }
               }
@@ -509,6 +523,7 @@ const InvitationSchema: Record<string, unknown> = {
         },
         "responses": {
           "200": {
+            "description": "Invitation updated",
             "content": {
               "application/json": {
                 "schema": {
@@ -517,35 +532,26 @@ const InvitationSchema: Record<string, unknown> = {
                   "description": "Invitation entity schema.",
                   "required": [
                     "id",
-                    "owner_id",
+                    "ownerId",
                     "name",
                     "description",
-                    "org_id",
-                    "accepted_by",
+                    "orgId",
+                    "acceptedBy",
                     "emails",
                     "roles",
                     "teams",
                     "status",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the invitation, also used as the invitation code.",
                       "x-go-name": "ID",
-                      "description": "Unique identifier for the invitation , is also used as the invitation code",
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    },
-                    "owner_id": {
-                      "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner_id",
-                        "json": "owner_id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -554,27 +560,42 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "is_default": {
+                    "ownerId": {
+                      "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                      "x-go-name": "OwnerID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "owner_id",
+                        "json": "ownerId"
+                      },
+                      "type": "string",
+                      "format": "uuid",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    },
+                    "isDefault": {
                       "type": "boolean",
-                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "is_default",
-                        "json": "is_default"
+                        "json": "isDefault"
                       }
                     },
                     "name": {
                       "type": "string",
-                      "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                      "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                       "minLength": 1,
                       "maxLength": 255
                     },
                     "description": {
                       "type": "string",
-                      "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                      "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                       "maxLength": 5000
                     },
                     "emails": {
                       "type": "array",
+                      "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -582,16 +603,16 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string",
                         "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                        "x-go-type": "string",
-                        "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                      },
-                      "description": "The emails of the invitation."
+                        "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                        "x-go-type": "string"
+                      }
                     },
-                    "org_id": {
-                      "description": "ID of the organization to which the user is invited",
+                    "orgId": {
+                      "description": "ID of the organization to which the user is invited.",
+                      "x-go-name": "OrgID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "org_id",
-                        "json": "org_id"
+                        "json": "orgId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -600,22 +621,23 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "expires_at": {
+                    "expiresAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                      "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "expires_at",
-                        "json": "expires_at"
+                        "json": "expiresAt"
                       }
                     },
                     "quota": {
                       "type": "integer",
-                      "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                      "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                       "minimum": 0
                     },
-                    "accepted_by": {
+                    "acceptedBy": {
                       "type": "array",
+                      "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -623,74 +645,73 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string"
                       },
-                      "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                       "x-oapi-codegen-extra-tags": {
                         "db": "accepted_by",
-                        "json": "accepted_by"
+                        "json": "acceptedBy"
                       }
                     },
                     "roles": {
                       "type": "array",
+                      "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                      },
-                      "description": "The roles of the invitation."
+                        "description": "Role identifier granted by this invitation on acceptance."
+                      }
                     },
                     "teams": {
                       "type": "array",
+                      "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                      },
-                      "description": "The teams of the invitation."
+                        "description": "Team identifier the invited user is added to on acceptance."
+                      }
                     },
                     "status": {
+                      "description": "Activation status of the invitation.",
                       "x-go-type": "InvitationStatus",
                       "type": "string",
                       "enum": [
                         "enabled",
                         "disabled"
-                      ],
-                      "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                      ]
                     },
-                    "created_at": {
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was created",
+                      "description": "Timestamp when the invitation was created.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "json": "created_at"
+                        "json": "createdAt"
                       }
                     },
-                    "updated_at": {
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was last updated",
+                      "description": "Timestamp when the invitation was last updated.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "json": "updated_at"
+                        "json": "updatedAt"
                       }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the invitation was deleted, if applicable.",
                       "x-go-type": "core.NullTime",
                       "x-go-type-import": {
                         "path": "github.com/meshery/schemas/models/core"
                       },
-                      "description": "Timestamp when the invitation was deleted, if applicable",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -753,10 +774,12 @@ const InvitationSchema: Record<string, unknown> = {
         "summary": "Get all invitations for the organization",
         "responses": {
           "200": {
+            "description": "Invitations page",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Paginated list of invitations for an organization.",
                   "required": [
                     "data",
                     "total"
@@ -770,35 +793,26 @@ const InvitationSchema: Record<string, unknown> = {
                         "description": "Invitation entity schema.",
                         "required": [
                           "id",
-                          "owner_id",
+                          "ownerId",
                           "name",
                           "description",
-                          "org_id",
-                          "accepted_by",
+                          "orgId",
+                          "acceptedBy",
                           "emails",
                           "roles",
                           "teams",
                           "status",
-                          "created_at",
-                          "updated_at",
-                          "deleted_at"
+                          "createdAt",
+                          "updatedAt",
+                          "deletedAt"
                         ],
                         "properties": {
                           "id": {
+                            "description": "Unique identifier for the invitation, also used as the invitation code.",
                             "x-go-name": "ID",
-                            "description": "Unique identifier for the invitation , is also used as the invitation code",
-                            "type": "string",
-                            "format": "uuid",
-                            "x-go-type": "uuid.UUID",
-                            "x-go-type-import": {
-                              "path": "github.com/gofrs/uuid"
-                            }
-                          },
-                          "owner_id": {
-                            "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "owner_id",
-                              "json": "owner_id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -807,27 +821,42 @@ const InvitationSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "is_default": {
+                          "ownerId": {
+                            "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                            "x-go-name": "OwnerID",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "owner_id",
+                              "json": "ownerId"
+                            },
+                            "type": "string",
+                            "format": "uuid",
+                            "x-go-type": "uuid.UUID",
+                            "x-go-type-import": {
+                              "path": "github.com/gofrs/uuid"
+                            }
+                          },
+                          "isDefault": {
                             "type": "boolean",
-                            "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                            "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "is_default",
-                              "json": "is_default"
+                              "json": "isDefault"
                             }
                           },
                           "name": {
                             "type": "string",
-                            "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                            "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                             "minLength": 1,
                             "maxLength": 255
                           },
                           "description": {
                             "type": "string",
-                            "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                            "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                             "maxLength": 5000
                           },
                           "emails": {
                             "type": "array",
+                            "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                             "x-go-type": "pq.StringArray",
                             "x-go-type-import": {
                               "path": "github.com/lib/pq"
@@ -835,16 +864,16 @@ const InvitationSchema: Record<string, unknown> = {
                             "items": {
                               "type": "string",
                               "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                              "x-go-type": "string",
-                              "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                            },
-                            "description": "The emails of the invitation."
+                              "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                              "x-go-type": "string"
+                            }
                           },
-                          "org_id": {
-                            "description": "ID of the organization to which the user is invited",
+                          "orgId": {
+                            "description": "ID of the organization to which the user is invited.",
+                            "x-go-name": "OrgID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "org_id",
-                              "json": "org_id"
+                              "json": "orgId"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -853,22 +882,23 @@ const InvitationSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "expires_at": {
+                          "expiresAt": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                            "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "expires_at",
-                              "json": "expires_at"
+                              "json": "expiresAt"
                             }
                           },
                           "quota": {
                             "type": "integer",
-                            "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                            "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                             "minimum": 0
                           },
-                          "accepted_by": {
+                          "acceptedBy": {
                             "type": "array",
+                            "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                             "x-go-type": "pq.StringArray",
                             "x-go-type-import": {
                               "path": "github.com/lib/pq"
@@ -876,87 +906,86 @@ const InvitationSchema: Record<string, unknown> = {
                             "items": {
                               "type": "string"
                             },
-                            "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                             "x-oapi-codegen-extra-tags": {
                               "db": "accepted_by",
-                              "json": "accepted_by"
+                              "json": "acceptedBy"
                             }
                           },
                           "roles": {
                             "type": "array",
+                            "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                             "x-go-type": "pq.StringArray",
                             "x-go-type-import": {
                               "path": "github.com/lib/pq"
                             },
                             "items": {
                               "type": "string",
-                              "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                            },
-                            "description": "The roles of the invitation."
+                              "description": "Role identifier granted by this invitation on acceptance."
+                            }
                           },
                           "teams": {
                             "type": "array",
+                            "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                             "x-go-type": "pq.StringArray",
                             "x-go-type-import": {
                               "path": "github.com/lib/pq"
                             },
                             "items": {
                               "type": "string",
-                              "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                            },
-                            "description": "The teams of the invitation."
+                              "description": "Team identifier the invited user is added to on acceptance."
+                            }
                           },
                           "status": {
+                            "description": "Activation status of the invitation.",
                             "x-go-type": "InvitationStatus",
                             "type": "string",
                             "enum": [
                               "enabled",
                               "disabled"
-                            ],
-                            "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                            ]
                           },
-                          "created_at": {
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Timestamp when the invitation was created",
+                            "description": "Timestamp when the invitation was created.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "json": "created_at"
+                              "json": "createdAt"
                             }
                           },
-                          "updated_at": {
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "description": "Timestamp when the invitation was last updated",
+                            "description": "Timestamp when the invitation was last updated.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "json": "updated_at"
+                              "json": "updatedAt"
                             }
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
+                            "description": "Timestamp when the invitation was deleted, if applicable.",
                             "x-go-type": "core.NullTime",
                             "x-go-type-import": {
                               "path": "github.com/meshery/schemas/models/core"
                             },
-                            "description": "Timestamp when the invitation was deleted, if applicable",
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "json": "deleted_at"
+                              "json": "deletedAt"
                             }
                           }
                         },
                         "x-go-type": "Invitation"
                       },
-                      "description": "List of invitations",
+                      "description": "Invitations returned on the current page.",
                       "x-oapi-codegen-extra-tags": {
                         "json": "data"
                       }
                     },
                     "total": {
                       "type": "integer",
-                      "description": "Total number of invitations available",
+                      "description": "Total number of invitations available.",
                       "x-oapi-codegen-extra-tags": {
                         "json": "total"
                       },
@@ -1017,7 +1046,7 @@ const InvitationSchema: Record<string, unknown> = {
                 "required": [
                   "name",
                   "description",
-                  "org_id",
+                  "orgId",
                   "emails",
                   "roles",
                   "teams",
@@ -1037,11 +1066,12 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "owner_id": {
+                  "ownerId": {
                     "description": "ID of the user who created the invitation.",
+                    "x-go-name": "OwnerID",
                     "x-oapi-codegen-extra-tags": {
                       "db": "owner_id",
-                      "json": "owner_id,omitempty"
+                      "json": "ownerId,omitempty"
                     },
                     "type": "string",
                     "format": "uuid",
@@ -1050,12 +1080,12 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "is_default": {
+                  "isDefault": {
                     "type": "boolean",
                     "description": "Indicates whether the invitation is a default invitation (open invite).",
                     "x-oapi-codegen-extra-tags": {
                       "db": "is_default",
-                      "json": "is_default,omitempty"
+                      "json": "isDefault,omitempty"
                     }
                   },
                   "name": {
@@ -1078,32 +1108,34 @@ const InvitationSchema: Record<string, unknown> = {
                     "items": {
                       "type": "string",
                       "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
+                      "description": "Email address or pattern that is permitted to use this invitation.",
                       "x-go-type": "string"
                     },
-                    "description": "The emails of the invitation."
+                    "description": "Email addresses or patterns this invitation is valid for."
                   },
-                  "org_id": {
+                  "orgId": {
                     "type": "string",
+                    "format": "uuid",
                     "description": "ID of the organization to which the user is invited.",
+                    "x-go-name": "OrgID",
                     "x-oapi-codegen-extra-tags": {
                       "db": "org_id",
-                      "json": "org_id"
+                      "json": "orgId"
                     },
-                    "maxLength": 500,
-                    "format": "uuid"
+                    "maxLength": 500
                   },
-                  "expires_at": {
+                  "expiresAt": {
                     "type": "string",
                     "format": "date-time",
                     "description": "Timestamp when the invitation expires, if applicable.",
                     "x-oapi-codegen-extra-tags": {
                       "db": "expires_at",
-                      "json": "expires_at,omitempty"
+                      "json": "expiresAt,omitempty"
                     }
                   },
                   "quota": {
                     "type": "integer",
-                    "description": "Quota for the invitation.",
+                    "description": "Quota for the invitation; limits the number of users that can accept it.",
                     "minimum": 0
                   },
                   "roles": {
@@ -1113,9 +1145,10 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/lib/pq"
                     },
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Role identifier granted by this invitation on acceptance."
                     },
-                    "description": "The roles of the invitation."
+                    "description": "Roles that the user will have when accepting the invitation."
                   },
                   "teams": {
                     "type": "array",
@@ -1124,18 +1157,19 @@ const InvitationSchema: Record<string, unknown> = {
                       "path": "github.com/lib/pq"
                     },
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Team identifier the invited user is added to on acceptance."
                     },
-                    "description": "The teams of the invitation."
+                    "description": "Teams that the user will be added to when accepting the invitation."
                   },
                   "status": {
+                    "description": "Activation status of the invitation.",
                     "x-go-type": "InvitationStatus",
                     "type": "string",
                     "enum": [
                       "enabled",
                       "disabled"
-                    ],
-                    "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                    ]
                   }
                 }
               }
@@ -1145,6 +1179,7 @@ const InvitationSchema: Record<string, unknown> = {
         },
         "responses": {
           "201": {
+            "description": "Invitation created",
             "content": {
               "application/json": {
                 "schema": {
@@ -1153,35 +1188,26 @@ const InvitationSchema: Record<string, unknown> = {
                   "description": "Invitation entity schema.",
                   "required": [
                     "id",
-                    "owner_id",
+                    "ownerId",
                     "name",
                     "description",
-                    "org_id",
-                    "accepted_by",
+                    "orgId",
+                    "acceptedBy",
                     "emails",
                     "roles",
                     "teams",
                     "status",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the invitation, also used as the invitation code.",
                       "x-go-name": "ID",
-                      "description": "Unique identifier for the invitation , is also used as the invitation code",
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    },
-                    "owner_id": {
-                      "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner_id",
-                        "json": "owner_id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1190,27 +1216,42 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "is_default": {
+                    "ownerId": {
+                      "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                      "x-go-name": "OwnerID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "owner_id",
+                        "json": "ownerId"
+                      },
+                      "type": "string",
+                      "format": "uuid",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    },
+                    "isDefault": {
                       "type": "boolean",
-                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "is_default",
-                        "json": "is_default"
+                        "json": "isDefault"
                       }
                     },
                     "name": {
                       "type": "string",
-                      "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                      "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                       "minLength": 1,
                       "maxLength": 255
                     },
                     "description": {
                       "type": "string",
-                      "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                      "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                       "maxLength": 5000
                     },
                     "emails": {
                       "type": "array",
+                      "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -1218,16 +1259,16 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string",
                         "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                        "x-go-type": "string",
-                        "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                      },
-                      "description": "The emails of the invitation."
+                        "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                        "x-go-type": "string"
+                      }
                     },
-                    "org_id": {
-                      "description": "ID of the organization to which the user is invited",
+                    "orgId": {
+                      "description": "ID of the organization to which the user is invited.",
+                      "x-go-name": "OrgID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "org_id",
-                        "json": "org_id"
+                        "json": "orgId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1236,22 +1277,23 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "expires_at": {
+                    "expiresAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                      "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "expires_at",
-                        "json": "expires_at"
+                        "json": "expiresAt"
                       }
                     },
                     "quota": {
                       "type": "integer",
-                      "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                      "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                       "minimum": 0
                     },
-                    "accepted_by": {
+                    "acceptedBy": {
                       "type": "array",
+                      "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -1259,74 +1301,73 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string"
                       },
-                      "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                       "x-oapi-codegen-extra-tags": {
                         "db": "accepted_by",
-                        "json": "accepted_by"
+                        "json": "acceptedBy"
                       }
                     },
                     "roles": {
                       "type": "array",
+                      "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                      },
-                      "description": "The roles of the invitation."
+                        "description": "Role identifier granted by this invitation on acceptance."
+                      }
                     },
                     "teams": {
                       "type": "array",
+                      "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                      },
-                      "description": "The teams of the invitation."
+                        "description": "Team identifier the invited user is added to on acceptance."
+                      }
                     },
                     "status": {
+                      "description": "Activation status of the invitation.",
                       "x-go-type": "InvitationStatus",
                       "type": "string",
                       "enum": [
                         "enabled",
                         "disabled"
-                      ],
-                      "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                      ]
                     },
-                    "created_at": {
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was created",
+                      "description": "Timestamp when the invitation was created.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "json": "created_at"
+                        "json": "createdAt"
                       }
                     },
-                    "updated_at": {
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was last updated",
+                      "description": "Timestamp when the invitation was last updated.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "json": "updated_at"
+                        "json": "updatedAt"
                       }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the invitation was deleted, if applicable.",
                       "x-go-type": "core.NullTime",
                       "x-go-type-import": {
                         "path": "github.com/meshery/schemas/models/core"
                       },
-                      "description": "Timestamp when the invitation was deleted, if applicable",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -1382,14 +1423,16 @@ const InvitationSchema: Record<string, unknown> = {
             "name": "invitationId",
             "in": "path",
             "required": true,
-            "description": "The ID of the invitation",
+            "description": "The ID of the invitation.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "Invitation accepted",
             "content": {
               "application/json": {
                 "schema": {
@@ -1398,35 +1441,26 @@ const InvitationSchema: Record<string, unknown> = {
                   "description": "Invitation entity schema.",
                   "required": [
                     "id",
-                    "owner_id",
+                    "ownerId",
                     "name",
                     "description",
-                    "org_id",
-                    "accepted_by",
+                    "orgId",
+                    "acceptedBy",
                     "emails",
                     "roles",
                     "teams",
                     "status",
-                    "created_at",
-                    "updated_at",
-                    "deleted_at"
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
                   ],
                   "properties": {
                     "id": {
+                      "description": "Unique identifier for the invitation, also used as the invitation code.",
                       "x-go-name": "ID",
-                      "description": "Unique identifier for the invitation , is also used as the invitation code",
-                      "type": "string",
-                      "format": "uuid",
-                      "x-go-type": "uuid.UUID",
-                      "x-go-type-import": {
-                        "path": "github.com/gofrs/uuid"
-                      }
-                    },
-                    "owner_id": {
-                      "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner_id",
-                        "json": "owner_id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1435,27 +1469,42 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "is_default": {
+                    "ownerId": {
+                      "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                      "x-go-name": "OwnerID",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "owner_id",
+                        "json": "ownerId"
+                      },
+                      "type": "string",
+                      "format": "uuid",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    },
+                    "isDefault": {
                       "type": "boolean",
-                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                      "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "is_default",
-                        "json": "is_default"
+                        "json": "isDefault"
                       }
                     },
                     "name": {
                       "type": "string",
-                      "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                      "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                       "minLength": 1,
                       "maxLength": 255
                     },
                     "description": {
                       "type": "string",
-                      "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                      "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                       "maxLength": 5000
                     },
                     "emails": {
                       "type": "array",
+                      "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -1463,16 +1512,16 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string",
                         "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                        "x-go-type": "string",
-                        "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                      },
-                      "description": "The emails of the invitation."
+                        "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                        "x-go-type": "string"
+                      }
                     },
-                    "org_id": {
-                      "description": "ID of the organization to which the user is invited",
+                    "orgId": {
+                      "description": "ID of the organization to which the user is invited.",
+                      "x-go-name": "OrgID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "org_id",
-                        "json": "org_id"
+                        "json": "orgId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1481,22 +1530,23 @@ const InvitationSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "expires_at": {
+                    "expiresAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                      "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "expires_at",
-                        "json": "expires_at"
+                        "json": "expiresAt"
                       }
                     },
                     "quota": {
                       "type": "integer",
-                      "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                      "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                       "minimum": 0
                     },
-                    "accepted_by": {
+                    "acceptedBy": {
                       "type": "array",
+                      "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
@@ -1504,74 +1554,73 @@ const InvitationSchema: Record<string, unknown> = {
                       "items": {
                         "type": "string"
                       },
-                      "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                       "x-oapi-codegen-extra-tags": {
                         "db": "accepted_by",
-                        "json": "accepted_by"
+                        "json": "acceptedBy"
                       }
                     },
                     "roles": {
                       "type": "array",
+                      "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                      },
-                      "description": "The roles of the invitation."
+                        "description": "Role identifier granted by this invitation on acceptance."
+                      }
                     },
                     "teams": {
                       "type": "array",
+                      "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                       "x-go-type": "pq.StringArray",
                       "x-go-type-import": {
                         "path": "github.com/lib/pq"
                       },
                       "items": {
                         "type": "string",
-                        "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                      },
-                      "description": "The teams of the invitation."
+                        "description": "Team identifier the invited user is added to on acceptance."
+                      }
                     },
                     "status": {
+                      "description": "Activation status of the invitation.",
                       "x-go-type": "InvitationStatus",
                       "type": "string",
                       "enum": [
                         "enabled",
                         "disabled"
-                      ],
-                      "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                      ]
                     },
-                    "created_at": {
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was created",
+                      "description": "Timestamp when the invitation was created.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "json": "created_at"
+                        "json": "createdAt"
                       }
                     },
-                    "updated_at": {
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "description": "Timestamp when the invitation was last updated",
+                      "description": "Timestamp when the invitation was last updated.",
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "json": "updated_at"
+                        "json": "updatedAt"
                       }
                     },
-                    "deleted_at": {
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
+                      "description": "Timestamp when the invitation was deleted, if applicable.",
                       "x-go-type": "core.NullTime",
                       "x-go-type-import": {
                         "path": "github.com/meshery/schemas/models/core"
                       },
-                      "description": "Timestamp when the invitation was deleted, if applicable",
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "json": "deleted_at"
+                        "json": "deletedAt"
                       }
                     }
                   }
@@ -1637,9 +1686,10 @@ const InvitationSchema: Record<string, unknown> = {
             "name": "orgId",
             "in": "path",
             "required": true,
-            "description": "The ID of the organization",
+            "description": "The ID of the organization.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1833,29 +1883,40 @@ const InvitationSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "Paginated list of signup requests.",
                   "properties": {
                     "page": {
                       "type": "integer",
                       "description": "Current page number of the result set.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
                       "description": "Number of items per page.",
-                      "minimum": 1
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
                       "description": "Total number of items available.",
-                      "minimum": 0
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "description": "A signup request submitted for organization access.",
                         "additionalProperties": true
                       },
-                      "description": "The data of the signuprequestspage."
+                      "description": "Signup requests returned on the current page."
                     }
                   }
                 }
@@ -2046,22 +2107,24 @@ const InvitationSchema: Record<string, unknown> = {
   },
   "components": {
     "parameters": {
-      "organization_id": {
-        "name": "organizationId",
+      "orgId": {
+        "name": "orgId",
         "in": "path",
         "required": true,
-        "description": "The ID of the organization",
+        "description": "The ID of the organization.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       },
-      "invitation_id": {
+      "invitationId": {
         "name": "invitationId",
         "in": "path",
         "required": true,
-        "description": "The ID of the invitation",
+        "description": "The ID of the invitation.",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid"
         }
       }
     },
@@ -2126,6 +2189,7 @@ const InvitationSchema: Record<string, unknown> = {
       },
       "InvitationsPage": {
         "type": "object",
+        "description": "Paginated list of invitations for an organization.",
         "required": [
           "data",
           "total"
@@ -2139,35 +2203,26 @@ const InvitationSchema: Record<string, unknown> = {
               "description": "Invitation entity schema.",
               "required": [
                 "id",
-                "owner_id",
+                "ownerId",
                 "name",
                 "description",
-                "org_id",
-                "accepted_by",
+                "orgId",
+                "acceptedBy",
                 "emails",
                 "roles",
                 "teams",
                 "status",
-                "created_at",
-                "updated_at",
-                "deleted_at"
+                "createdAt",
+                "updatedAt",
+                "deletedAt"
               ],
               "properties": {
                 "id": {
+                  "description": "Unique identifier for the invitation, also used as the invitation code.",
                   "x-go-name": "ID",
-                  "description": "Unique identifier for the invitation , is also used as the invitation code",
-                  "type": "string",
-                  "format": "uuid",
-                  "x-go-type": "uuid.UUID",
-                  "x-go-type-import": {
-                    "path": "github.com/gofrs/uuid"
-                  }
-                },
-                "owner_id": {
-                  "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "owner_id",
-                    "json": "owner_id"
+                    "db": "id",
+                    "json": "id"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -2176,27 +2231,42 @@ const InvitationSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "is_default": {
+                "ownerId": {
+                  "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+                  "x-go-name": "OwnerID",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "owner_id",
+                    "json": "ownerId"
+                  },
+                  "type": "string",
+                  "format": "uuid",
+                  "x-go-type": "uuid.UUID",
+                  "x-go-type-import": {
+                    "path": "github.com/gofrs/uuid"
+                  }
+                },
+                "isDefault": {
                   "type": "boolean",
-                  "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+                  "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "is_default",
-                    "json": "is_default"
+                    "json": "isDefault"
                   }
                 },
                 "name": {
                   "type": "string",
-                  "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+                  "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
                   "minLength": 1,
                   "maxLength": 255
                 },
                 "description": {
                   "type": "string",
-                  "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+                  "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
                   "maxLength": 5000
                 },
                 "emails": {
                   "type": "array",
+                  "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
                   "x-go-type": "pq.StringArray",
                   "x-go-type-import": {
                     "path": "github.com/lib/pq"
@@ -2204,16 +2274,16 @@ const InvitationSchema: Record<string, unknown> = {
                   "items": {
                     "type": "string",
                     "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-                    "x-go-type": "string",
-                    "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-                  },
-                  "description": "The emails of the invitation."
+                    "description": "Exact email address or the email address pattern for which the invitation is valid.",
+                    "x-go-type": "string"
+                  }
                 },
-                "org_id": {
-                  "description": "ID of the organization to which the user is invited",
+                "orgId": {
+                  "description": "ID of the organization to which the user is invited.",
+                  "x-go-name": "OrgID",
                   "x-oapi-codegen-extra-tags": {
                     "db": "org_id",
-                    "json": "org_id"
+                    "json": "orgId"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -2222,22 +2292,23 @@ const InvitationSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "expires_at": {
+                "expiresAt": {
                   "type": "string",
                   "format": "date-time",
-                  "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+                  "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "expires_at",
-                    "json": "expires_at"
+                    "json": "expiresAt"
                   }
                 },
                 "quota": {
                   "type": "integer",
-                  "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+                  "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
                   "minimum": 0
                 },
-                "accepted_by": {
+                "acceptedBy": {
                   "type": "array",
+                  "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
                   "x-go-type": "pq.StringArray",
                   "x-go-type-import": {
                     "path": "github.com/lib/pq"
@@ -2245,87 +2316,86 @@ const InvitationSchema: Record<string, unknown> = {
                   "items": {
                     "type": "string"
                   },
-                  "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
                   "x-oapi-codegen-extra-tags": {
                     "db": "accepted_by",
-                    "json": "accepted_by"
+                    "json": "acceptedBy"
                   }
                 },
                 "roles": {
                   "type": "array",
+                  "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
                   "x-go-type": "pq.StringArray",
                   "x-go-type-import": {
                     "path": "github.com/lib/pq"
                   },
                   "items": {
                     "type": "string",
-                    "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-                  },
-                  "description": "The roles of the invitation."
+                    "description": "Role identifier granted by this invitation on acceptance."
+                  }
                 },
                 "teams": {
                   "type": "array",
+                  "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
                   "x-go-type": "pq.StringArray",
                   "x-go-type-import": {
                     "path": "github.com/lib/pq"
                   },
                   "items": {
                     "type": "string",
-                    "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-                  },
-                  "description": "The teams of the invitation."
+                    "description": "Team identifier the invited user is added to on acceptance."
+                  }
                 },
                 "status": {
+                  "description": "Activation status of the invitation.",
                   "x-go-type": "InvitationStatus",
                   "type": "string",
                   "enum": [
                     "enabled",
                     "disabled"
-                  ],
-                  "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+                  ]
                 },
-                "created_at": {
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "description": "Timestamp when the invitation was created",
+                  "description": "Timestamp when the invitation was created.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "json": "created_at"
+                    "json": "createdAt"
                   }
                 },
-                "updated_at": {
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "description": "Timestamp when the invitation was last updated",
+                  "description": "Timestamp when the invitation was last updated.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "json": "updated_at"
+                    "json": "updatedAt"
                   }
                 },
-                "deleted_at": {
+                "deletedAt": {
                   "type": "string",
                   "format": "date-time",
+                  "description": "Timestamp when the invitation was deleted, if applicable.",
                   "x-go-type": "core.NullTime",
                   "x-go-type-import": {
                     "path": "github.com/meshery/schemas/models/core"
                   },
-                  "description": "Timestamp when the invitation was deleted, if applicable",
                   "x-oapi-codegen-extra-tags": {
                     "db": "deleted_at",
-                    "json": "deleted_at"
+                    "json": "deletedAt"
                   }
                 }
               },
               "x-go-type": "Invitation"
             },
-            "description": "List of invitations",
+            "description": "Invitations returned on the current page.",
             "x-oapi-codegen-extra-tags": {
               "json": "data"
             }
           },
           "total": {
             "type": "integer",
-            "description": "Total number of invitations available",
+            "description": "Total number of invitations available.",
             "x-oapi-codegen-extra-tags": {
               "json": "total"
             },
@@ -2335,33 +2405,45 @@ const InvitationSchema: Record<string, unknown> = {
       },
       "SignupRequest": {
         "type": "object",
+        "description": "A signup request submitted for organization access.",
         "additionalProperties": true
       },
       "SignupRequestsPage": {
         "type": "object",
+        "description": "Paginated list of signup requests.",
         "properties": {
           "page": {
             "type": "integer",
             "description": "Current page number of the result set.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true
           },
-          "page_size": {
+          "pageSize": {
             "type": "integer",
             "description": "Number of items per page.",
-            "minimum": 1
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           },
-          "total_count": {
+          "totalCount": {
             "type": "integer",
             "description": "Total number of items available.",
-            "minimum": 0
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "data": {
             "type": "array",
             "items": {
               "type": "object",
+              "description": "A signup request submitted for organization access.",
               "additionalProperties": true
             },
-            "description": "The data of the signuprequestspage."
+            "description": "Signup requests returned on the current page."
           }
         }
       },
@@ -2371,7 +2453,7 @@ const InvitationSchema: Record<string, unknown> = {
         "required": [
           "name",
           "description",
-          "org_id",
+          "orgId",
           "emails",
           "roles",
           "teams",
@@ -2391,11 +2473,12 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "owner_id": {
+          "ownerId": {
             "description": "ID of the user who created the invitation.",
+            "x-go-name": "OwnerID",
             "x-oapi-codegen-extra-tags": {
               "db": "owner_id",
-              "json": "owner_id,omitempty"
+              "json": "ownerId,omitempty"
             },
             "type": "string",
             "format": "uuid",
@@ -2404,12 +2487,12 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "is_default": {
+          "isDefault": {
             "type": "boolean",
             "description": "Indicates whether the invitation is a default invitation (open invite).",
             "x-oapi-codegen-extra-tags": {
               "db": "is_default",
-              "json": "is_default,omitempty"
+              "json": "isDefault,omitempty"
             }
           },
           "name": {
@@ -2432,32 +2515,34 @@ const InvitationSchema: Record<string, unknown> = {
             "items": {
               "type": "string",
               "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
+              "description": "Email address or pattern that is permitted to use this invitation.",
               "x-go-type": "string"
             },
-            "description": "The emails of the invitation."
+            "description": "Email addresses or patterns this invitation is valid for."
           },
-          "org_id": {
+          "orgId": {
             "type": "string",
+            "format": "uuid",
             "description": "ID of the organization to which the user is invited.",
+            "x-go-name": "OrgID",
             "x-oapi-codegen-extra-tags": {
               "db": "org_id",
-              "json": "org_id"
+              "json": "orgId"
             },
-            "maxLength": 500,
-            "format": "uuid"
+            "maxLength": 500
           },
-          "expires_at": {
+          "expiresAt": {
             "type": "string",
             "format": "date-time",
             "description": "Timestamp when the invitation expires, if applicable.",
             "x-oapi-codegen-extra-tags": {
               "db": "expires_at",
-              "json": "expires_at,omitempty"
+              "json": "expiresAt,omitempty"
             }
           },
           "quota": {
             "type": "integer",
-            "description": "Quota for the invitation.",
+            "description": "Quota for the invitation; limits the number of users that can accept it.",
             "minimum": 0
           },
           "roles": {
@@ -2467,9 +2552,10 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/lib/pq"
             },
             "items": {
-              "type": "string"
+              "type": "string",
+              "description": "Role identifier granted by this invitation on acceptance."
             },
-            "description": "The roles of the invitation."
+            "description": "Roles that the user will have when accepting the invitation."
           },
           "teams": {
             "type": "array",
@@ -2478,18 +2564,19 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/lib/pq"
             },
             "items": {
-              "type": "string"
+              "type": "string",
+              "description": "Team identifier the invited user is added to on acceptance."
             },
-            "description": "The teams of the invitation."
+            "description": "Teams that the user will be added to when accepting the invitation."
           },
           "status": {
+            "description": "Activation status of the invitation.",
             "x-go-type": "InvitationStatus",
             "type": "string",
             "enum": [
               "enabled",
               "disabled"
-            ],
-            "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+            ]
           }
         }
       },
@@ -2499,7 +2586,7 @@ const InvitationSchema: Record<string, unknown> = {
           "enabled",
           "disabled"
         ],
-        "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+        "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive. Disabled invitations can be re-enabled later."
       },
       "Invitation": {
         "type": "object",
@@ -2507,35 +2594,26 @@ const InvitationSchema: Record<string, unknown> = {
         "description": "Invitation entity schema.",
         "required": [
           "id",
-          "owner_id",
+          "ownerId",
           "name",
           "description",
-          "org_id",
-          "accepted_by",
+          "orgId",
+          "acceptedBy",
           "emails",
           "roles",
           "teams",
           "status",
-          "created_at",
-          "updated_at",
-          "deleted_at"
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
         ],
         "properties": {
           "id": {
+            "description": "Unique identifier for the invitation, also used as the invitation code.",
             "x-go-name": "ID",
-            "description": "Unique identifier for the invitation , is also used as the invitation code",
-            "type": "string",
-            "format": "uuid",
-            "x-go-type": "uuid.UUID",
-            "x-go-type-import": {
-              "path": "github.com/gofrs/uuid"
-            }
-          },
-          "owner_id": {
-            "description": "ID of the user who created the invitation, this is used to track who created the invitation and can be used for auditing purposes",
             "x-oapi-codegen-extra-tags": {
-              "db": "owner_id",
-              "json": "owner_id"
+              "db": "id",
+              "json": "id"
             },
             "type": "string",
             "format": "uuid",
@@ -2544,27 +2622,42 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "is_default": {
+          "ownerId": {
+            "description": "ID of the user who created the invitation. Tracks who created the invitation for auditing purposes.",
+            "x-go-name": "OwnerID",
+            "x-oapi-codegen-extra-tags": {
+              "db": "owner_id",
+              "json": "ownerId"
+            },
+            "type": "string",
+            "format": "uuid",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          },
+          "isDefault": {
             "type": "boolean",
-            "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain, a organization can only have one default invitation",
+            "description": "Indicates whether the invitation is a default invitation (open invite), which can be used to assign users when signing up from fqdn or custom domain. An organization can only have one default invitation.",
             "x-oapi-codegen-extra-tags": {
               "db": "is_default",
-              "json": "is_default"
+              "json": "isDefault"
             }
           },
           "name": {
             "type": "string",
-            "description": "Name of the invitation, which can be used to identify the invitation, required and cant be empty string,",
+            "description": "Name of the invitation, which can be used to identify it. Required; cannot be an empty string.",
             "minLength": 1,
             "maxLength": 255
           },
           "description": {
             "type": "string",
-            "description": "Description of the invitation, which can be used to provide additional information about the invitation, null or empty string means the invitation does not have a description",
+            "description": "Description of the invitation, which can be used to provide additional context. Null or empty string means the invitation does not have a description.",
             "maxLength": 5000
           },
           "emails": {
             "type": "array",
+            "description": "Email addresses or patterns for which the invitation is valid. Null means the invitation is valid for any email address.",
             "x-go-type": "pq.StringArray",
             "x-go-type-import": {
               "path": "github.com/lib/pq"
@@ -2572,16 +2665,16 @@ const InvitationSchema: Record<string, unknown> = {
             "items": {
               "type": "string",
               "pattern": "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}|@[a-zA-Z0-9.-]+\\.[a-z]{2,})$",
-              "x-go-type": "string",
-              "description": "Exact email address or the email address pattern for which the invitation is valid , null means the invitation is valid for all email addresses"
-            },
-            "description": "The emails of the invitation."
+              "description": "Exact email address or the email address pattern for which the invitation is valid.",
+              "x-go-type": "string"
+            }
           },
-          "org_id": {
-            "description": "ID of the organization to which the user is invited",
+          "orgId": {
+            "description": "ID of the organization to which the user is invited.",
+            "x-go-name": "OrgID",
             "x-oapi-codegen-extra-tags": {
               "db": "org_id",
-              "json": "org_id"
+              "json": "orgId"
             },
             "type": "string",
             "format": "uuid",
@@ -2590,22 +2683,23 @@ const InvitationSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "expires_at": {
+          "expiresAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Timestamp when the invitation expires, if applicable , null or empty string means the invitation does not expire",
+            "description": "Timestamp when the invitation expires, if applicable. Null or empty means the invitation does not expire.",
             "x-oapi-codegen-extra-tags": {
               "db": "expires_at",
-              "json": "expires_at"
+              "json": "expiresAt"
             }
           },
           "quota": {
             "type": "integer",
-            "description": "Quota for the invitation, which can be used to limit the number of users that can accept the invitation, null or empty string means the invitation does not have a quota",
+            "description": "Quota for the invitation; limits the number of users that can accept it. Null or empty means the invitation is unlimited.",
             "minimum": 0
           },
-          "accepted_by": {
+          "acceptedBy": {
             "type": "array",
+            "description": "List of user ids that have already accepted the invitation. Empty means the invitation has not been used yet.",
             "x-go-type": "pq.StringArray",
             "x-go-type-import": {
               "path": "github.com/lib/pq"
@@ -2613,74 +2707,73 @@ const InvitationSchema: Record<string, unknown> = {
             "items": {
               "type": "string"
             },
-            "description": "List of user ids that have already accepted the invitation, null or empty string means the invitation has not been used yet",
             "x-oapi-codegen-extra-tags": {
               "db": "accepted_by",
-              "json": "accepted_by"
+              "json": "acceptedBy"
             }
           },
           "roles": {
             "type": "array",
+            "description": "Roles that the user will have when accepting the invitation. Empty means the invitation does not specify any roles.",
             "x-go-type": "pq.StringArray",
             "x-go-type-import": {
               "path": "github.com/lib/pq"
             },
             "items": {
               "type": "string",
-              "description": "Roles that the user will have when accepting the invitation, null or empty string means the invitation does not specify any roles"
-            },
-            "description": "The roles of the invitation."
+              "description": "Role identifier granted by this invitation on acceptance."
+            }
           },
           "teams": {
             "type": "array",
+            "description": "Teams that the user will be added to when accepting the invitation. Empty means the invitation does not specify any teams.",
             "x-go-type": "pq.StringArray",
             "x-go-type-import": {
               "path": "github.com/lib/pq"
             },
             "items": {
               "type": "string",
-              "description": "Teams that the user will be added to when accepting the invitation, null or empty string means the invitation does not specify any teams"
-            },
-            "description": "The teams of the invitation."
+              "description": "Team identifier the invited user is added to on acceptance."
+            }
           },
           "status": {
+            "description": "Activation status of the invitation.",
             "x-go-type": "InvitationStatus",
             "type": "string",
             "enum": [
               "enabled",
               "disabled"
-            ],
-            "description": "Status of the invitation, where enabled means the invitation is active and can be used, disabled means the invitation is no longer valid and is temporarily inactive, disabled invitations can be re-enabled later."
+            ]
           },
-          "created_at": {
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Timestamp when the invitation was created",
+            "description": "Timestamp when the invitation was created.",
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "json": "created_at"
+              "json": "createdAt"
             }
           },
-          "updated_at": {
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Timestamp when the invitation was last updated",
+            "description": "Timestamp when the invitation was last updated.",
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "json": "updated_at"
+              "json": "updatedAt"
             }
           },
-          "deleted_at": {
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
+            "description": "Timestamp when the invitation was deleted, if applicable.",
             "x-go-type": "core.NullTime",
             "x-go-type-import": {
               "path": "github.com/meshery/schemas/models/core"
             },
-            "description": "Timestamp when the invitation was deleted, if applicable",
             "x-oapi-codegen-extra-tags": {
               "db": "deleted_at",
-              "json": "deleted_at"
+              "json": "deletedAt"
             }
           }
         }
