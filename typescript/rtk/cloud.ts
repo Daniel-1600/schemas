@@ -5721,17 +5721,17 @@ export type GetConnectionsApiResponse = /** status 200 Paginated list of connect
       /** Environment description */
       description: string;
       /** Environment organization ID */
-      organization_id: string;
+      organizationId: string;
       /** Environment owner */
       owner?: string;
-      /** Timestamp when the resource was created. */
-      created_at?: string;
+      /** Timestamp when the environment was created. */
+      createdAt?: string;
       /** Additional metadata associated with the environment. */
       metadata?: object;
-      /** Timestamp when the resource was updated. */
-      updated_at?: string;
+      /** Timestamp when the environment was last updated. */
+      updatedAt?: string;
       /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-      deleted_at?: string | null;
+      deletedAt?: string | null;
     }[];
     /** Specifies the version of the schema used for the definition. */
     schemaVersion: string;
@@ -5822,17 +5822,17 @@ export type RegisterConnectionApiResponse = /** status 201 Connection registered
     /** Environment description */
     description: string;
     /** Environment organization ID */
-    organization_id: string;
+    organizationId: string;
     /** Environment owner */
     owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
     /** Additional metadata associated with the environment. */
     metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
     /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
+    deletedAt?: string | null;
   }[];
   /** Specifies the version of the schema used for the definition. */
   schemaVersion: string;
@@ -5903,17 +5903,17 @@ export type GetConnectionByIdApiResponse = /** status 200 Connection details */ 
     /** Environment description */
     description: string;
     /** Environment organization ID */
-    organization_id: string;
+    organizationId: string;
     /** Environment owner */
     owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
     /** Additional metadata associated with the environment. */
     metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
     /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
+    deletedAt?: string | null;
   }[];
   /** Specifies the version of the schema used for the definition. */
   schemaVersion: string;
@@ -5966,17 +5966,17 @@ export type UpdateConnectionApiResponse = /** status 200 Connection updated */ {
     /** Environment description */
     description: string;
     /** Environment organization ID */
-    organization_id: string;
+    organizationId: string;
     /** Environment owner */
     owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
     /** Additional metadata associated with the environment. */
     metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
     /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
+    deletedAt?: string | null;
   }[];
   /** Specifies the version of the schema used for the definition. */
   schemaVersion: string;
@@ -13871,9 +13871,12 @@ export type UnassignTeamFromWorkspaceApiArg = {
   teamId: string;
 };
 export type GetEnvironmentsOfWorkspaceApiResponse = /** status 200 Environments */ {
+  /** Zero-based page index returned in this response. */
   page?: number;
-  page_size?: number;
-  total_count?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
   /** Environments associated with this resource. */
   environments?: {
     /** ID */
@@ -13885,17 +13888,17 @@ export type GetEnvironmentsOfWorkspaceApiResponse = /** status 200 Environments 
     /** Environment description */
     description: string;
     /** Environment organization ID */
-    organization_id: string;
+    organizationId: string;
     /** Environment owner */
     owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
+    /** Timestamp when the environment was created. */
+    createdAt?: string;
     /** Additional metadata associated with the environment. */
     metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
+    /** Timestamp when the environment was last updated. */
+    updatedAt?: string;
     /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
+    deletedAt?: string | null;
   }[];
 };
 export type GetEnvironmentsOfWorkspaceApiArg = {
@@ -14083,7 +14086,7 @@ export type GetDesignsOfWorkspaceApiResponse = /** status 200 Designs */ {
             deleted_at?: string;
             /** Associated environments for this connection */
             environments?: {
-              /** ID */
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
               id: string;
               /** Specifies the version of the schema to which the environment conforms. */
               schemaVersion: string;
@@ -14091,9 +14094,9 @@ export type GetDesignsOfWorkspaceApiResponse = /** status 200 Designs */ {
               name: string;
               /** Environment description */
               description: string;
-              /** Environment organization ID */
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
               organization_id: string;
-              /** Environment owner */
+              /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
               owner?: string;
               /** Timestamp when the resource was created. */
               created_at?: string;

@@ -100,7 +100,7 @@ export interface components {
         id: string;
         /**
          * @description Specifies the version of the schema to which the environment conforms.
-         * @default environments.meshery.io/v1beta1
+         * @default environments.meshery.io/v1beta3
          * @example [
          *   "v1",
          *   "v1alpha1",
@@ -119,7 +119,7 @@ export interface components {
          * Format: uuid
          * @description Environment organization ID
          */
-        organization_id: string;
+        organizationId: string;
         /**
          * Format: uuid
          * @description Environment owner
@@ -127,21 +127,21 @@ export interface components {
         owner?: string;
         /**
          * Format: date-time
-         * @description Timestamp when the resource was created.
+         * @description Timestamp when the environment was created.
          */
-        created_at?: string;
+        createdAt?: string;
         /** @description Additional metadata associated with the environment. */
         metadata?: { [key: string]: unknown };
         /**
          * Format: date-time
-         * @description Timestamp when the resource was updated.
+         * @description Timestamp when the environment was last updated.
          */
-        updated_at?: string;
+        updatedAt?: string;
         /**
          * Format: date-time
          * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
          */
-        deleted_at?: string | null;
+        deletedAt?: string | null;
       }[];
       /**
        * @description Specifies the version of the schema used for the definition.
@@ -223,7 +223,7 @@ export interface components {
           id: string;
           /**
            * @description Specifies the version of the schema to which the environment conforms.
-           * @default environments.meshery.io/v1beta1
+           * @default environments.meshery.io/v1beta3
            * @example [
            *   "v1",
            *   "v1alpha1",
@@ -242,7 +242,7 @@ export interface components {
            * Format: uuid
            * @description Environment organization ID
            */
-          organization_id: string;
+          organizationId: string;
           /**
            * Format: uuid
            * @description Environment owner
@@ -250,21 +250,21 @@ export interface components {
           owner?: string;
           /**
            * Format: date-time
-           * @description Timestamp when the resource was created.
+           * @description Timestamp when the environment was created.
            */
-          created_at?: string;
+          createdAt?: string;
           /** @description Additional metadata associated with the environment. */
           metadata?: { [key: string]: unknown };
           /**
            * Format: date-time
-           * @description Timestamp when the resource was updated.
+           * @description Timestamp when the environment was last updated.
            */
-          updated_at?: string;
+          updatedAt?: string;
           /**
            * Format: date-time
            * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
            */
-          deleted_at?: string | null;
+          deletedAt?: string | null;
         }[];
         /**
          * @description Specifies the version of the schema used for the definition.
@@ -594,7 +594,7 @@ export interface operations {
                 id: string;
                 /**
                  * @description Specifies the version of the schema to which the environment conforms.
-                 * @default environments.meshery.io/v1beta1
+                 * @default environments.meshery.io/v1beta3
                  * @example [
                  *   "v1",
                  *   "v1alpha1",
@@ -613,7 +613,7 @@ export interface operations {
                  * Format: uuid
                  * @description Environment organization ID
                  */
-                organization_id: string;
+                organizationId: string;
                 /**
                  * Format: uuid
                  * @description Environment owner
@@ -621,21 +621,21 @@ export interface operations {
                 owner?: string;
                 /**
                  * Format: date-time
-                 * @description Timestamp when the resource was created.
+                 * @description Timestamp when the environment was created.
                  */
-                created_at?: string;
+                createdAt?: string;
                 /** @description Additional metadata associated with the environment. */
                 metadata?: { [key: string]: unknown };
                 /**
                  * Format: date-time
-                 * @description Timestamp when the resource was updated.
+                 * @description Timestamp when the environment was last updated.
                  */
-                updated_at?: string;
+                updatedAt?: string;
                 /**
                  * Format: date-time
                  * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
                  */
-                deleted_at?: string | null;
+                deletedAt?: string | null;
               }[];
               /**
                * @description Specifies the version of the schema used for the definition.
@@ -745,7 +745,7 @@ export interface operations {
               id: string;
               /**
                * @description Specifies the version of the schema to which the environment conforms.
-               * @default environments.meshery.io/v1beta1
+               * @default environments.meshery.io/v1beta3
                * @example [
                *   "v1",
                *   "v1alpha1",
@@ -764,7 +764,7 @@ export interface operations {
                * Format: uuid
                * @description Environment organization ID
                */
-              organization_id: string;
+              organizationId: string;
               /**
                * Format: uuid
                * @description Environment owner
@@ -772,21 +772,21 @@ export interface operations {
               owner?: string;
               /**
                * Format: date-time
-               * @description Timestamp when the resource was created.
+               * @description Timestamp when the environment was created.
                */
-              created_at?: string;
+              createdAt?: string;
               /** @description Additional metadata associated with the environment. */
               metadata?: { [key: string]: unknown };
               /**
                * Format: date-time
-               * @description Timestamp when the resource was updated.
+               * @description Timestamp when the environment was last updated.
                */
-              updated_at?: string;
+              updatedAt?: string;
               /**
                * Format: date-time
                * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
                */
-              deleted_at?: string | null;
+              deletedAt?: string | null;
             }[];
             /**
              * @description Specifies the version of the schema used for the definition.
@@ -929,7 +929,7 @@ export interface operations {
               id: string;
               /**
                * @description Specifies the version of the schema to which the environment conforms.
-               * @default environments.meshery.io/v1beta1
+               * @default environments.meshery.io/v1beta3
                * @example [
                *   "v1",
                *   "v1alpha1",
@@ -948,7 +948,7 @@ export interface operations {
                * Format: uuid
                * @description Environment organization ID
                */
-              organization_id: string;
+              organizationId: string;
               /**
                * Format: uuid
                * @description Environment owner
@@ -956,21 +956,21 @@ export interface operations {
               owner?: string;
               /**
                * Format: date-time
-               * @description Timestamp when the resource was created.
+               * @description Timestamp when the environment was created.
                */
-              created_at?: string;
+              createdAt?: string;
               /** @description Additional metadata associated with the environment. */
               metadata?: { [key: string]: unknown };
               /**
                * Format: date-time
-               * @description Timestamp when the resource was updated.
+               * @description Timestamp when the environment was last updated.
                */
-              updated_at?: string;
+              updatedAt?: string;
               /**
                * Format: date-time
                * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
                */
-              deleted_at?: string | null;
+              deletedAt?: string | null;
             }[];
             /**
              * @description Specifies the version of the schema used for the definition.
@@ -1083,7 +1083,7 @@ export interface operations {
               id: string;
               /**
                * @description Specifies the version of the schema to which the environment conforms.
-               * @default environments.meshery.io/v1beta1
+               * @default environments.meshery.io/v1beta3
                * @example [
                *   "v1",
                *   "v1alpha1",
@@ -1102,7 +1102,7 @@ export interface operations {
                * Format: uuid
                * @description Environment organization ID
                */
-              organization_id: string;
+              organizationId: string;
               /**
                * Format: uuid
                * @description Environment owner
@@ -1110,21 +1110,21 @@ export interface operations {
               owner?: string;
               /**
                * Format: date-time
-               * @description Timestamp when the resource was created.
+               * @description Timestamp when the environment was created.
                */
-              created_at?: string;
+              createdAt?: string;
               /** @description Additional metadata associated with the environment. */
               metadata?: { [key: string]: unknown };
               /**
                * Format: date-time
-               * @description Timestamp when the resource was updated.
+               * @description Timestamp when the environment was last updated.
                */
-              updated_at?: string;
+              updatedAt?: string;
               /**
                * Format: date-time
                * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
                */
-              deleted_at?: string | null;
+              deletedAt?: string | null;
             }[];
             /**
              * @description Specifies the version of the schema used for the definition.

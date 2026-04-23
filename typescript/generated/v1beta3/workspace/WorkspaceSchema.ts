@@ -1825,16 +1825,30 @@ const WorkspaceSchema: Record<string, unknown> = {
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
+                  "description": "Paginated list of environments.",
                   "properties": {
                     "page": {
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
                       "type": "integer",
                       "x-go-type-skip-optional-pointer": true
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      },
                       "type": "integer",
                       "x-go-type-skip-optional-pointer": true
                     },
-                    "total_count": {
+                    "totalCount": {
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      },
                       "type": "integer",
                       "x-go-type-skip-optional-pointer": true
                     },
@@ -1851,22 +1865,22 @@ const WorkspaceSchema: Record<string, unknown> = {
                         "type": "object",
                         "example": {
                           "id": "00000000-0000-0000-0000-000000000000",
-                          "schemaVersion": "environments.meshery.io/v1beta1",
+                          "schemaVersion": "environments.meshery.io/v1beta3",
                           "name": "Production Environment",
                           "description": "Connections and credentials for the production cluster.",
-                          "organization_id": "00000000-0000-0000-0000-000000000000",
+                          "organizationId": "00000000-0000-0000-0000-000000000000",
                           "owner": "00000000-0000-0000-0000-000000000000",
-                          "created_at": "0001-01-01T00:00:00Z",
+                          "createdAt": "0001-01-01T00:00:00Z",
                           "metadata": {},
-                          "updated_at": "0001-01-01T00:00:00Z",
-                          "deleted_at": null
+                          "updatedAt": "0001-01-01T00:00:00Z",
+                          "deletedAt": null
                         },
                         "required": [
                           "id",
                           "schemaVersion",
                           "name",
                           "description",
-                          "organization_id"
+                          "organizationId"
                         ],
                         "properties": {
                           "id": {
@@ -1875,7 +1889,7 @@ const WorkspaceSchema: Record<string, unknown> = {
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "id",
-                              "yaml": "id"
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1888,11 +1902,11 @@ const WorkspaceSchema: Record<string, unknown> = {
                             "description": "Specifies the version of the schema to which the environment conforms.",
                             "x-order": 2,
                             "x-oapi-codegen-extra-tags": {
-                              "yaml": "schemaVersion",
+                              "json": "schemaVersion",
                               "db": "-",
                               "gorm": "-"
                             },
-                            "default": "environments.meshery.io/v1beta1",
+                            "default": "environments.meshery.io/v1beta3",
                             "type": "string",
                             "minLength": 2,
                             "maxLength": 100,
@@ -1909,7 +1923,7 @@ const WorkspaceSchema: Record<string, unknown> = {
                           "name": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "name",
-                              "yaml": "name"
+                              "json": "name"
                             },
                             "x-order": 3,
                             "type": "string",
@@ -1919,18 +1933,18 @@ const WorkspaceSchema: Record<string, unknown> = {
                           "description": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "description",
-                              "yaml": "description"
+                              "json": "description"
                             },
                             "x-order": 4,
                             "type": "string",
                             "maxLength": 1000,
                             "description": "Environment description"
                           },
-                          "organization_id": {
+                          "organizationId": {
                             "x-go-name": "OrganizationID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_id",
-                              "yaml": "organization_id"
+                              "json": "organizationId"
                             },
                             "x-order": 5,
                             "description": "Environment organization ID",
@@ -1944,7 +1958,7 @@ const WorkspaceSchema: Record<string, unknown> = {
                           "owner": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "owner",
-                              "yaml": "owner"
+                              "json": "owner"
                             },
                             "x-order": 6,
                             "description": "Environment owner",
@@ -1955,57 +1969,55 @@ const WorkspaceSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "created_at": {
+                          "createdAt": {
+                            "description": "Timestamp when the environment was created.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at",
+                              "yaml": "created_at",
+                              "json": "createdAt"
+                            },
                             "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "CreatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at",
-                              "yaml": "created_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
                           "metadata": {
                             "description": "Additional metadata associated with the environment.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "metadata",
-                              "yaml": "metadata"
+                              "json": "metadata"
                             },
                             "x-order": 8,
                             "x-go-type": "core.Map",
                             "x-go-type-skip-optional-pointer": true,
                             "type": "object"
                           },
-                          "updated_at": {
+                          "updatedAt": {
+                            "description": "Timestamp when the environment was last updated.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at",
+                              "yaml": "updated_at",
+                              "json": "updatedAt"
+                            },
                             "x-order": 9,
-                            "description": "Timestamp when the resource was updated.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "UpdatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                             "nullable": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "yaml": "deleted_at"
+                              "json": "deletedAt"
                             },
                             "x-go-type": "core.NullTime",
                             "x-go-import": "database/sql",
                             "x-order": 10,
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
                             "type": "string",
                             "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
@@ -3200,18 +3212,18 @@ const WorkspaceSchema: Record<string, unknown> = {
                                                     ],
                                                     "properties": {
                                                       "id": {
-                                                        "description": "ID",
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                                        "x-go-type": "uuid.UUID",
+                                                        "x-go-type-import": {
+                                                          "path": "github.com/gofrs/uuid"
+                                                        },
                                                         "x-order": 1,
                                                         "x-go-name": "ID",
                                                         "x-oapi-codegen-extra-tags": {
                                                           "db": "id",
                                                           "yaml": "id"
-                                                        },
-                                                        "type": "string",
-                                                        "format": "uuid",
-                                                        "x-go-type": "uuid.UUID",
-                                                        "x-go-type-import": {
-                                                          "path": "github.com/gofrs/uuid"
                                                         }
                                                       },
                                                       "schemaVersion": {
@@ -3257,33 +3269,33 @@ const WorkspaceSchema: Record<string, unknown> = {
                                                         "description": "Environment description"
                                                       },
                                                       "organization_id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                                        "x-go-type": "uuid.UUID",
+                                                        "x-go-type-import": {
+                                                          "path": "github.com/gofrs/uuid"
+                                                        },
                                                         "x-go-name": "OrganizationID",
                                                         "x-oapi-codegen-extra-tags": {
                                                           "db": "organization_id",
                                                           "yaml": "organization_id"
                                                         },
-                                                        "x-order": 5,
-                                                        "description": "Environment organization ID",
+                                                        "x-order": 5
+                                                      },
+                                                      "owner": {
                                                         "type": "string",
                                                         "format": "uuid",
+                                                        "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                                         "x-go-type": "uuid.UUID",
                                                         "x-go-type-import": {
                                                           "path": "github.com/gofrs/uuid"
-                                                        }
-                                                      },
-                                                      "owner": {
+                                                        },
                                                         "x-oapi-codegen-extra-tags": {
                                                           "db": "owner",
                                                           "yaml": "owner"
                                                         },
-                                                        "x-order": 6,
-                                                        "description": "Environment owner",
-                                                        "type": "string",
-                                                        "format": "uuid",
-                                                        "x-go-type": "uuid.UUID",
-                                                        "x-go-type-import": {
-                                                          "path": "github.com/gofrs/uuid"
-                                                        }
+                                                        "x-order": 6
                                                       },
                                                       "created_at": {
                                                         "x-order": 7,
@@ -10726,18 +10738,18 @@ const WorkspaceSchema: Record<string, unknown> = {
                                           ],
                                           "properties": {
                                             "id": {
-                                              "description": "ID",
+                                              "type": "string",
+                                              "format": "uuid",
+                                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                              "x-go-type": "uuid.UUID",
+                                              "x-go-type-import": {
+                                                "path": "github.com/gofrs/uuid"
+                                              },
                                               "x-order": 1,
                                               "x-go-name": "ID",
                                               "x-oapi-codegen-extra-tags": {
                                                 "db": "id",
                                                 "yaml": "id"
-                                              },
-                                              "type": "string",
-                                              "format": "uuid",
-                                              "x-go-type": "uuid.UUID",
-                                              "x-go-type-import": {
-                                                "path": "github.com/gofrs/uuid"
                                               }
                                             },
                                             "schemaVersion": {
@@ -10783,33 +10795,33 @@ const WorkspaceSchema: Record<string, unknown> = {
                                               "description": "Environment description"
                                             },
                                             "organization_id": {
+                                              "type": "string",
+                                              "format": "uuid",
+                                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                                              "x-go-type": "uuid.UUID",
+                                              "x-go-type-import": {
+                                                "path": "github.com/gofrs/uuid"
+                                              },
                                               "x-go-name": "OrganizationID",
                                               "x-oapi-codegen-extra-tags": {
                                                 "db": "organization_id",
                                                 "yaml": "organization_id"
                                               },
-                                              "x-order": 5,
-                                              "description": "Environment organization ID",
+                                              "x-order": 5
+                                            },
+                                            "owner": {
                                               "type": "string",
                                               "format": "uuid",
+                                              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
                                               "x-go-type": "uuid.UUID",
                                               "x-go-type-import": {
                                                 "path": "github.com/gofrs/uuid"
-                                              }
-                                            },
-                                            "owner": {
+                                              },
                                               "x-oapi-codegen-extra-tags": {
                                                 "db": "owner",
                                                 "yaml": "owner"
                                               },
-                                              "x-order": 6,
-                                              "description": "Environment owner",
-                                              "type": "string",
-                                              "format": "uuid",
-                                              "x-go-type": "uuid.UUID",
-                                              "x-go-type-import": {
-                                                "path": "github.com/gofrs/uuid"
-                                              }
+                                              "x-order": 6
                                             },
                                             "created_at": {
                                               "x-order": 7,

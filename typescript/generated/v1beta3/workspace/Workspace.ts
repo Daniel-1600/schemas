@@ -756,7 +756,7 @@ export interface components {
                 environments?: {
                   /**
                    * Format: uuid
-                   * @description ID
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                    */
                   id: string;
                   /**
@@ -778,12 +778,12 @@ export interface components {
                   description: string;
                   /**
                    * Format: uuid
-                   * @description Environment organization ID
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                    */
                   organization_id: string;
                   /**
                    * Format: uuid
-                   * @description Environment owner
+                   * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                    */
                   owner?: string;
                   /**
@@ -2899,9 +2899,12 @@ export interface operations {
       200: {
         content: {
           "application/json": {
+            /** @description Zero-based page index returned in this response. */
             page?: number;
-            page_size?: number;
-            total_count?: number;
+            /** @description Maximum number of items returned on each page. */
+            pageSize?: number;
+            /** @description Total number of items across all pages. */
+            totalCount?: number;
             /** @description Environments associated with this resource. */
             environments?: {
               /**
@@ -2911,7 +2914,7 @@ export interface operations {
               id: string;
               /**
                * @description Specifies the version of the schema to which the environment conforms.
-               * @default environments.meshery.io/v1beta1
+               * @default environments.meshery.io/v1beta3
                * @example [
                *   "v1",
                *   "v1alpha1",
@@ -2930,7 +2933,7 @@ export interface operations {
                * Format: uuid
                * @description Environment organization ID
                */
-              organization_id: string;
+              organizationId: string;
               /**
                * Format: uuid
                * @description Environment owner
@@ -2938,21 +2941,21 @@ export interface operations {
               owner?: string;
               /**
                * Format: date-time
-               * @description Timestamp when the resource was created.
+               * @description Timestamp when the environment was created.
                */
-              created_at?: string;
+              createdAt?: string;
               /** @description Additional metadata associated with the environment. */
               metadata?: { [key: string]: unknown };
               /**
                * Format: date-time
-               * @description Timestamp when the resource was updated.
+               * @description Timestamp when the environment was last updated.
                */
-              updated_at?: string;
+              updatedAt?: string;
               /**
                * Format: date-time
                * @description Timestamp when the environment was soft deleted. Null while the environment remains active.
                */
-              deleted_at?: string | null;
+              deletedAt?: string | null;
             }[];
           };
         };
@@ -3370,7 +3373,7 @@ export interface operations {
                       environments?: {
                         /**
                          * Format: uuid
-                         * @description ID
+                         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                          */
                         id: string;
                         /**
@@ -3392,12 +3395,12 @@ export interface operations {
                         description: string;
                         /**
                          * Format: uuid
-                         * @description Environment organization ID
+                         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                          */
                         organization_id: string;
                         /**
                          * Format: uuid
-                         * @description Environment owner
+                         * @description A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
                          */
                         owner?: string;
                         /**

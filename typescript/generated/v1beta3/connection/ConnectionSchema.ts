@@ -352,10 +352,10 @@ const ConnectionSchema: Record<string, unknown> = {
                             "type": "array",
                             "description": "Associated environments for this connection",
                             "items": {
-                              "x-go-type": "*environmentv1beta1.Environment",
+                              "x-go-type": "*environmentv1beta3.Environment",
                               "x-go-type-import": {
-                                "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                                "name": "environmentv1beta1"
+                                "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                                "name": "environmentv1beta3"
                               },
                               "$id": "https://schemas.meshery.io/environment.yaml",
                               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -365,22 +365,22 @@ const ConnectionSchema: Record<string, unknown> = {
                               "type": "object",
                               "example": {
                                 "id": "00000000-0000-0000-0000-000000000000",
-                                "schemaVersion": "environments.meshery.io/v1beta1",
+                                "schemaVersion": "environments.meshery.io/v1beta3",
                                 "name": "Production Environment",
                                 "description": "Connections and credentials for the production cluster.",
-                                "organization_id": "00000000-0000-0000-0000-000000000000",
+                                "organizationId": "00000000-0000-0000-0000-000000000000",
                                 "owner": "00000000-0000-0000-0000-000000000000",
-                                "created_at": "0001-01-01T00:00:00Z",
+                                "createdAt": "0001-01-01T00:00:00Z",
                                 "metadata": {},
-                                "updated_at": "0001-01-01T00:00:00Z",
-                                "deleted_at": null
+                                "updatedAt": "0001-01-01T00:00:00Z",
+                                "deletedAt": null
                               },
                               "required": [
                                 "id",
                                 "schemaVersion",
                                 "name",
                                 "description",
-                                "organization_id"
+                                "organizationId"
                               ],
                               "properties": {
                                 "id": {
@@ -389,7 +389,7 @@ const ConnectionSchema: Record<string, unknown> = {
                                   "x-go-name": "ID",
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "id",
-                                    "yaml": "id"
+                                    "json": "id"
                                   },
                                   "type": "string",
                                   "format": "uuid",
@@ -402,11 +402,11 @@ const ConnectionSchema: Record<string, unknown> = {
                                   "description": "Specifies the version of the schema to which the environment conforms.",
                                   "x-order": 2,
                                   "x-oapi-codegen-extra-tags": {
-                                    "yaml": "schemaVersion",
+                                    "json": "schemaVersion",
                                     "db": "-",
                                     "gorm": "-"
                                   },
-                                  "default": "environments.meshery.io/v1beta1",
+                                  "default": "environments.meshery.io/v1beta3",
                                   "type": "string",
                                   "minLength": 2,
                                   "maxLength": 100,
@@ -423,7 +423,7 @@ const ConnectionSchema: Record<string, unknown> = {
                                 "name": {
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "name",
-                                    "yaml": "name"
+                                    "json": "name"
                                   },
                                   "x-order": 3,
                                   "type": "string",
@@ -433,18 +433,18 @@ const ConnectionSchema: Record<string, unknown> = {
                                 "description": {
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "description",
-                                    "yaml": "description"
+                                    "json": "description"
                                   },
                                   "x-order": 4,
                                   "type": "string",
                                   "maxLength": 1000,
                                   "description": "Environment description"
                                 },
-                                "organization_id": {
+                                "organizationId": {
                                   "x-go-name": "OrganizationID",
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "organization_id",
-                                    "yaml": "organization_id"
+                                    "json": "organizationId"
                                   },
                                   "x-order": 5,
                                   "description": "Environment organization ID",
@@ -458,7 +458,7 @@ const ConnectionSchema: Record<string, unknown> = {
                                 "owner": {
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "owner",
-                                    "yaml": "owner"
+                                    "json": "owner"
                                   },
                                   "x-order": 6,
                                   "description": "Environment owner",
@@ -469,57 +469,55 @@ const ConnectionSchema: Record<string, unknown> = {
                                     "path": "github.com/gofrs/uuid"
                                   }
                                 },
-                                "created_at": {
+                                "createdAt": {
+                                  "description": "Timestamp when the environment was created.",
+                                  "x-oapi-codegen-extra-tags": {
+                                    "db": "created_at",
+                                    "yaml": "created_at",
+                                    "json": "createdAt"
+                                  },
                                   "x-order": 7,
-                                  "description": "Timestamp when the resource was created.",
                                   "x-go-type": "time.Time",
                                   "type": "string",
                                   "format": "date-time",
                                   "x-go-name": "CreatedAt",
-                                  "x-oapi-codegen-extra-tags": {
-                                    "db": "created_at",
-                                    "yaml": "created_at"
-                                  },
                                   "x-go-type-skip-optional-pointer": true
                                 },
                                 "metadata": {
                                   "description": "Additional metadata associated with the environment.",
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "metadata",
-                                    "yaml": "metadata"
+                                    "json": "metadata"
                                   },
                                   "x-order": 8,
                                   "x-go-type": "core.Map",
                                   "x-go-type-skip-optional-pointer": true,
                                   "type": "object"
                                 },
-                                "updated_at": {
+                                "updatedAt": {
+                                  "description": "Timestamp when the environment was last updated.",
+                                  "x-oapi-codegen-extra-tags": {
+                                    "db": "updated_at",
+                                    "yaml": "updated_at",
+                                    "json": "updatedAt"
+                                  },
                                   "x-order": 9,
-                                  "description": "Timestamp when the resource was updated.",
                                   "x-go-type": "time.Time",
                                   "type": "string",
                                   "format": "date-time",
                                   "x-go-name": "UpdatedAt",
-                                  "x-oapi-codegen-extra-tags": {
-                                    "db": "updated_at",
-                                    "yaml": "updated_at"
-                                  },
                                   "x-go-type-skip-optional-pointer": true
                                 },
-                                "deleted_at": {
+                                "deletedAt": {
                                   "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                                   "nullable": true,
                                   "x-oapi-codegen-extra-tags": {
                                     "db": "deleted_at",
-                                    "yaml": "deleted_at"
+                                    "json": "deletedAt"
                                   },
                                   "x-go-type": "core.NullTime",
                                   "x-go-import": "database/sql",
                                   "x-order": 10,
-                                  "x-go-type-import": {
-                                    "name": "meshcore",
-                                    "path": "github.com/meshery/schemas/models/core"
-                                  },
                                   "type": "string",
                                   "format": "date-time",
                                   "x-go-type-skip-optional-pointer": true
@@ -911,10 +909,10 @@ const ConnectionSchema: Record<string, unknown> = {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environmentv1beta1.Environment",
+                        "x-go-type": "*environmentv1beta3.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                          "name": "environmentv1beta1"
+                          "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                          "name": "environmentv1beta3"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -924,22 +922,22 @@ const ConnectionSchema: Record<string, unknown> = {
                         "type": "object",
                         "example": {
                           "id": "00000000-0000-0000-0000-000000000000",
-                          "schemaVersion": "environments.meshery.io/v1beta1",
+                          "schemaVersion": "environments.meshery.io/v1beta3",
                           "name": "Production Environment",
                           "description": "Connections and credentials for the production cluster.",
-                          "organization_id": "00000000-0000-0000-0000-000000000000",
+                          "organizationId": "00000000-0000-0000-0000-000000000000",
                           "owner": "00000000-0000-0000-0000-000000000000",
-                          "created_at": "0001-01-01T00:00:00Z",
+                          "createdAt": "0001-01-01T00:00:00Z",
                           "metadata": {},
-                          "updated_at": "0001-01-01T00:00:00Z",
-                          "deleted_at": null
+                          "updatedAt": "0001-01-01T00:00:00Z",
+                          "deletedAt": null
                         },
                         "required": [
                           "id",
                           "schemaVersion",
                           "name",
                           "description",
-                          "organization_id"
+                          "organizationId"
                         ],
                         "properties": {
                           "id": {
@@ -948,7 +946,7 @@ const ConnectionSchema: Record<string, unknown> = {
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "id",
-                              "yaml": "id"
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -961,11 +959,11 @@ const ConnectionSchema: Record<string, unknown> = {
                             "description": "Specifies the version of the schema to which the environment conforms.",
                             "x-order": 2,
                             "x-oapi-codegen-extra-tags": {
-                              "yaml": "schemaVersion",
+                              "json": "schemaVersion",
                               "db": "-",
                               "gorm": "-"
                             },
-                            "default": "environments.meshery.io/v1beta1",
+                            "default": "environments.meshery.io/v1beta3",
                             "type": "string",
                             "minLength": 2,
                             "maxLength": 100,
@@ -982,7 +980,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "name": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "name",
-                              "yaml": "name"
+                              "json": "name"
                             },
                             "x-order": 3,
                             "type": "string",
@@ -992,18 +990,18 @@ const ConnectionSchema: Record<string, unknown> = {
                           "description": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "description",
-                              "yaml": "description"
+                              "json": "description"
                             },
                             "x-order": 4,
                             "type": "string",
                             "maxLength": 1000,
                             "description": "Environment description"
                           },
-                          "organization_id": {
+                          "organizationId": {
                             "x-go-name": "OrganizationID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_id",
-                              "yaml": "organization_id"
+                              "json": "organizationId"
                             },
                             "x-order": 5,
                             "description": "Environment organization ID",
@@ -1017,7 +1015,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "owner": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "owner",
-                              "yaml": "owner"
+                              "json": "owner"
                             },
                             "x-order": 6,
                             "description": "Environment owner",
@@ -1028,57 +1026,55 @@ const ConnectionSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "created_at": {
+                          "createdAt": {
+                            "description": "Timestamp when the environment was created.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at",
+                              "yaml": "created_at",
+                              "json": "createdAt"
+                            },
                             "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "CreatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at",
-                              "yaml": "created_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
                           "metadata": {
                             "description": "Additional metadata associated with the environment.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "metadata",
-                              "yaml": "metadata"
+                              "json": "metadata"
                             },
                             "x-order": 8,
                             "x-go-type": "core.Map",
                             "x-go-type-skip-optional-pointer": true,
                             "type": "object"
                           },
-                          "updated_at": {
+                          "updatedAt": {
+                            "description": "Timestamp when the environment was last updated.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at",
+                              "yaml": "updated_at",
+                              "json": "updatedAt"
+                            },
                             "x-order": 9,
-                            "description": "Timestamp when the resource was updated.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "UpdatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                             "nullable": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "yaml": "deleted_at"
+                              "json": "deletedAt"
                             },
                             "x-go-type": "core.NullTime",
                             "x-go-import": "database/sql",
                             "x-order": 10,
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
                             "type": "string",
                             "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
@@ -1351,10 +1347,10 @@ const ConnectionSchema: Record<string, unknown> = {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environmentv1beta1.Environment",
+                        "x-go-type": "*environmentv1beta3.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                          "name": "environmentv1beta1"
+                          "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                          "name": "environmentv1beta3"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1364,22 +1360,22 @@ const ConnectionSchema: Record<string, unknown> = {
                         "type": "object",
                         "example": {
                           "id": "00000000-0000-0000-0000-000000000000",
-                          "schemaVersion": "environments.meshery.io/v1beta1",
+                          "schemaVersion": "environments.meshery.io/v1beta3",
                           "name": "Production Environment",
                           "description": "Connections and credentials for the production cluster.",
-                          "organization_id": "00000000-0000-0000-0000-000000000000",
+                          "organizationId": "00000000-0000-0000-0000-000000000000",
                           "owner": "00000000-0000-0000-0000-000000000000",
-                          "created_at": "0001-01-01T00:00:00Z",
+                          "createdAt": "0001-01-01T00:00:00Z",
                           "metadata": {},
-                          "updated_at": "0001-01-01T00:00:00Z",
-                          "deleted_at": null
+                          "updatedAt": "0001-01-01T00:00:00Z",
+                          "deletedAt": null
                         },
                         "required": [
                           "id",
                           "schemaVersion",
                           "name",
                           "description",
-                          "organization_id"
+                          "organizationId"
                         ],
                         "properties": {
                           "id": {
@@ -1388,7 +1384,7 @@ const ConnectionSchema: Record<string, unknown> = {
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "id",
-                              "yaml": "id"
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1401,11 +1397,11 @@ const ConnectionSchema: Record<string, unknown> = {
                             "description": "Specifies the version of the schema to which the environment conforms.",
                             "x-order": 2,
                             "x-oapi-codegen-extra-tags": {
-                              "yaml": "schemaVersion",
+                              "json": "schemaVersion",
                               "db": "-",
                               "gorm": "-"
                             },
-                            "default": "environments.meshery.io/v1beta1",
+                            "default": "environments.meshery.io/v1beta3",
                             "type": "string",
                             "minLength": 2,
                             "maxLength": 100,
@@ -1422,7 +1418,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "name": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "name",
-                              "yaml": "name"
+                              "json": "name"
                             },
                             "x-order": 3,
                             "type": "string",
@@ -1432,18 +1428,18 @@ const ConnectionSchema: Record<string, unknown> = {
                           "description": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "description",
-                              "yaml": "description"
+                              "json": "description"
                             },
                             "x-order": 4,
                             "type": "string",
                             "maxLength": 1000,
                             "description": "Environment description"
                           },
-                          "organization_id": {
+                          "organizationId": {
                             "x-go-name": "OrganizationID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_id",
-                              "yaml": "organization_id"
+                              "json": "organizationId"
                             },
                             "x-order": 5,
                             "description": "Environment organization ID",
@@ -1457,7 +1453,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "owner": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "owner",
-                              "yaml": "owner"
+                              "json": "owner"
                             },
                             "x-order": 6,
                             "description": "Environment owner",
@@ -1468,57 +1464,55 @@ const ConnectionSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "created_at": {
+                          "createdAt": {
+                            "description": "Timestamp when the environment was created.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at",
+                              "yaml": "created_at",
+                              "json": "createdAt"
+                            },
                             "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "CreatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at",
-                              "yaml": "created_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
                           "metadata": {
                             "description": "Additional metadata associated with the environment.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "metadata",
-                              "yaml": "metadata"
+                              "json": "metadata"
                             },
                             "x-order": 8,
                             "x-go-type": "core.Map",
                             "x-go-type-skip-optional-pointer": true,
                             "type": "object"
                           },
-                          "updated_at": {
+                          "updatedAt": {
+                            "description": "Timestamp when the environment was last updated.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at",
+                              "yaml": "updated_at",
+                              "json": "updatedAt"
+                            },
                             "x-order": 9,
-                            "description": "Timestamp when the resource was updated.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "UpdatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                             "nullable": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "yaml": "deleted_at"
+                              "json": "deletedAt"
                             },
                             "x-go-type": "core.NullTime",
                             "x-go-import": "database/sql",
                             "x-order": 10,
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
                             "type": "string",
                             "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
@@ -1892,10 +1886,10 @@ const ConnectionSchema: Record<string, unknown> = {
                       "type": "array",
                       "description": "Associated environments for this connection",
                       "items": {
-                        "x-go-type": "*environmentv1beta1.Environment",
+                        "x-go-type": "*environmentv1beta3.Environment",
                         "x-go-type-import": {
-                          "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                          "name": "environmentv1beta1"
+                          "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                          "name": "environmentv1beta3"
                         },
                         "$id": "https://schemas.meshery.io/environment.yaml",
                         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1905,22 +1899,22 @@ const ConnectionSchema: Record<string, unknown> = {
                         "type": "object",
                         "example": {
                           "id": "00000000-0000-0000-0000-000000000000",
-                          "schemaVersion": "environments.meshery.io/v1beta1",
+                          "schemaVersion": "environments.meshery.io/v1beta3",
                           "name": "Production Environment",
                           "description": "Connections and credentials for the production cluster.",
-                          "organization_id": "00000000-0000-0000-0000-000000000000",
+                          "organizationId": "00000000-0000-0000-0000-000000000000",
                           "owner": "00000000-0000-0000-0000-000000000000",
-                          "created_at": "0001-01-01T00:00:00Z",
+                          "createdAt": "0001-01-01T00:00:00Z",
                           "metadata": {},
-                          "updated_at": "0001-01-01T00:00:00Z",
-                          "deleted_at": null
+                          "updatedAt": "0001-01-01T00:00:00Z",
+                          "deletedAt": null
                         },
                         "required": [
                           "id",
                           "schemaVersion",
                           "name",
                           "description",
-                          "organization_id"
+                          "organizationId"
                         ],
                         "properties": {
                           "id": {
@@ -1929,7 +1923,7 @@ const ConnectionSchema: Record<string, unknown> = {
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "id",
-                              "yaml": "id"
+                              "json": "id"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1942,11 +1936,11 @@ const ConnectionSchema: Record<string, unknown> = {
                             "description": "Specifies the version of the schema to which the environment conforms.",
                             "x-order": 2,
                             "x-oapi-codegen-extra-tags": {
-                              "yaml": "schemaVersion",
+                              "json": "schemaVersion",
                               "db": "-",
                               "gorm": "-"
                             },
-                            "default": "environments.meshery.io/v1beta1",
+                            "default": "environments.meshery.io/v1beta3",
                             "type": "string",
                             "minLength": 2,
                             "maxLength": 100,
@@ -1963,7 +1957,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "name": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "name",
-                              "yaml": "name"
+                              "json": "name"
                             },
                             "x-order": 3,
                             "type": "string",
@@ -1973,18 +1967,18 @@ const ConnectionSchema: Record<string, unknown> = {
                           "description": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "description",
-                              "yaml": "description"
+                              "json": "description"
                             },
                             "x-order": 4,
                             "type": "string",
                             "maxLength": 1000,
                             "description": "Environment description"
                           },
-                          "organization_id": {
+                          "organizationId": {
                             "x-go-name": "OrganizationID",
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_id",
-                              "yaml": "organization_id"
+                              "json": "organizationId"
                             },
                             "x-order": 5,
                             "description": "Environment organization ID",
@@ -1998,7 +1992,7 @@ const ConnectionSchema: Record<string, unknown> = {
                           "owner": {
                             "x-oapi-codegen-extra-tags": {
                               "db": "owner",
-                              "yaml": "owner"
+                              "json": "owner"
                             },
                             "x-order": 6,
                             "description": "Environment owner",
@@ -2009,57 +2003,55 @@ const ConnectionSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "created_at": {
+                          "createdAt": {
+                            "description": "Timestamp when the environment was created.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at",
+                              "yaml": "created_at",
+                              "json": "createdAt"
+                            },
                             "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "CreatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "created_at",
-                              "yaml": "created_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
                           "metadata": {
                             "description": "Additional metadata associated with the environment.",
                             "x-oapi-codegen-extra-tags": {
                               "db": "metadata",
-                              "yaml": "metadata"
+                              "json": "metadata"
                             },
                             "x-order": 8,
                             "x-go-type": "core.Map",
                             "x-go-type-skip-optional-pointer": true,
                             "type": "object"
                           },
-                          "updated_at": {
+                          "updatedAt": {
+                            "description": "Timestamp when the environment was last updated.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at",
+                              "yaml": "updated_at",
+                              "json": "updatedAt"
+                            },
                             "x-order": 9,
-                            "description": "Timestamp when the resource was updated.",
                             "x-go-type": "time.Time",
                             "type": "string",
                             "format": "date-time",
                             "x-go-name": "UpdatedAt",
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
                             "x-go-type-skip-optional-pointer": true
                           },
-                          "deleted_at": {
+                          "deletedAt": {
                             "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                             "nullable": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "deleted_at",
-                              "yaml": "deleted_at"
+                              "json": "deletedAt"
                             },
                             "x-go-type": "core.NullTime",
                             "x-go-import": "database/sql",
                             "x-order": 10,
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
                             "type": "string",
                             "format": "date-time",
                             "x-go-type-skip-optional-pointer": true
@@ -2797,10 +2789,10 @@ const ConnectionSchema: Record<string, unknown> = {
             "type": "array",
             "description": "Associated environments for this connection",
             "items": {
-              "x-go-type": "*environmentv1beta1.Environment",
+              "x-go-type": "*environmentv1beta3.Environment",
               "x-go-type-import": {
-                "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                "name": "environmentv1beta1"
+                "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                "name": "environmentv1beta3"
               },
               "$id": "https://schemas.meshery.io/environment.yaml",
               "$schema": "http://json-schema.org/draft-07/schema#",
@@ -2810,22 +2802,22 @@ const ConnectionSchema: Record<string, unknown> = {
               "type": "object",
               "example": {
                 "id": "00000000-0000-0000-0000-000000000000",
-                "schemaVersion": "environments.meshery.io/v1beta1",
+                "schemaVersion": "environments.meshery.io/v1beta3",
                 "name": "Production Environment",
                 "description": "Connections and credentials for the production cluster.",
-                "organization_id": "00000000-0000-0000-0000-000000000000",
+                "organizationId": "00000000-0000-0000-0000-000000000000",
                 "owner": "00000000-0000-0000-0000-000000000000",
-                "created_at": "0001-01-01T00:00:00Z",
+                "createdAt": "0001-01-01T00:00:00Z",
                 "metadata": {},
-                "updated_at": "0001-01-01T00:00:00Z",
-                "deleted_at": null
+                "updatedAt": "0001-01-01T00:00:00Z",
+                "deletedAt": null
               },
               "required": [
                 "id",
                 "schemaVersion",
                 "name",
                 "description",
-                "organization_id"
+                "organizationId"
               ],
               "properties": {
                 "id": {
@@ -2834,7 +2826,7 @@ const ConnectionSchema: Record<string, unknown> = {
                   "x-go-name": "ID",
                   "x-oapi-codegen-extra-tags": {
                     "db": "id",
-                    "yaml": "id"
+                    "json": "id"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -2847,11 +2839,11 @@ const ConnectionSchema: Record<string, unknown> = {
                   "description": "Specifies the version of the schema to which the environment conforms.",
                   "x-order": 2,
                   "x-oapi-codegen-extra-tags": {
-                    "yaml": "schemaVersion",
+                    "json": "schemaVersion",
                     "db": "-",
                     "gorm": "-"
                   },
-                  "default": "environments.meshery.io/v1beta1",
+                  "default": "environments.meshery.io/v1beta3",
                   "type": "string",
                   "minLength": 2,
                   "maxLength": 100,
@@ -2868,7 +2860,7 @@ const ConnectionSchema: Record<string, unknown> = {
                 "name": {
                   "x-oapi-codegen-extra-tags": {
                     "db": "name",
-                    "yaml": "name"
+                    "json": "name"
                   },
                   "x-order": 3,
                   "type": "string",
@@ -2878,18 +2870,18 @@ const ConnectionSchema: Record<string, unknown> = {
                 "description": {
                   "x-oapi-codegen-extra-tags": {
                     "db": "description",
-                    "yaml": "description"
+                    "json": "description"
                   },
                   "x-order": 4,
                   "type": "string",
                   "maxLength": 1000,
                   "description": "Environment description"
                 },
-                "organization_id": {
+                "organizationId": {
                   "x-go-name": "OrganizationID",
                   "x-oapi-codegen-extra-tags": {
                     "db": "organization_id",
-                    "yaml": "organization_id"
+                    "json": "organizationId"
                   },
                   "x-order": 5,
                   "description": "Environment organization ID",
@@ -2903,7 +2895,7 @@ const ConnectionSchema: Record<string, unknown> = {
                 "owner": {
                   "x-oapi-codegen-extra-tags": {
                     "db": "owner",
-                    "yaml": "owner"
+                    "json": "owner"
                   },
                   "x-order": 6,
                   "description": "Environment owner",
@@ -2914,57 +2906,55 @@ const ConnectionSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "created_at": {
+                "createdAt": {
+                  "description": "Timestamp when the environment was created.",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "created_at",
+                    "yaml": "created_at",
+                    "json": "createdAt"
+                  },
                   "x-order": 7,
-                  "description": "Timestamp when the resource was created.",
                   "x-go-type": "time.Time",
                   "type": "string",
                   "format": "date-time",
                   "x-go-name": "CreatedAt",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "created_at",
-                    "yaml": "created_at"
-                  },
                   "x-go-type-skip-optional-pointer": true
                 },
                 "metadata": {
                   "description": "Additional metadata associated with the environment.",
                   "x-oapi-codegen-extra-tags": {
                     "db": "metadata",
-                    "yaml": "metadata"
+                    "json": "metadata"
                   },
                   "x-order": 8,
                   "x-go-type": "core.Map",
                   "x-go-type-skip-optional-pointer": true,
                   "type": "object"
                 },
-                "updated_at": {
+                "updatedAt": {
+                  "description": "Timestamp when the environment was last updated.",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "updated_at",
+                    "yaml": "updated_at",
+                    "json": "updatedAt"
+                  },
                   "x-order": 9,
-                  "description": "Timestamp when the resource was updated.",
                   "x-go-type": "time.Time",
                   "type": "string",
                   "format": "date-time",
                   "x-go-name": "UpdatedAt",
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "updated_at",
-                    "yaml": "updated_at"
-                  },
                   "x-go-type-skip-optional-pointer": true
                 },
-                "deleted_at": {
+                "deletedAt": {
                   "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                   "nullable": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "deleted_at",
-                    "yaml": "deleted_at"
+                    "json": "deletedAt"
                   },
                   "x-go-type": "core.NullTime",
                   "x-go-import": "database/sql",
                   "x-order": 10,
-                  "x-go-type-import": {
-                    "name": "meshcore",
-                    "path": "github.com/meshery/schemas/models/core"
-                  },
                   "type": "string",
                   "format": "date-time",
                   "x-go-type-skip-optional-pointer": true
@@ -3187,10 +3177,10 @@ const ConnectionSchema: Record<string, unknown> = {
                   "type": "array",
                   "description": "Associated environments for this connection",
                   "items": {
-                    "x-go-type": "*environmentv1beta1.Environment",
+                    "x-go-type": "*environmentv1beta3.Environment",
                     "x-go-type-import": {
-                      "path": "github.com/meshery/schemas/models/v1beta1/environment",
-                      "name": "environmentv1beta1"
+                      "path": "github.com/meshery/schemas/models/v1beta3/environment",
+                      "name": "environmentv1beta3"
                     },
                     "$id": "https://schemas.meshery.io/environment.yaml",
                     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -3200,22 +3190,22 @@ const ConnectionSchema: Record<string, unknown> = {
                     "type": "object",
                     "example": {
                       "id": "00000000-0000-0000-0000-000000000000",
-                      "schemaVersion": "environments.meshery.io/v1beta1",
+                      "schemaVersion": "environments.meshery.io/v1beta3",
                       "name": "Production Environment",
                       "description": "Connections and credentials for the production cluster.",
-                      "organization_id": "00000000-0000-0000-0000-000000000000",
+                      "organizationId": "00000000-0000-0000-0000-000000000000",
                       "owner": "00000000-0000-0000-0000-000000000000",
-                      "created_at": "0001-01-01T00:00:00Z",
+                      "createdAt": "0001-01-01T00:00:00Z",
                       "metadata": {},
-                      "updated_at": "0001-01-01T00:00:00Z",
-                      "deleted_at": null
+                      "updatedAt": "0001-01-01T00:00:00Z",
+                      "deletedAt": null
                     },
                     "required": [
                       "id",
                       "schemaVersion",
                       "name",
                       "description",
-                      "organization_id"
+                      "organizationId"
                     ],
                     "properties": {
                       "id": {
@@ -3224,7 +3214,7 @@ const ConnectionSchema: Record<string, unknown> = {
                         "x-go-name": "ID",
                         "x-oapi-codegen-extra-tags": {
                           "db": "id",
-                          "yaml": "id"
+                          "json": "id"
                         },
                         "type": "string",
                         "format": "uuid",
@@ -3237,11 +3227,11 @@ const ConnectionSchema: Record<string, unknown> = {
                         "description": "Specifies the version of the schema to which the environment conforms.",
                         "x-order": 2,
                         "x-oapi-codegen-extra-tags": {
-                          "yaml": "schemaVersion",
+                          "json": "schemaVersion",
                           "db": "-",
                           "gorm": "-"
                         },
-                        "default": "environments.meshery.io/v1beta1",
+                        "default": "environments.meshery.io/v1beta3",
                         "type": "string",
                         "minLength": 2,
                         "maxLength": 100,
@@ -3258,7 +3248,7 @@ const ConnectionSchema: Record<string, unknown> = {
                       "name": {
                         "x-oapi-codegen-extra-tags": {
                           "db": "name",
-                          "yaml": "name"
+                          "json": "name"
                         },
                         "x-order": 3,
                         "type": "string",
@@ -3268,18 +3258,18 @@ const ConnectionSchema: Record<string, unknown> = {
                       "description": {
                         "x-oapi-codegen-extra-tags": {
                           "db": "description",
-                          "yaml": "description"
+                          "json": "description"
                         },
                         "x-order": 4,
                         "type": "string",
                         "maxLength": 1000,
                         "description": "Environment description"
                       },
-                      "organization_id": {
+                      "organizationId": {
                         "x-go-name": "OrganizationID",
                         "x-oapi-codegen-extra-tags": {
                           "db": "organization_id",
-                          "yaml": "organization_id"
+                          "json": "organizationId"
                         },
                         "x-order": 5,
                         "description": "Environment organization ID",
@@ -3293,7 +3283,7 @@ const ConnectionSchema: Record<string, unknown> = {
                       "owner": {
                         "x-oapi-codegen-extra-tags": {
                           "db": "owner",
-                          "yaml": "owner"
+                          "json": "owner"
                         },
                         "x-order": 6,
                         "description": "Environment owner",
@@ -3304,57 +3294,55 @@ const ConnectionSchema: Record<string, unknown> = {
                           "path": "github.com/gofrs/uuid"
                         }
                       },
-                      "created_at": {
+                      "createdAt": {
+                        "description": "Timestamp when the environment was created.",
+                        "x-oapi-codegen-extra-tags": {
+                          "db": "created_at",
+                          "yaml": "created_at",
+                          "json": "createdAt"
+                        },
                         "x-order": 7,
-                        "description": "Timestamp when the resource was created.",
                         "x-go-type": "time.Time",
                         "type": "string",
                         "format": "date-time",
                         "x-go-name": "CreatedAt",
-                        "x-oapi-codegen-extra-tags": {
-                          "db": "created_at",
-                          "yaml": "created_at"
-                        },
                         "x-go-type-skip-optional-pointer": true
                       },
                       "metadata": {
                         "description": "Additional metadata associated with the environment.",
                         "x-oapi-codegen-extra-tags": {
                           "db": "metadata",
-                          "yaml": "metadata"
+                          "json": "metadata"
                         },
                         "x-order": 8,
                         "x-go-type": "core.Map",
                         "x-go-type-skip-optional-pointer": true,
                         "type": "object"
                       },
-                      "updated_at": {
+                      "updatedAt": {
+                        "description": "Timestamp when the environment was last updated.",
+                        "x-oapi-codegen-extra-tags": {
+                          "db": "updated_at",
+                          "yaml": "updated_at",
+                          "json": "updatedAt"
+                        },
                         "x-order": 9,
-                        "description": "Timestamp when the resource was updated.",
                         "x-go-type": "time.Time",
                         "type": "string",
                         "format": "date-time",
                         "x-go-name": "UpdatedAt",
-                        "x-oapi-codegen-extra-tags": {
-                          "db": "updated_at",
-                          "yaml": "updated_at"
-                        },
                         "x-go-type-skip-optional-pointer": true
                       },
-                      "deleted_at": {
+                      "deletedAt": {
                         "description": "Timestamp when the environment was soft deleted. Null while the environment remains active.",
                         "nullable": true,
                         "x-oapi-codegen-extra-tags": {
                           "db": "deleted_at",
-                          "yaml": "deleted_at"
+                          "json": "deletedAt"
                         },
                         "x-go-type": "core.NullTime",
                         "x-go-import": "database/sql",
                         "x-order": 10,
-                        "x-go-type-import": {
-                          "name": "meshcore",
-                          "path": "github.com/meshery/schemas/models/core"
-                        },
                         "type": "string",
                         "format": "date-time",
                         "x-go-type-skip-optional-pointer": true
