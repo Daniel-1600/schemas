@@ -716,26 +716,24 @@ func buildAuditSheetSummary(previousRows, currentRows []ConsumerAuditRow) string
 		fmt.Sprintf("Total Endpoints: Server: %s, Cloud: %s",
 			formatCountDelta(cur.ServerEndpoints, prev.ServerEndpoints),
 			formatCountDelta(cur.CloudEndpoints, prev.CloudEndpoints)),
-		"",
 		fmt.Sprintf("Missing schema: %s", formatCountDelta(cur.MissingSchema, prev.MissingSchema)),
-		"",
 		fmt.Sprintf("Schema Driven - Server: %s", formatCountDelta(cur.SchemaDrivenServer, prev.SchemaDrivenServer)),
-		"",
 		fmt.Sprintf("Schema Driven - Cloud: %s", formatCountDelta(cur.SchemaDrivenCloud, prev.SchemaDrivenCloud)),
-		"",
 		fmt.Sprintf("Path/param drift: %s", formatCountDelta(cur.PathParamDrift, prev.PathParamDrift)),
-		"",
 		fmt.Sprintf("Unimplemented endpoints with schema: %s", formatCountDelta(cur.UnimplementedEndpointsWithSchema, prev.UnimplementedEndpointsWithSchema)),
 	}, "\n")
 }
 
 func formatCountDelta(current, previous int) string {
 	delta := current - previous
-	sign := "+"
-	if delta < 0 {
-		sign = ""
+	added := 0
+	removed := 0
+	if delta > 0 {
+		added = delta
+	} else if delta < 0 {
+		removed = -delta
 	}
-	return fmt.Sprintf("%d (%s%d)", current, sign, delta)
+	return fmt.Sprintf("%d (+%d / -%d)", current, added, removed)
 }
 
 func auditSheetSummaryStatsFromRows(rows []ConsumerAuditRow) auditSheetSummaryStats {

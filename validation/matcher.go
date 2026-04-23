@@ -374,9 +374,9 @@ func assessConsumers(consumerProvided bool, repo string, consumers []consumerEnd
 	combined := consumerAssessment{Status: auditStatusTrue}
 	statusRank := func(status string) int {
 		switch status {
-		case auditStatusNotAudited:
-			return 4
 		case auditStatusFalse:
+			return 4
+		case auditStatusNotAudited:
 			return 3
 		case auditStatusPartial:
 			return 2
@@ -498,7 +498,7 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 		return assessBodylessConsumer(c, notes, hints)
 	}
 	if hints.isRawOrScalarResponse() {
-		return assessRawOrScalarConsumer(c, notes)
+		return assessRawOrScalarConsumer(c, notes, hints)
 	}
 
 	if !c.ImportsSchemas {
@@ -512,15 +512,21 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 	respAssessment := verifyShapeDetailed(responseShape, c.ResponseType, false)
 
 	var hadComparable, sawDiff, sawUnverified bool
-	var drift []string
+	drift := expectedSuccessStatusDrift(c, hints)
+	if len(drift) > 0 {
+		sawDiff = true
+	}
+	schemaEvidence := false
+	sawNonDirectComparable := false
 	// Iterate in a fixed order (request, then response) so Notes/Drift
 	// output is deterministic across runs and reconciliation stays stable.
 	sides := []struct {
 		name       string
+		info       *goTypeInfo
 		assessment shapeAssessment
 	}{
-		{"request", reqAssessment},
-		{"response", respAssessment},
+		{"request", c.RequestType, reqAssessment},
+		{"response", c.ResponseType, respAssessment},
 	}
 	for _, entry := range sides {
 		side := entry.name
@@ -541,22 +547,16 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 			if assessment.reason != "" {
 				notes = append(notes, fmt.Sprintf("%s: %s", c.Repo, assessment.reason))
 			}
+		case shapeOK:
+			if entry.info != nil && entry.info.IsFromSchema {
+				schemaEvidence = true
+				if classifyGoTypeOrigin(entry.info) != goTypeOriginDirectSchema {
+					sawNonDirectComparable = true
+				}
+			}
 		}
 	}
 
-	if !hadComparable {
-		return consumerAssessment{
-			Status: auditStatusNotAudited,
-			Notes:  append(notes, fmt.Sprintf("%s handler %s had no comparable request or response schema", c.Repo, describeHandler(*c))),
-		}
-	}
-	if sawUnverified {
-		return consumerAssessment{
-			Status: auditStatusNotAudited,
-			Drift:  uniqueStrings(drift),
-			Notes:  uniqueStrings(notes),
-		}
-	}
 	if sawDiff {
 		return consumerAssessment{
 			Status: auditStatusFalse,
@@ -564,16 +564,35 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 			Notes:  uniqueStrings(notes),
 		}
 	}
+	if !hadComparable {
+		return consumerAssessment{
+			Status: auditStatusNotAudited,
+			Notes:  append(notes, fmt.Sprintf("%s handler %s had no comparable request or response schema", c.Repo, describeHandler(*c))),
+		}
+	}
+	if sawUnverified {
+		if schemaEvidence {
+			return consumerAssessment{
+				Status: auditStatusPartial,
+				Notes:  uniqueStrings(notes),
+			}
+		}
+		if c.ImportsSchemas && c.WritesRawResponse {
+			notes = append(notes, fmt.Sprintf("%s handler %s writes a raw response from a file importing generated schema models; response shape was not directly resolved", c.Repo, describeHandler(*c)))
+			return consumerAssessment{
+				Status: auditStatusPartial,
+				Notes:  uniqueStrings(notes),
+			}
+		}
+		return consumerAssessment{
+			Status: auditStatusNotAudited,
+			Drift:  uniqueStrings(drift),
+			Notes:  uniqueStrings(notes),
+		}
+	}
 
-	var sawComparable, sawNonDirectComparable bool
-	for _, side := range []struct {
-		name       string
-		info       *goTypeInfo
-		assessment shapeAssessment
-	}{
-		{name: "request", info: c.RequestType, assessment: reqAssessment},
-		{name: "response", info: c.ResponseType, assessment: respAssessment},
-	} {
+	var sawComparable bool
+	for _, side := range sides {
 		if side.assessment.status != shapeOK {
 			continue
 		}
@@ -615,7 +634,7 @@ func assessConsumer(c *consumerEndpoint, requestShape, responseShape *schemaShap
 // unexpectedly decode a request body or encode a typed response. Unexpected
 // typed encode/decode is reported as FALSE (schema drift).
 func assessBodylessConsumer(c *consumerEndpoint, notes []string, hints endpointContractHints) consumerAssessment {
-	var drift []string
+	drift := expectedSuccessStatusDrift(c, hints)
 	if c.RequestType != nil {
 		drift = append(drift, fmt.Sprintf(
 			"%s handler %s decodes a request body (%s) but schema declares no requestBody",
@@ -631,12 +650,6 @@ func assessBodylessConsumer(c *consumerEndpoint, notes []string, hints endpointC
 	if c.WritesRawResponse {
 		drift = append(drift, fmt.Sprintf(
 			"%s handler %s writes a raw response body but schema declares no success response body",
-			c.Repo, describeHandler(*c),
-		))
-	}
-	if hints.ExpectedSuccessStatus == 204 && !containsInt(c.SuccessStatusCodes, 204) {
-		drift = append(drift, fmt.Sprintf(
-			"%s handler %s does not set the expected 204 success status",
 			c.Repo, describeHandler(*c),
 		))
 	}
@@ -657,8 +670,8 @@ func assessBodylessConsumer(c *consumerEndpoint, notes []string, hints endpointC
 // but not a comparable structured payload (downloads, text, bytes, arrays of
 // scalars). They are TRUE only when the handler exposes a recognized raw write
 // pattern and does not unexpectedly decode/encode typed bodies.
-func assessRawOrScalarConsumer(c *consumerEndpoint, notes []string) consumerAssessment {
-	var drift []string
+func assessRawOrScalarConsumer(c *consumerEndpoint, notes []string, hints endpointContractHints) consumerAssessment {
+	drift := expectedSuccessStatusDrift(c, hints)
 	if c.RequestType != nil {
 		drift = append(drift, fmt.Sprintf(
 			"%s handler %s decodes a request body (%s) but schema declares no requestBody",
@@ -689,6 +702,19 @@ func assessRawOrScalarConsumer(c *consumerEndpoint, notes []string) consumerAsse
 		Status: auditStatusTrue,
 		Notes:  uniqueStrings(notes),
 	}
+}
+
+func expectedSuccessStatusDrift(c *consumerEndpoint, hints endpointContractHints) []string {
+	if c == nil || hints.ExpectedSuccessStatus == 0 || hints.ExpectedSuccessStatus == 200 {
+		return nil
+	}
+	if containsInt(c.SuccessStatusCodes, hints.ExpectedSuccessStatus) {
+		return nil
+	}
+	return []string{fmt.Sprintf(
+		"%s handler %s does not set the expected %d success status",
+		c.Repo, describeHandler(*c), hints.ExpectedSuccessStatus,
+	)}
 }
 
 func containsInt(values []int, want int) bool {

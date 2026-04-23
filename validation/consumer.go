@@ -597,6 +597,7 @@ func scanHandlerBody(
 	var successStatusCodes []int
 	qpSeen := make(map[string]bool)
 	var queryParams []string
+	responseWriterParams := responseWriterParamNames(fn)
 
 	ast.Inspect(fn.Body, func(n ast.Node) bool {
 		call, ok := n.(*ast.CallExpr)
@@ -658,6 +659,12 @@ func scanHandlerBody(
 		case "Write":
 			// http.ResponseWriter.Write(b) — raw byte output.
 			writesRaw = true
+		case "Fprint", "Fprintf", "Fprintln":
+			// fmt.Fprint(w, ...) and friends write a raw response body
+			// without going through ResponseWriter.Write directly.
+			if len(call.Args) >= 1 && isFmtCall(sel, imports) && isResponseWriterArg(call.Args[0], responseWriterParams) {
+				writesRaw = true
+			}
 		case "WriteHeader":
 			if len(call.Args) >= 1 {
 				if code, ok := successStatusCode(call.Args[0], imports); ok {
@@ -691,6 +698,40 @@ func scanHandlerBody(
 	})
 
 	return req, resp, delegate, queryParams, writesRaw, successStatusCodes
+}
+
+func responseWriterParamNames(fn *ast.FuncDecl) map[string]bool {
+	out := make(map[string]bool)
+	if fn == nil || fn.Type == nil || fn.Type.Params == nil {
+		return out
+	}
+	for _, field := range fn.Type.Params.List {
+		if exprToString(field.Type) != "http.ResponseWriter" {
+			continue
+		}
+		for _, name := range field.Names {
+			if name != nil && name.Name != "_" {
+				out[name.Name] = true
+			}
+		}
+	}
+	return out
+}
+
+func isFmtCall(sel *ast.SelectorExpr, imports map[string]string) bool {
+	if sel == nil {
+		return false
+	}
+	id, ok := sel.X.(*ast.Ident)
+	if !ok {
+		return false
+	}
+	return imports[id.Name] == "fmt"
+}
+
+func isResponseWriterArg(expr ast.Expr, responseWriterParams map[string]bool) bool {
+	id, ok := expr.(*ast.Ident)
+	return ok && responseWriterParams[id.Name]
 }
 
 func successStatusCode(expr ast.Expr, imports map[string]string) (int, bool) {
