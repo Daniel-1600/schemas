@@ -2,6 +2,7 @@ package validation
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -94,7 +95,13 @@ func checkRule6ForAPI(filePath string, doc *openapi3.T, opts AuditOptions) []Vio
 		return nil
 	}
 	var out []Violation
-	for schemaName, schemaRef := range doc.Components.Schemas {
+	schemaNames := make([]string, 0, len(doc.Components.Schemas))
+	for name := range doc.Components.Schemas {
+		schemaNames = append(schemaNames, name)
+	}
+	sort.Strings(schemaNames)
+	for _, schemaName := range schemaNames {
+		schemaRef := doc.Components.Schemas[schemaName]
 		if schemaRef == nil || schemaRef.Value == nil {
 			continue
 		}
@@ -103,34 +110,94 @@ func checkRule6ForAPI(filePath string, doc *openapi3.T, opts AuditOptions) []Vio
 	return out
 }
 
+// checkPropertyNameCasing walks a schema and its inline composition branches
+// (allOf / anyOf / oneOf) and array `items`, reporting Rule 6 camelCase
+// violations on every directly-declared property name it encounters.
+// Property iteration is alphabetised so that violation order is
+// deterministic across runs — baseline files rely on this.
+//
+// `$ref` pointers are not followed: referenced schemas are walked as their
+// own components by the outer checkRule6ForAPI loop, so following refs here
+// would double-count. This also sidesteps any risk of cyclic recursion.
 func checkPropertyNameCasing(filePath, schemaName string, schema *openapi3.Schema, sev Severity) []Violation {
-	if schema == nil || schema.Properties == nil {
+	if schema == nil {
 		return nil
 	}
 	var out []Violation
-	for propName := range schema.Properties {
-		if strings.HasPrefix(propName, "$") {
-			continue
+
+	if schema.Properties != nil {
+		propNames := make([]string, 0, len(schema.Properties))
+		for name := range schema.Properties {
+			propNames = append(propNames, name)
 		}
-		issues := GetCamelCaseIssues(propName)
-		if len(issues) > 0 {
-			descs := make([]string, len(issues))
-			for i, iss := range issues {
-				descs[i] = iss.Description
+		sort.Strings(propNames)
+		for _, propName := range propNames {
+			if strings.HasPrefix(propName, "$") {
+				continue
 			}
-			suggestion := GetCamelCaseSuggestion(propName)
-			msg := fmt.Sprintf(`Schema %q — property %q %s.`, schemaName, propName, strings.Join(descs, "; "))
-			if suggestion != "" {
-				msg += fmt.Sprintf(` Use: %q.`, suggestion)
+			issues := GetCamelCaseIssues(propName)
+			if len(issues) > 0 {
+				descs := make([]string, len(issues))
+				for i, iss := range issues {
+					descs[i] = iss.Description
+				}
+				suggestion := GetCamelCaseSuggestion(propName)
+				msg := fmt.Sprintf(`Schema %q — property %q %s.`, schemaName, propName, strings.Join(descs, "; "))
+				if suggestion != "" {
+					msg += fmt.Sprintf(` Use: %q.`, suggestion)
+				}
+				msg += schemaPropertyDBContext(propName)
+				msg += ` See AGENTS.md § "Casing rules at a glance".`
+				out = append(out, Violation{File: filePath, Message: msg, Severity: sev, RuleNumber: 6})
 			}
-			if dbMirroredFields[propName] {
-				msg += ` (legacy DB-mirrored name — migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`
+			// Recurse into the property's own schema to surface nested
+			// composite shapes (inline object with its own properties,
+			// array items, nested allOf/anyOf/oneOf).
+			if sub := schema.Properties[propName]; sub != nil && sub.Value != nil && sub.Ref == "" {
+				out = append(out, checkPropertyNameCasing(filePath, schemaName, sub.Value, sev)...)
 			}
-			msg += ` See AGENTS.md § "Casing rules at a glance".`
-			out = append(out, Violation{File: filePath, Message: msg, Severity: sev, RuleNumber: 6})
 		}
 	}
+
+	for _, sub := range schema.AllOf {
+		if sub != nil && sub.Value != nil && sub.Ref == "" {
+			out = append(out, checkPropertyNameCasing(filePath, schemaName, sub.Value, sev)...)
+		}
+	}
+	for _, sub := range schema.OneOf {
+		if sub != nil && sub.Value != nil && sub.Ref == "" {
+			out = append(out, checkPropertyNameCasing(filePath, schemaName, sub.Value, sev)...)
+		}
+	}
+	for _, sub := range schema.AnyOf {
+		if sub != nil && sub.Value != nil && sub.Ref == "" {
+			out = append(out, checkPropertyNameCasing(filePath, schemaName, sub.Value, sev)...)
+		}
+	}
+	if schema.Items != nil && schema.Items.Value != nil && schema.Items.Ref == "" {
+		out = append(out, checkPropertyNameCasing(filePath, schemaName, schema.Items.Value, sev)...)
+	}
+
 	return out
+}
+
+// schemaPropertyDBContext returns a short suffix to append to a Rule 6
+// violation message for schema / entity property names, calling out either
+// the legacy-DB-mirrored migration hint (when the name is in the known
+// mirrored set) or a generic reminder that snake_case belongs only on the
+// `db:` tag (for other snake_case property names). Returns the empty
+// string when no DB-specific context applies — so that this helper can be
+// reused by Rule 6's entity path without pushing DB-specific wording into
+// GetCamelCaseIssues (which is shared with non-DB contexts such as
+// query/header parameter names).
+func schemaPropertyDBContext(propName string) string {
+	if dbMirroredFields[propName] {
+		return ` (legacy DB-mirrored name — migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`
+	}
+	if HasUnderscore(propName) {
+		return ` (snake_case belongs in the db: tag only)`
+	}
+	return ""
 }
 
 // Rule 7: components/schemas names must be PascalCase.

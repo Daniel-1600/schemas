@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -243,7 +244,12 @@ func checkRule6ForEntity(filePath string, entity *entitySchema, opts AuditOption
 		return nil
 	}
 	var out []Violation
-	for propName := range entity.Properties {
+	propNames := make([]string, 0, len(entity.Properties))
+	for name := range entity.Properties {
+		propNames = append(propNames, name)
+	}
+	sort.Strings(propNames)
+	for _, propName := range propNames {
 		if strings.HasPrefix(propName, "$") {
 			continue
 		}
@@ -258,9 +264,7 @@ func checkRule6ForEntity(filePath string, entity *entitySchema, opts AuditOption
 			if suggestion != "" {
 				msg += fmt.Sprintf(` Use: %q.`, suggestion)
 			}
-			if dbMirroredFields[propName] {
-				msg += ` (legacy DB-mirrored name — migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`
-			}
+			msg += schemaPropertyDBContext(propName)
 			msg += ` See AGENTS.md § "Casing rules at a glance".`
 			out = append(out, Violation{File: filePath, Message: msg, Severity: *sev, RuleNumber: 6})
 		}

@@ -161,25 +161,30 @@ type CasingIssue struct {
 	Description string
 }
 
-// GetCamelCaseIssues checks a schema property name for camelCase violations.
+// GetCamelCaseIssues checks a wire identifier (schema property name,
+// OpenAPI query/header parameter name, or any similar camelCase-expected
+// token) for casing violations.
 //
 // Under the canonical identifier-naming contract (AGENTS.md § Casing rules
-// at a glance, docs/identifier-naming-migration.md §1), every JSON tag /
-// OpenAPI schema property name is camelCase regardless of DB backing — the
-// snake_case DB column name lives only in `x-oapi-codegen-extra-tags.db`,
-// not on the wire. Accordingly this checker is unconditional: there is no
-// DB-mirroring exception. The legacy-DB-mirrored field set
-// (dbMirroredFields) remains defined for use by matcher.go's consumer-
-// type diff, but it is no longer an exception to Rule 6.
+// at a glance, docs/identifier-naming-migration.md §1), wire names are
+// camelCase regardless of DB backing — the snake_case DB column name lives
+// only in `x-oapi-codegen-extra-tags.db`, not on the wire. Accordingly this
+// checker is unconditional: there is no DB-mirroring exception. The
+// legacy-DB-mirrored field set (dbMirroredFields) remains defined for use
+// by matcher.go's consumer-type diff, but it is no longer an exception.
 //
-// Severity of the reported issues is determined at the caller (Rule 6) via
-// classifyStyleIssue / the --style-debt / --strict-consistency flags.
+// The returned issue descriptions are context-agnostic — each caller
+// (Rule 6 for schema/entity properties, Rule 9 for query/header
+// parameters, etc.) is responsible for adding any context-specific
+// guidance on top of the generic message. Severity is determined at the
+// caller via classifyStyleIssue / the --style-debt / --strict-consistency
+// flags.
 func GetCamelCaseIssues(name string) []CasingIssue {
 	var issues []CasingIssue
 
 	if HasUnderscore(name) {
 		issues = append(issues, CasingIssue{
-			Description: "uses snake_case (wire form must be camelCase; snake_case belongs in the db: tag only)",
+			Description: "uses snake_case (must be camelCase)",
 		})
 	}
 	if len(name) > 0 && unicode.IsUpper(rune(name[0])) {

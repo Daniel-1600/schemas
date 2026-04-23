@@ -129,9 +129,12 @@ func TestGetCamelCaseIssues(t *testing.T) {
 		{"created_at", 1},
 		{"user_id", 1},
 		{"plan_id", 1},
+		{"organization_id", 1},
+
+		// Other legacy snake_case identifiers under the deprecation path
+		// (pagination envelope fields migrate at per-resource version bump).
 		{"page_size", 1},
 		{"total_count", 1},
-		{"organization_id", 1},
 
 		// Non-DB snake_case — still flagged (always was).
 		{"custom_field", 1},
