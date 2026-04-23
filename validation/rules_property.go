@@ -26,8 +26,20 @@ func checkRule32ForAPI(_ string, _ *openapi3.T, _ AuditOptions) []Violation {
 	return nil
 }
 
-// --- Rule 33: Pagination envelopes use page_size / total_count ---
-
+// --- Rule 33: Pagination envelopes use canonical camelCase ---
+//
+// Under the canonical identifier-naming contract (see
+// docs/identifier-naming-migration.md §1 and AGENTS.md § Casing rules at
+// a glance), pagination envelope properties are camelCase on the wire:
+// page, pageSize, totalCount. The legacy snake_case forms (page_size,
+// total_count) are still accepted inside existing API versions for
+// backward compatibility, but newly authored / canonical-casing API
+// versions must use the camelCase forms.
+//
+// This rule is non-blocking: it surfaces the legacy snake_case usage as
+// advisory output so it can be tracked and resolved per-resource via
+// the Phase 3 version-bump rollout. The camelCase forms are the
+// canonical shape and are never flagged.
 func checkRule33(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
 	if doc == nil || doc.Components == nil || doc.Components.Schemas == nil {
 		return nil
@@ -49,15 +61,15 @@ func checkRule33(filePath string, doc *openapi3.T, _ AuditOptions) []Violation {
 		if !isPaginated {
 			continue
 		}
-		if hasPageSize {
+		if hasPageSizeSnake {
 			out = append(out, Violation{File: filePath,
-				Message:  fmt.Sprintf(`Schema %q — pagination envelopes must use "page_size", not "pageSize".`, name),
-				Severity: SeverityBlocking, RuleNumber: 33})
+				Message:  fmt.Sprintf(`Schema %q — pagination envelopes should use "pageSize" (canonical camelCase), not "page_size". (migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`, name),
+				Severity: SeverityAdvisory, RuleNumber: 33})
 		}
-		if hasTotalCount {
+		if hasTotalCountSnake {
 			out = append(out, Violation{File: filePath,
-				Message:  fmt.Sprintf(`Schema %q — pagination envelopes must use "total_count", not "totalCount".`, name),
-				Severity: SeverityBlocking, RuleNumber: 33})
+				Message:  fmt.Sprintf(`Schema %q — pagination envelopes should use "totalCount" (canonical camelCase), not "total_count". (migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`, name),
+				Severity: SeverityAdvisory, RuleNumber: 33})
 		}
 	}
 	return out
