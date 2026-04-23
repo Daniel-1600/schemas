@@ -2,9 +2,7 @@ openapi: 3.0.0
 info:
   title: Environment
   description: OpenAPI schema for environment management in Meshery Cloud.
-  x-deprecated: true
-  x-superseded-by: v1beta3
-  version: v1beta1
+  version: v1beta3
   contact:
     name: Meshery Maintainers
     email: maintainers@meshery.io
@@ -25,15 +23,15 @@ tags:
 components:
   responses:
     200:
-      $ref: "../core/api.yml#/components/responses/200"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/200"
     400:
-      $ref: "../core/api.yml#/components/responses/400"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
     401:
-      $ref: "../core/api.yml#/components/responses/401"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
     404:
-      $ref: "../core/api.yml#/components/responses/404"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
     500:
-      $ref: "../core/api.yml#/components/responses/500"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
 
   parameters:
     environmentId:
@@ -41,22 +39,24 @@ components:
       in: path
       description: Environment ID
       schema:
-        $ref: ../core/api.yml#/components/schemas/Id
+        $ref: ../../v1alpha1/core/api.yml#/components/schemas/Id
       required: true
     search:
-      $ref: ../core/api.yml#/components/parameters/search
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/search
     order:
-      $ref: ../core/api.yml#/components/parameters/order
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/order
     page:
-      $ref: ../core/api.yml#/components/parameters/page
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/page
     pagesize:
-      $ref: ../core/api.yml#/components/parameters/pagesize
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/pagesize
     orgIdQuery:
       name: orgId
       in: query
       description: User's organization ID
       schema:
         type: string
+        format: uuid
+        maxLength: 36
       required: true
 
   securitySchemes:
@@ -68,58 +68,89 @@ components:
     Environment:
       $ref: "./environment.yaml"
     EnvironmentConnectionMapping:
+      type: object
+      description: Junction record linking an environment to a connection.
       properties:
         id:
-          $ref: ../core/api.yml#/components/schemas/general_id
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/general_id
           x-go-name: ID
-        environment_id:
-          $ref: ../core/api.yml#/components/schemas/uuid
+          description: Mapping record ID.
+        environmentId:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/uuid
+          x-go-name: EnvironmentID
           x-oapi-codegen-extra-tags:
             db: environment_id
-            json: environment_id
+            json: environmentId
           x-go-type-skip-optional-pointer: true
           description: ID of the associated environment.
-        connection_id:
-          $ref: ../core/api.yml#/components/schemas/uuid
+        connectionId:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/uuid
+          x-go-name: ConnectionID
           x-oapi-codegen-extra-tags:
             db: connection_id
-            json: connection_id
+            json: connectionId
           x-go-type-skip-optional-pointer: true
           description: ID of the associated connection.
-        created_at:
-          $ref: ../core/api.yml#/components/schemas/Time
-        updated_at:
-          $ref: ../core/api.yml#/components/schemas/Time
-        deleted_at:
-          $ref: ../core/api.yml#/components/schemas/nullTime
+        createdAt:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/Time
+          description: Timestamp when the mapping was created.
+          x-oapi-codegen-extra-tags:
+            db: created_at
+            json: createdAt
+        updatedAt:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/Time
+          description: Timestamp when the mapping was last updated.
+          x-oapi-codegen-extra-tags:
+            db: updated_at
+            json: updatedAt
+        deletedAt:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/nullTime
+          description: Timestamp when the mapping was soft-deleted. Null while the mapping remains active.
+          x-oapi-codegen-extra-tags:
+            db: deleted_at
+            json: deletedAt
     EnvironmentPayload:
+      type: object
+      description: Payload for creating or updating an environment.
+      required:
+        - name
+        - organizationId
       properties:
         name:
-          $ref: ../core/api.yml#/components/schemas/Text
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/Text
           description: An environment is a collection of resources. Provide a name that meaningfully represents these resources. You can change the name of the environment even after its creation.
         description:
-          $ref: ../core/api.yml#/components/schemas/Text
-          description: "An environment is a collection of resources, such as connections & credentail. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any Time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments)."
-        organization_id:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/Text
+          description: "An environment is a collection of resources, such as connections & credentials. Provide a detailed description to clarify the purpose of this environment and the types of resources it encompasses. You can modify the description at any time. Learn more about environments [here](https://docs.meshery.io/concepts/logical/environments)."
+        organizationId:
           type: string
           description: Select an organization in which you want to create this new environment. Keep in mind that the organization cannot be changed after creation.
           x-go-type-skip-optional-pointer: true
           x-go-name: OrgId
           x-oapi-codegen-extra-tags:
-            json: organization_id
+            json: organizationId
           maxLength: 500
           format: uuid
-      required:
-        - name
-        - organization_id
     EnvironmentPage:
+      type: object
+      description: Paginated list of environments.
       properties:
         page:
-          $ref: ../core/api.yml#/components/schemas/number
-        page_size:
-          $ref: ../core/api.yml#/components/schemas/number
-        total_count:
-          $ref: ../core/api.yml#/components/schemas/number
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/number
+          description: Zero-based page index returned in this response.
+          minimum: 0
+        pageSize:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/number
+          description: Maximum number of items returned on each page.
+          minimum: 1
+          x-oapi-codegen-extra-tags:
+            json: pageSize
+        totalCount:
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/number
+          description: Total number of items across all pages.
+          minimum: 0
+          x-oapi-codegen-extra-tags:
+            json: totalCount
         environments:
           type: array
           x-go-type-skip-optional-pointer: true
@@ -130,19 +161,24 @@ components:
 
     EnvironmentConnectionsPage:
       type: object
+      description: Paginated list of connections associated with an environment.
       properties:
         page:
           type: integer
           description: Current page number of the result set.
           minimum: 0
-        page_size:
+        pageSize:
           type: integer
           description: Number of items per page.
           minimum: 1
-        total_count:
+          x-oapi-codegen-extra-tags:
+            json: pageSize
+        totalCount:
           type: integer
           description: Total number of items available.
           minimum: 0
+          x-oapi-codegen-extra-tags:
+            json: totalCount
         connections:
           type: array
           items:
@@ -294,8 +330,10 @@ paths:
         - name: filter
           in: query
           required: false
+          description: JSON-encoded filter string used to scope the connection listing.
           schema:
             type: string
+            maxLength: 4096
       responses:
         "200":
           description: Environment connections
