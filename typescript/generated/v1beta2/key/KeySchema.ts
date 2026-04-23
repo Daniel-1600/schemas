@@ -7,9 +7,8 @@ const KeySchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "Key",
-    "x-deprecated": true,
     "description": "OpenAPI schema for authorization key management in Meshery.",
-    "version": "v1beta1",
+    "version": "v1beta2",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -88,27 +87,40 @@ const KeySchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "A paginated list of authorization keys.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "keys"
                   ],
                   "properties": {
                     "page": {
-                      "x-order": 1,
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 1
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
-                      "x-order": 3,
+                    "totalCount": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "keys": {
                       "type": "array",
@@ -123,8 +135,8 @@ const KeySchema: Record<string, unknown> = {
                           "category",
                           "subcategory",
                           "description",
-                          "created_at",
-                          "updated_at"
+                          "createdAt",
+                          "updatedAt"
                         ],
                         "properties": {
                           "id": {
@@ -137,7 +149,8 @@ const KeySchema: Record<string, unknown> = {
                             },
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "x-order": 1
                           },
@@ -151,7 +164,8 @@ const KeySchema: Record<string, unknown> = {
                             },
                             "x-go-name": "Owner",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "owner"
+                              "db": "owner",
+                              "json": "owner"
                             },
                             "x-order": 2
                           },
@@ -159,7 +173,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Operation permitted by the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "function"
+                              "db": "function",
+                              "json": "function"
                             },
                             "x-order": 3,
                             "maxLength": 500
@@ -168,7 +183,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Category for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "category"
+                              "db": "category",
+                              "json": "category"
                             },
                             "x-order": 4,
                             "maxLength": 500
@@ -177,7 +193,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Subcategory for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "subcategory"
+                              "db": "subcategory",
+                              "json": "subcategory"
                             },
                             "x-order": 5,
                             "maxLength": 500
@@ -186,56 +203,56 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Human readable description of the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "description"
+                              "db": "description",
+                              "json": "description"
                             },
                             "x-order": 6,
                             "maxLength": 5000
                           },
-                          "created_at": {
-                            "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the key was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 7
                           },
-                          "updated_at": {
-                            "x-order": 8,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the key was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 8
                           },
-                          "deleted_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
-                            },
-                            "x-order": 9,
-                            "description": "SQL null Timestamp to handle null values of time.",
-                            "x-go-type": "meshcore.NullTime",
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the key was soft-deleted.",
+                            "nullable": true,
+                            "x-go-type": "core.NullTime",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
+                            },
+                            "x-order": 9
                           }
                         }
                       },
                       "x-order": 4,
-                      "description": "The keys of the keypage."
+                      "description": "Keys returned on the current page."
                     }
                   }
                 }
@@ -326,27 +343,40 @@ const KeySchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "description": "A paginated list of authorization keys.",
                   "required": [
                     "page",
-                    "page_size",
-                    "total_count",
+                    "pageSize",
+                    "totalCount",
                     "keys"
                   ],
                   "properties": {
                     "page": {
-                      "x-order": 1,
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 1
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
                       "x-order": 2,
-                      "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize"
+                      }
                     },
-                    "total_count": {
-                      "x-order": 3,
+                    "totalCount": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-order": 3,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount"
+                      }
                     },
                     "keys": {
                       "type": "array",
@@ -361,8 +391,8 @@ const KeySchema: Record<string, unknown> = {
                           "category",
                           "subcategory",
                           "description",
-                          "created_at",
-                          "updated_at"
+                          "createdAt",
+                          "updatedAt"
                         ],
                         "properties": {
                           "id": {
@@ -375,7 +405,8 @@ const KeySchema: Record<string, unknown> = {
                             },
                             "x-go-name": "ID",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "id"
+                              "db": "id",
+                              "json": "id"
                             },
                             "x-order": 1
                           },
@@ -389,7 +420,8 @@ const KeySchema: Record<string, unknown> = {
                             },
                             "x-go-name": "Owner",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "owner"
+                              "db": "owner",
+                              "json": "owner"
                             },
                             "x-order": 2
                           },
@@ -397,7 +429,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Operation permitted by the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "function"
+                              "db": "function",
+                              "json": "function"
                             },
                             "x-order": 3,
                             "maxLength": 500
@@ -406,7 +439,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Category for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "category"
+                              "db": "category",
+                              "json": "category"
                             },
                             "x-order": 4,
                             "maxLength": 500
@@ -415,7 +449,8 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Subcategory for the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "subcategory"
+                              "db": "subcategory",
+                              "json": "subcategory"
                             },
                             "x-order": 5,
                             "maxLength": 500
@@ -424,56 +459,56 @@ const KeySchema: Record<string, unknown> = {
                             "type": "string",
                             "description": "Human readable description of the key.",
                             "x-oapi-codegen-extra-tags": {
-                              "db": "description"
+                              "db": "description",
+                              "json": "description"
                             },
                             "x-order": 6,
                             "maxLength": 5000
                           },
-                          "created_at": {
-                            "x-order": 7,
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the key was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
+                              "json": "createdAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 7
                           },
-                          "updated_at": {
-                            "x-order": 8,
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the key was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
+                              "json": "updatedAt"
                             },
-                            "x-go-type-skip-optional-pointer": true
+                            "x-order": 8
                           },
-                          "deleted_at": {
-                            "x-oapi-codegen-extra-tags": {
-                              "db": "deleted_at"
-                            },
-                            "x-order": 9,
-                            "description": "SQL null Timestamp to handle null values of time.",
-                            "x-go-type": "meshcore.NullTime",
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the key was soft-deleted.",
+                            "nullable": true,
+                            "x-go-type": "core.NullTime",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
+                            },
+                            "x-order": 9
                           }
                         }
                       },
                       "x-order": 4,
-                      "description": "The keys of the keypage."
+                      "description": "Keys returned on the current page."
                     }
                   }
                 }
@@ -537,7 +572,10 @@ const KeySchema: Record<string, unknown> = {
                     "x-go-type-import": {
                       "path": "github.com/gofrs/uuid"
                     },
-                    "x-order": 1
+                    "x-order": 1,
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "id,omitempty"
+                    }
                   },
                   "function": {
                     "type": "string",
@@ -584,8 +622,8 @@ const KeySchema: Record<string, unknown> = {
                     "category",
                     "subcategory",
                     "description",
-                    "created_at",
-                    "updated_at"
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
@@ -598,7 +636,8 @@ const KeySchema: Record<string, unknown> = {
                       },
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "x-order": 1
                     },
@@ -612,7 +651,8 @@ const KeySchema: Record<string, unknown> = {
                       },
                       "x-go-name": "Owner",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner"
+                        "db": "owner",
+                        "json": "owner"
                       },
                       "x-order": 2
                     },
@@ -620,7 +660,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Operation permitted by the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "function"
+                        "db": "function",
+                        "json": "function"
                       },
                       "x-order": 3,
                       "maxLength": 500
@@ -629,7 +670,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Category for the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "category"
+                        "db": "category",
+                        "json": "category"
                       },
                       "x-order": 4,
                       "maxLength": 500
@@ -638,7 +680,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Subcategory for the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "subcategory"
+                        "db": "subcategory",
+                        "json": "subcategory"
                       },
                       "x-order": 5,
                       "maxLength": 500
@@ -647,51 +690,51 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Human readable description of the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "description"
+                        "db": "description",
+                        "json": "description"
                       },
                       "x-order": 6,
                       "maxLength": 5000
                     },
-                    "created_at": {
-                      "x-order": 7,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the key was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 7
                     },
-                    "updated_at": {
-                      "x-order": 8,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the key was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 8
                     },
-                    "deleted_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
-                      "x-order": 9,
-                      "description": "SQL null Timestamp to handle null values of time.",
-                      "x-go-type": "meshcore.NullTime",
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the key was soft-deleted.",
+                      "nullable": true,
+                      "x-go-type": "core.NullTime",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
+                      },
+                      "x-order": 9
                     }
                   }
                 }
@@ -774,8 +817,8 @@ const KeySchema: Record<string, unknown> = {
                     "category",
                     "subcategory",
                     "description",
-                    "created_at",
-                    "updated_at"
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
@@ -788,7 +831,8 @@ const KeySchema: Record<string, unknown> = {
                       },
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "id"
+                        "db": "id",
+                        "json": "id"
                       },
                       "x-order": 1
                     },
@@ -802,7 +846,8 @@ const KeySchema: Record<string, unknown> = {
                       },
                       "x-go-name": "Owner",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "owner"
+                        "db": "owner",
+                        "json": "owner"
                       },
                       "x-order": 2
                     },
@@ -810,7 +855,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Operation permitted by the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "function"
+                        "db": "function",
+                        "json": "function"
                       },
                       "x-order": 3,
                       "maxLength": 500
@@ -819,7 +865,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Category for the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "category"
+                        "db": "category",
+                        "json": "category"
                       },
                       "x-order": 4,
                       "maxLength": 500
@@ -828,7 +875,8 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Subcategory for the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "subcategory"
+                        "db": "subcategory",
+                        "json": "subcategory"
                       },
                       "x-order": 5,
                       "maxLength": 500
@@ -837,51 +885,51 @@ const KeySchema: Record<string, unknown> = {
                       "type": "string",
                       "description": "Human readable description of the key.",
                       "x-oapi-codegen-extra-tags": {
-                        "db": "description"
+                        "db": "description",
+                        "json": "description"
                       },
                       "x-order": 6,
                       "maxLength": 5000
                     },
-                    "created_at": {
-                      "x-order": 7,
-                      "description": "Timestamp when the resource was created.",
-                      "x-go-type": "time.Time",
+                    "createdAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "CreatedAt",
+                      "description": "Timestamp when the key was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 7
                     },
-                    "updated_at": {
-                      "x-order": 8,
-                      "description": "Timestamp when the resource was updated.",
-                      "x-go-type": "time.Time",
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-name": "UpdatedAt",
+                      "description": "Timestamp when the key was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 8
                     },
-                    "deleted_at": {
-                      "x-oapi-codegen-extra-tags": {
-                        "db": "deleted_at"
-                      },
-                      "x-order": 9,
-                      "description": "SQL null Timestamp to handle null values of time.",
-                      "x-go-type": "meshcore.NullTime",
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Timestamp when the key was soft-deleted.",
+                      "nullable": true,
+                      "x-go-type": "core.NullTime",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "deleted_at",
+                        "json": "deletedAt,omitempty"
+                      },
+                      "x-order": 9
                     }
                   }
                 }
@@ -1130,8 +1178,8 @@ const KeySchema: Record<string, unknown> = {
           "category",
           "subcategory",
           "description",
-          "created_at",
-          "updated_at"
+          "createdAt",
+          "updatedAt"
         ],
         "properties": {
           "id": {
@@ -1144,7 +1192,8 @@ const KeySchema: Record<string, unknown> = {
             },
             "x-go-name": "ID",
             "x-oapi-codegen-extra-tags": {
-              "db": "id"
+              "db": "id",
+              "json": "id"
             },
             "x-order": 1
           },
@@ -1158,7 +1207,8 @@ const KeySchema: Record<string, unknown> = {
             },
             "x-go-name": "Owner",
             "x-oapi-codegen-extra-tags": {
-              "db": "owner"
+              "db": "owner",
+              "json": "owner"
             },
             "x-order": 2
           },
@@ -1166,7 +1216,8 @@ const KeySchema: Record<string, unknown> = {
             "type": "string",
             "description": "Operation permitted by the key.",
             "x-oapi-codegen-extra-tags": {
-              "db": "function"
+              "db": "function",
+              "json": "function"
             },
             "x-order": 3,
             "maxLength": 500
@@ -1175,7 +1226,8 @@ const KeySchema: Record<string, unknown> = {
             "type": "string",
             "description": "Category for the key.",
             "x-oapi-codegen-extra-tags": {
-              "db": "category"
+              "db": "category",
+              "json": "category"
             },
             "x-order": 4,
             "maxLength": 500
@@ -1184,7 +1236,8 @@ const KeySchema: Record<string, unknown> = {
             "type": "string",
             "description": "Subcategory for the key.",
             "x-oapi-codegen-extra-tags": {
-              "db": "subcategory"
+              "db": "subcategory",
+              "json": "subcategory"
             },
             "x-order": 5,
             "maxLength": 500
@@ -1193,51 +1246,51 @@ const KeySchema: Record<string, unknown> = {
             "type": "string",
             "description": "Human readable description of the key.",
             "x-oapi-codegen-extra-tags": {
-              "db": "description"
+              "db": "description",
+              "json": "description"
             },
             "x-order": 6,
             "maxLength": 5000
           },
-          "created_at": {
-            "x-order": 7,
-            "description": "Timestamp when the resource was created.",
-            "x-go-type": "time.Time",
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "CreatedAt",
+            "description": "Timestamp when the key was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
+              "json": "createdAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 7
           },
-          "updated_at": {
-            "x-order": 8,
-            "description": "Timestamp when the resource was updated.",
-            "x-go-type": "time.Time",
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "UpdatedAt",
+            "description": "Timestamp when the key was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
+              "json": "updatedAt"
             },
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 8
           },
-          "deleted_at": {
-            "x-oapi-codegen-extra-tags": {
-              "db": "deleted_at"
-            },
-            "x-order": 9,
-            "description": "SQL null Timestamp to handle null values of time.",
-            "x-go-type": "meshcore.NullTime",
-            "x-go-type-import": {
-              "name": "meshcore",
-              "path": "github.com/meshery/schemas/models/core"
-            },
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Timestamp when the key was soft-deleted.",
+            "nullable": true,
+            "x-go-type": "core.NullTime",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "json": "deletedAt,omitempty"
+            },
+            "x-order": 9
           }
         }
       },
@@ -1253,7 +1306,10 @@ const KeySchema: Record<string, unknown> = {
             "x-go-type-import": {
               "path": "github.com/gofrs/uuid"
             },
-            "x-order": 1
+            "x-order": 1,
+            "x-oapi-codegen-extra-tags": {
+              "json": "id,omitempty"
+            }
           },
           "function": {
             "type": "string",
@@ -1283,27 +1339,40 @@ const KeySchema: Record<string, unknown> = {
       },
       "KeyPage": {
         "type": "object",
+        "description": "A paginated list of authorization keys.",
         "required": [
           "page",
-          "page_size",
-          "total_count",
+          "pageSize",
+          "totalCount",
           "keys"
         ],
         "properties": {
           "page": {
-            "x-order": 1,
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Zero-based page index returned in this response.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-order": 1
           },
-          "page_size": {
+          "pageSize": {
+            "type": "integer",
+            "description": "Maximum number of items returned on each page.",
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
             "x-order": 2,
-            "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize"
+            }
           },
-          "total_count": {
-            "x-order": 3,
+          "totalCount": {
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Total number of items across all pages.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-order": 3,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount"
+            }
           },
           "keys": {
             "type": "array",
@@ -1318,8 +1387,8 @@ const KeySchema: Record<string, unknown> = {
                 "category",
                 "subcategory",
                 "description",
-                "created_at",
-                "updated_at"
+                "createdAt",
+                "updatedAt"
               ],
               "properties": {
                 "id": {
@@ -1332,7 +1401,8 @@ const KeySchema: Record<string, unknown> = {
                   },
                   "x-go-name": "ID",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "id"
+                    "db": "id",
+                    "json": "id"
                   },
                   "x-order": 1
                 },
@@ -1346,7 +1416,8 @@ const KeySchema: Record<string, unknown> = {
                   },
                   "x-go-name": "Owner",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "owner"
+                    "db": "owner",
+                    "json": "owner"
                   },
                   "x-order": 2
                 },
@@ -1354,7 +1425,8 @@ const KeySchema: Record<string, unknown> = {
                   "type": "string",
                   "description": "Operation permitted by the key.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "function"
+                    "db": "function",
+                    "json": "function"
                   },
                   "x-order": 3,
                   "maxLength": 500
@@ -1363,7 +1435,8 @@ const KeySchema: Record<string, unknown> = {
                   "type": "string",
                   "description": "Category for the key.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "category"
+                    "db": "category",
+                    "json": "category"
                   },
                   "x-order": 4,
                   "maxLength": 500
@@ -1372,7 +1445,8 @@ const KeySchema: Record<string, unknown> = {
                   "type": "string",
                   "description": "Subcategory for the key.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "subcategory"
+                    "db": "subcategory",
+                    "json": "subcategory"
                   },
                   "x-order": 5,
                   "maxLength": 500
@@ -1381,56 +1455,56 @@ const KeySchema: Record<string, unknown> = {
                   "type": "string",
                   "description": "Human readable description of the key.",
                   "x-oapi-codegen-extra-tags": {
-                    "db": "description"
+                    "db": "description",
+                    "json": "description"
                   },
                   "x-order": 6,
                   "maxLength": 5000
                 },
-                "created_at": {
-                  "x-order": 7,
-                  "description": "Timestamp when the resource was created.",
-                  "x-go-type": "time.Time",
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "CreatedAt",
+                  "description": "Timestamp when the key was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "yaml": "created_at"
+                    "json": "createdAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 7
                 },
-                "updated_at": {
-                  "x-order": 8,
-                  "description": "Timestamp when the resource was updated.",
-                  "x-go-type": "time.Time",
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "UpdatedAt",
+                  "description": "Timestamp when the key was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "yaml": "updated_at"
+                    "json": "updatedAt"
                   },
-                  "x-go-type-skip-optional-pointer": true
+                  "x-order": 8
                 },
-                "deleted_at": {
-                  "x-oapi-codegen-extra-tags": {
-                    "db": "deleted_at"
-                  },
-                  "x-order": 9,
-                  "description": "SQL null Timestamp to handle null values of time.",
-                  "x-go-type": "meshcore.NullTime",
-                  "x-go-type-import": {
-                    "name": "meshcore",
-                    "path": "github.com/meshery/schemas/models/core"
-                  },
+                "deletedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  "description": "Timestamp when the key was soft-deleted.",
+                  "nullable": true,
+                  "x-go-type": "core.NullTime",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/core",
+                    "name": "core"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "json": "deletedAt,omitempty"
+                  },
+                  "x-order": 9
                 }
               }
             },
             "x-order": 4,
-            "description": "The keys of the keypage."
+            "description": "Keys returned on the current page."
           }
         }
       }

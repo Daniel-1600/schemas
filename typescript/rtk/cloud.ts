@@ -3,16 +3,15 @@ export const addTagTypes = [
   "Badge_Badge",
   "Environment_environments",
   "Feature_Features",
-  "Key_users",
-  "Key_Key",
   "Keychain_Keychain",
-  "Model_Models",
   "role_roles",
   "schedule_scheduler",
   "Academy_API_Academy",
-  "Connection_API_Connections",
   "credential_credentials",
   "Invitation_Invitation",
+  "Key_users",
+  "Key_Key",
+  "Model_Models",
   "Organization_Organizations",
   "Team_teams",
   "Plan_Plans",
@@ -21,6 +20,7 @@ export const addTagTypes = [
   "token_tokens",
   "User_users",
   "View_views",
+  "Connection_API_Connections",
   "Design_designs",
   "Events_events",
   "Workspace_workspaces",
@@ -114,40 +114,6 @@ const injectedRtkApi = api
         }),
         providesTags: ["Feature_Features"],
       }),
-      getUserKeys: build.query<GetUserKeysApiResponse, GetUserKeysApiArg>({
-        query: (queryArg) => ({
-          url: `/api/identity/orgs/${queryArg.orgId}/users/keys`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-          },
-        }),
-        providesTags: ["Key_users"],
-      }),
-      getKeys: build.query<GetKeysApiResponse, GetKeysApiArg>({
-        query: (queryArg) => ({
-          url: `/api/auth/keys`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["Key_Key"],
-      }),
-      upsertKey: build.mutation<UpsertKeyApiResponse, UpsertKeyApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/keys`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Key_Key"],
-      }),
-      getKeyById: build.query<GetKeyByIdApiResponse, GetKeyByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}` }),
-        providesTags: ["Key_Key"],
-      }),
-      deleteKey: build.mutation<DeleteKeyApiResponse, DeleteKeyApiArg>({
-        query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}`, method: "DELETE" }),
-        invalidatesTags: ["Key_Key"],
-      }),
       getKeychains: build.query<GetKeychainsApiResponse, GetKeychainsApiArg>({
         query: (queryArg) => ({
           url: `/api/auth/keychains`,
@@ -202,22 +168,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["Keychain_Keychain"],
-      }),
-      registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
-        query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Model_Models"],
-      }),
-      getMeshModelModels: build.query<GetMeshModelModelsApiResponse, GetMeshModelModelsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/integrations/meshmodels/models`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-          },
-        }),
-        providesTags: ["Model_Models"],
       }),
       addRoleHolder: build.mutation<AddRoleHolderApiResponse, AddRoleHolderApiArg>({
         query: (queryArg) => ({ url: `/api/identity/roles`, method: "POST", body: queryArg.body }),
@@ -459,74 +409,6 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/academy/certificates/${queryArg.certificateId}` }),
         providesTags: ["Academy_API_Academy"],
       }),
-      getConnections: build.query<GetConnectionsApiResponse, GetConnectionsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/integrations/connections`,
-          params: {
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            search: queryArg.search,
-            order: queryArg.order,
-            filter: queryArg.filter,
-            kind: queryArg.kind,
-            status: queryArg.status,
-            type: queryArg["type"],
-            name: queryArg.name,
-          },
-        }),
-        providesTags: ["Connection_API_Connections"],
-      }),
-      registerConnection: build.mutation<RegisterConnectionApiResponse, RegisterConnectionApiArg>({
-        query: (queryArg) => ({ url: `/api/integrations/connections`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
-      getConnectionById: build.query<GetConnectionByIdApiResponse, GetConnectionByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/integrations/connections/${queryArg.connectionId}` }),
-        providesTags: ["Connection_API_Connections"],
-      }),
-      updateConnection: build.mutation<UpdateConnectionApiResponse, UpdateConnectionApiArg>({
-        query: (queryArg) => ({
-          url: `/api/integrations/connections/${queryArg.connectionId}`,
-          method: "PUT",
-          body: queryArg.body,
-        }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
-      deleteConnection: build.mutation<DeleteConnectionApiResponse, DeleteConnectionApiArg>({
-        query: (queryArg) => ({ url: `/api/integrations/connections/${queryArg.connectionId}`, method: "DELETE" }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
-      deleteMesheryConnection: build.mutation<DeleteMesheryConnectionApiResponse, DeleteMesheryConnectionApiArg>({
-        query: (queryArg) => ({
-          url: `/api/integrations/connections/meshery/${queryArg.mesheryServerId}`,
-          method: "DELETE",
-        }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
-      getKubernetesContext: build.query<GetKubernetesContextApiResponse, GetKubernetesContextApiArg>({
-        query: (queryArg) => ({ url: `/api/integrations/connections/kubernetes/${queryArg.connectionId}/context` }),
-        providesTags: ["Connection_API_Connections"],
-      }),
-      addConnectionToEnvironment: build.mutation<
-        AddConnectionToEnvironmentApiResponse,
-        AddConnectionToEnvironmentApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}/connections/${queryArg.connectionId}`,
-          method: "POST",
-        }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
-      removeConnectionFromEnvironment: build.mutation<
-        RemoveConnectionFromEnvironmentApiResponse,
-        RemoveConnectionFromEnvironmentApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/environments/${queryArg.environmentId}/connections/${queryArg.connectionId}`,
-          method: "DELETE",
-        }),
-        invalidatesTags: ["Connection_API_Connections"],
-      }),
       getUserCredentials: build.query<GetUserCredentialsApiResponse, GetUserCredentialsApiArg>({
         query: (queryArg) => ({
           url: `/api/integrations/credentials`,
@@ -631,6 +513,56 @@ const injectedRtkApi = api
       >({
         query: () => ({ url: `/api/identity/users/request/notification` }),
         providesTags: ["Invitation_Invitation"],
+      }),
+      getUserKeys: build.query<GetUserKeysApiResponse, GetUserKeysApiArg>({
+        query: (queryArg) => ({
+          url: `/api/identity/orgs/${queryArg.orgId}/users/keys`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+          },
+        }),
+        providesTags: ["Key_users"],
+      }),
+      getKeys: build.query<GetKeysApiResponse, GetKeysApiArg>({
+        query: (queryArg) => ({
+          url: `/api/auth/keys`,
+          params: {
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["Key_Key"],
+      }),
+      upsertKey: build.mutation<UpsertKeyApiResponse, UpsertKeyApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/keys`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Key_Key"],
+      }),
+      getKeyById: build.query<GetKeyByIdApiResponse, GetKeyByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}` }),
+        providesTags: ["Key_Key"],
+      }),
+      deleteKey: build.mutation<DeleteKeyApiResponse, DeleteKeyApiArg>({
+        query: (queryArg) => ({ url: `/api/auth/key/${queryArg.keyId}`, method: "DELETE" }),
+        invalidatesTags: ["Key_Key"],
+      }),
+      registerMeshmodels: build.mutation<RegisterMeshmodelsApiResponse, RegisterMeshmodelsApiArg>({
+        query: (queryArg) => ({ url: `/api/meshmodels/register`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Model_Models"],
+      }),
+      getMeshModelModels: build.query<GetMeshModelModelsApiResponse, GetMeshModelModelsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/integrations/meshmodels/models`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            search: queryArg.search,
+            order: queryArg.order,
+          },
+        }),
+        providesTags: ["Model_Models"],
       }),
       getOrgs: build.query<GetOrgsApiResponse, GetOrgsApiArg>({
         query: (queryArg) => ({
@@ -955,6 +887,75 @@ const injectedRtkApi = api
       deleteView: build.mutation<DeleteViewApiResponse, DeleteViewApiArg>({
         query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}`, method: "DELETE" }),
         invalidatesTags: ["View_views"],
+      }),
+      getConnections: build.query<GetConnectionsApiResponse, GetConnectionsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/integrations/connections`,
+          params: {
+            page: queryArg.page,
+            pageSize: queryArg.pageSize,
+            search: queryArg.search,
+            order: queryArg.order,
+            orgId: queryArg.orgId,
+            filter: queryArg.filter,
+            kind: queryArg.kind,
+            status: queryArg.status,
+            type: queryArg["type"],
+            name: queryArg.name,
+          },
+        }),
+        providesTags: ["Connection_API_Connections"],
+      }),
+      registerConnection: build.mutation<RegisterConnectionApiResponse, RegisterConnectionApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/connections`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["Connection_API_Connections"],
+      }),
+      getConnectionById: build.query<GetConnectionByIdApiResponse, GetConnectionByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/connections/${queryArg.connectionId}` }),
+        providesTags: ["Connection_API_Connections"],
+      }),
+      updateConnection: build.mutation<UpdateConnectionApiResponse, UpdateConnectionApiArg>({
+        query: (queryArg) => ({
+          url: `/api/integrations/connections/${queryArg.connectionId}`,
+          method: "PUT",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Connection_API_Connections"],
+      }),
+      deleteConnection: build.mutation<DeleteConnectionApiResponse, DeleteConnectionApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/connections/${queryArg.connectionId}`, method: "DELETE" }),
+        invalidatesTags: ["Connection_API_Connections"],
+      }),
+      deleteMesheryConnection: build.mutation<DeleteMesheryConnectionApiResponse, DeleteMesheryConnectionApiArg>({
+        query: (queryArg) => ({
+          url: `/api/integrations/connections/meshery/${queryArg.mesheryServerId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Connection_API_Connections"],
+      }),
+      getKubernetesContext: build.query<GetKubernetesContextApiResponse, GetKubernetesContextApiArg>({
+        query: (queryArg) => ({ url: `/api/integrations/connections/kubernetes/${queryArg.connectionId}/context` }),
+        providesTags: ["Connection_API_Connections"],
+      }),
+      addConnectionToEnvironment: build.mutation<
+        AddConnectionToEnvironmentApiResponse,
+        AddConnectionToEnvironmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}/connections/${queryArg.connectionId}`,
+          method: "POST",
+        }),
+        invalidatesTags: ["Connection_API_Connections"],
+      }),
+      removeConnectionFromEnvironment: build.mutation<
+        RemoveConnectionFromEnvironmentApiResponse,
+        RemoveConnectionFromEnvironmentApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/environments/${queryArg.environmentId}/connections/${queryArg.connectionId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Connection_API_Connections"],
       }),
       getPatterns: build.query<GetPatternsApiResponse, GetPatternsApiArg>({
         query: (queryArg) => ({
@@ -1712,139 +1713,6 @@ export type GetFeaturesByOrganizationApiArg = {
   /** The ID of the organization */
   organizationId: string;
 };
-export type GetUserKeysApiResponse = /** status 200 Returns user keys based on roles assigned to user */ {
-  page: number;
-  page_size: number;
-  total_count: number;
-  /** The keys of the keypage. */
-  keys: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    owner: string;
-    /** Operation permitted by the key. */
-    function: string;
-    /** Category for the key. */
-    category: string;
-    /** Subcategory for the key. */
-    subcategory: string;
-    /** Human readable description of the key. */
-    description: string;
-    /** Timestamp when the resource was created. */
-    created_at: string;
-    /** Timestamp when the resource was updated. */
-    updated_at: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetUserKeysApiArg = {
-  /** Organization ID */
-  orgId: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-};
-export type GetKeysApiResponse = /** status 200 Keys fetched */ {
-  page: number;
-  page_size: number;
-  total_count: number;
-  /** The keys of the keypage. */
-  keys: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id: string;
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    owner: string;
-    /** Operation permitted by the key. */
-    function: string;
-    /** Category for the key. */
-    category: string;
-    /** Subcategory for the key. */
-    subcategory: string;
-    /** Human readable description of the key. */
-    description: string;
-    /** Timestamp when the resource was created. */
-    created_at: string;
-    /** Timestamp when the resource was updated. */
-    updated_at: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-  }[];
-};
-export type GetKeysApiArg = {
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-};
-export type UpsertKeyApiResponse = /** status 200 Key upserted */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  owner: string;
-  /** Operation permitted by the key. */
-  function: string;
-  /** Category for the key. */
-  category: string;
-  /** Subcategory for the key. */
-  subcategory: string;
-  /** Human readable description of the key. */
-  description: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-};
-export type UpsertKeyApiArg = {
-  body: {
-    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-    id?: string;
-    /** Operation permitted by the key. */
-    function?: string;
-    /** Category for the key. */
-    category?: string;
-    /** Subcategory for the key. */
-    subcategory?: string;
-    /** Human readable description of the key. */
-    description?: string;
-  };
-};
-export type GetKeyByIdApiResponse = /** status 200 Key response */ {
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  id: string;
-  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
-  owner: string;
-  /** Operation permitted by the key. */
-  function: string;
-  /** Category for the key. */
-  category: string;
-  /** Subcategory for the key. */
-  subcategory: string;
-  /** Human readable description of the key. */
-  description: string;
-  /** Timestamp when the resource was created. */
-  created_at: string;
-  /** Timestamp when the resource was updated. */
-  updated_at: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-};
-export type GetKeyByIdApiArg = {
-  /** Key ID */
-  keyId: string;
-};
-export type DeleteKeyApiResponse = unknown;
-export type DeleteKeyApiArg = {
-  /** Key ID */
-  keyId: string;
-};
 export type GetKeychainsApiResponse = /** status 200 Keychain(s) fetched */ {
   page: number;
   page_size: number;
@@ -1994,58 +1862,6 @@ export type GetKeysOfKeychainApiArg = {
   /** Get responses that match search param value */
   search?: string;
   /** Get ordered responses */
-  order?: string;
-};
-export type RegisterMeshmodelsApiResponse = /** status 201 Successful registration */ {
-  message?: string;
-};
-export type RegisterMeshmodelsApiArg = {
-  body: {
-    importBody:
-      | {
-          /** Name of the file being uploaded. */
-          fileName: string;
-          /** Supported model file formats are: .tar, .tar.gz, and .tgz. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
-          modelFile: string;
-        }
-      | {
-          /** A direct URL to a single model file, for example: https://raw.github.com/your-model-file.tar. Supported model file formats are: .tar, .tar.gz, and .tgz. \n\nFor bulk import of your model use the GitHub connection or CSV files. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
-          url: string;
-        }
-      | {
-          /** Upload a CSV file containing model definitions */
-          modelCsv: Blob;
-          /** Upload a CSV file containing component definitions */
-          componentCsv: Blob;
-          /** Upload a CSV file containing relationship definitions */
-          relationshipCsv: Blob;
-        }
-      | {
-          /** URI to the source code or package of the model. */
-          url: string;
-        };
-    /** Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online. */
-    uploadType: "file" | "urlImport" | "csv" | "url";
-    /** The register of the importrequest. */
-    register: boolean;
-  };
-};
-export type GetMeshModelModelsApiResponse = /** status 200 Model and capabilities registry entries retrieved. */ {
-  /** Current page number of the result set. */
-  page?: number;
-  /** Number of items per page. */
-  page_size?: number;
-  /** Total number of items available. */
-  total_count?: number;
-  /** The models of the meshmodelmodelspage. */
-  models?: {
-    [key: string]: any;
-  }[];
-};
-export type GetMeshModelModelsApiArg = {
-  page?: string;
-  pagesize?: string;
-  search?: string;
   order?: string;
 };
 export type AddRoleHolderApiResponse = unknown;
@@ -4058,355 +3874,6 @@ export type GetCertificateByIdApiArg = {
   /** The ID of the certificate to retrieve */
   certificateId: string;
 };
-export type GetConnectionsApiResponse = /** status 200 Paginated list of connections with summary information */ {
-  /** List of connections on this page */
-  connections: {
-    /** Connection ID */
-    id: string;
-    /** Connection Name */
-    name: string;
-    /** Associated Credential ID */
-    credential_id?: string;
-    /** Connection Type (platform, telemetry, collaboration) */
-    type: string;
-    /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
-    sub_type: string;
-    /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
-    kind: string;
-    /** Additional connection metadata */
-    metadata?: object;
-    /** Connection Status */
-    status:
-      | "discovered"
-      | "registered"
-      | "connected"
-      | "ignored"
-      | "maintenance"
-      | "disconnected"
-      | "deleted"
-      | "not found";
-    /** User ID who owns this connection */
-    user_id?: string;
-    created_at?: string;
-    updated_at?: string;
-    /** SQL null Timestamp to handle null values of time. */
-    deleted_at?: string;
-    /** Associated environments for this connection */
-    environments?: {
-      /** ID */
-      id: string;
-      /** Specifies the version of the schema to which the environment conforms. */
-      schemaVersion: string;
-      /** Environment name */
-      name: string;
-      /** Environment description */
-      description: string;
-      /** Environment organization ID */
-      organization_id: string;
-      /** Environment owner */
-      owner?: string;
-      /** Timestamp when the resource was created. */
-      created_at?: string;
-      /** Additional metadata associated with the environment. */
-      metadata?: object;
-      /** Timestamp when the resource was updated. */
-      updated_at?: string;
-      /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-      deleted_at?: string | null;
-    }[];
-    /** Specifies the version of the schema used for the definition. */
-    schemaVersion: string;
-  }[];
-  /** Total number of connections on all pages */
-  total_count: number;
-  /** Current page number */
-  page: number;
-  /** Number of elements per page */
-  page_size: number;
-  /** Aggregate count of connections grouped by status */
-  statusSummary?: {
-    [key: string]: number;
-  };
-};
-export type GetConnectionsApiArg = {
-  /** Page number */
-  page?: number;
-  /** Number of items per page */
-  pagesize?: number;
-  /** Search term */
-  search?: string;
-  /** Sort order */
-  order?: string;
-  /** Filter connections (general filter string) */
-  filter?: string;
-  /** Filter by connection kind (e.g., kubernetes, prometheus, grafana) */
-  kind?: string[];
-  /** Filter by connection status */
-  status?: (
-    | "discovered"
-    | "registered"
-    | "connected"
-    | "ignored"
-    | "maintenance"
-    | "disconnected"
-    | "deleted"
-    | "not found"
-  )[];
-  /** Filter by connection type */
-  type?: string[];
-  /** Filter by connection name (partial match supported) */
-  name?: string;
-};
-export type RegisterConnectionApiResponse = /** status 201 Connection registered */ {
-  /** Connection ID */
-  id: string;
-  /** Connection Name */
-  name: string;
-  /** Associated Credential ID */
-  credential_id?: string;
-  /** Connection Type (platform, telemetry, collaboration) */
-  type: string;
-  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
-  sub_type: string;
-  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
-  kind: string;
-  /** Additional connection metadata */
-  metadata?: object;
-  /** Connection Status */
-  status:
-    | "discovered"
-    | "registered"
-    | "connected"
-    | "ignored"
-    | "maintenance"
-    | "disconnected"
-    | "deleted"
-    | "not found";
-  /** User ID who owns this connection */
-  user_id?: string;
-  created_at?: string;
-  updated_at?: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-  /** Associated environments for this connection */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-  /** Specifies the version of the schema used for the definition. */
-  schemaVersion: string;
-};
-export type RegisterConnectionApiArg = {
-  body: {
-    /** Connection ID */
-    id?: string;
-    /** Connection name */
-    name: string;
-    /** Connection kind */
-    kind: string;
-    /** Connection type */
-    type: string;
-    /** Connection sub-type */
-    subType: string;
-    /** Credential secret data */
-    credentialSecret?: object;
-    /** Connection metadata */
-    metadata?: object;
-    /** Connection status */
-    status: string;
-    /** Associated credential ID */
-    credentialId?: string;
-  };
-};
-export type GetConnectionByIdApiResponse = /** status 200 Connection details */ {
-  /** Connection ID */
-  id: string;
-  /** Connection Name */
-  name: string;
-  /** Associated Credential ID */
-  credential_id?: string;
-  /** Connection Type (platform, telemetry, collaboration) */
-  type: string;
-  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
-  sub_type: string;
-  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
-  kind: string;
-  /** Additional connection metadata */
-  metadata?: object;
-  /** Connection Status */
-  status:
-    | "discovered"
-    | "registered"
-    | "connected"
-    | "ignored"
-    | "maintenance"
-    | "disconnected"
-    | "deleted"
-    | "not found";
-  /** User ID who owns this connection */
-  user_id?: string;
-  created_at?: string;
-  updated_at?: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-  /** Associated environments for this connection */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-  /** Specifies the version of the schema used for the definition. */
-  schemaVersion: string;
-};
-export type GetConnectionByIdApiArg = {
-  /** Connection ID */
-  connectionId: string;
-};
-export type UpdateConnectionApiResponse = /** status 200 Connection updated */ {
-  /** Connection ID */
-  id: string;
-  /** Connection Name */
-  name: string;
-  /** Associated Credential ID */
-  credential_id?: string;
-  /** Connection Type (platform, telemetry, collaboration) */
-  type: string;
-  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
-  sub_type: string;
-  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
-  kind: string;
-  /** Additional connection metadata */
-  metadata?: object;
-  /** Connection Status */
-  status:
-    | "discovered"
-    | "registered"
-    | "connected"
-    | "ignored"
-    | "maintenance"
-    | "disconnected"
-    | "deleted"
-    | "not found";
-  /** User ID who owns this connection */
-  user_id?: string;
-  created_at?: string;
-  updated_at?: string;
-  /** SQL null Timestamp to handle null values of time. */
-  deleted_at?: string;
-  /** Associated environments for this connection */
-  environments?: {
-    /** ID */
-    id: string;
-    /** Specifies the version of the schema to which the environment conforms. */
-    schemaVersion: string;
-    /** Environment name */
-    name: string;
-    /** Environment description */
-    description: string;
-    /** Environment organization ID */
-    organization_id: string;
-    /** Environment owner */
-    owner?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Additional metadata associated with the environment. */
-    metadata?: object;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
-    deleted_at?: string | null;
-  }[];
-  /** Specifies the version of the schema used for the definition. */
-  schemaVersion: string;
-};
-export type UpdateConnectionApiArg = {
-  /** Connection ID */
-  connectionId: string;
-  body: {
-    /** Connection ID */
-    id?: string;
-    /** Connection name */
-    name: string;
-    /** Connection kind */
-    kind: string;
-    /** Connection type */
-    type: string;
-    /** Connection sub-type */
-    subType: string;
-    /** Credential secret data */
-    credentialSecret?: object;
-    /** Connection metadata */
-    metadata?: object;
-    /** Connection status */
-    status: string;
-    /** Associated credential ID */
-    credentialId?: string;
-  };
-};
-export type DeleteConnectionApiResponse = unknown;
-export type DeleteConnectionApiArg = {
-  /** Connection ID */
-  connectionId: string;
-};
-export type DeleteMesheryConnectionApiResponse = unknown;
-export type DeleteMesheryConnectionApiArg = {
-  /** Meshery server ID */
-  mesheryServerId: string;
-};
-export type GetKubernetesContextApiResponse = /** status 200 Kubernetes context */ object;
-export type GetKubernetesContextApiArg = {
-  /** Connection ID */
-  connectionId: string;
-};
-export type AddConnectionToEnvironmentApiResponse = unknown;
-export type AddConnectionToEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Connection ID */
-  connectionId: string;
-};
-export type RemoveConnectionFromEnvironmentApiResponse = unknown;
-export type RemoveConnectionFromEnvironmentApiArg = {
-  /** Environment ID */
-  environmentId: string;
-  /** Connection ID */
-  connectionId: string;
-};
 export type GetUserCredentialsApiResponse = /** status 200 Credentials response */ {
   /** The credentials returned on the current page. */
   credentials: {
@@ -4836,6 +4303,201 @@ export type GetSignupRequestNotificationApiResponse = /** status 200 Signup requ
   [key: string]: any;
 };
 export type GetSignupRequestNotificationApiArg = void;
+export type GetUserKeysApiResponse = /** status 200 Returns user keys based on roles assigned to user */ {
+  /** Zero-based page index returned in this response. */
+  page: number;
+  /** Maximum number of items returned on each page. */
+  pageSize: number;
+  /** Total number of items across all pages. */
+  totalCount: number;
+  /** Keys returned on the current page. */
+  keys: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    owner: string;
+    /** Operation permitted by the key. */
+    function: string;
+    /** Category for the key. */
+    category: string;
+    /** Subcategory for the key. */
+    subcategory: string;
+    /** Human readable description of the key. */
+    description: string;
+    /** Timestamp when the key was created. */
+    createdAt: string;
+    /** Timestamp when the key was last updated. */
+    updatedAt: string;
+    /** Timestamp when the key was soft-deleted. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetUserKeysApiArg = {
+  /** Organization ID */
+  orgId: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+};
+export type GetKeysApiResponse = /** status 200 Keys fetched */ {
+  /** Zero-based page index returned in this response. */
+  page: number;
+  /** Maximum number of items returned on each page. */
+  pageSize: number;
+  /** Total number of items across all pages. */
+  totalCount: number;
+  /** Keys returned on the current page. */
+  keys: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id: string;
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    owner: string;
+    /** Operation permitted by the key. */
+    function: string;
+    /** Category for the key. */
+    category: string;
+    /** Subcategory for the key. */
+    subcategory: string;
+    /** Human readable description of the key. */
+    description: string;
+    /** Timestamp when the key was created. */
+    createdAt: string;
+    /** Timestamp when the key was last updated. */
+    updatedAt: string;
+    /** Timestamp when the key was soft-deleted. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetKeysApiArg = {
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+};
+export type UpsertKeyApiResponse = /** status 200 Key upserted */ {
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  id: string;
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  owner: string;
+  /** Operation permitted by the key. */
+  function: string;
+  /** Category for the key. */
+  category: string;
+  /** Subcategory for the key. */
+  subcategory: string;
+  /** Human readable description of the key. */
+  description: string;
+  /** Timestamp when the key was created. */
+  createdAt: string;
+  /** Timestamp when the key was last updated. */
+  updatedAt: string;
+  /** Timestamp when the key was soft-deleted. */
+  deletedAt?: string | null;
+};
+export type UpsertKeyApiArg = {
+  body: {
+    /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+    id?: string;
+    /** Operation permitted by the key. */
+    function?: string;
+    /** Category for the key. */
+    category?: string;
+    /** Subcategory for the key. */
+    subcategory?: string;
+    /** Human readable description of the key. */
+    description?: string;
+  };
+};
+export type GetKeyByIdApiResponse = /** status 200 Key response */ {
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  id: string;
+  /** A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas. */
+  owner: string;
+  /** Operation permitted by the key. */
+  function: string;
+  /** Category for the key. */
+  category: string;
+  /** Subcategory for the key. */
+  subcategory: string;
+  /** Human readable description of the key. */
+  description: string;
+  /** Timestamp when the key was created. */
+  createdAt: string;
+  /** Timestamp when the key was last updated. */
+  updatedAt: string;
+  /** Timestamp when the key was soft-deleted. */
+  deletedAt?: string | null;
+};
+export type GetKeyByIdApiArg = {
+  /** Key ID */
+  keyId: string;
+};
+export type DeleteKeyApiResponse = unknown;
+export type DeleteKeyApiArg = {
+  /** Key ID */
+  keyId: string;
+};
+export type RegisterMeshmodelsApiResponse = /** status 201 Model registered */ {
+  message?: string;
+};
+export type RegisterMeshmodelsApiArg = {
+  body: {
+    importBody:
+      | {
+          /** Name of the file being uploaded. */
+          fileName: string;
+          /** Supported model file formats are: .tar, .tar.gz, and .tgz. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          modelFile: string;
+        }
+      | {
+          /** A direct URL to a single model file, for example: https://raw.github.com/your-model-file.tar. Supported model file formats are: .tar, .tar.gz, and .tgz. \n\nFor bulk import of your model use the GitHub connection or CSV files. See [Import Models Documentation](https://docs.meshery.io/guides/configuration-management/importing-models#import-models-using-meshery-ui) for details */
+          url: string;
+        }
+      | {
+          /** Upload a CSV file containing model definitions */
+          modelCsv: Blob;
+          /** Upload a CSV file containing component definitions */
+          componentCsv: Blob;
+          /** Upload a CSV file containing relationship definitions */
+          relationshipCsv: Blob;
+        }
+      | {
+          /** URI to the source code or package of the model. */
+          url: string;
+        };
+    /** Choose the method you prefer to upload your model file. Select 'File Import' or 'CSV Import' if you have the file on your local system or 'URL Import' if you have the file hosted online. */
+    uploadType: "file" | "urlImport" | "csv" | "url";
+    /** The register of the importrequest. */
+    register: boolean;
+  };
+};
+export type GetMeshModelModelsApiResponse = /** status 200 Model and capabilities registry entries retrieved. */ {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Total number of items available. */
+  totalCount?: number;
+  /** The models of the meshmodelmodelspage. */
+  models?: {
+    [key: string]: any;
+  }[];
+};
+export type GetMeshModelModelsApiArg = {
+  /** Current page number of the result set. */
+  page?: number;
+  /** Number of items per page. */
+  pageSize?: number;
+  /** Free-text search query applied to model names. */
+  search?: string;
+  /** Sort order for the result set (e.g. "name asc"). */
+  order?: string;
+};
 export type GetOrgsApiResponse = /** status 200 Organizations response */ {
   /** Zero-based page index returned in this response. */
   page?: number;
@@ -6861,6 +6523,365 @@ export type DeleteViewApiResponse = unknown;
 export type DeleteViewApiArg = {
   /** View ID */
   viewId: string;
+};
+export type GetConnectionsApiResponse = /** status 200 Paginated list of connections with summary information */ {
+  /** List of connections on this page */
+  connections: {
+    /** Connection ID */
+    id: string;
+    /** Connection Name */
+    name: string;
+    /** Associated Credential ID */
+    credentialId?: string;
+    /** Connection Type (platform, telemetry, collaboration) */
+    type: string;
+    /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+    subType: string;
+    /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+    kind: string;
+    /** Additional connection metadata */
+    metadata?: object;
+    /** Connection Status */
+    status:
+      | "discovered"
+      | "registered"
+      | "connected"
+      | "ignored"
+      | "maintenance"
+      | "disconnected"
+      | "deleted"
+      | "not found";
+    /** User ID who owns this connection */
+    userId?: string;
+    /** Timestamp when the connection was created. */
+    createdAt?: string;
+    /** Timestamp when the connection was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the connection was soft-deleted, if applicable. */
+    deletedAt?: string;
+    /** Associated environments for this connection */
+    environments?: {
+      /** ID */
+      id: string;
+      /** Specifies the version of the schema to which the environment conforms. */
+      schemaVersion: string;
+      /** Environment name */
+      name: string;
+      /** Environment description */
+      description: string;
+      /** Environment organization ID */
+      organization_id: string;
+      /** Environment owner */
+      owner?: string;
+      /** Timestamp when the resource was created. */
+      created_at?: string;
+      /** Additional metadata associated with the environment. */
+      metadata?: object;
+      /** Timestamp when the resource was updated. */
+      updated_at?: string;
+      /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+      deleted_at?: string | null;
+    }[];
+    /** Specifies the version of the schema used for the definition. */
+    schemaVersion: string;
+  }[];
+  /** Total number of connections on all pages */
+  totalCount: number;
+  /** Current page number */
+  page: number;
+  /** Number of elements per page */
+  pageSize: number;
+  /** Aggregate count of connections grouped by status */
+  statusSummary?: {
+    [key: string]: number;
+  };
+};
+export type GetConnectionsApiArg = {
+  /** Page number */
+  page?: number;
+  /** Number of items per page */
+  pageSize?: number;
+  /** Search term */
+  search?: string;
+  /** Sort order */
+  order?: string;
+  /** Organization ID to scope the request. */
+  orgId?: string;
+  /** Filter connections (general filter string) */
+  filter?: string;
+  /** Filter by connection kind (e.g., kubernetes, prometheus, grafana) */
+  kind?: string[];
+  /** Filter by connection status */
+  status?: (
+    | "discovered"
+    | "registered"
+    | "connected"
+    | "ignored"
+    | "maintenance"
+    | "disconnected"
+    | "deleted"
+    | "not found"
+  )[];
+  /** Filter by connection type */
+  type?: string[];
+  /** Filter by connection name (partial match supported) */
+  name?: string;
+};
+export type RegisterConnectionApiResponse = /** status 201 Connection registered */ {
+  /** Connection ID */
+  id: string;
+  /** Connection Name */
+  name: string;
+  /** Associated Credential ID */
+  credentialId?: string;
+  /** Connection Type (platform, telemetry, collaboration) */
+  type: string;
+  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+  subType: string;
+  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+  kind: string;
+  /** Additional connection metadata */
+  metadata?: object;
+  /** Connection Status */
+  status:
+    | "discovered"
+    | "registered"
+    | "connected"
+    | "ignored"
+    | "maintenance"
+    | "disconnected"
+    | "deleted"
+    | "not found";
+  /** User ID who owns this connection */
+  userId?: string;
+  /** Timestamp when the connection was created. */
+  createdAt?: string;
+  /** Timestamp when the connection was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the connection was soft-deleted, if applicable. */
+  deletedAt?: string;
+  /** Associated environments for this connection */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organization_id: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deleted_at?: string | null;
+  }[];
+  /** Specifies the version of the schema used for the definition. */
+  schemaVersion: string;
+};
+export type RegisterConnectionApiArg = {
+  body: {
+    /** Connection ID */
+    id?: string;
+    /** Connection name */
+    name: string;
+    /** Connection kind */
+    kind: string;
+    /** Connection type */
+    type: string;
+    /** Connection sub-type */
+    subType: string;
+    /** Credential secret data */
+    credentialSecret?: object;
+    /** Connection metadata */
+    metadata?: object;
+    /** Connection status */
+    status: string;
+    /** Associated credential ID */
+    credentialId?: string;
+  };
+};
+export type GetConnectionByIdApiResponse = /** status 200 Connection details */ {
+  /** Connection ID */
+  id: string;
+  /** Connection Name */
+  name: string;
+  /** Associated Credential ID */
+  credentialId?: string;
+  /** Connection Type (platform, telemetry, collaboration) */
+  type: string;
+  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+  subType: string;
+  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+  kind: string;
+  /** Additional connection metadata */
+  metadata?: object;
+  /** Connection Status */
+  status:
+    | "discovered"
+    | "registered"
+    | "connected"
+    | "ignored"
+    | "maintenance"
+    | "disconnected"
+    | "deleted"
+    | "not found";
+  /** User ID who owns this connection */
+  userId?: string;
+  /** Timestamp when the connection was created. */
+  createdAt?: string;
+  /** Timestamp when the connection was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the connection was soft-deleted, if applicable. */
+  deletedAt?: string;
+  /** Associated environments for this connection */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organization_id: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deleted_at?: string | null;
+  }[];
+  /** Specifies the version of the schema used for the definition. */
+  schemaVersion: string;
+};
+export type GetConnectionByIdApiArg = {
+  /** Connection ID */
+  connectionId: string;
+};
+export type UpdateConnectionApiResponse = /** status 200 Connection updated */ {
+  /** Connection ID */
+  id: string;
+  /** Connection Name */
+  name: string;
+  /** Associated Credential ID */
+  credentialId?: string;
+  /** Connection Type (platform, telemetry, collaboration) */
+  type: string;
+  /** Connection Subtype (cloud, identity, metrics, chat, git, orchestration) */
+  subType: string;
+  /** Connection Kind (meshery, kubernetes, prometheus, grafana, gke, aws, azure, slack, github) */
+  kind: string;
+  /** Additional connection metadata */
+  metadata?: object;
+  /** Connection Status */
+  status:
+    | "discovered"
+    | "registered"
+    | "connected"
+    | "ignored"
+    | "maintenance"
+    | "disconnected"
+    | "deleted"
+    | "not found";
+  /** User ID who owns this connection */
+  userId?: string;
+  /** Timestamp when the connection was created. */
+  createdAt?: string;
+  /** Timestamp when the connection was last updated. */
+  updatedAt?: string;
+  /** Timestamp when the connection was soft-deleted, if applicable. */
+  deletedAt?: string;
+  /** Associated environments for this connection */
+  environments?: {
+    /** ID */
+    id: string;
+    /** Specifies the version of the schema to which the environment conforms. */
+    schemaVersion: string;
+    /** Environment name */
+    name: string;
+    /** Environment description */
+    description: string;
+    /** Environment organization ID */
+    organization_id: string;
+    /** Environment owner */
+    owner?: string;
+    /** Timestamp when the resource was created. */
+    created_at?: string;
+    /** Additional metadata associated with the environment. */
+    metadata?: object;
+    /** Timestamp when the resource was updated. */
+    updated_at?: string;
+    /** Timestamp when the environment was soft deleted. Null while the environment remains active. */
+    deleted_at?: string | null;
+  }[];
+  /** Specifies the version of the schema used for the definition. */
+  schemaVersion: string;
+};
+export type UpdateConnectionApiArg = {
+  /** Connection ID */
+  connectionId: string;
+  body: {
+    /** Connection ID */
+    id?: string;
+    /** Connection name */
+    name: string;
+    /** Connection kind */
+    kind: string;
+    /** Connection type */
+    type: string;
+    /** Connection sub-type */
+    subType: string;
+    /** Credential secret data */
+    credentialSecret?: object;
+    /** Connection metadata */
+    metadata?: object;
+    /** Connection status */
+    status: string;
+    /** Associated credential ID */
+    credentialId?: string;
+  };
+};
+export type DeleteConnectionApiResponse = unknown;
+export type DeleteConnectionApiArg = {
+  /** Connection ID */
+  connectionId: string;
+};
+export type DeleteMesheryConnectionApiResponse = unknown;
+export type DeleteMesheryConnectionApiArg = {
+  /** Meshery server ID */
+  mesheryServerId: string;
+};
+export type GetKubernetesContextApiResponse = /** status 200 Kubernetes context */ object;
+export type GetKubernetesContextApiArg = {
+  /** Connection ID */
+  connectionId: string;
+};
+export type AddConnectionToEnvironmentApiResponse = unknown;
+export type AddConnectionToEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Connection ID */
+  connectionId: string;
+};
+export type RemoveConnectionFromEnvironmentApiResponse = unknown;
+export type RemoveConnectionFromEnvironmentApiArg = {
+  /** Environment ID */
+  environmentId: string;
+  /** Connection ID */
+  connectionId: string;
 };
 export type GetPatternsApiResponse = /** status 200 Designs response */ {
   /** Current page number of the result set. */
@@ -15047,11 +15068,6 @@ export const {
   useGetEnvironmentConnectionsQuery,
   useGetFeaturesQuery,
   useGetFeaturesByOrganizationQuery,
-  useGetUserKeysQuery,
-  useGetKeysQuery,
-  useUpsertKeyMutation,
-  useGetKeyByIdQuery,
-  useDeleteKeyMutation,
   useGetKeychainsQuery,
   useCreateKeychainMutation,
   useGetKeychainByIdQuery,
@@ -15060,8 +15076,6 @@ export const {
   useAddKeyToKeychainMutation,
   useRemoveKeyFromKeychainMutation,
   useGetKeysOfKeychainQuery,
-  useRegisterMeshmodelsMutation,
-  useGetMeshModelModelsQuery,
   useAddRoleHolderMutation,
   useDeleteRoleMutation,
   useGetAllRolesQuery,
@@ -15092,15 +15106,6 @@ export const {
   useGetAcademyAdminSummaryQuery,
   useGetAcademyAdminRegistrationsQuery,
   useGetCertificateByIdQuery,
-  useGetConnectionsQuery,
-  useRegisterConnectionMutation,
-  useGetConnectionByIdQuery,
-  useUpdateConnectionMutation,
-  useDeleteConnectionMutation,
-  useDeleteMesheryConnectionMutation,
-  useGetKubernetesContextQuery,
-  useAddConnectionToEnvironmentMutation,
-  useRemoveConnectionFromEnvironmentMutation,
   useGetUserCredentialsQuery,
   useSaveUserCredentialMutation,
   useUpdateUserCredentialMutation,
@@ -15118,6 +15123,13 @@ export const {
   useApproveSignupRequestMutation,
   useDenySignupRequestMutation,
   useGetSignupRequestNotificationQuery,
+  useGetUserKeysQuery,
+  useGetKeysQuery,
+  useUpsertKeyMutation,
+  useGetKeyByIdQuery,
+  useDeleteKeyMutation,
+  useRegisterMeshmodelsMutation,
+  useGetMeshModelModelsQuery,
   useGetOrgsQuery,
   useCreateOrgMutation,
   useGetOrgByDomainQuery,
@@ -15160,6 +15172,15 @@ export const {
   useGetViewByIdQuery,
   useUpdateViewMutation,
   useDeleteViewMutation,
+  useGetConnectionsQuery,
+  useRegisterConnectionMutation,
+  useGetConnectionByIdQuery,
+  useUpdateConnectionMutation,
+  useDeleteConnectionMutation,
+  useDeleteMesheryConnectionMutation,
+  useGetKubernetesContextQuery,
+  useAddConnectionToEnvironmentMutation,
+  useRemoveConnectionFromEnvironmentMutation,
   useGetPatternsQuery,
   useUpsertPatternMutation,
   useDeletePatternsMutation,
