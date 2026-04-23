@@ -1,9 +1,8 @@
 openapi: 3.0.0
 info:
   title: Key
-  x-deprecated: true
   description: OpenAPI schema for authorization key management in Meshery.
-  version: v1beta1
+  version: v1beta2
   contact:
     name: Meshery Maintainers
     email: maintainers@meshery.io
@@ -145,13 +144,13 @@ paths:
 components:
   responses:
     400:
-      $ref: "../core/api.yml#/components/responses/400"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/400"
     401:
-      $ref: "../core/api.yml#/components/responses/401"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/401"
     404:
-      $ref: "../core/api.yml#/components/responses/404"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/404"
     500:
-      $ref: "../core/api.yml#/components/responses/500"
+      $ref: "../../v1alpha1/core/api.yml#/components/responses/500"
 
   parameters:
     orgId:
@@ -160,22 +159,22 @@ components:
       description: Organization ID
       required: true
       schema:
-        $ref: ../core/api.yml#/components/schemas/uuid
+        $ref: ../../v1alpha1/core/api.yml#/components/schemas/uuid
     keyId:
       name: keyId
       in: path
       description: Key ID
       required: true
       schema:
-        $ref: ../core/api.yml#/components/schemas/uuid
+        $ref: ../../v1alpha1/core/api.yml#/components/schemas/uuid
     page:
-      $ref: ../core/api.yml#/components/parameters/page
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/page
     pagesize:
-      $ref: ../core/api.yml#/components/parameters/pagesize
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/pagesize
     order:
-      $ref: ../core/api.yml#/components/parameters/order
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/order
     search:
-      $ref: ../core/api.yml#/components/parameters/search
+      $ref: ../../v1alpha1/core/api.yml#/components/parameters/search
 
   securitySchemes:
     jwt:
@@ -191,9 +190,11 @@ components:
       description: Payload for creating or updating a key.
       properties:
         id:
-          $ref: ../core/api.yml#/components/schemas/uuid
+          $ref: ../../v1alpha1/core/api.yml#/components/schemas/uuid
           description: Existing key identifier for updates.
           x-order: 1
+          x-oapi-codegen-extra-tags:
+            json: "id,omitempty"
         function:
           type: string
           description: Operation permitted by the key.
@@ -216,24 +217,38 @@ components:
           maxLength: 5000
     KeyPage:
       type: object
+      description: A paginated list of authorization keys.
       required:
         - page
-        - page_size
-        - total_count
+        - pageSize
+        - totalCount
         - keys
       properties:
         page:
-          $ref: ../core/api.yml#/components/schemas/number
+          type: integer
+          description: Zero-based page index returned in this response.
+          minimum: 0
+          x-go-type-skip-optional-pointer: true
           x-order: 1
-        page_size:
-          $ref: ../core/api.yml#/components/schemas/number
+        pageSize:
+          type: integer
+          description: Maximum number of items returned on each page.
+          minimum: 1
+          x-go-type-skip-optional-pointer: true
           x-order: 2
-        total_count:
-          $ref: ../core/api.yml#/components/schemas/number
+          x-oapi-codegen-extra-tags:
+            json: pageSize
+        totalCount:
+          type: integer
+          description: Total number of items across all pages.
+          minimum: 0
+          x-go-type-skip-optional-pointer: true
           x-order: 3
+          x-oapi-codegen-extra-tags:
+            json: totalCount
         keys:
           type: array
           items:
             $ref: "#/components/schemas/Key"
           x-order: 4
-          description: The keys of the keypage.
+          description: Keys returned on the current page.
