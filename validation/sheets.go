@@ -13,6 +13,7 @@ import (
 )
 
 const sheetName = "Verification of API Endpoints - Combined"
+const auditSummaryCellColumn = 2
 
 func sheetRange(r string) string {
 	return fmt.Sprintf("'%s'!%s", sheetName, r)
@@ -54,6 +55,16 @@ type sheetUpdatePlan struct {
 	MinCols     int
 	RowOps      []sheetRowOperation
 	CellUpdates []sheetCellUpdate
+}
+
+type auditSheetSummaryStats struct {
+	ServerEndpoints                  int
+	CloudEndpoints                   int
+	MissingSchema                    int
+	SchemaDrivenServer               int
+	SchemaDrivenCloud                int
+	PathParamDrift                   int
+	UnimplementedEndpointsWithSchema int
 }
 
 type sheetRowSlot struct {
@@ -422,7 +433,7 @@ func bodyStartForLayout(layout auditSheetLayout) int {
 	if layout.foundHeader {
 		return layout.headerRow + 1
 	}
-	return 1
+	return layout.headerRow + 1
 }
 
 func previousBodyStartForLayout(layout auditSheetLayout) int {
@@ -462,7 +473,22 @@ func desiredKeyCounts(rows []ConsumerAuditRow) map[reconcileKey]int {
 }
 
 func planSheetUpdate(previous [][]string, tracked []TrackedEndpoint) sheetUpdatePlan {
+	return planSheetUpdateWithSummary(previous, tracked, "")
+}
+
+func planSheetUpdateWithSummary(previous [][]string, tracked []TrackedEndpoint, summary string) sheetUpdatePlan {
+	originalRowCount := len(previous)
 	layout := auditLayout(previous)
+	insertedTopRows := 0
+	if summary != "" && layout.foundHeader && layout.headerRow == 0 {
+		previous = prependEmptyRows(previous, 1)
+		layout = auditLayout(previous)
+		insertedTopRows = 1
+	}
+	if summary != "" && !layout.foundHeader {
+		layout.headerRow = 1
+	}
+
 	desiredRows := desiredRowsFromTracked(tracked)
 	bodyStart := bodyStartForLayout(layout)
 	maxManagedColumn := len(generatedColumns) - 1
@@ -474,12 +500,24 @@ func planSheetUpdate(previous [][]string, tracked []TrackedEndpoint) sheetUpdate
 		MinRows: max(1, bodyStart+len(desiredRows)),
 		MinCols: max(len(generatedColumns), maxManagedColumn+1),
 	}
-	if !layout.foundHeader && len(previous) > 0 {
+	if summary != "" {
+		plan.MinCols = max(plan.MinCols, auditSummaryCellColumn+1)
+	}
+	if insertedTopRows > 0 {
 		plan.RowOps = append(plan.RowOps, sheetRowOperation{
 			Kind:       rowOperationInsert,
 			StartIndex: 0,
-			EndIndex:   1,
+			EndIndex:   insertedTopRows,
 		})
+	}
+	if !layout.foundHeader && len(previous) > 0 {
+		insertRows := layout.headerRow + 1
+		plan.RowOps = append(plan.RowOps, sheetRowOperation{
+			Kind:       rowOperationInsert,
+			StartIndex: 0,
+			EndIndex:   insertRows,
+		})
+		insertedTopRows += insertRows
 	}
 
 	desiredCounts := desiredKeyCounts(desiredRows)
@@ -556,6 +594,7 @@ func planSheetUpdate(previous [][]string, tracked []TrackedEndpoint) sheetUpdate
 	}
 
 	plan.CellUpdates = append(plan.CellUpdates, headerCellUpdates(layout)...)
+	plan.CellUpdates = append(plan.CellUpdates, summaryCellUpdates(previous, summary, insertedTopRows)...)
 	for i, desired := range desiredRows {
 		var previousRow *ConsumerAuditRow
 		if i < len(current) && current[i].Key == keyOf(desired) && (current[i].Key.Endpoint != "" || current[i].Key.Method != "") {
@@ -564,8 +603,20 @@ func planSheetUpdate(previous [][]string, tracked []TrackedEndpoint) sheetUpdate
 		plan.CellUpdates = append(plan.CellUpdates, rowCellUpdates(bodyStart+i, layout, previousRow, desired)...)
 	}
 
-	plan.MinRows = max(plan.MinRows, len(previous))
+	plan.MinRows = max(plan.MinRows, originalRowCount+insertedTopRows)
 	return plan
+}
+
+func prependEmptyRows(rows [][]string, count int) [][]string {
+	if count <= 0 {
+		return rows
+	}
+	out := make([][]string, 0, len(rows)+count)
+	for i := 0; i < count; i++ {
+		out = append(out, nil)
+	}
+	out = append(out, rows...)
+	return out
 }
 
 func headerCellUpdates(layout auditSheetLayout) []sheetCellUpdate {
@@ -575,12 +626,30 @@ func headerCellUpdates(layout auditSheetLayout) []sheetCellUpdate {
 	updates := make([]sheetCellUpdate, 0, len(generatedColumns))
 	for _, col := range generatedColumns {
 		updates = append(updates, sheetCellUpdate{
-			Row:    0,
+			Row:    layout.headerRow,
 			Column: layout.generated[col.Name],
 			Value:  col.Name,
 		})
 	}
 	return updates
+}
+
+func summaryCellUpdates(previous [][]string, summary string, insertedTopRows int) []sheetCellUpdate {
+	if summary == "" {
+		return nil
+	}
+	previousValue := ""
+	if insertedTopRows == 0 && len(previous) > 0 && len(previous[0]) > auditSummaryCellColumn {
+		previousValue = previous[0][auditSummaryCellColumn]
+	}
+	if previousValue == summary {
+		return nil
+	}
+	return []sheetCellUpdate{{
+		Row:    0,
+		Column: auditSummaryCellColumn,
+		Value:  summary,
+	}}
 }
 
 func rowCellUpdates(rowIndex int, layout auditSheetLayout, previous *ConsumerAuditRow, desired ConsumerAuditRow) []sheetCellUpdate {
@@ -637,6 +706,107 @@ func valueRangesFromCellUpdates(updates []sheetCellUpdate) []*sheets.ValueRange 
 		})
 	}
 	return ranges
+}
+
+func buildAuditSheetSummary(previousRows, currentRows []ConsumerAuditRow) string {
+	prev := auditSheetSummaryStatsFromRows(previousRows)
+	cur := auditSheetSummaryStatsFromRows(currentRows)
+
+	return strings.Join([]string{
+		fmt.Sprintf("Total Endpoints: Server: %s, Cloud: %s",
+			formatCountDelta(cur.ServerEndpoints, prev.ServerEndpoints),
+			formatCountDelta(cur.CloudEndpoints, prev.CloudEndpoints)),
+		"",
+		fmt.Sprintf("Missing schema: %s", formatCountDelta(cur.MissingSchema, prev.MissingSchema)),
+		"",
+		fmt.Sprintf("Schema Driven - Server: %s", formatCountDelta(cur.SchemaDrivenServer, prev.SchemaDrivenServer)),
+		"",
+		fmt.Sprintf("Schema Driven - Cloud: %s", formatCountDelta(cur.SchemaDrivenCloud, prev.SchemaDrivenCloud)),
+		"",
+		fmt.Sprintf("Path/param drift: %s", formatCountDelta(cur.PathParamDrift, prev.PathParamDrift)),
+		"",
+		fmt.Sprintf("Unimplemented endpoints with schema: %s", formatCountDelta(cur.UnimplementedEndpointsWithSchema, prev.UnimplementedEndpointsWithSchema)),
+	}, "\n")
+}
+
+func formatCountDelta(current, previous int) string {
+	delta := current - previous
+	sign := "+"
+	if delta < 0 {
+		sign = ""
+	}
+	return fmt.Sprintf("%d (%s%d)", current, sign, delta)
+}
+
+func auditSheetSummaryStatsFromRows(rows []ConsumerAuditRow) auditSheetSummaryStats {
+	var stats auditSheetSummaryStats
+	for _, row := range rows {
+		serverActive := activeInConsumer(row.EndpointStatus, "meshery")
+		cloudActive := activeInConsumer(row.EndpointStatus, "cloud")
+		if serverActive {
+			stats.ServerEndpoints++
+		}
+		if cloudActive {
+			stats.CloudEndpoints++
+		}
+
+		if row.XAnnotated == XAnnotatedNoSchema {
+			stats.MissingSchema++
+			continue
+		}
+
+		if appliesTo(row, "meshery") {
+			if row.SchemaDrivenMeshery == auditStatusTrue {
+				stats.SchemaDrivenServer++
+			}
+			if !serverActive {
+				stats.UnimplementedEndpointsWithSchema++
+			}
+		}
+		if appliesTo(row, "cloud") {
+			if row.SchemaDrivenCloud == auditStatusTrue {
+				stats.SchemaDrivenCloud++
+			}
+			if !cloudActive {
+				stats.UnimplementedEndpointsWithSchema++
+			}
+		}
+		if value := strings.TrimSpace(row.PathDrift); value != "" && !isNAOverride(value) {
+			stats.PathParamDrift++
+		}
+	}
+	return stats
+}
+
+func activeInConsumer(endpointStatus, consumer string) bool {
+	switch consumer {
+	case "meshery":
+		switch endpointStatus {
+		case EndpointStatusActiveBoth,
+			EndpointStatusActiveMesheryServer,
+			EndpointStatusActiveMesheryServerMissingCloud:
+			return true
+		}
+	case "cloud":
+		switch endpointStatus {
+		case EndpointStatusActiveBoth,
+			EndpointStatusActiveMesheryCloud,
+			EndpointStatusActiveMesheryCloudMissingServer:
+			return true
+		}
+	}
+	return false
+}
+
+func appliesTo(row ConsumerAuditRow, consumer string) bool {
+	switch consumer {
+	case "meshery":
+		return row.XAnnotated == XAnnotatedMesheryOnly || row.XAnnotated == XAnnotatedBoth
+	case "cloud":
+		return row.XAnnotated == XAnnotatedCloudOnly || row.XAnnotated == XAnnotatedBoth
+	default:
+		return false
+	}
 }
 
 func rowOperationRequests(sheetID int64, ops []sheetRowOperation) []*sheets.Request {
@@ -701,8 +871,8 @@ func rowOperationRequests(sheetID int64, ops []sheetRowOperation) []*sheets.Requ
 // writeSheet updates only the rows and cells that differ from the reconciled
 // audit state. Structural edits move, insert, or delete whole rows so
 // user-owned cells stay attached to their endpoint identity.
-func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, previous [][]string, tracked []TrackedEndpoint) error {
-	plan := planSheetUpdate(previous, tracked)
+func writeSheet(ctx context.Context, srv *sheets.Service, sheetID string, previous [][]string, tracked []TrackedEndpoint, summary string) error {
+	plan := planSheetUpdateWithSummary(previous, tracked, summary)
 	if err := ensureManagedGridSize(ctx, srv, sheetID, plan.MinRows, plan.MinCols); err != nil {
 		return fmt.Errorf("ensure managed sheet grid size: %w", err)
 	}
@@ -778,8 +948,10 @@ func reconcileFromOpts(opts ConsumerAuditOptions, result *ConsumerAuditResult) e
 		if err != nil {
 			return err
 		}
+		previousRows := parseSheetRows(previous)
 		out := reconcile(result.Rows, previous)
-		if err := writeSheet(ctx, srv, opts.SheetID, previous, out.Tracked); err != nil {
+		summary := buildAuditSheetSummary(previousRows, desiredRowsFromTracked(out.Tracked))
+		if err := writeSheet(ctx, srv, opts.SheetID, previous, out.Tracked, summary); err != nil {
 			return err
 		}
 		result.Tracked = out.Tracked
