@@ -1,9 +1,8 @@
 openapi: 3.0.0
 info:
   title: Plan
-  x-deprecated: true
   description: OpenAPI schema for subscription plan management in Meshery Cloud.
-  version: v1beta2
+  version: v1beta3
   contact:
     name: Meshery Maintainers
     email: maintainers@meshery.io
@@ -26,8 +25,8 @@ paths:
       - Plans
       summary: Get all plans supported by the system
       parameters:
-      - $ref: ../core/api.yml#/components/parameters/page
-      - $ref: ../core/api.yml#/components/parameters/pagesize
+      - $ref: ../../v1beta2/core/api.yml#/components/parameters/page
+      - $ref: ../../v1beta2/core/api.yml#/components/parameters/pagesize
       responses:
         '200':
           description: Plans response
@@ -46,11 +45,11 @@ paths:
 components:
   responses:
     400:
-      $ref: ../core/api.yml#/components/responses/400
+      $ref: ../../v1beta2/core/api.yml#/components/responses/400
     401:
-      $ref: ../core/api.yml#/components/responses/401
+      $ref: ../../v1beta2/core/api.yml#/components/responses/401
     500:
-      $ref: ../core/api.yml#/components/responses/500
+      $ref: ../../v1beta2/core/api.yml#/components/responses/500
   securitySchemes:
     jwt:
       type: http
@@ -59,35 +58,43 @@ components:
   schemas:
     PlanPage:
       type: object
+      description: Paginated list of plans supported by the system.
       required:
       - page
-      - page_size
-      - total_count
+      - pageSize
+      - totalCount
       - plans
       properties:
         page:
           type: integer
           description: Current page number of the result set.
           minimum: 0
-        page_size:
+          x-go-type-skip-optional-pointer: true
+        pageSize:
           type: integer
           description: Number of items per page.
           minimum: 1
-        total_count:
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            json: pageSize
+        totalCount:
           type: integer
           description: Total number of items available.
           minimum: 0
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            json: totalCount
         plans:
           type: array
           items:
             $ref: '#/components/schemas/Plan'
             x-go-type: Plan
-          description: The plans of the planpage.
+          description: Plans returned on the current page.
     Plan:
       $ref: ./plan.yaml
     PlanName:
       type: string
-      description: Name of the plan
+      description: Display name of the subscription plan.
       x-enum-casing-exempt: true
       enum:
       - Free
@@ -96,16 +103,19 @@ components:
       - Enterprise
     PlanCadence:
       type: string
+      description: Billing cadence of the subscription plan.
       enum:
       - none
       - monthly
       - annually
     PlanUnit:
       type: string
+      description: Unit of consumption the plan charges against.
       enum:
       - user
       - free
     Currency:
       type: string
+      description: Currency code for the plan pricing.
       enum:
       - usd
