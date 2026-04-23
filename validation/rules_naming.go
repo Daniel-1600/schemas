@@ -87,13 +87,14 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 	var out []Violation
 
 	paths := make([]string, 0, len(doc.Paths.Map()))
-	for path := range doc.Paths.Map() {
+	pathsMap := doc.Paths.Map()
+	for path := range pathsMap {
 		paths = append(paths, path)
 	}
 	sort.Strings(paths)
 
 	for _, path := range paths {
-		item := doc.Paths.Map()[path]
+		item := pathsMap[path]
 
 		// Path parameters — detected from the path template. A single
 		// placeholder appears once per template; no dedup needed.
@@ -104,7 +105,7 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 				suggestion := SuggestPathParam(param)
 				out = append(out, Violation{
 					File:       filePath,
-					Message:    fmt.Sprintf(`Path %q — path parameter {%s} uses incorrect casing. Use camelCase with "Id" suffix: {%s}. See AGENTS.md § "Naming conventions".`, path, param, suggestion),
+					Message:    fmt.Sprintf(`Path %q — path parameter {%s} uses incorrect casing. Use camelCase (and an "Id" suffix for id-like names): {%s}. See AGENTS.md § "Naming conventions".`, path, param, suggestion),
 					Severity:   *sev,
 					RuleNumber: 4,
 				})
@@ -141,7 +142,7 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 			suggestion := SuggestPathParam(name)
 			out = append(out, Violation{
 				File:       filePath,
-				Message:    fmt.Sprintf(`Path %q — query parameter %q uses incorrect casing. Use camelCase with "Id" suffix: %q. See AGENTS.md § "Naming conventions".`, path, name, suggestion),
+				Message:    fmt.Sprintf(`Path %q — query parameter %q uses incorrect casing. Use camelCase (and an "Id" suffix for id-like names): %q. See AGENTS.md § "Naming conventions".`, path, name, suggestion),
 				Severity:   *sev,
 				RuleNumber: 4,
 			})
