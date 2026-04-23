@@ -76,6 +76,15 @@ func checkRule4(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 }
 
 // Rule 6: schema property names (on api.yml components/schemas).
+//
+// Under the canonical identifier-naming contract (AGENTS.md § Identifier-
+// naming migration, docs/identifier-naming-migration.md §1), every schema
+// property name / JSON tag is camelCase regardless of DB backing. Rule 6 is
+// therefore unconditional — DB-mirrored fields are no longer exempt and are
+// flagged through the same `--style-debt` severity path as any other
+// legacy snake_case wire identifier. Known legacy DB-mirrored names are
+// still tracked via the `dbMirroredFields` set in casing.go for use by
+// matcher.go's consumer-type diff.
 func checkRule6ForAPI(filePath string, doc *openapi3.T, opts AuditOptions) []Violation {
 	sev := classifyStyleIssue(opts)
 	if sev == nil {
@@ -99,13 +108,11 @@ func checkPropertyNameCasing(filePath, schemaName string, schema *openapi3.Schem
 		return nil
 	}
 	var out []Violation
-	for propName, propRef := range schema.Properties {
+	for propName := range schema.Properties {
 		if strings.HasPrefix(propName, "$") {
 			continue
 		}
-		dbTag := getExtensionDBTag(propRef)
-		gormCol := getExtensionGormColumn(propRef)
-		issues := GetCamelCaseIssues(propName, true, dbTag, gormCol)
+		issues := GetCamelCaseIssues(propName)
 		if len(issues) > 0 {
 			descs := make([]string, len(issues))
 			for i, iss := range issues {
@@ -115,6 +122,9 @@ func checkPropertyNameCasing(filePath, schemaName string, schema *openapi3.Schem
 			msg := fmt.Sprintf(`Schema %q — property %q %s.`, schemaName, propName, strings.Join(descs, "; "))
 			if suggestion != "" {
 				msg += fmt.Sprintf(` Use: %q.`, suggestion)
+			}
+			if dbMirroredFields[propName] {
+				msg += ` (legacy DB-mirrored name — migrate at the resource's next API-version bump per docs/identifier-naming-migration.md §9)`
 			}
 			msg += ` See AGENTS.md § "Casing rules at a glance".`
 			out = append(out, Violation{File: filePath, Message: msg, Severity: sev, RuleNumber: 6})
@@ -164,7 +174,7 @@ func checkRule9(filePath string, doc *openapi3.T, opts AuditOptions) []Violation
 				continue
 			}
 			name := p.Value.Name
-			issues := GetCamelCaseIssues(name, false, "", "")
+			issues := GetCamelCaseIssues(name)
 			if len(issues) > 0 {
 				descs := make([]string, len(issues))
 				for i, iss := range issues {
