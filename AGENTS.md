@@ -136,7 +136,7 @@ Before opening a PR, verify:
 
 ## Naming conventions
 
-- Property names: **camelCase on the wire, uniformly.** New schema properties and their JSON tags use `camelCase`. For DB-backed fields, the `x-oapi-codegen-extra-tags.db` tag carries the snake_case DB column name separately from the wire identifier — the ORM layer is the sole translation boundary.
+- Property names: for **Option B–compliant (new) API versions**, use **camelCase on the wire, uniformly.** New schema properties and their JSON tags use `camelCase`. For DB-backed fields, the `x-oapi-codegen-extra-tags.db` tag carries the snake_case DB column name separately from the wire identifier — the ORM layer is the sole translation boundary. For an already-published API version that publishes `snake_case` on the wire, additions to that same version must preserve the version's published wire casing until the resource is version-bumped; do not perform partial casing migrations within a version (see §Casing rules at a glance and the [Option B plan](docs/identifier-naming-option-b-migration.md)).
 - ID-suffix fields: `lowerCamelCase` + `Id` (`modelId`, `registrantId`)
 - New enum values: lowercase words (`enabled`, `ignored`, `duplicate`); preserve published enum literals as-is within the same API version
 - Object names: singular nouns (`model`, `component`, `design`)
@@ -148,9 +148,9 @@ Before opening a PR, verify:
 
 ## Casing rules at a glance
 
-Every element in the API has exactly one correct casing. The table below is the single authoritative reference.
+Within a given API version / resource version, every element has exactly one correct casing. The table below is the single authoritative reference for **Option B–compliant (new) versions.** Already-published legacy API versions retain their published wire casing until the resource receives its next Option B API-version bump — do not recase their fields in-place.
 
-**The one-sentence rule:** *Wire is camelCase everywhere; DB is snake_case; Go fields follow Go idiom; the ORM layer is the sole translation boundary.*
+**The one-sentence rule (Option B target state):** *Wire is camelCase everywhere; DB is snake_case; Go fields follow Go idiom; the ORM layer is the sole translation boundary.*
 
 | Layer / element | Casing | Example | Counter-example |
 |---|---|---|---|
@@ -162,13 +162,14 @@ Every element in the API has exactly one correct casing. The table below is the 
 | `components/schemas` type names | PascalCase | `ModelDefinition`, `KeychainPayload` | ~~`modelDefinition`~~ |
 | File and folder names | lowercase | `api.yml`, `keychain.yaml` | ~~`Keychain.yaml`~~ |
 | URL path segments | kebab-case, plural nouns | `/api/role-holders`, `/api/workspaces` | ~~`/api/roleHolders`~~ |
-| URL path + query parameters | `camelCase + Id` | `{orgId}`, `?userId=…`, `?workspaceId=…` | ~~`{orgID}`~~, ~~`{org_id}`~~ |
+| URL path params + ID-like query params | `camelCase + Id` | `{orgId}`, `?userId=…`, `?workspaceId=…` | ~~`{orgID}`~~, ~~`{org_id}`~~, ~~`?workspace_id=…`~~ |
+| Shared pagination/search/sort/filter query params | preserve published parameter name | `?page=…`, `?pagesize=…`, `?search=…`, `?order=…`, `?filter=…` | ~~`?pageSize=…`~~ (until per-resource version bump) |
 | `operationId` | lower camelCase verbNoun | `getAllRoles`, `createWorkspace`, `getWorkspaces` | ~~`GetAllRoles`~~, ~~`get_all_roles`~~ |
 | TypeScript property / RTK arg | camelCase | `response.userId`, `queryArg.orgId` | ~~`response.user_id`~~, ~~`queryArg.orgID`~~ |
 | Go type names | PascalCase (generated) | `Connection`, `KeychainPayload` | — |
 | TypeScript type names | PascalCase (generated) | `Connection`, `KeychainPayload` | — |
 
-**The database naming is the ORM boundary, not a wire-format dictator.** Every JSON tag on every property — DB-backed or not — is camelCase. When a property is DB-backed, the snake_case DB column name lives *only* in `x-oapi-codegen-extra-tags.db` (and in the generated Go field's `db:` struct tag); it does not propagate to the JSON tag, the OpenAPI schema property name, URL parameters, or any other wire form. On DB-backed fields the `json:` and `db:` tags differ by design.
+**The database naming is the ORM boundary, not a wire-format dictator.** In Option B–compliant API versions, every JSON tag / schema property name — DB-backed or not — is camelCase. For legacy published API versions that publish snake_case on the wire, retain the published wire casing until that resource receives its next API-version bump; do not "fix" snake_case wire properties in-place. In Option B–compliant versions, when a property is DB-backed, the snake_case DB column name lives *only* in `x-oapi-codegen-extra-tags.db` (and in the generated Go field's `db:` struct tag); it does not propagate to the JSON tag, the OpenAPI schema property name, URL parameters, or any other wire form. On DB-backed fields the `json:` and `db:` tags differ by design.
 
 **Partial casing migrations are forbidden.** Do not rename selected fields within the same resource from snake_case to camelCase while leaving other published fields unchanged. If the wire format must change, introduce a new API version and migrate the resource consistently there. See the [Option B migration plan](docs/identifier-naming-option-b-migration.md) for the per-resource rollout.
 
@@ -394,7 +395,7 @@ These patterns are deliberate. Do not suggest changes during code review:
 23. ❌ Adding `format: uuid` to ID properties that hold external system identifiers (Stripe IDs, etc.) — use `x-id-format: external` instead
 24. ❌ Setting `minimum: 0` on page-size properties — page size must be at least 1
 25. ❌ Omitting `tags` from operations — every operation must have at least one tag for API documentation and client generation
-26. ❌ Introducing a `json:` tag that matches the `db:` tag on a new DB-backed field — under Option B, wire is camel and DB is snake; they differ by design on DB-backed fields. `db: "user_id"` pairs with `json: "userId"`, never `json: "user_id"`.
+26. ❌ In Option B–compliant / new-version work, introducing a `json:` tag that matches the `db:` tag on a new DB-backed field — under Option B wire is camel and DB is snake, so they differ by design on DB-backed fields. `db: "user_id"` pairs with `json: "userId"`, never `json: "user_id"`. Pre–Option B / legacy constructs may intentionally retain matching `json:` and `db:` tags for wire compatibility and should not be flagged on that basis alone.
 
 ## Checklist for Schema Changes
 
@@ -434,6 +435,8 @@ This repository is mid-migration to **Option B** identifier naming. The authorit
 **The contract in one sentence:** *Wire is camelCase everywhere; DB is snake_case; Go fields follow Go idiom; the ORM layer is the sole translation boundary.*
 
 The migration is per-resource: each resource gets a new API version with fully camelCase JSON tags, and its previous version is deprecated for one release cycle before being removed. Do not recase fields in-place inside an already-published API version — introduce a new version instead. See §11 of the plan for the orchestration DAG, §9 for the per-resource inventory, and §14 for the `AGENTS.md` / `CLAUDE.md` boilerplate every downstream repo must adopt.
+
+**Validator catch-up is in flight.** This section describes the target contract. The schema validator still enforces several pre–Option B rules at `SeverityBlocking` — in particular Rule 32 requires DB-backed property names to match their snake_case `db:` tag, and Rule 33 forbids `pageSize` / `totalCount`. Phases 1.B (Rule 6 inversion / Rule 32 retirement) and 1.E (Rule 4 query-parameter extension) invert those rules so the doc and validator agree. Until those phases land, new `camelCase` wire forms on DB-backed fields will trip the validator at CI; file them under Phase 3's per-resource rollout rather than introducing them in an existing version.
 
 Baseline metrics and the per-resource consumer graph captured in Phase 0 live under [`validation/baseline/`](validation/baseline/) and can be regenerated with:
 
