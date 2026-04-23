@@ -7,9 +7,8 @@ const ViewSchema: Record<string, unknown> = {
   "openapi": "3.0.0",
   "info": {
     "title": "View",
-    "x-deprecated": true,
     "description": "OpenAPI schema for managing Meshery views — saved perspectives with filters and metadata.",
-    "version": "v1beta1",
+    "version": "v1beta2",
     "contact": {
       "name": "Meshery Maintainers",
       "email": "maintainers@meshery.io",
@@ -159,6 +158,15 @@ const ViewSchema: Record<string, unknown> = {
           "type": "string"
         },
         "required": false
+      },
+      "userIdQuery": {
+        "name": "userId",
+        "in": "query",
+        "description": "UUID of the user whose views to retrieve.",
+        "schema": {
+          "type": "string"
+        },
+        "required": false
       }
     },
     "securitySchemes": {
@@ -182,18 +190,18 @@ const ViewSchema: Record<string, unknown> = {
           "visibility": "private",
           "filters": {},
           "metadata": {},
-          "user_id": "00000000-0000-0000-0000-000000000000",
-          "created_at": "0001-01-01T00:00:00Z",
-          "updated_at": "0001-01-01T00:00:00Z",
-          "deleted_at": null
+          "userId": "00000000-0000-0000-0000-000000000000",
+          "createdAt": "0001-01-01T00:00:00Z",
+          "updatedAt": "0001-01-01T00:00:00Z",
+          "deletedAt": null
         },
         "required": [
           "id",
           "name",
           "visibility",
-          "user_id",
-          "created_at",
-          "updated_at"
+          "userId",
+          "createdAt",
+          "updatedAt"
         ],
         "properties": {
           "id": {
@@ -202,7 +210,7 @@ const ViewSchema: Record<string, unknown> = {
             "x-go-name": "ID",
             "x-oapi-codegen-extra-tags": {
               "db": "id",
-              "yaml": "id"
+              "json": "id"
             },
             "type": "string",
             "format": "uuid",
@@ -219,7 +227,7 @@ const ViewSchema: Record<string, unknown> = {
             "x-order": 2,
             "x-oapi-codegen-extra-tags": {
               "db": "name",
-              "yaml": "name"
+              "json": "name"
             }
           },
           "visibility": {
@@ -230,7 +238,7 @@ const ViewSchema: Record<string, unknown> = {
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "visibility",
-              "yaml": "visibility"
+              "json": "visibility"
             }
           },
           "filters": {
@@ -245,7 +253,7 @@ const ViewSchema: Record<string, unknown> = {
             "x-order": 4,
             "x-oapi-codegen-extra-tags": {
               "db": "filters",
-              "yaml": "filters"
+              "json": "filters"
             }
           },
           "metadata": {
@@ -260,17 +268,17 @@ const ViewSchema: Record<string, unknown> = {
             "x-order": 5,
             "x-oapi-codegen-extra-tags": {
               "db": "metadata",
-              "yaml": "metadata"
+              "json": "metadata"
             }
           },
-          "user_id": {
+          "userId": {
             "description": "ID of the user who created the view.",
             "x-go-name": "UserID",
             "x-go-type-skip-optional-pointer": true,
             "x-order": 6,
             "x-oapi-codegen-extra-tags": {
               "db": "user_id",
-              "yaml": "user_id"
+              "json": "userId"
             },
             "type": "string",
             "format": "uuid",
@@ -279,45 +287,45 @@ const ViewSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "created_at": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
             "description": "Timestamp when the view was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
+              "json": "createdAt"
             },
-            "x-order": 7,
+            "x-order": 7
+          },
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
-          },
-          "updated_at": {
             "description": "Timestamp when the view was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
+              "json": "updatedAt"
             },
-            "x-order": 8,
+            "x-order": 8
+          },
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
-          },
-          "deleted_at": {
             "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
             "nullable": true,
             "x-go-type": "core.NullTime",
-            "x-go-import": "database/sql",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
+            },
             "x-oapi-codegen-extra-tags": {
               "db": "deleted_at",
-              "yaml": "deleted_at"
+              "json": "deletedAt,omitempty"
             },
-            "x-order": 9,
-            "x-go-type-import": {
-              "name": "meshcore",
-              "path": "github.com/meshery/schemas/models/core"
-            },
-            "type": "string",
-            "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "x-order": 9
           }
         }
       },
@@ -325,8 +333,8 @@ const ViewSchema: Record<string, unknown> = {
         "type": "object",
         "description": "A view enriched with the workspace and organization it belongs to.",
         "required": [
-          "workspace_id",
-          "organization_id"
+          "workspaceId",
+          "organizationId"
         ],
         "properties": {
           "id": {
@@ -391,13 +399,13 @@ const ViewSchema: Record<string, unknown> = {
               "json": "metadata,omitempty"
             }
           },
-          "user_id": {
+          "userId": {
             "description": "ID of the user who created the view.",
             "x-go-name": "UserID",
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "user_id",
-              "json": "user_id,omitempty"
+              "json": "userId,omitempty"
             },
             "type": "string",
             "format": "uuid",
@@ -406,23 +414,23 @@ const ViewSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "workspace_name": {
+          "workspaceName": {
             "type": "string",
             "description": "Name of the workspace this view belongs to.",
             "maxLength": 255,
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_name",
-              "json": "workspace_name,omitempty"
+              "json": "workspaceName,omitempty"
             }
           },
-          "workspace_id": {
+          "workspaceId": {
             "description": "ID of the workspace this view belongs to.",
             "x-go-name": "WorkspaceID",
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "workspace_id",
-              "json": "workspace_id"
+              "json": "workspaceId"
             },
             "type": "string",
             "format": "uuid",
@@ -431,13 +439,13 @@ const ViewSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "organization_id": {
+          "organizationId": {
             "description": "ID of the organization this view belongs to.",
             "x-go-name": "OrganizationID",
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "organization_id",
-              "json": "organization_id"
+              "json": "organizationId"
             },
             "type": "string",
             "format": "uuid",
@@ -446,50 +454,52 @@ const ViewSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "organization_name": {
+          "organizationName": {
             "type": "string",
             "description": "Name of the organization this view belongs to.",
             "maxLength": 255,
             "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "organization_name",
-              "json": "organization_name,omitempty"
+              "json": "organizationName,omitempty"
             }
           },
-          "created_at": {
-            "description": "Timestamp when the resource was created.",
-            "x-go-type": "time.Time",
+          "createdAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "CreatedAt",
+            "description": "Timestamp when the view was created.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "created_at",
-              "yaml": "created_at"
-            },
-            "x-go-type-skip-optional-pointer": true
+              "json": "createdAt"
+            }
           },
-          "updated_at": {
-            "description": "Timestamp when the resource was updated.",
-            "x-go-type": "time.Time",
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-name": "UpdatedAt",
+            "description": "Timestamp when the view was last updated.",
+            "x-go-type": "time.Time",
+            "x-go-type-skip-optional-pointer": true,
             "x-oapi-codegen-extra-tags": {
               "db": "updated_at",
-              "yaml": "updated_at"
-            },
-            "x-go-type-skip-optional-pointer": true
+              "json": "updatedAt"
+            }
           },
-          "deleted_at": {
-            "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
-            "x-go-type": "meshcore.NullTime",
-            "x-go-type-import": {
-              "name": "meshcore",
-              "path": "github.com/meshery/schemas/models/core"
-            },
+          "deletedAt": {
             "type": "string",
             "format": "date-time",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
+            "nullable": true,
+            "x-go-type": "core.NullTime",
+            "x-go-type-import": {
+              "path": "github.com/meshery/schemas/models/core",
+              "name": "core"
+            },
+            "x-oapi-codegen-extra-tags": {
+              "db": "deleted_at",
+              "json": "deletedAt,omitempty"
+            }
           }
         }
       },
@@ -549,14 +559,17 @@ const ViewSchema: Record<string, unknown> = {
         "type": "object",
         "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
         "required": [
-          "content_id",
-          "content_type",
+          "contentId",
+          "contentType",
           "emails",
           "share"
         ],
         "properties": {
-          "content_id": {
+          "contentId": {
             "description": "Identifier of the view being shared.",
+            "x-oapi-codegen-extra-tags": {
+              "json": "contentId"
+            },
             "type": "string",
             "format": "uuid",
             "x-go-type": "uuid.UUID",
@@ -564,12 +577,15 @@ const ViewSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
-          "content_type": {
+          "contentType": {
             "type": "string",
             "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
             "enum": [
               "view"
-            ]
+            ],
+            "x-oapi-codegen-extra-tags": {
+              "json": "contentType"
+            }
           },
           "emails": {
             "type": "array",
@@ -591,15 +607,27 @@ const ViewSchema: Record<string, unknown> = {
         "properties": {
           "page": {
             "type": "integer",
+            "description": "Zero-based page index returned in this response.",
+            "minimum": 0,
             "x-go-type-skip-optional-pointer": true
           },
-          "page_size": {
+          "pageSize": {
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Maximum number of items returned on each page.",
+            "minimum": 1,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "pageSize,omitempty"
+            }
           },
-          "total_count": {
+          "totalCount": {
             "type": "integer",
-            "x-go-type-skip-optional-pointer": true
+            "description": "Total number of items across all pages.",
+            "minimum": 0,
+            "x-go-type-skip-optional-pointer": true,
+            "x-oapi-codegen-extra-tags": {
+              "json": "totalCount,omitempty"
+            }
           },
           "views": {
             "type": "array",
@@ -609,8 +637,8 @@ const ViewSchema: Record<string, unknown> = {
               "type": "object",
               "description": "A view enriched with the workspace and organization it belongs to.",
               "required": [
-                "workspace_id",
-                "organization_id"
+                "workspaceId",
+                "organizationId"
               ],
               "properties": {
                 "id": {
@@ -675,13 +703,13 @@ const ViewSchema: Record<string, unknown> = {
                     "json": "metadata,omitempty"
                   }
                 },
-                "user_id": {
+                "userId": {
                   "description": "ID of the user who created the view.",
                   "x-go-name": "UserID",
                   "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "user_id",
-                    "json": "user_id,omitempty"
+                    "json": "userId,omitempty"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -690,23 +718,23 @@ const ViewSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "workspace_name": {
+                "workspaceName": {
                   "type": "string",
                   "description": "Name of the workspace this view belongs to.",
                   "maxLength": 255,
                   "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "workspace_name",
-                    "json": "workspace_name,omitempty"
+                    "json": "workspaceName,omitempty"
                   }
                 },
-                "workspace_id": {
+                "workspaceId": {
                   "description": "ID of the workspace this view belongs to.",
                   "x-go-name": "WorkspaceID",
                   "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "workspace_id",
-                    "json": "workspace_id"
+                    "json": "workspaceId"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -715,13 +743,13 @@ const ViewSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "organization_id": {
+                "organizationId": {
                   "description": "ID of the organization this view belongs to.",
                   "x-go-name": "OrganizationID",
                   "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "organization_id",
-                    "json": "organization_id"
+                    "json": "organizationId"
                   },
                   "type": "string",
                   "format": "uuid",
@@ -730,50 +758,52 @@ const ViewSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "organization_name": {
+                "organizationName": {
                   "type": "string",
                   "description": "Name of the organization this view belongs to.",
                   "maxLength": 255,
                   "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "organization_name",
-                    "json": "organization_name,omitempty"
+                    "json": "organizationName,omitempty"
                   }
                 },
-                "created_at": {
-                  "description": "Timestamp when the resource was created.",
-                  "x-go-type": "time.Time",
+                "createdAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "CreatedAt",
+                  "description": "Timestamp when the view was created.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "created_at",
-                    "yaml": "created_at"
-                  },
-                  "x-go-type-skip-optional-pointer": true
+                    "json": "createdAt"
+                  }
                 },
-                "updated_at": {
-                  "description": "Timestamp when the resource was updated.",
-                  "x-go-type": "time.Time",
+                "updatedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-name": "UpdatedAt",
+                  "description": "Timestamp when the view was last updated.",
+                  "x-go-type": "time.Time",
+                  "x-go-type-skip-optional-pointer": true,
                   "x-oapi-codegen-extra-tags": {
                     "db": "updated_at",
-                    "yaml": "updated_at"
-                  },
-                  "x-go-type-skip-optional-pointer": true
+                    "json": "updatedAt"
+                  }
                 },
-                "deleted_at": {
-                  "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
-                  "x-go-type": "meshcore.NullTime",
-                  "x-go-type-import": {
-                    "name": "meshcore",
-                    "path": "github.com/meshery/schemas/models/core"
-                  },
+                "deletedAt": {
                   "type": "string",
                   "format": "date-time",
-                  "x-go-type-skip-optional-pointer": true
+                  "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
+                  "nullable": true,
+                  "x-go-type": "core.NullTime",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/core",
+                    "name": "core"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "deleted_at",
+                    "json": "deletedAt,omitempty"
+                  }
                 }
               }
             },
@@ -852,14 +882,17 @@ const ViewSchema: Record<string, unknown> = {
               "type": "object",
               "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
               "required": [
-                "content_id",
-                "content_type",
+                "contentId",
+                "contentType",
                 "emails",
                 "share"
               ],
               "properties": {
-                "content_id": {
+                "contentId": {
                   "description": "Identifier of the view being shared.",
+                  "x-oapi-codegen-extra-tags": {
+                    "json": "contentId"
+                  },
                   "type": "string",
                   "format": "uuid",
                   "x-go-type": "uuid.UUID",
@@ -867,12 +900,15 @@ const ViewSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
-                "content_type": {
+                "contentType": {
                   "type": "string",
                   "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
                   "enum": [
                     "view"
-                  ]
+                  ],
+                  "x-oapi-codegen-extra-tags": {
+                    "json": "contentType"
+                  }
                 },
                 "emails": {
                   "type": "array",
@@ -983,18 +1019,18 @@ const ViewSchema: Record<string, unknown> = {
                     "visibility": "private",
                     "filters": {},
                     "metadata": {},
-                    "user_id": "00000000-0000-0000-0000-000000000000",
-                    "created_at": "0001-01-01T00:00:00Z",
-                    "updated_at": "0001-01-01T00:00:00Z",
-                    "deleted_at": null
+                    "userId": "00000000-0000-0000-0000-000000000000",
+                    "createdAt": "0001-01-01T00:00:00Z",
+                    "updatedAt": "0001-01-01T00:00:00Z",
+                    "deletedAt": null
                   },
                   "required": [
                     "id",
                     "name",
                     "visibility",
-                    "user_id",
-                    "created_at",
-                    "updated_at"
+                    "userId",
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
@@ -1003,7 +1039,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "id",
-                        "yaml": "id"
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1020,7 +1056,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 2,
                       "x-oapi-codegen-extra-tags": {
                         "db": "name",
-                        "yaml": "name"
+                        "json": "name"
                       }
                     },
                     "visibility": {
@@ -1031,7 +1067,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
-                        "yaml": "visibility"
+                        "json": "visibility"
                       }
                     },
                     "filters": {
@@ -1046,7 +1082,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 4,
                       "x-oapi-codegen-extra-tags": {
                         "db": "filters",
-                        "yaml": "filters"
+                        "json": "filters"
                       }
                     },
                     "metadata": {
@@ -1061,17 +1097,17 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 5,
                       "x-oapi-codegen-extra-tags": {
                         "db": "metadata",
-                        "yaml": "metadata"
+                        "json": "metadata"
                       }
                     },
-                    "user_id": {
+                    "userId": {
                       "description": "ID of the user who created the view.",
                       "x-go-name": "UserID",
                       "x-go-type-skip-optional-pointer": true,
                       "x-order": 6,
                       "x-oapi-codegen-extra-tags": {
                         "db": "user_id",
-                        "yaml": "user_id"
+                        "json": "userId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1080,45 +1116,45 @@ const ViewSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
                       "description": "Timestamp when the view was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-order": 7,
+                      "x-order": 7
+                    },
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "updated_at": {
                       "description": "Timestamp when the view was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-order": 8,
+                      "x-order": 8
+                    },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "deleted_at": {
                       "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
                       "nullable": true,
                       "x-go-type": "core.NullTime",
-                      "x-go-import": "database/sql",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "yaml": "deleted_at"
+                        "json": "deletedAt,omitempty"
                       },
-                      "x-order": 9,
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 9
                     }
                   }
                 }
@@ -1240,10 +1276,10 @@ const ViewSchema: Record<string, unknown> = {
             "name": "userId",
             "in": "query",
             "description": "UUID of the user whose views to retrieve.",
-            "required": false,
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false
           }
         ],
         "responses": {
@@ -1257,15 +1293,27 @@ const ViewSchema: Record<string, unknown> = {
                   "properties": {
                     "page": {
                       "type": "integer",
+                      "description": "Zero-based page index returned in this response.",
+                      "minimum": 0,
                       "x-go-type-skip-optional-pointer": true
                     },
-                    "page_size": {
+                    "pageSize": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Maximum number of items returned on each page.",
+                      "minimum": 1,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "pageSize,omitempty"
+                      }
                     },
-                    "total_count": {
+                    "totalCount": {
                       "type": "integer",
-                      "x-go-type-skip-optional-pointer": true
+                      "description": "Total number of items across all pages.",
+                      "minimum": 0,
+                      "x-go-type-skip-optional-pointer": true,
+                      "x-oapi-codegen-extra-tags": {
+                        "json": "totalCount,omitempty"
+                      }
                     },
                     "views": {
                       "type": "array",
@@ -1275,8 +1323,8 @@ const ViewSchema: Record<string, unknown> = {
                         "type": "object",
                         "description": "A view enriched with the workspace and organization it belongs to.",
                         "required": [
-                          "workspace_id",
-                          "organization_id"
+                          "workspaceId",
+                          "organizationId"
                         ],
                         "properties": {
                           "id": {
@@ -1341,13 +1389,13 @@ const ViewSchema: Record<string, unknown> = {
                               "json": "metadata,omitempty"
                             }
                           },
-                          "user_id": {
+                          "userId": {
                             "description": "ID of the user who created the view.",
                             "x-go-name": "UserID",
                             "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "user_id",
-                              "json": "user_id,omitempty"
+                              "json": "userId,omitempty"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1356,23 +1404,23 @@ const ViewSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "workspace_name": {
+                          "workspaceName": {
                             "type": "string",
                             "description": "Name of the workspace this view belongs to.",
                             "maxLength": 255,
                             "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "workspace_name",
-                              "json": "workspace_name,omitempty"
+                              "json": "workspaceName,omitempty"
                             }
                           },
-                          "workspace_id": {
+                          "workspaceId": {
                             "description": "ID of the workspace this view belongs to.",
                             "x-go-name": "WorkspaceID",
                             "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "workspace_id",
-                              "json": "workspace_id"
+                              "json": "workspaceId"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1381,13 +1429,13 @@ const ViewSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "organization_id": {
+                          "organizationId": {
                             "description": "ID of the organization this view belongs to.",
                             "x-go-name": "OrganizationID",
                             "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_id",
-                              "json": "organization_id"
+                              "json": "organizationId"
                             },
                             "type": "string",
                             "format": "uuid",
@@ -1396,50 +1444,52 @@ const ViewSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
-                          "organization_name": {
+                          "organizationName": {
                             "type": "string",
                             "description": "Name of the organization this view belongs to.",
                             "maxLength": 255,
                             "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "organization_name",
-                              "json": "organization_name,omitempty"
+                              "json": "organizationName,omitempty"
                             }
                           },
-                          "created_at": {
-                            "description": "Timestamp when the resource was created.",
-                            "x-go-type": "time.Time",
+                          "createdAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "CreatedAt",
+                            "description": "Timestamp when the view was created.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "created_at",
-                              "yaml": "created_at"
-                            },
-                            "x-go-type-skip-optional-pointer": true
+                              "json": "createdAt"
+                            }
                           },
-                          "updated_at": {
-                            "description": "Timestamp when the resource was updated.",
-                            "x-go-type": "time.Time",
+                          "updatedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-name": "UpdatedAt",
+                            "description": "Timestamp when the view was last updated.",
+                            "x-go-type": "time.Time",
+                            "x-go-type-skip-optional-pointer": true,
                             "x-oapi-codegen-extra-tags": {
                               "db": "updated_at",
-                              "yaml": "updated_at"
-                            },
-                            "x-go-type-skip-optional-pointer": true
+                              "json": "updatedAt"
+                            }
                           },
-                          "deleted_at": {
-                            "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
-                            "x-go-type": "meshcore.NullTime",
-                            "x-go-type-import": {
-                              "name": "meshcore",
-                              "path": "github.com/meshery/schemas/models/core"
-                            },
+                          "deletedAt": {
                             "type": "string",
                             "format": "date-time",
-                            "x-go-type-skip-optional-pointer": true
+                            "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
+                            "nullable": true,
+                            "x-go-type": "core.NullTime",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/core",
+                              "name": "core"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "deleted_at",
+                              "json": "deletedAt,omitempty"
+                            }
                           }
                         }
                       },
@@ -1493,14 +1543,17 @@ const ViewSchema: Record<string, unknown> = {
                 "type": "object",
                 "description": "Payload for sharing a view with one or more recipients by email. The\nwire format matches the canonical design share payload\n(`design.ContentSharePayload` in `v1beta2/design`), restricted to the\n`view` content type since that is all this endpoint accepts.\n",
                 "required": [
-                  "content_id",
-                  "content_type",
+                  "contentId",
+                  "contentType",
                   "emails",
                   "share"
                 ],
                 "properties": {
-                  "content_id": {
+                  "contentId": {
                     "description": "Identifier of the view being shared.",
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "contentId"
+                    },
                     "type": "string",
                     "format": "uuid",
                     "x-go-type": "uuid.UUID",
@@ -1508,12 +1561,15 @@ const ViewSchema: Record<string, unknown> = {
                       "path": "github.com/gofrs/uuid"
                     }
                   },
-                  "content_type": {
+                  "contentType": {
                     "type": "string",
                     "description": "The kind of content being shared. Only `view` is accepted on this\nendpoint.\n",
                     "enum": [
                       "view"
-                    ]
+                    ],
+                    "x-oapi-codegen-extra-tags": {
+                      "json": "contentType"
+                    }
                   },
                   "emails": {
                     "type": "array",
@@ -1633,18 +1689,18 @@ const ViewSchema: Record<string, unknown> = {
                     "visibility": "private",
                     "filters": {},
                     "metadata": {},
-                    "user_id": "00000000-0000-0000-0000-000000000000",
-                    "created_at": "0001-01-01T00:00:00Z",
-                    "updated_at": "0001-01-01T00:00:00Z",
-                    "deleted_at": null
+                    "userId": "00000000-0000-0000-0000-000000000000",
+                    "createdAt": "0001-01-01T00:00:00Z",
+                    "updatedAt": "0001-01-01T00:00:00Z",
+                    "deletedAt": null
                   },
                   "required": [
                     "id",
                     "name",
                     "visibility",
-                    "user_id",
-                    "created_at",
-                    "updated_at"
+                    "userId",
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
@@ -1653,7 +1709,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "id",
-                        "yaml": "id"
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1670,7 +1726,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 2,
                       "x-oapi-codegen-extra-tags": {
                         "db": "name",
-                        "yaml": "name"
+                        "json": "name"
                       }
                     },
                     "visibility": {
@@ -1681,7 +1737,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
-                        "yaml": "visibility"
+                        "json": "visibility"
                       }
                     },
                     "filters": {
@@ -1696,7 +1752,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 4,
                       "x-oapi-codegen-extra-tags": {
                         "db": "filters",
-                        "yaml": "filters"
+                        "json": "filters"
                       }
                     },
                     "metadata": {
@@ -1711,17 +1767,17 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 5,
                       "x-oapi-codegen-extra-tags": {
                         "db": "metadata",
-                        "yaml": "metadata"
+                        "json": "metadata"
                       }
                     },
-                    "user_id": {
+                    "userId": {
                       "description": "ID of the user who created the view.",
                       "x-go-name": "UserID",
                       "x-go-type-skip-optional-pointer": true,
                       "x-order": 6,
                       "x-oapi-codegen-extra-tags": {
                         "db": "user_id",
-                        "yaml": "user_id"
+                        "json": "userId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1730,45 +1786,45 @@ const ViewSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
                       "description": "Timestamp when the view was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-order": 7,
+                      "x-order": 7
+                    },
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "updated_at": {
                       "description": "Timestamp when the view was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-order": 8,
+                      "x-order": 8
+                    },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "deleted_at": {
                       "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
                       "nullable": true,
                       "x-go-type": "core.NullTime",
-                      "x-go-import": "database/sql",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "yaml": "deleted_at"
+                        "json": "deletedAt,omitempty"
                       },
-                      "x-order": 9,
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 9
                     }
                   }
                 }
@@ -1927,18 +1983,18 @@ const ViewSchema: Record<string, unknown> = {
                     "visibility": "private",
                     "filters": {},
                     "metadata": {},
-                    "user_id": "00000000-0000-0000-0000-000000000000",
-                    "created_at": "0001-01-01T00:00:00Z",
-                    "updated_at": "0001-01-01T00:00:00Z",
-                    "deleted_at": null
+                    "userId": "00000000-0000-0000-0000-000000000000",
+                    "createdAt": "0001-01-01T00:00:00Z",
+                    "updatedAt": "0001-01-01T00:00:00Z",
+                    "deletedAt": null
                   },
                   "required": [
                     "id",
                     "name",
                     "visibility",
-                    "user_id",
-                    "created_at",
-                    "updated_at"
+                    "userId",
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "id": {
@@ -1947,7 +2003,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-name": "ID",
                       "x-oapi-codegen-extra-tags": {
                         "db": "id",
-                        "yaml": "id"
+                        "json": "id"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -1964,7 +2020,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 2,
                       "x-oapi-codegen-extra-tags": {
                         "db": "name",
-                        "yaml": "name"
+                        "json": "name"
                       }
                     },
                     "visibility": {
@@ -1975,7 +2031,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "visibility",
-                        "yaml": "visibility"
+                        "json": "visibility"
                       }
                     },
                     "filters": {
@@ -1990,7 +2046,7 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 4,
                       "x-oapi-codegen-extra-tags": {
                         "db": "filters",
-                        "yaml": "filters"
+                        "json": "filters"
                       }
                     },
                     "metadata": {
@@ -2005,17 +2061,17 @@ const ViewSchema: Record<string, unknown> = {
                       "x-order": 5,
                       "x-oapi-codegen-extra-tags": {
                         "db": "metadata",
-                        "yaml": "metadata"
+                        "json": "metadata"
                       }
                     },
-                    "user_id": {
+                    "userId": {
                       "description": "ID of the user who created the view.",
                       "x-go-name": "UserID",
                       "x-go-type-skip-optional-pointer": true,
                       "x-order": 6,
                       "x-oapi-codegen-extra-tags": {
                         "db": "user_id",
-                        "yaml": "user_id"
+                        "json": "userId"
                       },
                       "type": "string",
                       "format": "uuid",
@@ -2024,45 +2080,45 @@ const ViewSchema: Record<string, unknown> = {
                         "path": "github.com/gofrs/uuid"
                       }
                     },
-                    "created_at": {
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
                       "description": "Timestamp when the view was created.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "created_at",
-                        "yaml": "created_at"
+                        "json": "createdAt"
                       },
-                      "x-order": 7,
+                      "x-order": 7
+                    },
+                    "updatedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "updated_at": {
                       "description": "Timestamp when the view was last updated.",
+                      "x-go-type": "time.Time",
+                      "x-go-type-skip-optional-pointer": true,
                       "x-oapi-codegen-extra-tags": {
                         "db": "updated_at",
-                        "yaml": "updated_at"
+                        "json": "updatedAt"
                       },
-                      "x-order": 8,
+                      "x-order": 8
+                    },
+                    "deletedAt": {
                       "type": "string",
                       "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
-                    },
-                    "deleted_at": {
                       "description": "Timestamp when the view was soft deleted. Null while the view remains active.",
                       "nullable": true,
                       "x-go-type": "core.NullTime",
-                      "x-go-import": "database/sql",
+                      "x-go-type-import": {
+                        "path": "github.com/meshery/schemas/models/core",
+                        "name": "core"
+                      },
                       "x-oapi-codegen-extra-tags": {
                         "db": "deleted_at",
-                        "yaml": "deleted_at"
+                        "json": "deletedAt,omitempty"
                       },
-                      "x-order": 9,
-                      "x-go-type-import": {
-                        "name": "meshcore",
-                        "path": "github.com/meshery/schemas/models/core"
-                      },
-                      "type": "string",
-                      "format": "date-time",
-                      "x-go-type-skip-optional-pointer": true
+                      "x-order": 9
                     }
                   }
                 }

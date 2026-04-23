@@ -9,7 +9,6 @@ export const addTagTypes = [
   "Model_Models",
   "role_roles",
   "schedule_scheduler",
-  "View_views",
   "Academy_API_Academy",
   "Connection_API_Connections",
   "credential_credentials",
@@ -21,6 +20,7 @@ export const addTagTypes = [
   "Subscription_Payment Processors",
   "token_tokens",
   "User_users",
+  "View_views",
   "Design_designs",
   "Events_events",
   "Workspace_workspaces",
@@ -307,43 +307,6 @@ const injectedRtkApi = api
       deleteSchedule: build.mutation<DeleteScheduleApiResponse, DeleteScheduleApiArg>({
         query: (queryArg) => ({ url: `/user/schedules/${queryArg.id}`, method: "DELETE" }),
         invalidatesTags: ["schedule_scheduler"],
-      }),
-      createView: build.mutation<CreateViewApiResponse, CreateViewApiArg>({
-        query: (queryArg) => ({ url: `/api/content/views`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["View_views"],
-      }),
-      getViews: build.query<GetViewsApiResponse, GetViewsApiArg>({
-        query: (queryArg) => ({
-          url: `/api/content/views`,
-          params: {
-            search: queryArg.search,
-            order: queryArg.order,
-            page: queryArg.page,
-            pagesize: queryArg.pagesize,
-            filter: queryArg.filter,
-            shared: queryArg.shared,
-            visibility: queryArg.visibility,
-            orgId: queryArg.orgId,
-            userId: queryArg.userId,
-          },
-        }),
-        providesTags: ["View_views"],
-      }),
-      shareView: build.mutation<ShareViewApiResponse, ShareViewApiArg>({
-        query: (queryArg) => ({ url: `/api/content/view/share`, method: "POST", body: queryArg.body }),
-        invalidatesTags: ["View_views"],
-      }),
-      getViewById: build.query<GetViewByIdApiResponse, GetViewByIdApiArg>({
-        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}` }),
-        providesTags: ["View_views"],
-      }),
-      updateView: build.mutation<UpdateViewApiResponse, UpdateViewApiArg>({
-        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}`, method: "PUT", body: queryArg.body }),
-        invalidatesTags: ["View_views"],
-      }),
-      deleteView: build.mutation<DeleteViewApiResponse, DeleteViewApiArg>({
-        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}`, method: "DELETE" }),
-        invalidatesTags: ["View_views"],
       }),
       getMyAcademyCurricula: build.query<GetMyAcademyCurriculaApiResponse, GetMyAcademyCurriculaApiArg>({
         query: (queryArg) => ({
@@ -955,6 +918,43 @@ const injectedRtkApi = api
       getUser: build.query<GetUserApiResponse, GetUserApiArg>({
         query: () => ({ url: `/api/identity/users/profile` }),
         providesTags: ["User_users"],
+      }),
+      createView: build.mutation<CreateViewApiResponse, CreateViewApiArg>({
+        query: (queryArg) => ({ url: `/api/content/views`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["View_views"],
+      }),
+      getViews: build.query<GetViewsApiResponse, GetViewsApiArg>({
+        query: (queryArg) => ({
+          url: `/api/content/views`,
+          params: {
+            search: queryArg.search,
+            order: queryArg.order,
+            page: queryArg.page,
+            pagesize: queryArg.pagesize,
+            filter: queryArg.filter,
+            shared: queryArg.shared,
+            visibility: queryArg.visibility,
+            orgId: queryArg.orgId,
+            userId: queryArg.userId,
+          },
+        }),
+        providesTags: ["View_views"],
+      }),
+      shareView: build.mutation<ShareViewApiResponse, ShareViewApiArg>({
+        query: (queryArg) => ({ url: `/api/content/view/share`, method: "POST", body: queryArg.body }),
+        invalidatesTags: ["View_views"],
+      }),
+      getViewById: build.query<GetViewByIdApiResponse, GetViewByIdApiArg>({
+        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}` }),
+        providesTags: ["View_views"],
+      }),
+      updateView: build.mutation<UpdateViewApiResponse, UpdateViewApiArg>({
+        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}`, method: "PUT", body: queryArg.body }),
+        invalidatesTags: ["View_views"],
+      }),
+      deleteView: build.mutation<DeleteViewApiResponse, DeleteViewApiArg>({
+        query: (queryArg) => ({ url: `/api/content/views/${queryArg.viewId}`, method: "DELETE" }),
+        invalidatesTags: ["View_views"],
       }),
       getPatterns: build.query<GetPatternsApiResponse, GetPatternsApiArg>({
         query: (queryArg) => ({
@@ -2303,174 +2303,6 @@ export type DeleteScheduleApiResponse = unknown;
 export type DeleteScheduleApiArg = {
   /** Schedule ID */
   id: string;
-};
-export type CreateViewApiResponse = /** status 201 Created view */ {
-  /** Unique identifier for the view. */
-  id: string;
-  /** Display name of the view. */
-  name: string;
-  /** Visibility level of the view. */
-  visibility: string;
-  /** Filter configuration that defines which resources this view displays. */
-  filters?: object;
-  /** Additional metadata associated with the view. */
-  metadata?: object;
-  /** ID of the user who created the view. */
-  user_id: string;
-  /** Timestamp when the view was created. */
-  created_at: string;
-  /** Timestamp when the view was last updated. */
-  updated_at: string;
-  /** Timestamp when the view was soft deleted. Null while the view remains active. */
-  deleted_at?: string | null;
-};
-export type CreateViewApiArg = {
-  /** Body for creating or updating a view */
-  body: {
-    /** Display name of the view. */
-    name: string;
-    /** Filter configuration for this view. */
-    filters?: object;
-    /** Visibility level of the view. */
-    visibility?: string;
-    /** Metadata associated with the view. */
-    metadata?: object;
-  };
-};
-export type GetViewsApiResponse = /** status 200 Views page */ {
-  page?: number;
-  page_size?: number;
-  total_count?: number;
-  /** Views in this page, enriched with workspace and organization context. */
-  views?: {
-    id?: string;
-    /** Display name of the view. */
-    name?: string;
-    /** Visibility level of the view. */
-    visibility?: string;
-    /** Filter configuration for this view. */
-    filters?: object;
-    /** Metadata associated with the view. */
-    metadata?: object;
-    /** ID of the user who created the view. */
-    user_id?: string;
-    /** Name of the workspace this view belongs to. */
-    workspace_name?: string;
-    /** ID of the workspace this view belongs to. */
-    workspace_id: string;
-    /** ID of the organization this view belongs to. */
-    organization_id: string;
-    /** Name of the organization this view belongs to. */
-    organization_name?: string;
-    /** Timestamp when the resource was created. */
-    created_at?: string;
-    /** Timestamp when the resource was updated. */
-    updated_at?: string;
-    /** Timestamp when the view was soft deleted. Null while the view remains active. */
-    deleted_at?: string;
-  }[];
-};
-export type GetViewsApiArg = {
-  /** Get responses that match search param value */
-  search?: string;
-  /** Get ordered responses */
-  order?: string;
-  /** Get responses by page */
-  page?: string;
-  /** Get responses by pagesize */
-  pagesize?: string;
-  /** JSON-encoded filter string for assignment and soft-delete filters. */
-  filter?: string;
-  /** When true, include views shared with the user. */
-  shared?: boolean;
-  /** Filter by visibility level (public, private). */
-  visibility?: string;
-  /** Organization ID to scope the request. */
-  orgId?: string;
-  /** UUID of the user whose views to retrieve. */
-  userId?: string;
-};
-export type ShareViewApiResponse = unknown;
-export type ShareViewApiArg = {
-  /** Body for sharing a view with recipients by email. */
-  body: {
-    /** Identifier of the view being shared. */
-    content_id: string;
-    /** The kind of content being shared. Only `view` is accepted on this
-        endpoint.
-         */
-    content_type: "view";
-    /** Email addresses of the recipients to share this view with. */
-    emails: string[];
-    /** When true, flip the view's visibility to public and send invitation
-        emails to the recipients. When false, revert visibility to private.
-         */
-    share: boolean;
-  };
-};
-export type GetViewByIdApiResponse = /** status 200 View */ {
-  /** Unique identifier for the view. */
-  id: string;
-  /** Display name of the view. */
-  name: string;
-  /** Visibility level of the view. */
-  visibility: string;
-  /** Filter configuration that defines which resources this view displays. */
-  filters?: object;
-  /** Additional metadata associated with the view. */
-  metadata?: object;
-  /** ID of the user who created the view. */
-  user_id: string;
-  /** Timestamp when the view was created. */
-  created_at: string;
-  /** Timestamp when the view was last updated. */
-  updated_at: string;
-  /** Timestamp when the view was soft deleted. Null while the view remains active. */
-  deleted_at?: string | null;
-};
-export type GetViewByIdApiArg = {
-  /** View ID */
-  viewId: string;
-};
-export type UpdateViewApiResponse = /** status 200 Updated view */ {
-  /** Unique identifier for the view. */
-  id: string;
-  /** Display name of the view. */
-  name: string;
-  /** Visibility level of the view. */
-  visibility: string;
-  /** Filter configuration that defines which resources this view displays. */
-  filters?: object;
-  /** Additional metadata associated with the view. */
-  metadata?: object;
-  /** ID of the user who created the view. */
-  user_id: string;
-  /** Timestamp when the view was created. */
-  created_at: string;
-  /** Timestamp when the view was last updated. */
-  updated_at: string;
-  /** Timestamp when the view was soft deleted. Null while the view remains active. */
-  deleted_at?: string | null;
-};
-export type UpdateViewApiArg = {
-  /** View ID */
-  viewId: string;
-  /** Body for creating or updating a view */
-  body: {
-    /** Display name of the view. */
-    name: string;
-    /** Filter configuration for this view. */
-    filters?: object;
-    /** Visibility level of the view. */
-    visibility?: string;
-    /** Metadata associated with the view. */
-    metadata?: object;
-  };
-};
-export type DeleteViewApiResponse = unknown;
-export type DeleteViewApiArg = {
-  /** View ID */
-  viewId: string;
 };
 export type GetMyAcademyCurriculaApiResponse = /** status 200 A list of content with total count */ {
   /** Total number of Curricula */
@@ -6859,6 +6691,177 @@ export type GetUserApiResponse = /** status 200 Current user profile and role co
   };
 };
 export type GetUserApiArg = void;
+export type CreateViewApiResponse = /** status 201 Created view */ {
+  /** Unique identifier for the view. */
+  id: string;
+  /** Display name of the view. */
+  name: string;
+  /** Visibility level of the view. */
+  visibility: string;
+  /** Filter configuration that defines which resources this view displays. */
+  filters?: object;
+  /** Additional metadata associated with the view. */
+  metadata?: object;
+  /** ID of the user who created the view. */
+  userId: string;
+  /** Timestamp when the view was created. */
+  createdAt: string;
+  /** Timestamp when the view was last updated. */
+  updatedAt: string;
+  /** Timestamp when the view was soft deleted. Null while the view remains active. */
+  deletedAt?: string | null;
+};
+export type CreateViewApiArg = {
+  /** Body for creating or updating a view */
+  body: {
+    /** Display name of the view. */
+    name: string;
+    /** Filter configuration for this view. */
+    filters?: object;
+    /** Visibility level of the view. */
+    visibility?: string;
+    /** Metadata associated with the view. */
+    metadata?: object;
+  };
+};
+export type GetViewsApiResponse = /** status 200 Views page */ {
+  /** Zero-based page index returned in this response. */
+  page?: number;
+  /** Maximum number of items returned on each page. */
+  pageSize?: number;
+  /** Total number of items across all pages. */
+  totalCount?: number;
+  /** Views in this page, enriched with workspace and organization context. */
+  views?: {
+    id?: string;
+    /** Display name of the view. */
+    name?: string;
+    /** Visibility level of the view. */
+    visibility?: string;
+    /** Filter configuration for this view. */
+    filters?: object;
+    /** Metadata associated with the view. */
+    metadata?: object;
+    /** ID of the user who created the view. */
+    userId?: string;
+    /** Name of the workspace this view belongs to. */
+    workspaceName?: string;
+    /** ID of the workspace this view belongs to. */
+    workspaceId: string;
+    /** ID of the organization this view belongs to. */
+    organizationId: string;
+    /** Name of the organization this view belongs to. */
+    organizationName?: string;
+    /** Timestamp when the view was created. */
+    createdAt?: string;
+    /** Timestamp when the view was last updated. */
+    updatedAt?: string;
+    /** Timestamp when the view was soft deleted. Null while the view remains active. */
+    deletedAt?: string | null;
+  }[];
+};
+export type GetViewsApiArg = {
+  /** Get responses that match search param value */
+  search?: string;
+  /** Get ordered responses */
+  order?: string;
+  /** Get responses by page */
+  page?: string;
+  /** Get responses by pagesize */
+  pagesize?: string;
+  /** JSON-encoded filter string for assignment and soft-delete filters. */
+  filter?: string;
+  /** When true, include views shared with the user. */
+  shared?: boolean;
+  /** Filter by visibility level (public, private). */
+  visibility?: string;
+  /** Organization ID to scope the request. */
+  orgId?: string;
+  /** UUID of the user whose views to retrieve. */
+  userId?: string;
+};
+export type ShareViewApiResponse = unknown;
+export type ShareViewApiArg = {
+  /** Body for sharing a view with recipients by email. */
+  body: {
+    /** Identifier of the view being shared. */
+    contentId: string;
+    /** The kind of content being shared. Only `view` is accepted on this
+        endpoint.
+         */
+    contentType: "view";
+    /** Email addresses of the recipients to share this view with. */
+    emails: string[];
+    /** When true, flip the view's visibility to public and send invitation
+        emails to the recipients. When false, revert visibility to private.
+         */
+    share: boolean;
+  };
+};
+export type GetViewByIdApiResponse = /** status 200 View */ {
+  /** Unique identifier for the view. */
+  id: string;
+  /** Display name of the view. */
+  name: string;
+  /** Visibility level of the view. */
+  visibility: string;
+  /** Filter configuration that defines which resources this view displays. */
+  filters?: object;
+  /** Additional metadata associated with the view. */
+  metadata?: object;
+  /** ID of the user who created the view. */
+  userId: string;
+  /** Timestamp when the view was created. */
+  createdAt: string;
+  /** Timestamp when the view was last updated. */
+  updatedAt: string;
+  /** Timestamp when the view was soft deleted. Null while the view remains active. */
+  deletedAt?: string | null;
+};
+export type GetViewByIdApiArg = {
+  /** View ID */
+  viewId: string;
+};
+export type UpdateViewApiResponse = /** status 200 Updated view */ {
+  /** Unique identifier for the view. */
+  id: string;
+  /** Display name of the view. */
+  name: string;
+  /** Visibility level of the view. */
+  visibility: string;
+  /** Filter configuration that defines which resources this view displays. */
+  filters?: object;
+  /** Additional metadata associated with the view. */
+  metadata?: object;
+  /** ID of the user who created the view. */
+  userId: string;
+  /** Timestamp when the view was created. */
+  createdAt: string;
+  /** Timestamp when the view was last updated. */
+  updatedAt: string;
+  /** Timestamp when the view was soft deleted. Null while the view remains active. */
+  deletedAt?: string | null;
+};
+export type UpdateViewApiArg = {
+  /** View ID */
+  viewId: string;
+  /** Body for creating or updating a view */
+  body: {
+    /** Display name of the view. */
+    name: string;
+    /** Filter configuration for this view. */
+    filters?: object;
+    /** Visibility level of the view. */
+    visibility?: string;
+    /** Metadata associated with the view. */
+    metadata?: object;
+  };
+};
+export type DeleteViewApiResponse = unknown;
+export type DeleteViewApiArg = {
+  /** View ID */
+  viewId: string;
+};
 export type GetPatternsApiResponse = /** status 200 Designs response */ {
   /** Current page number of the result set. */
   page?: number;
@@ -15071,12 +15074,6 @@ export const {
   useUpsertScheduleMutation,
   useGetScheduleQuery,
   useDeleteScheduleMutation,
-  useCreateViewMutation,
-  useGetViewsQuery,
-  useShareViewMutation,
-  useGetViewByIdQuery,
-  useUpdateViewMutation,
-  useDeleteViewMutation,
   useGetMyAcademyCurriculaQuery,
   useCreateAcademyCurriculaMutation,
   useGetAcademyCurriculaQuery,
@@ -15157,6 +15154,12 @@ export const {
   useGetUsersQuery,
   useGetUserProfileByIdQuery,
   useGetUserQuery,
+  useCreateViewMutation,
+  useGetViewsQuery,
+  useShareViewMutation,
+  useGetViewByIdQuery,
+  useUpdateViewMutation,
+  useDeleteViewMutation,
   useGetPatternsQuery,
   useUpsertPatternMutation,
   useDeletePatternsMutation,
