@@ -500,7 +500,7 @@ All agents in this phase pin their target repo's `@meshery/schemas` dependency t
 
 **Testing:** `cd ui && npm run build && npm test` — green. The `environments` wrapper removal touches many call sites; every import of `useGetEnvironmentsQuery` from the local wrapper must be updated to import from `@meshery/schemas/mesheryApi`. Compile-error-driven; TypeScript's type system catches misses.
 
-**Docs:** `ui/CONTRIBUTING.md` adds a paragraph: "Do not wrap schemas-generated hooks solely to alias parameter names; propagate the canonical canonical identifier."
+**Docs:** `ui/CONTRIBUTING.md` adds a paragraph: "Do not wrap schemas-generated hooks solely to alias parameter names; propagate the canonical identifier."
 
 **Acceptance:** PR merged; no same-file `orgID`/`orgId` mix remains; thin wrappers eliminated.
 
