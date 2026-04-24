@@ -22,11 +22,11 @@ const CredentialSchema: Record<string, unknown> = {
   },
   "servers": [
     {
-      "url": "https://cloud.layer5.io",
+      "url": "https://cloud.meshery.io",
       "description": "Meshery Cloud production server URL"
     },
     {
-      "url": "https://staging-cloud.layer5.io",
+      "url": "https://staging-cloud.meshery.io",
       "description": "Meshery Cloud staging server URL"
     },
     {
