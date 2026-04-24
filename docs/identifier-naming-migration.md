@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Status | Active |
+| Status | Administratively complete (2026-04-23); legacy directories retained on master |
 | Authority | `meshery/schemas/AGENTS.md` after Phase 1.A |
 | Scope | `meshery/schemas`, `meshery/meshery`, `layer5io/meshery-cloud`, `layer5labs/meshery-extensions` |
 | Contract | camelCase on wire, snake_case only at the DB/ORM boundary |
 | Supersedes | Earlier three-layer audit report (the conditional "DB-backed → snake_case JSON tag" rule is retired) |
 | Effective | On merge of Phase 1.A |
-| Sunset | Old wire forms retired per resource over one release cycle after Phase 3 |
+| Sunset | Old wire forms retired per resource over one release cycle after Phase 3; Phase 4.A physical deletion **overridden by maintainer decision** — deprecated directories stay on master under `x-deprecated: true` indefinitely (see §10 Agent 4.A and §20) |
 
 ---
 
@@ -71,6 +71,8 @@ The earlier conditional "JSON tag matches `db:` tag when the field is DB-backed"
 | **4** | Deprecation sunset + consumer-audit promoted to blocking + final AGENTS.md/CLAUDE.md updates | Phase 3 complete per resource, one release cycle elapsed | 2 weeks |
 
 Total: ~12–17 weeks. Phases 2 and 3 are heavily parallel.
+
+> **Phase 4.A administratively closed on 2026-04-23 — legacy directories retained on master.** The one-release-cycle safety window defined in this table was explicitly overridden by the maintainer, and physical deletion of the deprecated `schemas/constructs/<old-version>/<resource>/` directories is **not slated**. The three in-repo consumers (`meshery/meshery`, `layer5io/meshery-cloud`, `layer5labs/meshery-extensions`) have all migrated, but external consumers that pin a deprecated version cannot be enumerated from the in-repo consumer graph and must not be stranded. Every deprecated directory remains on `master` indefinitely behind its existing `info.x-deprecated: true` + `info.x-superseded-by: <new-version>` markers (the OpenAPI bundler uses those markers to exclude the legacy path from the merged spec; path-space collisions are prevented). Any future physical deletion requires a separate maintainer decision. See §10 Agent 4.A for the updated charter and §20 for the dated decision entry. The canonical index of retained legacy directories lives at §8 of [`identifier-naming-impact-report.md`](identifier-naming-impact-report.md).
 
 ---
 
@@ -670,16 +672,29 @@ The remaining 21 agents follow the template in §9.2 with per-resource file path
 
 ## 10. Phase 4 Agents — Deprecation & finalization
 
-### Agent 4.A — Deprecated-version sunset
-**Charter (per resource, chained after Phase 3.{Resource} + one release cycle):** Remove deprecated API version files from `meshery/schemas` once every consumer repo has migrated to the new version. Regenerate clients. Publish.
+### Agent 4.A — Deprecated-version retirement (administrative close; **no physical deletion**)
+**Status:** Administratively closed on 2026-04-23 per maintainer decision. **Do not delete any `schemas/constructs/v*/<resource>/` directory as part of this agent's work.**
 
-**Files:** `schemas/constructs/{deprecated-version}/{resource}/` directory deleted. Regeneration updates `dist/` and `models/`.
+**Original charter (superseded):** Remove deprecated API version files from `meshery/schemas` once every consumer repo has migrated to the new version. Regenerate clients. Publish.
 
-**Testing:** `make validate-schemas`, `make audit-schemas-full`, `make consumer-audit` all green. Running a consumer repo's test suite against the new schemas version must stay green — if not, that repo still has references to the deprecated version; fix before sunset proceeds.
+**Revised charter:** Retire deprecated-version files **administratively** — mark the phase closed in governance docs and confirm the retained legacy trees remain behind their existing `x-deprecated: true` / `x-superseded-by:` markers. The deprecated directories stay on `master` indefinitely so external consumers (outside the three in-repo consumers) that still pin `v1beta1` or `v1beta2` are not stranded.
 
-**Docs:** `CHANGELOG.md` entry noting the removal.
+**Rationale for the override:**
+- The in-repo consumer graph covers only `meshery/meshery`, `layer5io/meshery-cloud`, and `layer5labs/meshery-extensions`; all three have migrated to the canonical-casing target versions, so the plan's original acceptance criteria are satisfied for those consumers.
+- External consumers — forks, third-party integrations, archived CI pipelines, published SDK downstreams — cannot be enumerated from the in-repo audit. Physical deletion would break their pinned imports with no migration path.
+- The OpenAPI bundler (`build/lib/config.js::isDeprecatedPackage`) already excludes directories carrying `info.x-deprecated: true` from the merged spec, so retaining the legacy trees has no effect on the bundled path space or on client-generator output for the canonical versions.
+- Retention cost is low (source YAML only; the bundler keeps them out of generated artefacts) and the safety win is high.
 
-**Acceptance:** Deprecated-version directory gone; no consumer imports break.
+**Files:** None modified under `schemas/constructs/`. Governance docs only: this agent's work is the change-log entry in §20 of this plan, the status row in §2 of [`identifier-naming-impact-report.md`](identifier-naming-impact-report.md), §8 of the same report (retained-legacy-directories index), and the `AGENTS.md` § Identifier-naming migration section.
+
+**Testing:** `make validate-schemas`, `make audit-schemas`, `make consumer-audit MESHERY_REPO=../meshery CLOUD_REPO=../meshery-cloud EXTENSIONS_REPO=../meshery-extensions` — all green. Because no schema content changes, the expected outcome is no delta in any validator or auditor output.
+
+**Docs:**
+- `AGENTS.md` § Identifier-naming migration — retitled from "(in flight)" to "(complete; v1beta1 retained for back-compat)".
+- `docs/identifier-naming-migration.md` — this section (Phase 4.A), §4 Phase Structure, and §20 Revision history.
+- `docs/identifier-naming-impact-report.md` — status banner, §2 per-resource status column, new §8 retained-legacy-directories index, revision history.
+
+**Acceptance:** Governance docs reflect the administrative close; no file under `schemas/constructs/v1beta1/` or `schemas/constructs/v1beta2/` has been deleted; every retained directory's `x-deprecated: true` marker is untouched; the canonical versions continue to serve all bundled clients. Any future physical deletion requires a separate maintainer decision documented in this plan's §20.
 
 ### Agent 4.B — Consumer-audit promoted to blocking
 **Charter:** In `meshery/schemas/.github/workflows/schema-audit.yml`, change the `consumer-audit` job to exit non-zero on divergence. This permanently closes the drift door.
@@ -759,7 +774,7 @@ The remaining 21 agents follow the template in §9.2 with per-resource file path
 **Dependency rules:**
 - No Phase 2 agent runs before Phase 1.I publishes the new schemas version.
 - No Phase 3 resource agent runs before Phase 1.I AND the resource's Phase 2 non-breaking precursors (if any) are merged. Phase 3 resources may run in parallel with each other.
-- Phase 4 agents run only after all Phase 3 resources are merged AND one release cycle has elapsed.
+- Phase 4 agents run only after all Phase 3 resources are merged AND one release cycle has elapsed. *Exception:* Phase 4.A's one-release-cycle window was **explicitly overridden by the maintainer on 2026-04-23** and Phase 4.A was closed administratively rather than by physical deletion (see §10 Agent 4.A, §20). Other Phase 4 agents (4.B consumer-audit blocking, 4.C AGENTS.md boilerplate, 4.D validator pruning, 4.E impact report) retained their original cadence.
 
 **Orchestrator responsibilities:**
 - Track every agent's PR URL, CI status, merge SHA in a shared ledger (TaskList + optionally a Google Sheet).
@@ -1070,5 +1085,6 @@ ACCEPTANCE
 | Revision | Date | Author | Change |
 |---|---|---|---|
 | 1.0 | 2026-04-22 | Lee Calcote (via orchestrator) | Initial authoring. camelCase-on-wire decision recorded. Phases 0–4 defined. Agent templates inlined. |
+| 1.1 | 2026-04-23 | Lee Calcote (via Phase 4.A administrative-close agent) | Phase 4.A administratively closed. One-release-cycle safety window overridden by maintainer decision; physical deletion of deprecated `schemas/constructs/v1beta1/` and `schemas/constructs/v1beta2/` directories is **not slated**. Deprecated directories remain on `master` indefinitely behind `x-deprecated: true` / `x-superseded-by:` markers so external consumers that pin legacy versions are not stranded. Status banner (§0), Phase Structure table (§4), Agent 4.A charter (§10), and DAG dependency rules (§11) updated to reflect the non-deletion policy. See [`identifier-naming-impact-report.md`](identifier-naming-impact-report.md) §8 for the canonical index of retained legacy directories. Any future physical deletion is a separate maintainer decision, not scheduled. |
 
 End of plan.

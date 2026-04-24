@@ -1,8 +1,8 @@
-# Identifier-Naming Migration — Impact Report (Phase 3 complete)
+# Identifier-Naming Migration — Impact Report (Phase 3 + Phase 4 administratively complete)
 
-> **Status:** Phase 3 **COMPLETE** — all 22 resources in the §9.1 inventory have been version-bumped to canonical camelCase wire form and merged to `meshery/schemas` `master`. Phase 4.A (deprecated-version sunset) is intentionally deferred pending one release cycle of consumer migration, per plan §10. "After" figures in the table reflect the current `master` with all Phase 3 merges landed. Metrics that depend on Phase 2 drift-masking removal in downstream repos remain pending and are labelled as such.
+> **Status:** Phase 3 + Phase 4 **administratively complete (2026-04-23)**. All 22 resources in the §9.1 inventory of [`identifier-naming-migration.md`](identifier-naming-migration.md) have been version-bumped to canonical camelCase wire form and merged to `meshery/schemas` `master`. **Phase 4.A closed without deletion per maintainer decision** — the deprecated `schemas/constructs/v1beta1/` and `schemas/constructs/v1beta2/` directories are **retained on `master` under `info.x-deprecated: true` for external-consumer compatibility** and are **not slated for physical removal.** The OpenAPI bundler (`build/lib/config.js::isDeprecatedPackage`) continues to exclude them from the merged spec, so path-space collisions are prevented while external consumers that pin legacy versions remain functional. The one-release-cycle safety window defined in the original plan was overridden; see [`identifier-naming-migration.md §10 Agent 4.A`](identifier-naming-migration.md#agent-4a--deprecated-version-retirement-administrative-close-no-physical-deletion) and §20 of that plan for the decision record. §8 below is the canonical index of retained legacy directories. Metrics that depend on Phase 2 drift-masking removal in downstream repos remain pending and are labelled as such.
 >
-> This document is the deliverable for **Agent 4.E** of [`docs/identifier-naming-migration.md`](identifier-naming-migration.md) §10. It will receive one more refresh after Phase 4.A (deprecated-version sunset) lands; each refresh bumps the revision-history entry at the bottom.
+> This document is the deliverable for **Agent 4.E** of [`docs/identifier-naming-migration.md`](identifier-naming-migration.md) §10. A further refresh is only required if the maintainer later reverses the non-deletion policy; each refresh bumps the revision-history entry at the bottom.
 
 ## 1. Scope and methodology
 
@@ -21,7 +21,7 @@ The table below mirrors the structure of [`identifier-naming-migration.md §15.1
 | Metric | Before (Phase 0) | After (current `master`) | Delta | Status |
 |---|---|---|---|---|
 | Distinct JSON-tag conventions in *newly-authored* canonical wire models | 3 (snake, camel, lowercase single-word) | 2 (camelCase + lowercase single-word only) — every Phase 3 target version is camelCase-on-wire | −1 | Phase 3 complete |
-| Distinct JSON-tag conventions across the whole tree (including pre-canonical versions) | 3 | 3 — legacy versions retain their published wire form until Phase 4.A sunset | unchanged | Phase 4.A deferred |
+| Distinct JSON-tag conventions across the whole tree (including pre-canonical versions) | 3 | 3 — legacy versions retain their published wire form; administratively closed, directories retained on master | unchanged | Phase 4.A administratively closed; directories retained |
 | Total JSON tags in `schemas/constructs/v*/**` | 1727 (Phase 0.A commit) | 2001 (post-0.A walker fixes 9f2e11af / e8ca7594) | +274 walker fidelity, not new tags | Baseline instrumentation |
 | JSON tags camelCase | 352 (20.4 %) | 430 (21.5 %) | +78 | Baseline instrumentation |
 | JSON tags snake_case | 462 (26.8 %) | 470 (23.5 %) | +8 | Baseline instrumentation |
@@ -41,7 +41,7 @@ The table below mirrors the structure of [`identifier-naming-migration.md §15.1
 | Same-file casing contradictions | ≥8 *(plan §15)* | *unchanged, Phase 2.G/2.H/2.I not yet complete* | *pending* | Phase 2.G/2.H/2.I |
 | ALL-CAPS `ID` on wire (schemas repo) | 0 `screaming` json tags in schemas baseline | 0 (unchanged — schemas was already clean) | 0 | Already clean |
 | ALL-CAPS `ID` on wire (Go structs, meshery + cloud) | 22 `SCREAMING` json tags *(tag-divergence.json)* | *unchanged, Phase 2.A–2.E not yet complete* | *pending* | Phase 2.A–2.E |
-| API versions with snake-case-on-wire JSON tags | ~20 (v1alpha1, v1alpha2, v1alpha3, v1beta1, v1beta2 resources) | 22 legacy version×resource pairs retain snake tags (deprecated, pending 4.A sunset); every canonical-casing target version is snake-free | −17 when Phase 4.A sunsets the deprecated versions | Phase 3 complete; Phase 4.A deferred |
+| API versions with snake-case-on-wire JSON tags | ~20 (v1alpha1, v1alpha2, v1alpha3, v1beta1, v1beta2 resources) | 22 legacy version×resource pairs retain snake tags (deprecated, administratively closed, directories retained on master); every canonical-casing target version is snake-free | 0 on the wire for canonical versions; retained count unchanged by design | Phase 3 complete; Phase 4.A administratively closed, directories retained |
 | Canonical target-version directories present | 0 | 22 (one per §9.1 inventory row): 14 in `v1beta3/`, 8 in `v1beta2/` | +22 | Phase 3 complete |
 
 ### 2.1 Validator rule count — detail
@@ -146,10 +146,11 @@ The wire format has now moved for every resource in the §9.1 inventory. What th
 5. **Every canonical-casing target version is snake-free on the wire.** Every Phase 3 PR shipped with its new version's JSON tags entirely camelCase, path/query parameters camelCase with `Id` suffixes, lower-camelCase `operationId`s, and pagination envelopes flipped to `pageSize` / `totalCount`. DB-backed primitives retain their snake `db:` tag via `x-oapi-codegen-extra-tags` — the ORM is now the sole translation boundary, matching the one-sentence contract.
 6. **Every legacy version is bundler-gated.** Each deprecated version's `info` block carries `x-deprecated: true` + `x-superseded-by: <new-version>`, which `build/lib/config.js::isDeprecatedPackage` reads to exclude it from the merged OpenAPI. This lets the new version take over the path space without a duplicate-operation error while downstream consumers migrate.
 
-What remains (scope of Phase 2 downstream sweeps and Phase 4.A sunset):
+What remains (scope of Phase 2 downstream sweeps):
 
 1. **Downstream drift-masking retirement.** `utils.QueryParam` dual-accept fallbacks in `meshery-cloud` and the 5+ locally-declared Go duplicates of schemas types must still be collapsed onto the canonical types (Phase 2.C / 2.D / 2.F — partially complete; some items landed alongside the individual Phase 3 PRs).
-2. **Legacy-version sunset.** Phase 4.A will physically delete each deprecated `schemas/constructs/<old-version>/<resource>/` directory once every downstream consumer has migrated to the new version. This is the point at which the "API versions with snake-case-on-wire JSON tags" metric drops to 0.
+
+Legacy-version sunset is **administratively closed without physical deletion** (2026-04-23 maintainer decision). The deprecated `schemas/constructs/v1beta1/` and `schemas/constructs/v1beta2/` directories remain on `master` indefinitely under `info.x-deprecated: true` + `info.x-superseded-by:` markers so external consumers that pin legacy versions are not stranded. The OpenAPI bundler excludes them from the merged spec; the canonical versions own the wire today. The "API versions with snake-case-on-wire JSON tags" metric therefore does **not** drop to 0 — the retained legacy directories are accounted-for debt, indexed in §8, not a pending cleanup. Any future physical deletion is a separate maintainer decision.
 
 ## 6. Acceptance criteria for this report
 
@@ -168,3 +169,60 @@ Per [`identifier-naming-migration.md §10 Agent 4.E`](identifier-naming-migratio
 |---|---|---|
 | 2026-04-23 | Phase 4.B / 4.D / 4.E | Initial interim report. Phase 1 complete, Phase 4.B (consumer-audit blocking) landed this PR, Phase 4.D deferred per per-entry pruning cadence, Phases 2 and 3 in flight. |
 | 2026-04-23 | Phase 3 complete | All 22 resources from §9.1 version-bumped to canonical camelCase wire form: workspace (#800), relationship (#801), design (#802), credential (#803), user (#804), organization (#805), connection (#806), component (#807), team (#808), event (#809), view (#810), key (#811), model (#812), role (#813), keychain (#814), environment (#815), invitation (#816), schedule (#817), plan (#818), subscription (#819), token (#820), badge (#821). Progress tracker flipped to 22/22; §2 metrics updated; §5 narrative revised to reflect completion. Phase 4.A sunset and Phase 2 downstream drift-masking retirement remain open as noted. |
+| 2026-04-23 | Phase 4.A administrative close | One-release-cycle safety window overridden by maintainer decision; **Phase 4.A closed without physical deletion.** Deprecated `schemas/constructs/v1beta1/` (25 resources) and `schemas/constructs/v1beta2/` (7 resources) directories retained on `master` under `info.x-deprecated: true` + `info.x-superseded-by:` markers for external-consumer compatibility. Status banner updated; §2 status column flipped from "Phase 4.A deferred" to "administratively closed, directories retained"; §5 narrative revised; new §8 retained-legacy-directories index added. Any future physical deletion is a separate maintainer decision, not scheduled. |
+
+## 8. Retained legacy directories
+
+Phase 4.A closed administratively on 2026-04-23; physical deletion of deprecated `schemas/constructs/<old-version>/<resource>/` directories was **overridden by maintainer decision**. The table below is the canonical index of directories retained on `master` for external-consumer compatibility. Each carries `info.x-deprecated: true`; the OpenAPI bundler (`build/lib/config.js::isDeprecatedPackage`) reads that marker and excludes the directory from the merged spec, so the canonical target version owns the wire without path-space collision. Every retained directory is frozen — no schema edits in place — and the generated client surface for external consumers pinning the legacy version continues to work.
+
+If an external consumer imports from a path listed below, this is intentional and supported; the `x-superseded-by` column indicates the canonical version they should migrate to when next convenient. If a column is blank the legacy resource is retained as-is without a direct successor in the §9.1 inventory (typically because its functionality moved into a different resource or was retired in-product; treat these as frozen).
+
+### 8.1 `schemas/constructs/v1beta1/*` (25 deprecated directories)
+
+| Directory | `x-superseded-by` |
+|---|---|
+| `schemas/constructs/v1beta1/academy/` | `v1beta2` |
+| `schemas/constructs/v1beta1/badge/` | — (retained as-is) |
+| `schemas/constructs/v1beta1/catalog/` | `v1beta2` |
+| `schemas/constructs/v1beta1/component/` | `v1beta2` |
+| `schemas/constructs/v1beta1/connection/` | `v1beta2` |
+| `schemas/constructs/v1beta1/core/` | `v1beta2` |
+| `schemas/constructs/v1beta1/credential/` | — (retained as-is) |
+| `schemas/constructs/v1beta1/design/` | `v1beta2` |
+| `schemas/constructs/v1beta1/environment/` | `v1beta3` |
+| `schemas/constructs/v1beta1/event/` | `v1beta2` |
+| `schemas/constructs/v1beta1/invitation/` | `v1beta2` |
+| `schemas/constructs/v1beta1/key/` | — (retained as-is) |
+| `schemas/constructs/v1beta1/keychain/` | — (retained as-is) |
+| `schemas/constructs/v1beta1/model/` | `v1beta2` |
+| `schemas/constructs/v1beta1/organization/` | `v1beta2` |
+| `schemas/constructs/v1beta1/plan/` | `v1beta2` |
+| `schemas/constructs/v1beta1/relationship/` | `v1beta2` |
+| `schemas/constructs/v1beta1/role/` | `v1beta2` |
+| `schemas/constructs/v1beta1/schedule/` | `v1beta2` |
+| `schemas/constructs/v1beta1/subscription/` | `v1beta2` |
+| `schemas/constructs/v1beta1/team/` | `v1beta2` |
+| `schemas/constructs/v1beta1/token/` | `v1beta2` |
+| `schemas/constructs/v1beta1/user/` | `v1beta2` |
+| `schemas/constructs/v1beta1/view/` | — (retained as-is) |
+| `schemas/constructs/v1beta1/workspace/` | `v1beta3` |
+
+### 8.2 `schemas/constructs/v1beta2/*` (7 deprecated directories — first-generation canonical targets superseded by `v1beta3`)
+
+| Directory | `x-superseded-by` |
+|---|---|
+| `schemas/constructs/v1beta2/connection/` | `v1beta3` |
+| `schemas/constructs/v1beta2/design/` | `v1beta3/design` |
+| `schemas/constructs/v1beta2/event/` | — (retained as-is) |
+| `schemas/constructs/v1beta2/invitation/` | — (retained as-is) |
+| `schemas/constructs/v1beta2/plan/` | — (retained as-is) |
+| `schemas/constructs/v1beta2/subscription/` | — (retained as-is) |
+| `schemas/constructs/v1beta2/token/` | — (retained as-is) |
+
+### 8.3 Operating rules for the retained tree
+
+- **Do not delete** any directory listed above. Physical deletion is not scheduled; any future decision to remove a directory is a separate maintainer action documented in [`identifier-naming-migration.md §20`](identifier-naming-migration.md#20-revision-history).
+- **Do not remove or modify `x-deprecated: true` / `x-superseded-by:` markers** on these directories. They are the compatibility signal that documents the directory's frozen status and lets the bundler exclude the legacy path from the merged spec.
+- **Do not add new properties, operations, or resources** to these directories. They are frozen; all new work happens in the canonical-casing target versions.
+- When a downstream consumer reports a migration blocker, **fix it in the canonical version, not in the retained legacy directory.**
+- `make validate-schemas` and `make audit-schemas` continue to run against the retained tree; the existing advisory baseline (`build/validate-schemas.advisory-baseline.txt`) absorbs the known snake-wire violations so CI remains green.
