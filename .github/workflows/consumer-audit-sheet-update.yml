@@ -39,7 +39,7 @@ jobs:
           fi
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
 
@@ -89,7 +89,7 @@ jobs:
 
       - name: Upload consumer-audit sheet update output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: consumer-audit-sheet-update-output
           path: /tmp/consumer-audit-sheet-update.txt
