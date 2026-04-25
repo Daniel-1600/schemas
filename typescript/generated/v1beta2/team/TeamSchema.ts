@@ -462,9 +462,9 @@ const TeamSchema: Record<string, unknown> = {
           }
         }
       },
-      "TeamsUsersMapping": {
+      "UsersTeamsMapping": {
         "type": "object",
-        "description": "Mapping between teams and users",
+        "description": "Join row between users and teams. The schema name is `UsersTeamsMapping` (rather than `TeamsUsersMapping`) so that pop's tableize default produces the live DB table name `users_teams_mappings`, eliminating the need for an explicit `TableName()` helper on the generated Go struct.\n",
         "properties": {
           "id": {
             "x-go-name": "ID",
@@ -507,6 +507,19 @@ const TeamSchema: Record<string, unknown> = {
               "path": "github.com/gofrs/uuid"
             }
           },
+          "roleId": {
+            "description": "Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.\n",
+            "x-oapi-codegen-extra-tags": {
+              "db": "role_id",
+              "json": "roleId,omitempty"
+            },
+            "type": "string",
+            "format": "uuid",
+            "x-go-type": "uuid.UUID",
+            "x-go-type-import": {
+              "path": "github.com/gofrs/uuid"
+            }
+          },
           "createdAt": {
             "description": "Timestamp when the mapping was created.",
             "x-oapi-codegen-extra-tags": {
@@ -540,9 +553,9 @@ const TeamSchema: Record<string, unknown> = {
           }
         }
       },
-      "TeamsUsersMappingPage": {
+      "UsersTeamsMappingPage": {
         "type": "object",
-        "description": "Paginated list of team-user mappings",
+        "description": "Paginated list of user-team mappings",
         "properties": {
           "page": {
             "type": "integer",
@@ -559,13 +572,13 @@ const TeamSchema: Record<string, unknown> = {
             "description": "Total number of items available.",
             "minimum": 0
           },
-          "teamsUsersMapping": {
+          "usersTeamsMapping": {
             "type": "array",
             "x-go-type-skip-optional-pointer": true,
             "items": {
-              "x-go-type": "TeamsUsersMapping",
+              "x-go-type": "UsersTeamsMapping",
               "type": "object",
-              "description": "Mapping between teams and users",
+              "description": "Join row between users and teams. The schema name is `UsersTeamsMapping` (rather than `TeamsUsersMapping`) so that pop's tableize default produces the live DB table name `users_teams_mappings`, eliminating the need for an explicit `TableName()` helper on the generated Go struct.\n",
               "properties": {
                 "id": {
                   "x-go-name": "ID",
@@ -608,6 +621,19 @@ const TeamSchema: Record<string, unknown> = {
                     "path": "github.com/gofrs/uuid"
                   }
                 },
+                "roleId": {
+                  "description": "Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.\n",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "role_id",
+                    "json": "roleId,omitempty"
+                  },
+                  "type": "string",
+                  "format": "uuid",
+                  "x-go-type": "uuid.UUID",
+                  "x-go-type-import": {
+                    "path": "github.com/gofrs/uuid"
+                  }
+                },
                 "createdAt": {
                   "description": "Timestamp when the mapping was created.",
                   "x-oapi-codegen-extra-tags": {
@@ -641,7 +667,7 @@ const TeamSchema: Record<string, unknown> = {
                 }
               }
             },
-            "description": "The teams users mapping of the teamsusersmappingpage."
+            "description": "The user-team mappings on the current page."
           }
         }
       },
@@ -1830,7 +1856,7 @@ const TeamSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "description": "Paginated list of team-user mappings",
+                  "description": "Paginated list of user-team mappings",
                   "properties": {
                     "page": {
                       "type": "integer",
@@ -1847,13 +1873,13 @@ const TeamSchema: Record<string, unknown> = {
                       "description": "Total number of items available.",
                       "minimum": 0
                     },
-                    "teamsUsersMapping": {
+                    "usersTeamsMapping": {
                       "type": "array",
                       "x-go-type-skip-optional-pointer": true,
                       "items": {
-                        "x-go-type": "TeamsUsersMapping",
+                        "x-go-type": "UsersTeamsMapping",
                         "type": "object",
-                        "description": "Mapping between teams and users",
+                        "description": "Join row between users and teams. The schema name is `UsersTeamsMapping` (rather than `TeamsUsersMapping`) so that pop's tableize default produces the live DB table name `users_teams_mappings`, eliminating the need for an explicit `TableName()` helper on the generated Go struct.\n",
                         "properties": {
                           "id": {
                             "x-go-name": "ID",
@@ -1896,6 +1922,19 @@ const TeamSchema: Record<string, unknown> = {
                               "path": "github.com/gofrs/uuid"
                             }
                           },
+                          "roleId": {
+                            "description": "Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.\n",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "role_id",
+                              "json": "roleId,omitempty"
+                            },
+                            "type": "string",
+                            "format": "uuid",
+                            "x-go-type": "uuid.UUID",
+                            "x-go-type-import": {
+                              "path": "github.com/gofrs/uuid"
+                            }
+                          },
                           "createdAt": {
                             "description": "Timestamp when the mapping was created.",
                             "x-oapi-codegen-extra-tags": {
@@ -1929,7 +1968,7 @@ const TeamSchema: Record<string, unknown> = {
                           }
                         }
                       },
-                      "description": "The teams users mapping of the teamsusersmappingpage."
+                      "description": "The user-team mappings on the current page."
                     }
                   }
                 }
@@ -2051,7 +2090,7 @@ const TeamSchema: Record<string, unknown> = {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "description": "Mapping between teams and users",
+                  "description": "Join row between users and teams. The schema name is `UsersTeamsMapping` (rather than `TeamsUsersMapping`) so that pop's tableize default produces the live DB table name `users_teams_mappings`, eliminating the need for an explicit `TableName()` helper on the generated Go struct.\n",
                   "properties": {
                     "id": {
                       "x-go-name": "ID",
@@ -2086,6 +2125,19 @@ const TeamSchema: Record<string, unknown> = {
                       "x-oapi-codegen-extra-tags": {
                         "db": "user_id",
                         "json": "userId"
+                      },
+                      "type": "string",
+                      "format": "uuid",
+                      "x-go-type": "uuid.UUID",
+                      "x-go-type-import": {
+                        "path": "github.com/gofrs/uuid"
+                      }
+                    },
+                    "roleId": {
+                      "description": "Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.\n",
+                      "x-oapi-codegen-extra-tags": {
+                        "db": "role_id",
+                        "json": "roleId,omitempty"
                       },
                       "type": "string",
                       "format": "uuid",

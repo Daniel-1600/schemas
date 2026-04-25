@@ -4832,13 +4832,16 @@ export type GetTeamUsersApiResponse = /** status 200 Team users mapping */ {
   page_size?: number;
   /** Total number of items available. */
   total_count?: number;
-  /** The teams users mapping of the teamsusersmappingpage. */
-  teamsUsersMapping?: {
+  /** The user-team mappings on the current page. */
+  usersTeamsMapping?: {
     id?: string;
     /** Team ID */
     teamId?: string;
     /** User ID */
     userId?: string;
+    /** Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+     */
+    roleId?: string;
     /** Timestamp when the mapping was created. */
     createdAt?: string;
     /** Timestamp when the mapping was last updated. */
@@ -4865,6 +4868,9 @@ export type AddUserToTeamApiResponse = /** status 201 User added to team */ {
   teamId?: string;
   /** User ID */
   userId?: string;
+  /** Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+   */
+  roleId?: string;
   /** Timestamp when the mapping was created. */
   createdAt?: string;
   /** Timestamp when the mapping was last updated. */

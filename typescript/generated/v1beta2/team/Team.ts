@@ -126,8 +126,8 @@ export interface components {
         deletedAt?: string;
       }[];
     };
-    /** @description Mapping between teams and users */
-    TeamsUsersMapping: {
+    /** @description Join row between users and teams. The schema name is `UsersTeamsMapping` (rather than `TeamsUsersMapping`) so that pop's tableize default produces the live DB table name `users_teams_mappings`, eliminating the need for an explicit `TableName()` helper on the generated Go struct. */
+    UsersTeamsMapping: {
       /** Format: uuid */
       id?: string;
       /**
@@ -140,6 +140,11 @@ export interface components {
        * @description User ID
        */
       userId?: string;
+      /**
+       * Format: uuid
+       * @description Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+       */
+      roleId?: string;
       /**
        * Format: date-time
        * @description Timestamp when the mapping was created.
@@ -156,16 +161,16 @@ export interface components {
        */
       deletedAt?: string;
     };
-    /** @description Paginated list of team-user mappings */
-    TeamsUsersMappingPage: {
+    /** @description Paginated list of user-team mappings */
+    UsersTeamsMappingPage: {
       /** @description Current page number of the result set. */
       page?: number;
       /** @description Number of items per page. */
       page_size?: number;
       /** @description Total number of items available. */
       total_count?: number;
-      /** @description The teams users mapping of the teamsusersmappingpage. */
-      teamsUsersMapping?: {
+      /** @description The user-team mappings on the current page. */
+      usersTeamsMapping?: {
         /** Format: uuid */
         id?: string;
         /**
@@ -178,6 +183,11 @@ export interface components {
          * @description User ID
          */
         userId?: string;
+        /**
+         * Format: uuid
+         * @description Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+         */
+        roleId?: string;
         /**
          * Format: date-time
          * @description Timestamp when the mapping was created.
@@ -695,8 +705,8 @@ export interface operations {
             page_size?: number;
             /** @description Total number of items available. */
             total_count?: number;
-            /** @description The teams users mapping of the teamsusersmappingpage. */
-            teamsUsersMapping?: {
+            /** @description The user-team mappings on the current page. */
+            usersTeamsMapping?: {
               /** Format: uuid */
               id?: string;
               /**
@@ -709,6 +719,11 @@ export interface operations {
                * @description User ID
                */
               userId?: string;
+              /**
+               * Format: uuid
+               * @description Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+               */
+              roleId?: string;
               /**
                * Format: date-time
                * @description Timestamp when the mapping was created.
@@ -783,6 +798,11 @@ export interface operations {
              * @description User ID
              */
             userId?: string;
+            /**
+             * Format: uuid
+             * @description Optional role assigned to this team membership. Nullable because a membership may exist without an explicit role (e.g., team-admin assignments are stamped on insert; non-owner adds may leave `role_id` null until a role is assigned). References `roles.id`.
+             */
+            roleId?: string;
             /**
              * Format: date-time
              * @description Timestamp when the mapping was created.
