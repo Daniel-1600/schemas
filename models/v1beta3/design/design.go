@@ -11,6 +11,7 @@ import (
 	catalogv1alpha2 "github.com/meshery/schemas/models/v1alpha2/catalog"
 	component "github.com/meshery/schemas/models/v1beta2/component"
 	relationship "github.com/meshery/schemas/models/v1beta2/relationship"
+	filterv1beta3 "github.com/meshery/schemas/models/v1beta3/filter"
 	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
@@ -55,7 +56,7 @@ type CatalogContentPage struct {
 	CategoryCount *[]map[string]interface{} `json:"categoryCount,omitempty" yaml:"categoryCount,omitempty"`
 
 	// Filters Published filters included on this page.
-	Filters *[]MesheryFilter `json:"filters,omitempty" yaml:"filters,omitempty"`
+	Filters *[]filterv1beta3.MesheryFilter `json:"filters,omitempty" yaml:"filters,omitempty"`
 
 	// ModelsCount Model-by-count aggregates for the catalog page.
 	ModelsCount *[]map[string]interface{} `json:"modelsCount,omitempty" yaml:"modelsCount,omitempty"`
@@ -122,9 +123,6 @@ type DeletePatternModel struct {
 	ID   core.Id   `json:"id,omitempty" yaml:"id,omitempty"`
 	Name core.Text `json:"name,omitempty" yaml:"name,omitempty"`
 }
-
-// MesheryFilter defines model for MesheryFilter.
-type MesheryFilter map[string]interface{}
 
 // MesheryPattern Server-returned design (pattern) resource as persisted by meshery-cloud.
 type MesheryPattern struct {
@@ -271,9 +269,6 @@ type ResourceAccessMapping map[string]interface{}
 
 // DesignId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
 type DesignId = core.Uuid
-
-// FilterId A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.
-type FilterId = core.Uuid
 
 // Order defines model for order.
 type Order = string

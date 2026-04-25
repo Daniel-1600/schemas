@@ -30510,8 +30510,211 @@ const DesignSchema: Record<string, unknown> = {
                     "filters": {
                       "type": "array",
                       "items": {
+                        "x-go-type": "filterv1beta3.MesheryFilter",
+                        "x-go-type-import": {
+                          "path": "github.com/meshery/schemas/models/v1beta3/filter",
+                          "name": "filterv1beta3"
+                        },
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": "Filter Schema",
+                        "description": "Server-returned Meshery filter resource as persisted by meshery-cloud\n(`meshery_filters` table) and consumed by meshery's\n`models.MesheryFilter`. Filters carry an opaque body (`filterFile`) plus\ncatalog and visibility metadata, and follow the same content-resource\nshape as designs minus the catalog engagement counters (the\n`meshery_filters` table has no `view_count` / `download_count` columns).\n",
                         "type": "object",
-                        "additionalProperties": true
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "name",
+                          "userId",
+                          "createdAt",
+                          "updatedAt"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                            "x-go-type": "uuid.UUID",
+                            "x-go-type-import": {
+                              "path": "github.com/gofrs/uuid"
+                            },
+                            "x-order": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Human-readable filter name; required, used for catalog listings.",
+                            "minLength": 1,
+                            "maxLength": 255,
+                            "x-order": 2
+                          },
+                          "userId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                            "x-go-type": "uuid.UUID",
+                            "x-go-type-import": {
+                              "path": "github.com/gofrs/uuid"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "user_id"
+                            },
+                            "x-order": 3
+                          },
+                          "filterFile": {
+                            "type": "string",
+                            "format": "byte",
+                            "description": "Raw filter source persisted as a byte array (`bytea` column\n`filter_file`). Wire form is base64 per OpenAPI `format: byte`.\n",
+                            "maxLength": 10485760,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "filter_file"
+                            },
+                            "x-order": 4
+                          },
+                          "filterResource": {
+                            "type": "string",
+                            "description": "Filter resource discriminator describing the filter body's source\nformat (e.g. WASM module identifier or external resource path).\nStored in the `filter_resource` text column.\n",
+                            "maxLength": 5000,
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "filter_resource"
+                            },
+                            "x-order": 5
+                          },
+                          "location": {
+                            "description": "Optional structured location metadata (branch, host, path, ...).",
+                            "x-order": 6,
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "x-go-type-skip-optional-pointer": true
+                          },
+                          "visibility": {
+                            "description": "Visibility scope (private, public, published).",
+                            "x-order": 7,
+                            "type": "string",
+                            "enum": [
+                              "private",
+                              "public",
+                              "published"
+                            ],
+                            "x-go-type-skip-optional-pointer": true
+                          },
+                          "catalogData": {
+                            "description": "Catalog metadata attached to the filter when published.",
+                            "x-go-type": "catalogv1alpha2.CatalogData",
+                            "x-go-type-import": {
+                              "path": "github.com/meshery/schemas/models/v1alpha2/catalog",
+                              "name": "catalogv1alpha2"
+                            },
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "catalog_data"
+                            },
+                            "x-order": 8,
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "publishedVersion": {
+                                "description": "Tracks the specific content version that has been made available in the Catalog.",
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              "class": {
+                                "description": "Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability.",
+                                "type": "string",
+                                "oneOf": [
+                                  {
+                                    "const": "official",
+                                    "description": "Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable."
+                                  },
+                                  {
+                                    "const": "verified",
+                                    "description": "Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility."
+                                  },
+                                  {
+                                    "const": "reference architecture",
+                                    "description": "Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Reference architecture content may have varying levels of support and reliability."
+                                  }
+                                ],
+                                "maxLength": 500
+                              },
+                              "compatibility": {
+                                "type": "array",
+                                "title": "Model",
+                                "items": {
+                                  "enum": [
+                                    "kubernetes"
+                                  ],
+                                  "type": "string"
+                                },
+                                "uniqueItems": true,
+                                "minItems": 1,
+                                "description": "One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential."
+                              },
+                              "patternCaveats": {
+                                "type": "string",
+                                "title": "Caveats and Considerations",
+                                "description": "Specific stipulations to consider and known behaviors to be aware of when using this design.",
+                                "maxLength": 500
+                              },
+                              "patternInfo": {
+                                "type": "string",
+                                "title": "Description",
+                                "minLength": 1,
+                                "description": "Purpose of the design along with its intended and unintended uses."
+                              },
+                              "type": {
+                                "type": "string",
+                                "title": "Type",
+                                "x-enum-casing-exempt": true,
+                                "enum": [
+                                  "Deployment",
+                                  "Observability",
+                                  "Resiliency",
+                                  "Scaling",
+                                  "Security",
+                                  "Traffic-management",
+                                  "Troubleshooting",
+                                  "Workloads"
+                                ],
+                                "default": "Deployment",
+                                "description": "Categorization of the type of design or operational flow depicted in this design."
+                              },
+                              "snapshotURL": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "pattern": "^(https?|http?|oci)://"
+                                },
+                                "description": "Contains reference to the dark and light mode snapshots of the design."
+                              }
+                            },
+                            "required": [
+                              "compatibility",
+                              "patternCaveats",
+                              "patternInfo",
+                              "type"
+                            ]
+                          },
+                          "createdAt": {
+                            "description": "Timestamp of filter creation.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "created_at"
+                            },
+                            "x-order": 9,
+                            "type": "string",
+                            "format": "date-time",
+                            "x-go-type-skip-optional-pointer": true
+                          },
+                          "updatedAt": {
+                            "description": "Timestamp of last filter modification.",
+                            "x-oapi-codegen-extra-tags": {
+                              "db": "updated_at"
+                            },
+                            "x-order": 10,
+                            "type": "string",
+                            "format": "date-time",
+                            "x-go-type-skip-optional-pointer": true
+                          }
+                        }
                       },
                       "description": "Published filters included on this page."
                     },
@@ -30938,181 +31141,6 @@ const DesignSchema: Record<string, unknown> = {
           },
           "409": {
             "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/content/filters/{filterId}": {
-      "get": {
-        "x-internal": [
-          "cloud"
-        ],
-        "tags": [
-          "designs"
-        ],
-        "summary": "Get filter by ID",
-        "operationId": "getFilter",
-        "parameters": [
-          {
-            "name": "filterId",
-            "in": "path",
-            "description": "Filter ID",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-              "x-go-type": "uuid.UUID",
-              "x-go-type-import": {
-                "path": "github.com/gofrs/uuid"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Filter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request body or request param",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Expired JWT token used or insufficient privilege",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Result not found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/content/filters/clone/{filterId}": {
-      "post": {
-        "x-internal": [
-          "cloud"
-        ],
-        "tags": [
-          "designs"
-        ],
-        "summary": "Clone filter",
-        "operationId": "cloneFilter",
-        "parameters": [
-          {
-            "name": "filterId",
-            "in": "path",
-            "description": "Filter ID",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-              "x-go-type": "uuid.UUID",
-              "x-go-type-import": {
-                "path": "github.com/gofrs/uuid"
-              }
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "additionalProperties": true
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Cloned filter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request body or request param",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Expired JWT token used or insufficient privilege",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Result not found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
           },
           "500": {
             "description": "Internal server error",
@@ -31642,21 +31670,6 @@ const DesignSchema: Record<string, unknown> = {
         "schema": {
           "type": "string",
           "format": "uuid"
-        }
-      },
-      "filterId": {
-        "name": "filterId",
-        "in": "path",
-        "description": "Filter ID",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
-          "x-go-type": "uuid.UUID",
-          "x-go-type-import": {
-            "path": "github.com/gofrs/uuid"
-          }
         }
       }
     },
@@ -56079,8 +56092,211 @@ const DesignSchema: Record<string, unknown> = {
           "filters": {
             "type": "array",
             "items": {
+              "x-go-type": "filterv1beta3.MesheryFilter",
+              "x-go-type-import": {
+                "path": "github.com/meshery/schemas/models/v1beta3/filter",
+                "name": "filterv1beta3"
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "title": "Filter Schema",
+              "description": "Server-returned Meshery filter resource as persisted by meshery-cloud\n(`meshery_filters` table) and consumed by meshery's\n`models.MesheryFilter`. Filters carry an opaque body (`filterFile`) plus\ncatalog and visibility metadata, and follow the same content-resource\nshape as designs minus the catalog engagement counters (the\n`meshery_filters` table has no `view_count` / `download_count` columns).\n",
               "type": "object",
-              "additionalProperties": true
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "userId",
+                "createdAt",
+                "updatedAt"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                  "x-go-type": "uuid.UUID",
+                  "x-go-type-import": {
+                    "path": "github.com/gofrs/uuid"
+                  },
+                  "x-order": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable filter name; required, used for catalog listings.",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "x-order": 2
+                },
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "A Universally Unique Identifier used to uniquely identify entities in Meshery. The UUID core definition is used across different schemas.",
+                  "x-go-type": "uuid.UUID",
+                  "x-go-type-import": {
+                    "path": "github.com/gofrs/uuid"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "user_id"
+                  },
+                  "x-order": 3
+                },
+                "filterFile": {
+                  "type": "string",
+                  "format": "byte",
+                  "description": "Raw filter source persisted as a byte array (`bytea` column\n`filter_file`). Wire form is base64 per OpenAPI `format: byte`.\n",
+                  "maxLength": 10485760,
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "filter_file"
+                  },
+                  "x-order": 4
+                },
+                "filterResource": {
+                  "type": "string",
+                  "description": "Filter resource discriminator describing the filter body's source\nformat (e.g. WASM module identifier or external resource path).\nStored in the `filter_resource` text column.\n",
+                  "maxLength": 5000,
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "filter_resource"
+                  },
+                  "x-order": 5
+                },
+                "location": {
+                  "description": "Optional structured location metadata (branch, host, path, ...).",
+                  "x-order": 6,
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "x-go-type-skip-optional-pointer": true
+                },
+                "visibility": {
+                  "description": "Visibility scope (private, public, published).",
+                  "x-order": 7,
+                  "type": "string",
+                  "enum": [
+                    "private",
+                    "public",
+                    "published"
+                  ],
+                  "x-go-type-skip-optional-pointer": true
+                },
+                "catalogData": {
+                  "description": "Catalog metadata attached to the filter when published.",
+                  "x-go-type": "catalogv1alpha2.CatalogData",
+                  "x-go-type-import": {
+                    "path": "github.com/meshery/schemas/models/v1alpha2/catalog",
+                    "name": "catalogv1alpha2"
+                  },
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "catalog_data"
+                  },
+                  "x-order": 8,
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "publishedVersion": {
+                      "description": "Tracks the specific content version that has been made available in the Catalog.",
+                      "type": "string",
+                      "maxLength": 500
+                    },
+                    "class": {
+                      "description": "Published content is classifed by its support level. Content classes help you understand the origin and expected support level for each piece of content. It is important to note that the level of support may vary within each class, and you should exercise discretion when using community-contributed content. Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable. Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility. Content produced and supported by the respective project or organization responsible for the specific technology. This class offers a level of support from the project maintainers themselves. Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Community content may have varying levels of support and reliability.",
+                      "type": "string",
+                      "oneOf": [
+                        {
+                          "const": "official",
+                          "description": "Content produced and fully supported by Meshery maintainers. This represents the highest level of support and is considered the most reliable."
+                        },
+                        {
+                          "const": "verified",
+                          "description": "Content produced by partners and verified by Meshery maintainers. While not directly maintained by Meshery, it has undergone a verification process to ensure quality and compatibility."
+                        },
+                        {
+                          "const": "reference architecture",
+                          "description": "Content produced and shared by Meshery users. This includes a wide range of content, such as performance profiles, test results, filters, patterns, and applications. Reference architecture content may have varying levels of support and reliability."
+                        }
+                      ],
+                      "maxLength": 500
+                    },
+                    "compatibility": {
+                      "type": "array",
+                      "title": "Model",
+                      "items": {
+                        "enum": [
+                          "kubernetes"
+                        ],
+                        "type": "string"
+                      },
+                      "uniqueItems": true,
+                      "minItems": 1,
+                      "description": "One or more models associated with this catalog item. For designs, a list of one or more models implicated by components within the design. For models, this is self-referential."
+                    },
+                    "patternCaveats": {
+                      "type": "string",
+                      "title": "Caveats and Considerations",
+                      "description": "Specific stipulations to consider and known behaviors to be aware of when using this design.",
+                      "maxLength": 500
+                    },
+                    "patternInfo": {
+                      "type": "string",
+                      "title": "Description",
+                      "minLength": 1,
+                      "description": "Purpose of the design along with its intended and unintended uses."
+                    },
+                    "type": {
+                      "type": "string",
+                      "title": "Type",
+                      "x-enum-casing-exempt": true,
+                      "enum": [
+                        "Deployment",
+                        "Observability",
+                        "Resiliency",
+                        "Scaling",
+                        "Security",
+                        "Traffic-management",
+                        "Troubleshooting",
+                        "Workloads"
+                      ],
+                      "default": "Deployment",
+                      "description": "Categorization of the type of design or operational flow depicted in this design."
+                    },
+                    "snapshotURL": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^(https?|http?|oci)://"
+                      },
+                      "description": "Contains reference to the dark and light mode snapshots of the design."
+                    }
+                  },
+                  "required": [
+                    "compatibility",
+                    "patternCaveats",
+                    "patternInfo",
+                    "type"
+                  ]
+                },
+                "createdAt": {
+                  "description": "Timestamp of filter creation.",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "created_at"
+                  },
+                  "x-order": 9,
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true
+                },
+                "updatedAt": {
+                  "description": "Timestamp of last filter modification.",
+                  "x-oapi-codegen-extra-tags": {
+                    "db": "updated_at"
+                  },
+                  "x-order": 10,
+                  "type": "string",
+                  "format": "date-time",
+                  "x-go-type-skip-optional-pointer": true
+                }
+              }
             },
             "description": "Published filters included on this page."
           },
@@ -56149,10 +56365,6 @@ const DesignSchema: Record<string, unknown> = {
             "maxLength": 5000
           }
         },
-        "additionalProperties": true
-      },
-      "MesheryFilter": {
-        "type": "object",
         "additionalProperties": true
       },
       "ResourceAccessMapping": {
