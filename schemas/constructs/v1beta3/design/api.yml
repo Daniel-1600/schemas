@@ -790,35 +790,90 @@ components:
           description: Owning user ID.
           x-oapi-codegen-extra-tags:
             db: user_id
+        user:
+          $ref: "../../v1beta2/user/api.yml#/components/schemas/User"
+          description: >
+            Owning user record, joined inline by the catalog list/get
+            handlers when shaping responses. Server-projected from the
+            users table via the design's userId; not a column on the
+            meshery_patterns table itself, so the generated Go field is
+            tagged `db:"-"` to keep it out of ORM column scans.
+          nullable: true
+          x-go-type: "*userV1beta.User"
+          x-go-type-import:
+            path: github.com/meshery/schemas/models/v1beta2/user
+            name: userV1beta
+          x-oapi-codegen-extra-tags:
+            db: "-"
         location:
           $ref: "../../v1beta2/core/api.yml#/components/schemas/MapObject"
           description: Optional structured location metadata (branch, host, path, ...).
         patternFile:
-          $ref: "#/components/schemas/PatternFile"
-          description: Parsed design document body.
-          x-go-type: PatternFile
+          type: string
+          description: >
+            Raw design body as it is persisted in the meshery_patterns
+            table's `pattern_file` column. The wire form is the YAML/JSON
+            string the server stores verbatim; consumers that need the
+            structured form transcode at the boundary by parsing the
+            string into a PatternFile (see #/components/schemas/PatternFile)
+            and marshalling it back when they write. Keeping the wire
+            shape as a string mirrors the column's actual representation
+            and avoids forcing every consumer through the structured-vs-
+            string union that the previous *PatternFile typing implied.
+          maxLength: 16777216
           x-oapi-codegen-extra-tags:
             db: pattern_file
         visibility:
-          $ref: "../../v1beta2/core/api.yml#/components/schemas/Text"
-          description: Visibility scope (private, public, published).
+          type: string
+          description: >
+            Visibility scope of the design — controls whether non-owners
+            may read or list it. `private` is owner-only, `public` is
+            readable by anyone in the org, and `published` is visible in
+            the catalog.
+          enum:
+            - private
+            - public
+            - published
+          x-enum-casing-exempt: true
+          maxLength: 32
+          x-oapi-codegen-extra-tags:
+            db: visibility
         designType:
           type: string
           description: >
-            Discriminator identifying the source format of the design body.
-            Projected server-side (not stored in a column of its own); for
-            catalog listings the server derives it from the attached catalog
-            metadata, for user-owned designs the server derives it from the
-            import source. Use this field to branch rendering between native
-            Meshery designs and imported Helm charts, Kubernetes manifests,
-            and Docker Compose files.
+            Discriminator identifying the source format of the design body,
+            persisted in the meshery_patterns table's `source_type` column
+            (nullable; null for legacy rows imported before the column was
+            introduced). For catalog listings the server may also project
+            this field from the attached catalog metadata. Use this field
+            to branch rendering between native Meshery designs and imported
+            Helm charts, Kubernetes manifests, and Docker Compose files.
           x-enum-casing-exempt: true
+          nullable: true
           enum:
             - Design
             - Helm Chart
             - Docker Compose
             - Kubernetes Manifest
           maxLength: 64
+          x-oapi-codegen-extra-tags:
+            db: source_type
+        sourceContent:
+          type: string
+          format: byte
+          nullable: true
+          description: >
+            Raw bytes of the imported source artifact (Helm chart tarball,
+            Kubernetes manifest, Docker Compose file, etc.) preserved in
+            the meshery_patterns table's `source_content` column for
+            non-Meshery-Design imports. Empty / null for native Meshery
+            designs. Server-managed: populated by the import and upload
+            handlers and scrubbed to null on most read responses, so
+            clients should treat this as opaque base64-encoded bytes when
+            it does appear on the wire.
+          x-oapi-codegen-extra-tags:
+            db: source_content
+            json: "sourceContent,omitempty"
         viewCount:
           type: integer
           description: >
@@ -919,6 +974,73 @@ components:
             x-go-type: DeletePatternModel
           description: Designs targeted for deletion.
 
+    MesheryPatternPayload:
+      type: object
+      description: >
+        Client-settable subset of the design (pattern) entity used as the
+        body of the inner `patternData` envelope on
+        POST /api/content/patterns. Server-generated fields (createdAt,
+        updatedAt, viewCount, downloadCount, cloneCount, deploymentCount,
+        shareCount, the joined `user` object, and the imported-source
+        `sourceContent` blob) are deliberately excluded — the server
+        ignores them on writes and re-projects them on the response.
+      properties:
+        id:
+          $ref: "../../v1beta2/core/api.yml#/components/schemas/Id"
+          description: Existing design ID for updates; omit on create.
+          x-oapi-codegen-extra-tags:
+            json: "id,omitempty"
+        name:
+          type: string
+          description: Human-readable design name.
+          minLength: 1
+          maxLength: 255
+        userId:
+          $ref: "../../v1beta2/core/api.yml#/components/schemas/Id"
+          description: Owning user ID. Server overrides with the authenticated caller on create.
+          x-oapi-codegen-extra-tags:
+            json: "userId,omitempty"
+        catalogData:
+          $ref: "../../v1beta2/catalog/api.yml#/components/schemas/CatalogData"
+          description: Catalog metadata to attach to the design when publishing.
+          x-go-type: catalogv1alpha2.CatalogData
+          x-go-type-import:
+            path: github.com/meshery/schemas/models/v1alpha2/catalog
+            name: catalogv1alpha2
+        location:
+          $ref: "../../v1beta2/core/api.yml#/components/schemas/MapObject"
+          description: Optional structured location metadata (branch, host, path, ...).
+        patternFile:
+          type: string
+          description: >
+            Raw design body to persist into the `pattern_file` column.
+            See MesheryPattern.patternFile for the transcode boundary
+            note that applies on both writes and reads.
+          maxLength: 16777216
+        visibility:
+          type: string
+          description: Visibility scope of the design.
+          enum:
+            - private
+            - public
+            - published
+          x-enum-casing-exempt: true
+          maxLength: 32
+        designType:
+          type: string
+          description: >
+            Discriminator identifying the source format of the design body,
+            stored in the `source_type` column. Optional on create (the
+            server defaults missing values to `Design`).
+          x-enum-casing-exempt: true
+          nullable: true
+          enum:
+            - Design
+            - Helm Chart
+            - Docker Compose
+            - Kubernetes Manifest
+          maxLength: 64
+
     MesheryPatternRequestBody:
       type: object
       description: Payload for upserting a design via POST /api/content/patterns.
@@ -927,9 +1049,9 @@ components:
           $ref: "../../v1beta2/core/api.yml#/components/schemas/Text"
           description: Optional source path the design was loaded from.
         patternData:
-          $ref: "#/components/schemas/MesheryPattern"
+          $ref: "#/components/schemas/MesheryPatternPayload"
           description: Design body to persist.
-          x-go-type: MesheryPattern
+          x-go-type: MesheryPatternPayload
         save:
           type: boolean
           description: When true, persist the design in addition to parsing it.
