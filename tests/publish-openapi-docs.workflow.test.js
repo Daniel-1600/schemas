@@ -11,6 +11,7 @@ test("publish-openapi-docs workflow publishes filtered OpenAPI bundles to each s
   const uploadArtifactStep = workflow.jobs["build-openapi"].steps.find(
     (step) => step.name === "Upload OpenAPI build artifact",
   );
+  assert.ok(uploadArtifactStep, "expected Upload OpenAPI build artifact step to exist");
   assert.match(uploadArtifactStep.with.path, /_openapi_build\/cloud_openapi\.yml/);
   assert.match(uploadArtifactStep.with.path, /_openapi_build\/meshery_openapi\.yml/);
   assert.doesNotMatch(uploadArtifactStep.with.path, /merged_openapi\.yml/);
@@ -18,12 +19,14 @@ test("publish-openapi-docs workflow publishes filtered OpenAPI bundles to each s
   const mesheryCopyStep = workflow.jobs["publish-openapi-docs"].steps.find(
     (step) => step.name === "Copy OpenAPI specification to meshery repo",
   );
+  assert.ok(mesheryCopyStep, "expected meshery copy step to exist");
   assert.match(mesheryCopyStep.run, /cp meshery_openapi\.yml meshery\/docs\/data\/openapi\.yml/);
   assert.doesNotMatch(mesheryCopyStep.run, /merged_openapi\.yml/);
 
   const cloudCopyStep = workflow.jobs["publish-openapi-docs-to-cloud-docs"].steps.find(
     (step) => step.name === "Copy OpenAPI specification to repo",
   );
+  assert.ok(cloudCopyStep, "expected cloud docs copy step to exist");
   assert.match(cloudCopyStep.run, /cp cloud_openapi\.yml cloud-docs\/data\/openapi\.yml/);
   assert.doesNotMatch(cloudCopyStep.run, /merged_openapi\.yml/);
 });
