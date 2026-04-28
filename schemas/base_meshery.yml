@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Meshery
+  title: Meshery Server
   description: Documentation for Meshery Server REST APIs.
   version: v1.2.2
   contact:
