@@ -128,7 +128,7 @@ function main() {
 
   if (!inputFile || !outputFile) {
     console.error(
-      "Usage: node filter-openapi-by-x-internal.js <input.yml> <output.yml> [tag] [base.yml]",
+      "Usage: node build/filterOpenapiByTag.js <input.yml> <output.yml> [tag] [base.yml]",
     );
     process.exit(1);
   }
