@@ -138,7 +138,7 @@ function main() {
 
   try {
     const filteredDoc = filterOpenapiByTag(doc, tagToInclude, baseDoc);
-    fs.writeFileSync(outputFile, yaml.dump(filteredDoc), "utf8");
+    fs.writeFileSync(outputFile, yaml.dump(filteredDoc, { noRefs: true, lineWidth: 120 }), "utf8");
     console.log(`✅ Filtered OpenAPI written to ${outputFile}`);
   } catch (err) {
     if (Array.isArray(err.missingXInternal) && err.missingXInternal.length > 0) {
