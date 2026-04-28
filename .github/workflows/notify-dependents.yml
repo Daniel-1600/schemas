@@ -1,4 +1,4 @@
-name: Bump Meshery and Meshkit
+name: Notify Extension Partners
 
 on:
   workflow_dispatch:
